@@ -1,0 +1,6 @@
+interface:
+  display_name: "Build UI Component"
+  short_description: "Xây dựng component HTML/CSS/JS độc lập"
+  default_prompt: "Hãy dùng $build-ui-component để triển khai một component theo contract của repository bằng HTML, CSS, JavaScript hoặc Tailwind."
+policy:
+  allow_implicit_invocation: true

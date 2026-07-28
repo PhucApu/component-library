@@ -1,0 +1,12 @@
+node_modules/
+dist/
+generated/*
+!generated/.gitkeep
+playwright-report/
+test-results/
+.cache/
+*.log
+.DS_Store
+Thumbs.db
+package-lock.json
+package.json

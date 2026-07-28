@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "test-button",
+  "version": "0.1.0",
+  "name": "Test Button",
+  "description": "A fixture button used only by automated tooling tests.",
+  "categories": ["button"],
+  "tags": ["fixture", "interactive"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "entry": "source/variants/default/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "viewport": {
+      "width": 800,
+      "height": 600
+    },
+    "durationMs": 1000
+  }
+}

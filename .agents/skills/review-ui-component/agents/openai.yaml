@@ -1,0 +1,6 @@
+interface:
+  display_name: "Review UI Component"
+  short_description: "Rà soát contract, UX và accessibility"
+  default_prompt: "Hãy dùng $review-ui-component để rà soát component ở chế độ chỉ đọc về contract, UX và accessibility."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://component-ui.local/schemas/component.schema.json",
+  "title": "Component UI manifest",
+  "description": "Metadata contract for one framework-free UI component.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "version",
+    "name",
+    "description",
+    "categories",
+    "tags",
+    "technologies",
+    "variants",
+    "preview"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "$ref": "#/definitions/kebabCase"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 80
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 280
+    },
+    "categories": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/kebabCase"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/kebabCase"
+      }
+    },
+    "technologies": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/kebabCase"
+      }
+    },
+    "variants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "entry"],
+        "properties": {
+          "id": {
+            "$ref": "#/definitions/kebabCase"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "entry": {
+            "type": "string",
+            "pattern": "^source/variants/[a-z0-9]+(?:-[a-z0-9]+)*/index\\.html$"
+          }
+        }
+      }
+    },
+    "preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["variant", "viewport", "durationMs"],
+      "properties": {
+        "variant": {
+          "$ref": "#/definitions/kebabCase"
+        },
+        "viewport": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["width", "height"],
+          "properties": {
+            "width": {
+              "type": "integer",
+              "minimum": 320,
+              "maximum": 1920
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 240,
+              "maximum": 1080
+            }
+          }
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 15000
+        }
+      }
+    }
+  },
+  "definitions": {
+    "kebabCase": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    }
+  }
+}

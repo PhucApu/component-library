@@ -1,0 +1,6 @@
+interface:
+  display_name: "Design UI Component"
+  short_description: "Thiết kế spec và variants cho UI component"
+  default_prompt: "Hãy dùng $design-ui-component để thiết kế một UI component không phụ thuộc framework, gồm variants, states và yêu cầu accessibility."
+policy:
+  allow_implicit_invocation: true
