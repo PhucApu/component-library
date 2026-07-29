@@ -1,47 +1,40 @@
-# Recreate Temporal Picker
+# Recreate Temporal Picker as three files
 
 You are a Senior Frontend Engineer. Build a Web Component named `<temporal-picker>` using plain
 HTML, CSS, and JavaScript. Do not use React, TypeScript, a Tailwind runtime, a UI framework, a
 backend, or a new dependency.
 
+This prompt targets the distributable form: three files a consumer drops into a project. It is
+self-contained and assumes no repository, build step, manifest, or test harness.
+
 ## Output
 
-Create a portable component with this structure:
+Produce exactly these files, flat, with no subdirectories:
 
 ```text
-components/temporal-picker/
-|-- component.json
-|-- README.md
-|-- DESIGN.md
-|-- PROMPT.md
-|-- preview/thumbnail.svg
-`-- source/
-    |-- demo.js
-    |-- shared.css
-    |-- shared.js
-    |-- temporal-picker-core.js
-    `-- variants/
-        |-- year/index.html
-        |-- month/index.html
-        |-- date/index.html
-        |-- time/index.html
-        |-- datetime/index.html
-        `-- bounded-datetime/index.html
+temporal-picker.html
+temporal-picker.css
+temporal-picker.js
+README.md
 ```
 
-Use manifest schema version 2, component version `0.3.0`, group `inputs`, and English variant
-descriptions. Each entry must run directly in a browser or iframe, display raw output, use
-`lang="en"` and `locale="en-US"`, and remain independent from catalog code.
+- `temporal-picker.js` is one ES module holding the whole component: Gregorian helpers, the
+  custom element, and the demo bootstrap. It defines the element only when it is not already
+  registered.
+- `temporal-picker.css` holds every style, namespaced under `temporal-picker__*`, driven by
+  component-owned CSS custom properties.
+- `temporal-picker.html` is a runnable example that loads the other two with
+  `<link rel="stylesheet" href="./temporal-picker.css">` and
+  `<script type="module" src="./temporal-picker.js">`, shows one picker in `datetime` mode, and
+  prints the committed value into an `<output>` element.
+- `README.md` documents installation, the attribute table, the value contract, and browser
+  support.
 
-Packaging concatenates the root modules into one distributable script, so they share a single
-top-level scope. No two of them may declare the same top-level name; put a shared helper such as
-a zero-padding function in one module and import it from the others. A duplicate is a
-`SyntaxError` in the packaged file.
+Use `lang="en"` and `locale="en-US"`. ES modules do not load from `file://`, so state in the
+README that the page must be served over HTTP or HTTPS.
 
-The catalog thumbnail must be a static, self-contained `640x360` SVG. Preserve the approved dark
-composition of the open Datetime variant, including the populated trigger, September 2027
-calendar, selected day 18, `08:45:30` time controls, Second field, and Apply action. Do not add
-animation, script, external assets, or embedded raster images.
+Add a comment beside the `<temporal-picker>` tag in the demo listing the selectable modes and a
+bounded example, so a reader discovers the other configurations without opening the README.
 
 ## Public API
 
@@ -63,9 +56,8 @@ animation, script, external assets, or embedded raster images.
 Support `mode`, `value`, `disabled`, `min`, `max`, `minute-step`, `current-indicator`, `locale`,
 `week-starts-on`, `placement`, `placeholder`, and `aria-label` as attributes or properties.
 Reflect `current-indicator` through `currentIndicator`, accept `auto` or `off`, and normalize any
-other value to `auto`.
-The `labels` property accepts a partial object for consumer localization, including Hour,
-Minute, Second, search status, result count, no-results, and unavailable labels.
+other value to `auto`. The `labels` property accepts a partial object for consumer localization,
+including Hour, Minute, Second, search status, result count, no-results, and unavailable labels.
 
 Commit through:
 
@@ -104,23 +96,24 @@ to `value`. External `value` updates synchronize the draft even while the panel 
   controlled minute in the available options.
 - Hour and Second always use a step of one. Do not add `second-step`.
 
-## Variants and commit behavior
+## Modes and commit behavior
+
+One element serves every mode; the mode is configuration, not a separate build.
 
 - `year`: unrestricted twelve-year grid initialized from the system year; commit immediately.
 - `month`: unrestricted twelve-month grid initialized from the system month; commit immediately.
 - `date`: unrestricted six-by-seven day grid initialized from the system date; commit immediately.
 - `time`: unrestricted searchable Hour, Minute, and Second controls; Apply commits `HH:mm:ss`.
-- `datetime`: initialize from the current local datetime; Apply commits the unrestricted calendar
-  and searchable time-control draft and remains the primary preview.
-- `bounded-datetime`: the same UI with inclusive bounds
-  `2027-09-10T07:00:00` through `2027-09-24T18:00:00` and
-  `current-indicator="off"`.
+- `datetime`: initialize from the current local datetime; Apply commits the calendar and
+  searchable time-control draft.
+- Setting `min` and `max` on `datetime` produces the bounded behavior; pair it with
+  `current-indicator="off"` when the current date should not be marked.
 - Clear emits an empty string and closes.
 - Current commits immediately for year, month, and date, but only updates the draft for time and
   datetime modes.
 
-For Bounded Datetime, a date is enabled if any instant on that date intersects the range. An Hour
-is enabled if any Minute and Second candidate remains valid. A Minute is enabled if any Second
+With bounds, a date is enabled if any instant on that date intersects the range. An Hour is
+enabled if any Minute and Second candidate remains valid. A Minute is enabled if any Second
 candidate remains valid. A Second checks the complete candidate. Unavailable options remain
 visible in search results but cannot become active or selected.
 
@@ -187,29 +180,21 @@ with `position: fixed`.
 - Keep live regions for view, validation, and time-search status.
 - Remove motion under `prefers-reduced-motion: reduce`.
 
-## Tests and delivery
+## Verify before delivering
 
-Write `node:test` coverage for strict formats, seconds `00` and `59`, rejected legacy values,
-years `0001`, `0099`, and `9999`, leap dates, Gregorian grids, inclusive second boundaries,
-invalid bounds, range comparison, 60 minute options at step one, and absence of timezone output.
+Serve the folder over HTTP and check each item by hand. Every one of these has already regressed
+once in a previous build.
 
-Write Playwright coverage for all six variants, time search and filtering, keyboard/ARIA
-behavior, one-listbox behavior, draft and Apply timing, external synchronization, unrestricted
-calendar variants, current indicators, selected hover/focus styling, functional panel/listbox
-scrolling, dynamic bounded options, mobile overflow, reduced motion, document downloads, and ZIP
-version `0.3.0`.
-
-Cover the listbox behavior explicitly, because each of these has already regressed once:
-
-- The listbox width matches the input it is anchored to, and it sits outside the panel so panel
-  overflow cannot clip it.
+- Each of the five modes works by changing only the `mode` attribute, and a bounded `datetime`
+  disables the dates, hours, minutes, and seconds outside the range.
+- The listbox width matches the input it is anchored to, and it is not clipped by the panel.
 - Opening a field with a selectable value shows only that value; the first Home or End press
   restores the full list and holds that value; the next press navigates.
 - Opening a field whose value is out of range shows the full list instead of one disabled row.
 - Clicking a calendar day dismisses the listbox while the panel stays open.
 - Escape closes the listbox, and a second Escape closes the picker with focus back on the
-  trigger. Assert this without waiting between presses: a re-render that restores focus a frame
-  late lets the second Escape escape the panel entirely.
-
-Run English validation, component validation, registry generation, preview generation, packaging,
-publishing, and the full repository verification flow.
+  trigger. Press them in immediate succession: a re-render that restores focus a frame late lets
+  the second Escape escape the panel entirely.
+- A day that is both today and selected still shows the current marker, and it is one line rather
+  than a double outline.
+- The committed value never carries a timezone, `Z`, or offset.

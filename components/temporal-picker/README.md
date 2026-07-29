@@ -17,12 +17,17 @@ UTC offset, or `Z`.
 
 ## Installation
 
-Copy the `source/` directory, then load the stylesheet and ES module:
+The download contains `temporal-picker.html`, `temporal-picker.css`, and
+`temporal-picker.js`. Copy the stylesheet and the script into your project, then load them:
 
 ```html
-<link rel="stylesheet" href="./source/shared.css" />
-<script type="module" src="./source/shared.js"></script>
+<link rel="stylesheet" href="./temporal-picker.css" />
+<script type="module" src="./temporal-picker.js"></script>
 ```
+
+`temporal-picker.html` is a runnable example of the two tags above. Serve it over HTTP rather
+than opening it from disk: browsers block ES modules on `file://`, so the component would never
+register.
 
 Use the component:
 
@@ -107,7 +112,7 @@ picker.labels = {
   hour: 'Hours',
   minute: 'Minutes',
   second: 'Seconds',
-  noTimeResults: 'No matching values',
+  noTimeResults: 'No match',
 };
 ```
 
@@ -160,8 +165,9 @@ The source uses the `temporal-picker__*` namespace and does not import catalog t
 
 ## Browser support
 
-The component requires Custom Elements and ES modules. It uses the native Popover API when
-available and a fixed-position portal fallback otherwise. Repository automation covers Chromium.
+The component requires Custom Elements and ES modules, so it has to be served over HTTP or
+HTTPS. It uses the native Popover API when available and a fixed-position portal fallback
+otherwise. Repository automation covers Chromium.
 
 Version 0.3 does not include form-associated custom elements, range pickers, timezones,
 configurable second steps, searchable calendar grids, or presets.

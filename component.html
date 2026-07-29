@@ -91,24 +91,15 @@
               <p class="eyebrow">DISTRIBUTION</p>
               <h2 id="source-package-title">Source Package</h2>
               <p class="source-package__description">
-                Download the complete component or inspect its source and authoring documents.
+                Download the three ready-to-use files or inspect the authoring documents.
               </p>
-            </div>
-            <div class="source-package__actions">
-              <span id="component-version" class="component-version"></span>
-              <a id="download-link" class="primary-button" download>
-                <svg class="ui-icon" data-icon="download" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 15V3"></path>
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <path d="m7 10 5 5 5-5"></path>
-                </svg>
-                <span>Download component ZIP</span>
-              </a>
             </div>
           </div>
 
+          <span id="copy-status" class="visually-hidden" role="status" aria-live="polite"></span>
+
           <div class="source-accordions">
-            <details class="source-accordion" data-source-accordion>
+            <details class="source-accordion" data-source-accordion open>
               <summary>
                 <span>Source Code</span>
                 <svg class="ui-icon source-accordion__chevron" viewBox="0 0 24 24" aria-hidden="true">
@@ -116,11 +107,29 @@
                 </svg>
               </summary>
               <div class="source-accordion__content">
-                <label class="source-file-field" for="source-file-select">
-                  <span>Source file</span>
-                  <select id="source-file-select"></select>
-                </label>
-                <pre id="source-content" class="document-content">Select a source file.</pre>
+                <div class="source-toolbar">
+                  <div class="source-file-field">
+                    <span class="source-file-field__label" id="source-file-label">Source file</span>
+                    <div class="file-select" data-file-select></div>
+                  </div>
+                  <a id="download-link" class="primary-button" download>
+                    <svg class="ui-icon" data-icon="download" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 15V3"></path>
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <path d="m7 10 5 5 5-5"></path>
+                    </svg>
+                    <span>Download component ZIP</span>
+                  </a>
+                </div>
+                <div class="document-pane">
+                  <pre id="source-content" class="document-content">Select a source file.</pre>
+                  <button
+                    type="button"
+                    class="copy-button"
+                    data-copy-for="source-content"
+                    aria-label="Copy source file"
+                  ></button>
+                </div>
               </div>
             </details>
 
@@ -134,16 +143,34 @@
               <div class="source-accordion__content">
                 <div class="document-action-row">
                   <p>Framework-free generation context for every published variant.</p>
-                  <a id="prompt-download-link" class="secondary-button" download>
-                    <svg class="ui-icon" data-icon="download" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M12 15V3"></path>
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                      <path d="m7 10 5 5 5-5"></path>
-                    </svg>
-                    <span>Download PROMPT.md</span>
-                  </a>
+                  <div class="document-action-row__buttons">
+                    <a id="standalone-prompt-download-link" class="secondary-button" download hidden>
+                      <svg class="ui-icon" data-icon="download" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 15V3"></path>
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <path d="m7 10 5 5 5-5"></path>
+                      </svg>
+                      <span>Download three-file prompt</span>
+                    </a>
+                    <a id="prompt-download-link" class="secondary-button" download>
+                      <svg class="ui-icon" data-icon="download" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 15V3"></path>
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <path d="m7 10 5 5 5-5"></path>
+                      </svg>
+                      <span>Download PROMPT.md</span>
+                    </a>
+                  </div>
                 </div>
-                <pre id="prompt-content" class="document-content">Loading prompt…</pre>
+                <div class="document-pane">
+                  <pre id="prompt-content" class="document-content">Loading prompt…</pre>
+                  <button
+                    type="button"
+                    class="copy-button"
+                    data-copy-for="prompt-content"
+                    aria-label="Copy PROMPT.md"
+                  ></button>
+                </div>
               </div>
             </details>
 
@@ -166,7 +193,15 @@
                     <span>Download DESIGN.md</span>
                   </a>
                 </div>
-                <pre id="design-content" class="document-content">Loading design system…</pre>
+                <div class="document-pane">
+                  <pre id="design-content" class="document-content">Loading design system…</pre>
+                  <button
+                    type="button"
+                    class="copy-button"
+                    data-copy-for="design-content"
+                    aria-label="Copy DESIGN.md"
+                  ></button>
+                </div>
               </div>
             </details>
           </div>

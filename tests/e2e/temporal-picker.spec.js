@@ -173,7 +173,10 @@ test('panel and time listbox scrolling use dark component-owned scrollbars witho
   let controls = await openPicker(page);
   const minute = controls.picker.locator('input[data-time-part="minute"]');
   await minute.click();
+  // Opening seeds the query with the current value, so lift it to get a scrollable list.
+  await minute.press('End');
   const listbox = controls.picker.locator('.temporal-picker__time-listbox');
+  await expect(controls.picker.getByRole('option')).toHaveCount(60);
   await listbox.evaluate((element) => {
     element.scrollTop = 0;
   });
@@ -292,6 +295,14 @@ test('searchable time comboboxes filter, expose ARIA state and keep one listbox 
   await expect(minute).toHaveAttribute('aria-expanded', 'true');
   await expect(hour).toHaveAttribute('aria-expanded', 'false');
   await expect(picker.locator('.temporal-picker__time-listbox:visible')).toHaveCount(1);
+  // Opening a field that already holds 45 seeds the query, so only that option shows.
+  await expect(picker.getByRole('option')).toHaveCount(1);
+  await expect(minute).toHaveAttribute('aria-activedescendant', /minute-45$/);
+  // The first navigation key lifts the seed and holds the current value.
+  await minute.press('End');
+  await expect(picker.getByRole('option')).toHaveCount(60);
+  await expect(minute).toHaveAttribute('aria-activedescendant', /minute-45$/);
+  // Later presses navigate normally.
   await minute.press('End');
   await expect(minute).toHaveAttribute('aria-activedescendant', /minute-59$/);
   await minute.press('Tab');
@@ -299,9 +310,7 @@ test('searchable time comboboxes filter, expose ARIA state and keep one listbox 
   await expect(second).toBeFocused();
 
   await second.fill('99');
-  await expect(picker.locator('.temporal-picker__time-status')).toHaveText(
-    'No matching values',
-  );
+  await expect(picker.locator('.temporal-picker__time-status')).toHaveText('No match');
   await expect(picker.locator('.temporal-picker__time-empty')).toBeVisible();
   await second.press('Escape');
   await expect(second).toHaveAttribute('aria-expanded', 'false');
@@ -311,6 +320,38 @@ test('searchable time comboboxes filter, expose ARIA state and keep one listbox 
   );
   await second.press('Escape');
   await expect(picker.locator('[data-part="trigger"]')).toBeFocused();
+});
+
+test('the time dropdown dismisses on pointer activity outside it', async ({ page }) => {
+  await page.goto(`${COMPONENT_BASE}/datetime/index.html`);
+  const { picker, trigger } = await openPicker(page);
+  const dropdown = picker.locator('.temporal-picker__time-options');
+  const minute = picker.locator('input[data-time-part="minute"]');
+
+  await minute.click();
+  await expect(dropdown).toBeVisible();
+
+  // A calendar day sits inside the panel but outside the dropdown.
+  await picker.locator('[data-day]:not(:disabled)').nth(10).click();
+  await expect(dropdown).toBeHidden();
+  await expect(minute).toHaveAttribute('aria-expanded', 'false');
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+
+  // Switching straight to another time input keeps a dropdown open.
+  await minute.click();
+  await expect(dropdown).toBeVisible();
+  await picker.locator('input[data-time-part="second"]').click();
+  await expect(dropdown).toBeVisible();
+  await expect(minute).toHaveAttribute('aria-expanded', 'false');
+  await expect(picker.locator('input[data-time-part="second"]')).toHaveAttribute(
+    'aria-expanded',
+    'true',
+  );
+
+  // Outside the component entirely closes the panel and the dropdown with it.
+  await page.mouse.click(5, 5);
+  await expect(dropdown).toBeHidden();
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
 });
 
 test('Clear, disabled, invalid bounds, external sync and multiple IDs remain controlled', async ({
@@ -545,17 +586,29 @@ test('time-capable variants keep responsive geometry at all visual QA viewports'
       await picker.locator('input[data-time-part="minute"]').click();
       const listbox = picker.locator('.temporal-picker__time-listbox');
       await expect(listbox).toBeVisible();
-      const widths = await page.evaluate(() => {
-        const list = document.querySelector('.temporal-picker__time-options');
-        const controls = document.querySelector('.temporal-picker__time-controls');
+      const anchoring = await page.evaluate(() => {
+        const list = document
+          .querySelector('.temporal-picker__time-options')
+          .getBoundingClientRect();
+        const input = document
+          .querySelector('input[data-time-part="minute"]')
+          .getBoundingClientRect();
         return {
-          controls: controls.getBoundingClientRect().width,
-          list: list.getBoundingClientRect().width,
+          inputWidth: input.width,
+          leftDelta: Math.abs(list.left - input.left),
+          listWidth: list.width,
           overflow: document.documentElement.scrollWidth > window.innerWidth,
+          // The dropdown may flip above the input when space below runs short.
+          verticalGap: Math.min(
+            Math.abs(list.top - input.bottom),
+            Math.abs(input.top - list.bottom),
+          ),
         };
       });
-      expect(Math.abs(widths.controls - widths.list)).toBeLessThan(1);
-      expect(widths.overflow).toBe(false);
+      expect(Math.abs(anchoring.listWidth - anchoring.inputWidth)).toBeLessThan(1);
+      expect(anchoring.leftDelta).toBeLessThan(1);
+      expect(anchoring.verticalGap).toBeLessThan(12);
+      expect(anchoring.overflow).toBe(false);
 
       const panelBox = await panel.evaluate((element) => {
         const rect = element.getBoundingClientRect();
@@ -598,17 +651,67 @@ test('fixed-position fallback portals the panel without losing theme tokens', as
   await expect(picker.locator('[data-part="panel"]')).toBeHidden();
 });
 
-test('real detail page follows the vertical layout and exposes source and download contracts', async ({
+test('switching source files leaves the code pane and its copy button in place', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/component.html?id=temporal-picker');
+  const pane = page.locator('#source-content');
+  await expect(pane).toContainText(':root');
+
+  await page.evaluate(() => {
+    window.paneHeights = [];
+    const pre = document.querySelector('#source-content');
+    new ResizeObserver(() => {
+      window.paneHeights.push(Math.round(pre.getBoundingClientRect().height));
+    }).observe(pre);
+  });
+
+  await page.locator('#source-file-select').click();
+  await page.locator('.file-select__option', { hasText: 'temporal-picker.js' }).click();
+  await expect(pane).toContainText('class TemporalPicker');
+
+  // Swapping in a placeholder while fetching would collapse the pane to its min-height
+  // and snap it back, which reads as the whole page reloading.
+  const heights = await page.evaluate(() => [...new Set(window.paneHeights)]);
+  expect(heights).toHaveLength(1);
+  expect(await pane.evaluate((element) => element.scrollTop)).toBe(0);
+
+  // The copy button has to clear the scrollbar, whose width varies per platform.
+  const clearance = await page.evaluate(() => {
+    const pre = document.querySelector('#source-content');
+    const button = document.querySelector('[data-copy-for="source-content"]');
+    const scrollbar = pre.offsetWidth - pre.clientWidth;
+    return Math.round(
+      pre.getBoundingClientRect().right - scrollbar - button.getBoundingClientRect().right,
+    );
+  });
+  expect(clearance).toBeGreaterThanOrEqual(0);
+});
+
+test('real detail page follows the vertical layout and exposes source and download contracts', async ({
+  page,
+  request,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
   let zipBody = Buffer.from('temporal-picker-test-zip');
+  let packaged = false;
   try {
     zipBody = await readFile(
       path.resolve('dist', 'downloads', 'temporal-picker-0.3.0.zip'),
     );
+    packaged = true;
   } catch {
     // Standalone E2E runs can validate the browser contract before packaging.
+  }
+
+  if (packaged) {
+    // Request the real path rather than the mocked route below. A server that falls back
+    // to index.html still answers 200, so assert the archive signature, not the header:
+    // a wrong content type is exactly what made a saved HTML page look like a bad ZIP.
+    const archive = await request.get('/downloads/temporal-picker-0.3.0.zip');
+    expect(archive.status()).toBe(200);
+    expect((await archive.body()).subarray(0, 4).toString('hex')).toBe('504b0304');
   }
 
   await page.route('**/downloads/temporal-picker-0.3.0.zip', (route) =>
@@ -633,13 +736,17 @@ test('real detail page follows the vertical layout and exposes source and downlo
     'javascript',
   ]);
   const previewFrame = page.locator('#component-preview');
+  await expect(previewFrame).toHaveCSS('height', '720px');
+  // The demo must fill the fixed frame, otherwise its background stops short of the
+  // stage and leaves a visible seam.
   await expect
     .poll(() =>
-      previewFrame.evaluate((element) =>
-        Math.round(element.getBoundingClientRect().height),
-      ),
+      page
+        .frameLocator('#component-preview')
+        .locator('main.temporal-demo')
+        .evaluate((main) => main.getBoundingClientRect().height - window.innerHeight),
     )
-    .toBeLessThan(720);
+    .toBeGreaterThanOrEqual(0);
   await expect(page.locator('.preview-stage')).toHaveCSS(
     'background-color',
     'rgb(15, 17, 21)',
@@ -660,13 +767,12 @@ test('real detail page follows the vertical layout and exposes source and downlo
       window.scrollY,
     stageHeight: document.querySelector('.preview-stage').getBoundingClientRect().height,
   }));
-  await page
+  const previewTrigger = page
     .frameLocator('#component-preview')
-    .locator('[data-part="trigger"]')
-    .click();
-  await expect(previewFrame).toHaveClass(/is-preview-open/);
+    .locator('[data-part="trigger"]');
+  await previewTrigger.click();
+  await expect(previewTrigger).toHaveAttribute('aria-expanded', 'true');
   await expect(previewFrame).toHaveCSS('height', '720px');
-  await expect(page.locator('.preview-stage')).toHaveClass(/is-preview-open/);
   const openGeometry = await page.evaluate(() => {
     const frame = document.querySelector('#component-preview').getBoundingClientRect();
     const stage = document.querySelector('.preview-stage');
@@ -679,13 +785,12 @@ test('real detail page follows the vertical layout and exposes source and downlo
         .querySelector('#source-package-title')
         .getBoundingClientRect().top,
       stageHeight: stage.getBoundingClientRect().height,
-      stageZIndex: Number(getComputedStyle(stage).zIndex),
     };
   });
+  // Opening the picker must not resize the stage or push the page around it.
   expect(Math.abs(openGeometry.stageHeight - closedGeometry.stageHeight)).toBeLessThan(1);
   expect(openGeometry.sourceTop).toBe(closedGeometry.sourceTop);
-  expect(openGeometry.frameBottom).toBeGreaterThan(openGeometry.sourceViewportTop);
-  expect(openGeometry.stageZIndex).toBeGreaterThan(0);
+  expect(openGeometry.frameBottom).toBeLessThanOrEqual(openGeometry.sourceViewportTop);
   const previewHour = page
     .frameLocator('#component-preview')
     .locator('input[data-time-part="hour"]');
@@ -693,16 +798,10 @@ test('real detail page follows the vertical layout and exposes source and downlo
   await previewHour.click();
   await previewHour.press('Escape');
   await expect(previewHour).toHaveAttribute('aria-expanded', 'false');
-  await expect(previewFrame).toHaveClass(/is-preview-open/);
+  await expect(previewTrigger).toHaveAttribute('aria-expanded', 'true');
   await previewHour.press('Escape');
-  await expect(previewFrame).not.toHaveClass(/is-preview-open/);
-  await expect
-    .poll(() =>
-      previewFrame.evaluate((element) =>
-        Math.round(element.getBoundingClientRect().height),
-      ),
-    )
-    .toBeLessThan(720);
+  await expect(previewTrigger).toHaveAttribute('aria-expanded', 'false');
+  await expect(previewFrame).toHaveCSS('height', '720px');
 
   const orderedSelectors = [
     '#component-group-link',
@@ -728,10 +827,14 @@ test('real detail page follows the vertical layout and exposes source and downlo
   await expect(page.locator('#active-variant-description')).toContainText(
     'six-week Gregorian calendar',
   );
-  await expect(page.locator('#source-file-select')).toHaveValue(
-    'source/variants/date/index.html',
+  // The distributable files do not vary per variant, so switching variants leaves the
+  // source picker alone.
+  await expect(page.locator('#source-file-select')).toHaveAttribute(
+    'data-value',
+    'temporal-picker.css',
   );
-  await page.getByText('Source Code', { exact: true }).click();
+  await page.locator('#source-file-select').click();
+  await page.locator('.file-select__option', { hasText: 'temporal-picker.html' }).click();
   await expect(page.locator('#source-content')).toContainText('<temporal-picker');
   await page.getByText('Prompt', { exact: true }).click();
 
@@ -760,6 +863,24 @@ test('real detail page follows the vertical layout and exposes source and downlo
     'download',
     'temporal-picker-DESIGN.md',
   );
+  // The three-file prompt is optional, so it only appears when the component ships one.
+  await page.getByText('Prompt', { exact: true }).click();
+  const standaloneLink = page.getByRole('link', {
+    name: 'Download three-file prompt',
+    exact: true,
+  });
+  await expect(standaloneLink).toHaveAttribute(
+    'download',
+    'temporal-picker-PROMPT-STANDALONE.md',
+  );
+  const standaloneEvent = page.waitForEvent('download');
+  await standaloneLink.click();
+  const standaloneDownload = await standaloneEvent;
+  expect(await readFile(await standaloneDownload.path(), 'utf8')).toContain(
+    'Recreate Temporal Picker as three files',
+  );
+  await page.getByText('Design System', { exact: true }).click();
+
   const designDownloadEvent = page.waitForEvent('download');
   await designLink.click();
   const designDownload = await designDownloadEvent;
@@ -768,6 +889,8 @@ test('real detail page follows the vertical layout and exposes source and downlo
     'Temporal Picker - Design Specification',
   );
 
+  // The ZIP button lives inside Source Code, so reopening it is part of the flow.
+  await page.getByText('Source Code', { exact: true }).click();
   const zipLink = page.getByRole('link', {
     name: 'Download component ZIP',
     exact: true,

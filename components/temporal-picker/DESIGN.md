@@ -42,12 +42,14 @@ Normal text meets WCAG AA `4.5:1`; focus indicators and UI boundaries meet at le
 2. Non-modal floating dialog with a live region and mode-specific content.
 3. Calendar header and day, month, or year grid.
 4. Three searchable combobox inputs for Hour, Minute, and Second in time-capable modes.
-5. One shared listbox rendered below the time row so panel overflow does not clip it.
+5. One shared listbox in its own floating layer, anchored under the active time input.
 6. Current, Clear, Close, and Apply actions as required by the active mode.
 7. Validation message associated with the trigger.
 
-The native Popover API is preferred. The fallback portals the panel to `document.body` and uses
-fixed positioning. Viewport padding is `12px`; trigger gap is `8px`.
+The native Popover API is preferred for both the panel and the time dropdown. The fallback
+portals each surface to `document.body` and uses fixed positioning. Panel viewport padding is
+`12px` and its trigger gap is `8px`. The dropdown keeps the same viewport padding with a `4px`
+input gap.
 
 ## 4. Value contract
 
@@ -109,18 +111,26 @@ complete candidate. This example uses `current-indicator="off"`.
 - Each input displays two ASCII digits and uses `inputmode="numeric"`.
 - Click, text input, or Arrow Down opens the shared listbox. Only one combobox is open.
 - An empty query shows every option. A query such as `8` matches `08`.
+- Opening a field that already holds a value seeds the query with that value, so the listbox
+  opens filtered to it.
+- The first Arrow, Home, or End press after a seeded open clears that query, restores the full
+  list, and keeps the current value active and scrolled into view. Later presses navigate
+  normally, so keyboard browsing is never lost.
 - Arrow Up and Arrow Down move through available results. Home and End move to the first or last
   available result. Enter selects the active result.
 - Escape closes the listbox first; a second Escape closes the picker. Tab closes the listbox and
   continues normal focus navigation without selecting.
-- Unavailable options remain visible, use `aria-disabled="true"`, show an unavailable label, and
-  never receive active focus.
+- Pointer activity outside the listbox that is not another time input dismisses the listbox while
+  the panel stays open.
+- Unavailable options remain visible, use `aria-disabled="true"`, carry a strike-through and a
+  screen-reader unavailable label, and never receive active focus.
 - Selecting a time option updates only the draft. Time and Datetime commit only with Apply.
 
 Each input uses `role="combobox"`, `aria-expanded`, `aria-controls`,
 `aria-activedescendant`, and `aria-autocomplete="list"`. The shared result surface uses
-`role="listbox"` and its rows use `role="option"` with `aria-selected`. A live status reports the
-result count or no results. Selected rows include a visible check mark.
+`role="listbox"` and its rows use `role="option"` with `aria-selected`. A screen-reader-only live
+status reports the result count or no results; the count is never shown visually. Selected rows
+include a visible check mark. The no-results message stays visible inside the dropdown.
 
 ## 7. Calendar interaction and accessibility
 
@@ -147,10 +157,12 @@ result count or no results. Selected rows include a visible check mark.
 
 - The panel is at most `22rem` wide and never wider than `calc(100vw - 24px)`.
 - At `480px` and below, padding contracts while calendar cells and time inputs remain usable.
-- The time listbox spans the full panel width, has its own vertical scroll, and is not clipped by
-  the time row.
+- The time dropdown matches the width of the input it is anchored to, has its own vertical scroll
+  capped at `168px`, flips above the input when space below is short, and stays inside the
+  viewport.
 - The panel scrolls internally when taller than the available viewport.
-- Panel and listbox scroll events never trigger panel repositioning or reset `scrollTop`.
+- Listbox scroll events never trigger repositioning or reset `scrollTop`. Panel scroll keeps the
+  panel anchored to the trigger and re-anchors the dropdown to its input.
 - Component-owned scrollbar tokens provide matching light and dark tracks and thumbs.
 - There is no horizontal overflow at `375x667`.
 - Opacity and translate transitions take about `140ms`.
@@ -163,8 +175,9 @@ open state. It preserves the approved composition and palette while showing `08:
 visible Second field. It is self-contained and contains no animation, script, external asset, or
 embedded raster image.
 
-Generated `poster.png` and `demo.webm` remain QA artifacts and are not used by homepage cards.
-The interactive Datetime example starts closed so visitors initiate every interaction.
+Generated `poster.png` and `demo.webm` stay local. They are QA evidence and a build gate that
+proves the component renders in a real browser; no page requests them, so publishing leaves them
+behind. The interactive Datetime example starts closed so visitors initiate every interaction.
 
 ## 10. Acceptance criteria
 

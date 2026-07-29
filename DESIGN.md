@@ -77,7 +77,7 @@ name. Search matches ID, name, description, group ID, group label, categories, a
 
 Cards use the authored static `preview/thumbnail.svg` on a dark neutral canvas. The complete card
 is one link. The footer contains only component name and compact technology metadata. Generated
-poster/video assets never appear on the homepage.
+poster/video assets never appear on the homepage and are not published at all.
 
 ## 7. Detail information architecture
 
@@ -91,26 +91,36 @@ Top-level content follows one vertical sequence:
 6. Variant controls.
 7. Full-width interactive stage.
 8. Active variant name and description.
-9. Source Package heading, version, and ZIP action.
+9. Source Package heading.
 10. Source Code, Prompt, and Design System accordions.
 
-The closed iframe uses the intrinsic height of its trusted same-origin demo instead of reserving
-the full preview viewport. When an accessible control inside the iframe exposes
-`aria-expanded="true"`, the iframe overlays following detail sections at
-`preview.viewport.height` while the stage keeps its compact closed height. The overlay remains
-below the sticky header, resets on close or variant change, and never injects catalog tokens into
-component source. A cross-origin or unreadable preview falls back to the manifest height.
+The preview stage holds one constant height taken from `preview.viewport.height` in every state.
+A component panel opens inside the iframe and cannot escape it, so a height that changed on open
+would reflow the whole page around the stage. The stage never injects catalog tokens into
+component source.
 
 ## 8. Source Package
 
-Use native `<details>/<summary>` controls. All panels start closed and only one may remain open.
+Use native `<details>/<summary>` controls. Only one panel may remain open. Source Code starts
+open so the ZIP action inside it stays discoverable. Opening and closing animate the panel height
+over `260ms`, and `prefers-reduced-motion` drops straight to the end state.
 
-- Source Code provides a native file selector and raw text viewer.
+- Source Code provides the file picker, the ZIP download action, and a raw text viewer.
 - Prompt provides raw `PROMPT.md` and a download action.
 - Design System provides raw component `DESIGN.md` and a download action.
 
-Use `textContent` for fetched source and documents. Do not add Markdown rendering or syntax
-highlighting dependencies.
+The file picker lists the three distributable files by file name, each with an icon for its file
+type. It is a button plus a `role="listbox"` surface rather than a native `<select>`, because an
+`<option>` cannot carry an icon and the native popup is drawn by the operating system and cannot
+match this surface. It supports Arrow keys, Home, End, Enter, Escape, and outside-pointer
+dismissal.
+
+Every document pane carries a copy action in its top-right corner that writes the raw text to the
+clipboard and reports the result through a live region.
+
+Use `textContent` for fetched source and documents. Request source with the `?source-view` marker
+so the development server returns the byte-for-byte file instead of a transformed module. Do not
+add Markdown rendering or syntax highlighting dependencies.
 
 ## 9. Interaction and accessibility
 

@@ -12,6 +12,7 @@ import {
   isWithinRange,
   normalizeMinuteStep,
   normalizeMode,
+  pad,
   parseTemporalValue,
   serializeTemporalValue,
   validateTemporalContract,
@@ -31,7 +32,7 @@ const LABEL_PACKS = Object.freeze({
     invalidConfig: 'The minimum and maximum configuration is invalid.',
     invalidValue: 'The current value is invalid or outside the allowed range.',
     minute: 'Minute',
-    noTimeResults: 'No matching values',
+    noTimeResults: 'No match',
     nextMonth: 'Next month',
     nextYear: 'Next year',
     nextYearGroup: 'Next group of years',
@@ -119,10 +120,6 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
-}
-
-function pad(value) {
-  return String(value).padStart(2, '0');
 }
 
 function toDisplayDate(parts) {
@@ -241,7 +238,9 @@ export class TemporalPicker extends HTMLElement {
     this._labelOverrides = {};
     this._open = false;
     this._selectedParts = null;
+    this._timeOptionsOpen = false;
     this._timeQuery = null;
+    this._seededTimeQuery = false;
     this._view = 'day';
     this._viewMonth = 1;
     this._viewYear = 1;
@@ -263,6 +262,7 @@ export class TemporalPicker extends HTMLElement {
   }
 
   disconnectedCallback() {
+    this._hideTimeOptions();
     document.removeEventListener('pointerdown', this._handleDocumentPointerDown, true);
     window.removeEventListener('resize', this._positionPanel);
     window.removeEventListener('scroll', this._handleViewportScroll, true);
@@ -549,6 +549,7 @@ export class TemporalPicker extends HTMLElement {
     this._activeTimePart = null;
     this._activeTimeValue = null;
     this._timeQuery = null;
+    this._seededTimeQuery = false;
     this._contractState = this._getContractState();
     this._selectedParts = this._contractState.valueParts
       ? { ...this._contractState.valueParts }
@@ -686,6 +687,8 @@ export class TemporalPicker extends HTMLElement {
     this._activeTimePart = null;
     this._activeTimeValue = null;
     this._timeQuery = null;
+    this._seededTimeQuery = false;
+    this._hideTimeOptions();
     document.removeEventListener('pointerdown', this._handleDocumentPointerDown, true);
     window.removeEventListener('resize', this._positionPanel);
     window.removeEventListener('scroll', this._handleViewportScroll, true);
@@ -708,10 +711,31 @@ export class TemporalPicker extends HTMLElement {
   }
 
   _handleDocumentPointerDown(event) {
+    if (!this._open) {
+      return;
+    }
+
+    const target = event.target;
+
+    // The dropdown lives outside the panel, so a click inside the panel is still
+    // "outside" as far as the dropdown is concerned. Another time input is exempt:
+    // the click handler switches the dropdown over to it without a close/open flash.
     if (
-      !this._open ||
-      this.contains(event.target) ||
-      this._panel.contains(event.target)
+      this._timeOptionsOpen &&
+      !this._timeOptions.contains(target) &&
+      !(target instanceof Element && target.closest('input[data-time-part]'))
+    ) {
+      this._dismissTimeListboxInPlace(
+        this._panel.querySelector(
+          `input[data-time-part="${this._activeTimePart}"]`,
+        ),
+      );
+    }
+
+    if (
+      this.contains(target) ||
+      this._panel.contains(target) ||
+      this._timeOptions.contains(target)
     ) {
       return;
     }
@@ -721,7 +745,16 @@ export class TemporalPicker extends HTMLElement {
 
   _handleViewportScroll(event) {
     const target = event.target;
+
+    // Scrolling inside the dropdown must not move either surface.
+    if (target instanceof Node && this._timeOptions?.contains(target)) {
+      return;
+    }
+
+    // Scrolling the panel keeps the panel anchored to the trigger, but the dropdown
+    // has to follow the input it is anchored to.
     if (target instanceof Node && this._panel?.contains(target)) {
+      this._positionTimeOptions();
       return;
     }
 
@@ -768,6 +801,7 @@ export class TemporalPicker extends HTMLElement {
     this._panel.style.top = `${Math.max(viewportPadding, top)}px`;
     this._panel.style.maxHeight = `${availableHeight}px`;
     this._panel.dataset.placement = placeAbove ? 'top' : 'bottom';
+    this._positionTimeOptions();
   }
 
   _renderPanel() {
@@ -1405,9 +1439,10 @@ export class TemporalPicker extends HTMLElement {
     const viewportWidth = window.innerWidth;
     const availableBelow = viewportHeight - inputRect.bottom - gap - viewportPadding;
     const availableAbove = inputRect.top - gap - viewportPadding;
+    // Flip only when the space below cannot hold a usable list. Flipping merely because
+    // the ideal height does not fit would cover the calendar for no gain.
     const placeAbove =
-      availableBelow < Math.min(maxListHeight, availableAbove) &&
-      availableAbove > availableBelow;
+      availableBelow < minListHeight && availableAbove > availableBelow;
     const available = Math.max(
       minListHeight,
       placeAbove ? availableAbove : availableBelow,
@@ -1495,15 +1530,54 @@ export class TemporalPicker extends HTMLElement {
     }
 
     this._activeTimePart = part;
-    this._timeQuery = null;
-    const options = this._getFilteredTimeOptions(part).filter(({ enabled }) => enabled);
     const selectedValue = this._draft?.[part];
+
+    // Open filtered to the value the field already holds, but only when that value is
+    // still selectable. Seeding an out-of-range value would show a single disabled row
+    // and hide every option the user can actually pick. The flag records that the query
+    // was seeded rather than typed, so the first arrow key can drop it and give keyboard
+    // users the full list back.
+    const seedable =
+      Number.isInteger(selectedValue) &&
+      this._getTimeOptions(part).some(
+        ({ enabled, value }) => value === selectedValue && enabled,
+      );
+    this._timeQuery = seedable ? pad(selectedValue) : null;
+    this._seededTimeQuery = seedable;
+
+    const options = this._getFilteredTimeOptions(part).filter(({ enabled }) => enabled);
     this._activeTimeValue =
       options.find(({ value }) => value === selectedValue)?.value ??
       options[0]?.value ??
       null;
     this._renderPanel();
     this._focusAfterRender(`input[data-time-part="${part}"]`, { select: true });
+  }
+
+  _revealFullTimeList(part) {
+    if (!this._seededTimeQuery) {
+      return false;
+    }
+
+    this._seededTimeQuery = false;
+    this._timeQuery = null;
+    this._renderPanel();
+    this._focusAfterRender(`input[data-time-part="${part}"]`, { cursorToEnd: true });
+    this._scrollActiveTimeOptionIntoView(part);
+    return true;
+  }
+
+  _scrollActiveTimeOptionIntoView(part) {
+    if (!Number.isInteger(this._activeTimeValue)) {
+      return;
+    }
+
+    const optionId = `${this._instanceId}-${part}-${this._activeTimeValue}`;
+    requestAnimationFrame(() => {
+      this._timeListbox
+        .querySelector(`#${CSS.escape(optionId)}`)
+        ?.scrollIntoView({ block: 'center' });
+    });
   }
 
   _selectTimeOption(part, value) {
@@ -1519,6 +1593,7 @@ export class TemporalPicker extends HTMLElement {
     this._activeTimePart = null;
     this._activeTimeValue = null;
     this._timeQuery = null;
+    this._seededTimeQuery = false;
     this._renderPanel();
     this._focusAfterRender(`input[data-time-part="${part}"]`);
   }
@@ -1528,16 +1603,14 @@ export class TemporalPicker extends HTMLElement {
     this._activeTimePart = null;
     this._activeTimeValue = null;
     this._timeQuery = null;
+    this._seededTimeQuery = false;
 
     for (const combobox of this._panel.querySelectorAll('input[data-time-part]')) {
       combobox.setAttribute('aria-expanded', 'false');
       combobox.removeAttribute('aria-activedescendant');
     }
 
-    const options = this._panel.querySelector('[data-part="time-options"]');
-    if (options) {
-      options.hidden = true;
-    }
+    this._hideTimeOptions();
 
     if (part && input) {
       input.value = Number.isInteger(this._draft?.[part])
@@ -1547,14 +1620,21 @@ export class TemporalPicker extends HTMLElement {
   }
 
   _closeTimeCombobox(part) {
-    this._activeTimePart = null;
-    this._activeTimeValue = null;
-    this._timeQuery = null;
-    this._renderPanel();
-    this._focusAfterRender(`input[data-time-part="${part}"]`);
+    // Dismiss in place instead of re-rendering the panel. A re-render would detach the
+    // focused input and leave focus on document.body until the next frame, so a second
+    // Escape pressed straight after would never reach the panel.
+    const input = this._panel.querySelector(`input[data-time-part="${part}"]`);
+    this._dismissTimeListboxInPlace(input);
+    input?.focus();
   }
 
   _moveTimeOption(part, direction) {
+    // The first navigation key only lifts the seeded filter and holds the current
+    // value, so the list appears before the caller starts stepping through it.
+    if (this._revealFullTimeList(part)) {
+      return;
+    }
+
     const options = this._getFilteredTimeOptions(part).filter(({ enabled }) => enabled);
     if (!options.length) {
       return;
@@ -1584,7 +1664,7 @@ export class TemporalPicker extends HTMLElement {
     });
 
     requestAnimationFrame(() => {
-      this._panel
+      this._timeListbox
         .querySelector(`#${CSS.escape(`${this._instanceId}-${part}-${this._activeTimeValue}`)}`)
         ?.scrollIntoView({ block: 'nearest' });
     });
@@ -1758,6 +1838,7 @@ export class TemporalPicker extends HTMLElement {
 
     const part = event.target.dataset.timePart;
     this._activeTimePart = part;
+    this._seededTimeQuery = false;
     this._timeQuery = event.target.value.replace(/\D/g, '').slice(0, 2);
     this._activeTimeValue =
       this._getFilteredTimeOptions(part).find(({ enabled }) => enabled)?.value ?? null;
@@ -2169,6 +2250,18 @@ export class TemporalPicker extends HTMLElement {
   _focusAfterRender(selector, { cursorToEnd = false, select = false } = {}) {
     requestAnimationFrame(() => {
       const element = this._panel.querySelector(selector);
+      const active = this._panel.contains(document.activeElement)
+        ? document.activeElement
+        : null;
+
+      // A re-render detaches the focused control, so focus normally sits on the body by
+      // the time this frame runs. If it already moved to another control in the panel,
+      // the user got there first (Tab, for example) and must keep it.
+      if (active && active !== element) {
+        this._positionPanel();
+        return;
+      }
+
       element?.focus();
       if (select && typeof element?.select === 'function') {
         element.select();

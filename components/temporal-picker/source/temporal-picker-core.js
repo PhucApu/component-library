@@ -148,7 +148,7 @@ export function parseTemporalValue(mode, value) {
   return isValidTemporalParts(normalizedMode, parts) ? parts : null;
 }
 
-function pad(value, width = 2) {
+export function pad(value, width = 2) {
   return String(value).padStart(width, '0');
 }
 

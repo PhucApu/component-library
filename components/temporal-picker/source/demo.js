@@ -1,6 +1,4 @@
-function pad(value, length = 2) {
-  return String(value).padStart(length, '0');
-}
+import { pad } from './temporal-picker-core.js';
 
 export function getCurrentDemoValue(mode, now = new Date()) {
   const year = pad(now.getFullYear(), 4);

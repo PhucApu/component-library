@@ -261,21 +261,29 @@ test('registry and ZIP expose the real temporal-picker distribution contract', a
   const outputFile = await packageComponent('temporal-picker', {
     componentsDirectory: COMPONENTS_DIRECTORY,
     outputDirectory: downloadsDirectory,
+    bundlesDirectory: path.join(temporaryDirectory, 'bundles'),
   });
   const zip = new AdmZip(outputFile);
   const names = zip
     .getEntries()
     .filter((zipEntry) => !zipEntry.isDirectory)
-    .map((zipEntry) => zipEntry.entryName);
+    .map((zipEntry) => zipEntry.entryName)
+    .sort();
 
-  assert.ok(names.includes('component.json'));
-  assert.ok(names.includes('README.md'));
-  assert.ok(names.includes('DESIGN.md'));
-  assert.ok(names.includes('PROMPT.md'));
-  assert.ok(names.includes('preview/thumbnail.svg'));
-  assert.ok(names.includes('source/temporal-picker-core.js'));
-  assert.ok(names.includes('source/shared.js'));
-  assert.ok(names.includes('source/shared.css'));
-  assert.ok(names.includes('source/variants/datetime/index.html'));
-  assert.ok(names.includes('source/variants/bounded-datetime/index.html'));
+  // The archive is what a consumer drops into their project: the three files plus the
+  // integration notes, and nothing else.
+  assert.deepEqual(names, [
+    'README.md',
+    'temporal-picker.css',
+    'temporal-picker.html',
+    'temporal-picker.js',
+  ]);
+
+  // The source tree would repeat the same code the bundle already carries.
+  assert.ok(!names.some((name) => name.startsWith('source/')));
+
+  const bundledScript = zip.readAsText('temporal-picker.js');
+  assert.ok(bundledScript.includes('class TemporalPicker'));
+  assert.ok(bundledScript.includes('export function validateTemporalContract'));
+  assert.ok(!bundledScript.includes("from './temporal-picker-core.js'"));
 });

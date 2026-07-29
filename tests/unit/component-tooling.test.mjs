@@ -5,9 +5,11 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import AdmZip from 'adm-zip';
+import { concatenateModules } from '../../scripts/bundle-component.mjs';
 import { generateComponentIndex } from '../../scripts/generate-component-index.mjs';
 import { generatePreviews } from '../../scripts/generate-previews.mjs';
 import { packageComponent } from '../../scripts/package-component.mjs';
+import { publishComponents } from '../../scripts/publish-components.mjs';
 import {
   ComponentValidationError,
   readAndValidateComponents,
@@ -24,6 +26,15 @@ const FIXTURE_COMPONENTS_DIRECTORY = path.resolve(
   'fixtures',
   'components',
 );
+
+async function fileExists(filePath) {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 async function createTemporaryDirectory(t, prefix = 'component-ui-test-') {
   const directory = await fs.mkdtemp(path.join(os.tmpdir(), prefix));
@@ -186,13 +197,107 @@ test('registry contains taxonomy, thumbnail, documents, and deterministic source
   assert.ok(component.source.files.every((file) => !file.path.includes('..')));
 });
 
-test('component package contains docs, source, manifest, and the authored thumbnail', async (t) => {
+test('publishing ships the thumbnail but leaves the QA poster and WebM behind', async (t) => {
+  const { temporaryDirectory, componentsDirectory } = await copyFixtureComponents(t);
+  const previewDirectory = path.join(componentsDirectory, 'test-button', 'preview');
+  const distDirectory = path.join(temporaryDirectory, 'dist');
+
+  // Stand in for the assets the preview generator would produce.
+  await fs.writeFile(path.join(previewDirectory, 'poster.png'), 'poster');
+  await fs.writeFile(path.join(previewDirectory, 'demo.webm'), 'motion');
+
+  await publishComponents({ componentsDirectory, distDirectory });
+
+  const published = path.join(distDirectory, 'components', 'test-button', 'preview');
+  assert.ok(await fileExists(path.join(published, 'thumbnail.svg')));
+  assert.equal(await fileExists(path.join(published, 'poster.png')), false);
+  assert.equal(await fileExists(path.join(published, 'demo.webm')), false);
+});
+
+test('bundling refuses to merge modules that declare the same top-level name', () => {
+  const modules = [
+    { specifier: 'core.js', code: 'export function pad(value) {\n  return value;\n}\n' },
+    { specifier: 'shared.js', code: 'function pad(value) {\n  return value;\n}\n' },
+  ];
+
+  // Concatenated modules share one scope, so a duplicate would be a runtime SyntaxError.
+  assert.throws(
+    () => concatenateModules(modules, 'demo'),
+    /"pad" is declared in both core\.js and shared\.js/,
+  );
+});
+
+test('bundling keeps exports and drops only local import statements', () => {
+  const modules = [
+    { specifier: 'core.js', code: "export const ONE = 1;\n" },
+    {
+      specifier: 'shared.js',
+      code: "import { ONE } from './core.js';\n\nexport const TWO = ONE + 1;\n",
+    },
+  ];
+
+  const bundle = concatenateModules(modules, 'demo');
+  assert.ok(!bundle.includes('import {'));
+  assert.ok(bundle.includes('export const ONE = 1;'));
+  assert.ok(bundle.includes('export const TWO = ONE + 1;'));
+  assert.ok(bundle.indexOf('ONE = 1') < bundle.indexOf('TWO = ONE'));
+});
+
+test('packaging carries assets across and rewrites their references for the flat layout', async (t) => {
+  const { temporaryDirectory, componentsDirectory } = await copyFixtureComponents(t);
+  const componentDirectory = path.join(componentsDirectory, 'test-button');
+  const variantFile = path.join(
+    componentDirectory,
+    'source',
+    'variants',
+    'default',
+    'index.html',
+  );
+
+  await fs.mkdir(path.join(componentDirectory, 'source', 'assets'), { recursive: true });
+  await fs.writeFile(
+    path.join(componentDirectory, 'source', 'assets', 'logo.svg'),
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"></svg>\n',
+  );
+
+  const variantHtml = await fs.readFile(variantFile, 'utf8');
+  await fs.writeFile(
+    variantFile,
+    variantHtml.replace(
+      '<button type="button">Test button</button>',
+      '<img src="../../assets/logo.svg" alt="" />\n    <button type="button">Test button</button>',
+    ),
+  );
+
+  const outputFile = await packageComponent('test-button', {
+    componentsDirectory,
+    outputDirectory: path.join(temporaryDirectory, 'downloads'),
+    bundlesDirectory: path.join(temporaryDirectory, 'bundles'),
+  });
+  const zip = new AdmZip(outputFile);
+  const entries = zip
+    .getEntries()
+    .filter((zipEntry) => !zipEntry.isDirectory)
+    .map((zipEntry) => zipEntry.entryName)
+    .sort();
+
+  assert.ok(entries.includes('assets/logo.svg'));
+
+  // A variant page climbs two levels to reach assets; the flat bundle puts them beside
+  // the document, so an unrewritten reference would point outside the archive.
+  const bundledHtml = zip.readAsText('test-button.html');
+  assert.ok(bundledHtml.includes('src="assets/logo.svg"'));
+  assert.ok(!bundledHtml.includes('../../assets/'));
+});
+
+test('component package contains only the ready-to-use files and integration notes', async (t) => {
   const temporaryDirectory = await createTemporaryDirectory(t);
   const outputDirectory = path.join(temporaryDirectory, 'downloads');
 
   const outputFile = await packageComponent('test-button', {
     componentsDirectory: FIXTURE_COMPONENTS_DIRECTORY,
     outputDirectory,
+    bundlesDirectory: path.join(temporaryDirectory, 'bundles'),
   });
   const zip = new AdmZip(outputFile);
   const entries = zip
@@ -201,14 +306,12 @@ test('component package contains docs, source, manifest, and the authored thumbn
     .map((entry) => entry.entryName)
     .sort();
 
+  // The fixture ships no JavaScript, so only the stylesheet and the demo page are
+  // bundled. Authoring documents and the source tree stay out of the archive.
   assert.deepEqual(entries, [
-    'DESIGN.md',
-    'PROMPT.md',
     'README.md',
-    'component.json',
-    'preview/thumbnail.svg',
-    'source/shared.css',
-    'source/variants/default/index.html',
+    'test-button.css',
+    'test-button.html',
   ]);
   assert.ok((await fs.stat(outputFile)).size > 0);
 });

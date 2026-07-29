@@ -23,6 +23,15 @@ components/
 Create shared files and assets only when the component uses them. Every declared variant must
 have an independent `index.html`.
 
+Packaging derives three ready-to-use files from this tree: `<id>.css` from the root stylesheet,
+`<id>.js` from the root modules concatenated in dependency order, and `<id>.html` from the
+preview variant. Root modules therefore must not declare the same top-level name twice; move a
+shared helper into one module and import it.
+
+The published ZIP holds those three files, `README.md`, and `source/assets/` when present.
+Because `README.md` is the only authoring document a consumer receives, keep integration steps,
+dependencies, and browser support there rather than in `DESIGN.md`.
+
 ## Manifest version 2
 
 ```json
@@ -66,6 +75,9 @@ Allowed groups are `inputs`, `data-display`, `feedback`, `surface`, `navigation`
 - `DESIGN.md`: purpose, visual tokens, variants, states, motion, responsive behavior, and
   accessibility.
 - `PROMPT.md`: self-contained English instructions that can recreate every published variant.
+- `PROMPT-STANDALONE.md`: optional. Instructions that recreate the distributable three files
+  instead of the repository layout, for handing to a tool with no access to this repository. The
+  registry links it and the detail page offers it as a second download when it exists.
 - Root docs and schema change only when the shared repository contract changes.
 
 ## Component delivery lifecycle

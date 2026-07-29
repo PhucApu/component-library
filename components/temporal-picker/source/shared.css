@@ -431,36 +431,34 @@ button.temporal-picker__view-title {
   font-weight: 700;
 }
 
+/* The dropdown is its own floating layer anchored to the active time input, so the
+   panel's own overflow can never clip it. JavaScript sets inline-size, left, and top. */
 .temporal-picker__time-options {
-  grid-column: 1 / -1;
+  position: fixed;
+  inset: auto;
+  z-index: 1001;
   min-inline-size: 0;
-  margin-block-start: 0.125rem;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
   border: 1px solid var(--temporal-border);
   border-radius: 10px;
   background: var(--temporal-surface);
-  box-shadow: 0 12px 28px rgb(15 23 42 / 0.12);
+  box-shadow: var(--temporal-shadow);
+  color: var(--temporal-text);
+  font: inherit;
 }
 
+.temporal-picker__time-options:not(:popover-open):not(.is-open),
 .temporal-picker__time-options[hidden] {
   display: none;
 }
 
-.temporal-picker__time-status {
-  padding: 0.5rem 0.625rem;
-  border-block-end: 1px solid var(--temporal-border);
-  color: var(--temporal-muted);
-  font-size: 0.6875rem;
-  font-weight: 650;
-}
-
 .temporal-picker__time-listbox {
-  max-block-size: 10.5rem;
   padding: 0.25rem;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-color: var(--temporal-scrollbar-thumb) var(--temporal-scrollbar-track);
-  scrollbar-gutter: stable;
   scrollbar-width: thin;
 }
 
@@ -493,9 +491,9 @@ button.temporal-picker__view-title {
   inline-size: 100%;
   min-block-size: 2.25rem;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.45rem 0.625rem;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.375rem;
   border: 0;
   border-radius: 7px;
   background: transparent;
@@ -519,8 +517,10 @@ button.temporal-picker__view-title {
   font-weight: 700;
 }
 
+/* Unavailable is carried by the strike-through, not by the dimmed color alone. */
 .temporal-picker__time-option:disabled {
   color: var(--temporal-muted);
+  text-decoration: line-through;
   cursor: not-allowed;
   opacity: 0.52;
 }
@@ -529,12 +529,9 @@ button.temporal-picker__view-title {
   font: 600 0.875rem/1 ui-monospace, "SFMono-Regular", Consolas, monospace;
 }
 
-.temporal-picker__time-option-state {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.6875rem;
-  font-weight: 650;
+.temporal-picker__time-option-check {
+  font-size: 0.75rem;
+  line-height: 1;
 }
 
 .temporal-picker__time-empty {
@@ -605,8 +602,11 @@ button.temporal-picker__view-title {
   border: 0;
 }
 
+/* The catalog stage gives the frame a fixed height, so the demo has to fill it or the
+   gradient stops short of the frame and leaves a visible seam. */
 .temporal-demo {
   display: grid;
+  min-block-size: 100dvh;
   place-items: start center;
   padding: clamp(1.25rem, 4vw, 3rem);
   background:

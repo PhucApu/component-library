@@ -50,6 +50,20 @@ const MOCK_COMPONENT = {
       },
     ],
   },
+  distribution: {
+    files: [
+      {
+        path: 'mock-button.css',
+        url: 'tests/fixtures/components/test-button/source/shared.css',
+        language: 'css',
+      },
+      {
+        path: 'mock-button.html',
+        url: 'tests/fixtures/components/test-button/source/variants/default/index.html',
+        language: 'html',
+      },
+    ],
+  },
   download: 'downloads/mock-button-0.2.0.zip',
 };
 
@@ -250,21 +264,31 @@ test('detail renderer exposes English documents, source selection, downloads, an
 
   const accordions = page.locator('[data-source-accordion]');
   await expect(accordions).toHaveCount(3);
-  await expect(accordions.filter({ hasText: 'Source Code' })).not.toHaveAttribute('open');
+  // Source Code starts open so the download button inside it stays discoverable.
+  await expect(accordions.filter({ hasText: 'Source Code' })).toHaveAttribute('open', '');
 
-  await page.getByText('Source Code', { exact: true }).click();
-  await expect(page.locator('#source-file-select')).toHaveValue(
-    'source/variants/default/index.html',
+  // The picker lists the distributable files by name, not the whole source tree.
+  await expect(page.locator('#source-file-select')).toHaveAttribute(
+    'data-value',
+    'mock-button.css',
   );
+  await page.locator('#source-file-select').click();
+  await expect(page.locator('.file-select__option')).toHaveText([
+    'mock-button.css',
+    'mock-button.html',
+  ]);
+  await page.locator('.file-select__option', { hasText: 'mock-button.html' }).click();
   await expect(page.locator('#source-content')).toContainText('<!doctype html>');
 
   await page.getByText('Prompt', { exact: true }).click();
-  await expect(accordions.filter({ hasText: 'Source Code' })).not.toHaveAttribute('open');
+  await expect
+    .poll(() =>
+      accordions.filter({ hasText: 'Source Code' }).evaluate((element) => element.open),
+    )
+    .toBe(false);
   await expect(page.locator('#prompt-content')).toHaveText(MOCK_PROMPT.trim());
 
-  const zipLink = page.getByRole('link', { name: 'Download component ZIP' });
   const promptLink = page.getByRole('link', { name: 'Download PROMPT.md' });
-  await expect(zipLink).toHaveAttribute('download', 'mock-button-0.2.0.zip');
   await expect(promptLink).toHaveAttribute('download', 'mock-button-PROMPT.md');
 
   const promptDownloadEvent = page.waitForEvent('download');
@@ -285,6 +309,11 @@ test('detail renderer exposes English documents, source selection, downloads, an
   const designDownload = await designDownloadEvent;
   expect(designDownload.suggestedFilename()).toBe('mock-button-DESIGN.md');
   expect(await readFile(await designDownload.path(), 'utf8')).toBe(MOCK_DESIGN);
+
+  // The ZIP button lives inside Source Code, so reopening it is part of the flow.
+  await page.getByText('Source Code', { exact: true }).click();
+  const zipLink = page.getByRole('link', { name: 'Download component ZIP' });
+  await expect(zipLink).toHaveAttribute('download', 'mock-button-0.2.0.zip');
 
   const zipDownloadEvent = page.waitForEvent('download');
   await zipLink.click();

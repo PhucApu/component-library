@@ -35,11 +35,13 @@ components/*/component.json
         |
 component validation
         |
+        +----> generated/bundles/<id>/<id>.{html,css,js}
+        |                     |
         +----> generated/components-index.json
         |                     |
         |                     +----> Vite multi-page build
         |
-        +----> publish source, docs, thumbnail, QA previews, and ZIP
+        +----> publish source, docs, thumbnail, QA previews, bundles, and ZIP
                                       |
                                       +----> dist/
 ```
@@ -50,15 +52,40 @@ a required production preview is invalid.
 ## Manifest and registry
 
 Schema version 2 adds a top-level taxonomy group, English descriptions for every variant, and an
-authored static SVG thumbnail. The generated registry resolves public URLs and includes a stable
-list of distributable text/code source files for the detail page.
+authored static SVG thumbnail. The generated registry resolves public URLs and includes both the
+full source listing and a `distribution` listing.
+
+## Distribution bundle
+
+Each component is also emitted as three ready-to-use files named after its ID: one HTML demo
+built from the preview variant, one stylesheet, and one script. The detail page shows these
+files.
+
+The ZIP carries exactly what a consumer drops into a project: those three files, `README.md`,
+and `assets/` when the component has one. Authoring documents and the source tree stay out. The
+source tree would repeat the same code the bundle already contains, and `DESIGN.md` and
+`PROMPT.md` have their own downloads on the detail page.
+
+Variant pages reference assets from two directories down, so bundling rewrites those references
+for the flat layout; leaving them alone would point outside the archive.
+
+Local modules are concatenated in dependency order rather than passed through a bundler. The
+result is published as human-readable source, so minification or module reordering would defeat
+its purpose. Concatenated modules share a single top-level scope, so bundling fails with a named
+collision instead of emitting a file that would throw a `SyntaxError`.
 
 ## URL contract
 
 - `index.html`: grouped catalog and search.
 - `component.html?id=<component-id>`: component detail.
-- `components/<id>/...`: published source, docs, thumbnail, and preview assets.
+- `components/<id>/...`: published source, docs, and thumbnail.
+- `generated/bundles/<id>/<id>.{html,css,js}`: the three ready-to-use files.
 - `downloads/<id>-<version>.zip`: component distribution package.
+
+Archives are written to `dist/downloads`, which only sits beside the pages in a built
+deployment. The development server therefore maps `/downloads` onto that directory and answers
+404 when an archive is missing, because falling through to the HTML page would hand the browser a
+document saved under a `.zip` name.
 
 Every runtime URL resolves relative to `document.baseURI`, allowing deployment under a subpath.
 
