@@ -1,4 +1,57 @@
 import { expect, test } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
+
+const MOCK_PROMPT =
+  '# Prompt\n\nCreate a small accessible button for a tooling test fixture.\n';
+const MOCK_DESIGN =
+  '# Design\n\nThis fixture uses a minimal design to verify the component and packaging contracts.\n';
+const MOCK_ZIP = Buffer.from('mock-component-zip');
+
+const MOCK_COMPONENT = {
+  schemaVersion: 2,
+  id: 'mock-button',
+  version: '0.2.0',
+  name: 'Mock Button',
+  description: 'A registry-shaped fixture for detail page and download testing.',
+  group: 'inputs',
+  categories: ['button'],
+  tags: ['fixture'],
+  technologies: ['html', 'css', 'javascript'],
+  variants: [
+    {
+      id: 'default',
+      name: 'Default',
+      description: 'A minimal default button used for browser contract tests.',
+      entry: 'source/variants/default/index.html',
+    },
+  ],
+  preview: {
+    variant: 'default',
+    thumbnail: 'tests/fixtures/components/test-button/preview/thumbnail.svg',
+    viewport: { width: 800, height: 600 },
+    durationMs: 1000,
+  },
+  docs: {
+    readme: 'tests/fixtures/components/test-button/README.md',
+    design: 'tests/fixtures/components/test-button/DESIGN.md',
+    prompt: 'tests/fixtures/components/test-button/PROMPT.md',
+  },
+  source: {
+    files: [
+      {
+        path: 'source/shared.css',
+        url: 'tests/fixtures/components/test-button/source/shared.css',
+        language: 'css',
+      },
+      {
+        path: 'source/variants/default/index.html',
+        url: 'tests/fixtures/components/test-button/source/variants/default/index.html',
+        language: 'html',
+      },
+    ],
+  },
+  download: 'downloads/mock-button-0.2.0.zip',
+};
 
 function trackRuntimeErrors(page) {
   const errors = [];
@@ -11,43 +64,244 @@ function trackRuntimeErrors(page) {
   return errors;
 }
 
-test('homepage renders the searchable empty catalog', async ({ page }) => {
+async function mountMockDetail(page) {
+  await page.route('**/downloads/mock-button-0.2.0.zip', (route) =>
+    route.fulfill({ body: MOCK_ZIP, contentType: 'application/zip' }),
+  );
+  await page.goto('/component.html?id=mock-browser-fixture');
+  await page.evaluate(async (component) => {
+    const { renderComponent } = await import('/catalog/scripts/component-page.js');
+    renderComponent(component);
+  }, MOCK_COMPONENT);
+}
+
+test('homepage is English, grouped, searchable, and free of external requests', async ({
+  page,
+}) => {
   const runtimeErrors = trackRuntimeErrors(page);
+  const externalRequests = [];
+  page.on('request', (request) => {
+    const url = new URL(request.url());
+    if (['http:', 'https:'].includes(url.protocol) && url.origin !== 'http://127.0.0.1:5173') {
+      externalRequests.push(request.url());
+    }
+  });
 
   await page.goto('/index.html');
-
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(
-    page.getByRole('heading', { name: /thành phần giao diện/i, level: 1 }),
+    page.getByRole('heading', {
+      name: 'Discover components. Use them when you need them.',
+      level: 1,
+    }),
   ).toBeVisible();
-  await expect(page.getByRole('searchbox')).toBeVisible();
-  await expect(page.getByText('Chưa có component nào')).toBeVisible();
-  await expect(page.getByText('0 kết quả')).toBeVisible();
+  await expect(page.locator('#inputs')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Inputs', level: 2 })).toBeVisible();
+  await expect(page.locator('#inputs .component-card')).toHaveCount(1);
+  await expect(page.locator('#component-count')).toHaveText('1 component');
+  await expect(page.locator('#result-summary')).toHaveText('1 result');
+  await expect(runtimeErrors).toEqual([]);
+  expect(externalRequests).toEqual([]);
+});
 
-  await page.getByRole('searchbox').fill('button');
-  await expect(page.getByText('0 kết quả')).toBeVisible();
+test('search matches group metadata, hides empty groups, and supports the slash shortcut', async ({
+  page,
+}) => {
+  await page.goto('/index.html');
+  const search = page.getByRole('searchbox');
+
+  await expect(search).toHaveAttribute('placeholder', 'Search by component name or slug...');
+  await page.keyboard.press('/');
+  await expect(search).toBeFocused();
+
+  await search.fill('Inputs');
+  await expect(page.locator('#inputs')).toBeVisible();
+  await expect(page.locator('#result-summary')).toHaveText('1 result');
+
+  await search.fill('missing-query');
+  await expect(page.locator('.component-group')).toHaveCount(0);
+  await expect(page.getByText('No matching components')).toBeVisible();
+  await expect(page.locator('#result-summary')).toHaveText('0 results');
+
+  await search.fill('');
+  await expect(page.locator('#inputs')).toBeVisible();
+});
+
+test('homepage cards use static SVG thumbnails and no media playback element', async ({
+  page,
+}) => {
+  await page.goto('/index.html');
+  const card = page.locator('.component-card').filter({ hasText: 'Temporal Picker' });
+
+  await expect(card.locator('[data-component-thumbnail]')).toBeVisible();
+  await expect(card.locator('[data-component-thumbnail]')).toHaveAttribute(
+    'src',
+    /\/components\/temporal-picker\/preview\/thumbnail\.svg$/,
+  );
+  await expect(card.locator('[data-component-technology]')).toHaveText('HTML · CSS · JS');
+  await expect(card.locator('video')).toHaveCount(0);
+  await expect(card.locator('[data-component-link]')).toHaveAttribute(
+    'href',
+    './component.html?id=temporal-picker',
+  );
+  await expect(card.locator('[data-component-link]')).toHaveAccessibleName(
+    'View Temporal Picker',
+  );
+});
+
+test('thumbnail failure keeps a stable fallback without changing card height', async ({
+  page,
+}) => {
+  await page.goto('/index.html');
+  const dimensions = await page.evaluate(async () => {
+    const { createComponentCard } = await import('/catalog/scripts/app.js');
+    const card = createComponentCard({
+      id: 'broken-thumbnail',
+      name: 'Broken Thumbnail',
+      technologies: ['html'],
+      preview: { thumbnail: 'data:image/svg+xml,not-valid-svg' },
+    });
+    document.querySelector('.component-group__grid').append(card);
+    const preview = card.querySelector('.component-card__preview');
+    return {
+      before: preview.getBoundingClientRect().height,
+      cardSelector: '.component-card:last-child',
+    };
+  });
+
+  const fallbackCard = page.locator(dimensions.cardSelector);
+  await expect(fallbackCard.locator('[data-preview-fallback]')).toBeVisible();
+  await expect(fallbackCard.locator('[data-component-thumbnail]')).toBeHidden();
+  const after = await fallbackCard
+    .locator('.component-card__preview')
+    .evaluate((element) => element.getBoundingClientRect().height);
+  expect(Math.abs(after - dimensions.before)).toBeLessThan(1);
+});
+
+test('catalog grid remains responsive and the sticky header does not overflow', async ({
+  page,
+}) => {
+  const cases = [
+    { width: 390, height: 844, columns: 1 },
+    { width: 768, height: 1024, columns: 2 },
+    { width: 1440, height: 900, columns: 3 },
+  ];
+
+  for (const viewport of cases) {
+    await page.setViewportSize(viewport);
+    await page.goto('/index.html');
+
+    const columnCount = await page
+      .locator('.component-group__grid')
+      .evaluate((grid) =>
+        getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length,
+      );
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > window.innerWidth,
+    );
+
+    expect(columnCount).toBe(viewport.columns);
+    expect(hasHorizontalOverflow).toBe(false);
+    await expect(page.locator('.site-header')).toHaveCSS('position', 'sticky');
+  }
+});
+
+test('Geist fonts load locally and technical metadata uses Geist Mono', async ({ page }) => {
+  const fontRequests = [];
+  page.on('request', (request) => {
+    if (request.resourceType() === 'font') {
+      fontRequests.push(request.url());
+    }
+  });
+
+  await page.goto('/index.html');
+  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(() => document.fonts.load('400 16px Geist', 'Discover components'));
+  await page.evaluate(() => document.fonts.load('400 12px "Geist Mono"', 'HTML CSS JS'));
+
+  const families = await page.evaluate(() => ({
+    body: getComputedStyle(document.body).fontFamily,
+    technical: getComputedStyle(
+      document.querySelector('[data-component-technology]'),
+    ).fontFamily,
+  }));
+
+  expect(families.body).toContain('Geist');
+  expect(families.technical).toContain('Geist Mono');
+  expect(fontRequests.every((url) => new URL(url).origin === 'http://127.0.0.1:5173')).toBe(true);
+});
+
+test('detail renderer exposes English documents, source selection, downloads, and exclusive accordions', async ({
+  page,
+}) => {
+  const runtimeErrors = trackRuntimeErrors(page);
+  await mountMockDetail(page);
+
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.getByRole('link', { name: 'Inputs' })).toHaveAttribute(
+    'href',
+    './index.html#inputs',
+  );
+  await expect(page.getByRole('heading', { name: 'Mock Button', level: 1 })).toBeVisible();
+  await expect(page.locator('#component-preview')).toHaveCSS('height', '600px');
+  await expect(page.locator('#active-variant-description')).toHaveText(
+    'A minimal default button used for browser contract tests.',
+  );
+
+  const accordions = page.locator('[data-source-accordion]');
+  await expect(accordions).toHaveCount(3);
+  await expect(accordions.filter({ hasText: 'Source Code' })).not.toHaveAttribute('open');
+
+  await page.getByText('Source Code', { exact: true }).click();
+  await expect(page.locator('#source-file-select')).toHaveValue(
+    'source/variants/default/index.html',
+  );
+  await expect(page.locator('#source-content')).toContainText('<!doctype html>');
+
+  await page.getByText('Prompt', { exact: true }).click();
+  await expect(accordions.filter({ hasText: 'Source Code' })).not.toHaveAttribute('open');
+  await expect(page.locator('#prompt-content')).toHaveText(MOCK_PROMPT.trim());
+
+  const zipLink = page.getByRole('link', { name: 'Download component ZIP' });
+  const promptLink = page.getByRole('link', { name: 'Download PROMPT.md' });
+  await expect(zipLink).toHaveAttribute('download', 'mock-button-0.2.0.zip');
+  await expect(promptLink).toHaveAttribute('download', 'mock-button-PROMPT.md');
+
+  const promptDownloadEvent = page.waitForEvent('download');
+  await promptLink.click();
+  const promptDownload = await promptDownloadEvent;
+  expect(promptDownload.suggestedFilename()).toBe('mock-button-PROMPT.md');
+  expect(await readFile(await promptDownload.path(), 'utf8')).toBe(MOCK_PROMPT);
+
+  await page.getByText('Design System', { exact: true }).click();
+  await expect(accordions.filter({ hasText: 'Prompt' })).not.toHaveAttribute('open');
+  await expect(page.locator('#design-content')).toHaveText(MOCK_DESIGN.trim());
+
+  const designLink = page.getByRole('link', { name: 'Download DESIGN.md' });
+  await expect(designLink).toHaveAttribute('download', 'mock-button-DESIGN.md');
+
+  const designDownloadEvent = page.waitForEvent('download');
+  await designLink.click();
+  const designDownload = await designDownloadEvent;
+  expect(designDownload.suggestedFilename()).toBe('mock-button-DESIGN.md');
+  expect(await readFile(await designDownload.path(), 'utf8')).toBe(MOCK_DESIGN);
+
+  const zipDownloadEvent = page.waitForEvent('download');
+  await zipLink.click();
+  const zipDownload = await zipDownloadEvent;
+  expect(zipDownload.suggestedFilename()).toBe('mock-button-0.2.0.zip');
   await expect(runtimeErrors).toEqual([]);
 });
 
-test('detail page without an id renders a helpful not-found state', async ({ page }) => {
-  const runtimeErrors = trackRuntimeErrors(page);
-
+test('detail not-found states stay English and recover through catalog navigation', async ({
+  page,
+}) => {
   await page.goto('/component.html');
-
-  await expect(page.getByRole('heading', { name: 'Không tìm thấy component' })).toBeVisible();
-  await expect(page.getByText(/URL chưa có tham số id/i)).toBeVisible();
-  await expect(runtimeErrors).toEqual([]);
-});
-
-test('unknown component id remains recoverable through catalog navigation', async ({ page }) => {
-  const runtimeErrors = trackRuntimeErrors(page);
+  await expect(page.getByRole('heading', { name: 'Component not found' })).toBeVisible();
+  await expect(page.getByText(/missing an id parameter/i)).toBeVisible();
 
   await page.goto('/component.html?id=unknown-component');
-
-  await expect(page.getByText(/Không có component mang ID/i)).toBeVisible();
-  await page.getByRole('link', { name: 'Về trang danh mục' }).click();
+  await expect(page.getByText(/No component with the ID/i)).toBeVisible();
+  await page.getByRole('link', { name: 'Back to catalog' }).last().click();
   await expect(page).toHaveURL(/\/index\.html$/);
-  await expect(
-    page.getByRole('heading', { name: /thành phần giao diện/i, level: 1 }),
-  ).toBeVisible();
-  await expect(runtimeErrors).toEqual([]);
 });

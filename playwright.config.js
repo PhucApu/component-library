@@ -20,7 +20,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev -- --host 127.0.0.1',
+    command: 'pnpm run dev --host 127.0.0.1',
     url: 'http://127.0.0.1:5173/index.html',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

@@ -12,6 +12,10 @@ import {
   ComponentValidationError,
   readAndValidateComponents,
 } from '../../scripts/lib/component-tools.mjs';
+import {
+  findEnglishContentViolations,
+  validateEnglishContent,
+} from '../../scripts/validate-english.mjs';
 
 const TEST_DIRECTORY = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURE_COMPONENTS_DIRECTORY = path.resolve(
@@ -36,6 +40,13 @@ async function copyFixtureComponents(t) {
   return { temporaryDirectory, componentsDirectory };
 }
 
+async function mutateFixtureManifest(componentsDirectory, mutate) {
+  const manifestPath = path.join(componentsDirectory, 'test-button', 'component.json');
+  const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
+  mutate(manifest);
+  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+}
+
 test('an empty components directory is valid', async (t) => {
   const temporaryDirectory = await createTemporaryDirectory(t);
   const componentsDirectory = path.join(temporaryDirectory, 'components');
@@ -45,13 +56,16 @@ test('an empty components directory is valid', async (t) => {
   assert.deepEqual(records, []);
 });
 
-test('a valid component fixture satisfies schema and semantic checks', async () => {
+test('a schema version 2 fixture satisfies taxonomy and preview contracts', async () => {
   const records = await readAndValidateComponents({
     componentsDirectory: FIXTURE_COMPONENTS_DIRECTORY,
   });
 
   assert.equal(records.length, 1);
-  assert.equal(records[0].manifest.id, 'test-button');
+  assert.equal(records[0].manifest.schemaVersion, 2);
+  assert.equal(records[0].manifest.group, 'inputs');
+  assert.ok(records[0].manifest.variants[0].description);
+  assert.equal(records[0].manifest.preview.thumbnail, 'preview/thumbnail.svg');
 });
 
 test('missing required documents are rejected', async (t) => {
@@ -66,18 +80,47 @@ test('missing required documents are rejected', async (t) => {
   );
 });
 
-test('unsafe variant paths are rejected', async (t) => {
+test('unsafe variant and thumbnail paths are rejected', async (t) => {
   const { componentsDirectory } = await copyFixtureComponents(t);
-  const manifestPath = path.join(componentsDirectory, 'test-button', 'component.json');
-  const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
-  manifest.variants[0].entry = '../outside/index.html';
-  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  await mutateFixtureManifest(componentsDirectory, (manifest) => {
+    manifest.variants[0].entry = '../outside/index.html';
+    manifest.preview.thumbnail = '../thumbnail.svg';
+  });
 
   await assert.rejects(
     readAndValidateComponents({ componentsDirectory }),
     (error) =>
       error instanceof ComponentValidationError &&
-      error.errors.some((message) => message.includes('must match pattern')),
+      error.errors.filter((message) => message.includes('must match pattern')).length >= 2,
+  );
+});
+
+test('missing thumbnails, invalid groups, and missing variant descriptions fail validation', async (t) => {
+  const missingThumbnail = await copyFixtureComponents(t);
+  await fs.rm(
+    path.join(missingThumbnail.componentsDirectory, 'test-button', 'preview', 'thumbnail.svg'),
+  );
+  await assert.rejects(
+    readAndValidateComponents({ componentsDirectory: missingThumbnail.componentsDirectory }),
+    /preview thumbnail does not exist/,
+  );
+
+  const invalidGroup = await copyFixtureComponents(t);
+  await mutateFixtureManifest(invalidGroup.componentsDirectory, (manifest) => {
+    manifest.group = 'unknown';
+  });
+  await assert.rejects(
+    readAndValidateComponents({ componentsDirectory: invalidGroup.componentsDirectory }),
+    /must be equal to one of the allowed values/,
+  );
+
+  const missingDescription = await copyFixtureComponents(t);
+  await mutateFixtureManifest(missingDescription.componentsDirectory, (manifest) => {
+    delete manifest.variants[0].description;
+  });
+  await assert.rejects(
+    readAndValidateComponents({ componentsDirectory: missingDescription.componentsDirectory }),
+    /must have required property 'description'/,
   );
 });
 
@@ -86,11 +129,9 @@ test('duplicate component and variant IDs are reported', async (t) => {
   const originalDirectory = path.join(componentsDirectory, 'test-button');
   const duplicateDirectory = path.join(componentsDirectory, 'duplicate-folder');
   await fs.cp(originalDirectory, duplicateDirectory, { recursive: true });
-
-  const manifestPath = path.join(originalDirectory, 'component.json');
-  const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
-  manifest.variants.push({ ...manifest.variants[0] });
-  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  await mutateFixtureManifest(componentsDirectory, (manifest) => {
+    manifest.variants.push({ ...manifest.variants[0] });
+  });
 
   await assert.rejects(
     readAndValidateComponents({ componentsDirectory }),
@@ -112,7 +153,7 @@ test('registry generation is deterministic and supports an empty catalog', async
   assert.equal(await fs.readFile(outputFile, 'utf8'), '[]\n');
 });
 
-test('registry contains normalized runtime paths', async (t) => {
+test('registry contains taxonomy, thumbnail, documents, and deterministic source files', async (t) => {
   const temporaryDirectory = await createTemporaryDirectory(t);
   const outputFile = path.join(temporaryDirectory, 'components-index.json');
 
@@ -120,13 +161,32 @@ test('registry contains normalized runtime paths', async (t) => {
     componentsDirectory: FIXTURE_COMPONENTS_DIRECTORY,
     outputFile,
   });
+  const [component] = registry;
 
-  assert.equal(registry[0].preview.motion, 'components/test-button/preview/demo.webm');
-  assert.equal(registry[0].docs.design, 'components/test-button/DESIGN.md');
-  assert.equal(registry[0].download, 'downloads/test-button-0.1.0.zip');
+  assert.equal(component.group, 'inputs');
+  assert.equal(
+    component.preview.thumbnail,
+    'components/test-button/preview/thumbnail.svg',
+  );
+  assert.equal(component.docs.design, 'components/test-button/DESIGN.md');
+  assert.equal(component.docs.prompt, 'components/test-button/PROMPT.md');
+  assert.equal(component.download, 'downloads/test-button-0.1.0.zip');
+  assert.deepEqual(component.source.files, [
+    {
+      path: 'source/shared.css',
+      url: 'components/test-button/source/shared.css',
+      language: 'css',
+    },
+    {
+      path: 'source/variants/default/index.html',
+      url: 'components/test-button/source/variants/default/index.html',
+      language: 'html',
+    },
+  ]);
+  assert.ok(component.source.files.every((file) => !file.path.includes('..')));
 });
 
-test('component package contains only the declared distributable files', async (t) => {
+test('component package contains docs, source, manifest, and the authored thumbnail', async (t) => {
   const temporaryDirectory = await createTemporaryDirectory(t);
   const outputDirectory = path.join(temporaryDirectory, 'downloads');
 
@@ -146,6 +206,7 @@ test('component package contains only the declared distributable files', async (
     'PROMPT.md',
     'README.md',
     'component.json',
+    'preview/thumbnail.svg',
     'source/shared.css',
     'source/variants/default/index.html',
   ]);
@@ -163,6 +224,20 @@ test('preview generator captures a poster and an animated WebM', async (t) => {
   assert.equal(count, 1);
   assert.deepEqual([...poster.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
   assert.ok(motion.length > 1_000);
+});
+
+test('English validation passes for the repository and rejects accented fixture text', async (t) => {
+  await validateEnglishContent();
+
+  const temporaryDirectory = await createTemporaryDirectory(t);
+  const disallowedText = String.fromCodePoint(0x54, 0x69, 0x1ebf, 0x6e, 0x67);
+  await fs.writeFile(path.join(temporaryDirectory, 'fixture.md'), disallowedText);
+
+  const violations = await findEnglishContentViolations({
+    rootDirectory: temporaryDirectory,
+  });
+  assert.equal(violations.length, 1);
+  assert.equal(violations[0].code, 'accented-latin');
 });
 
 test('packaging an unknown component fails without creating an archive', async (t) => {

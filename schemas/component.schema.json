@@ -11,6 +11,7 @@
     "version",
     "name",
     "description",
+    "group",
     "categories",
     "tags",
     "technologies",
@@ -19,7 +20,7 @@
   ],
   "properties": {
     "schemaVersion": {
-      "const": 1
+      "const": 2
     },
     "id": {
       "$ref": "#/definitions/kebabCase"
@@ -37,6 +38,18 @@
       "type": "string",
       "minLength": 10,
       "maxLength": 280
+    },
+    "group": {
+      "type": "string",
+      "enum": [
+        "inputs",
+        "data-display",
+        "feedback",
+        "surface",
+        "navigation",
+        "layout",
+        "utilities"
+      ]
     },
     "categories": {
       "type": "array",
@@ -67,7 +80,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "name", "entry"],
+        "required": ["id", "name", "description", "entry"],
         "properties": {
           "id": {
             "$ref": "#/definitions/kebabCase"
@@ -76,6 +89,11 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 60
+          },
+          "description": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 240
           },
           "entry": {
             "type": "string",
@@ -87,10 +105,14 @@
     "preview": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["variant", "viewport", "durationMs"],
+      "required": ["variant", "thumbnail", "viewport", "durationMs"],
       "properties": {
         "variant": {
           "$ref": "#/definitions/kebabCase"
+        },
+        "thumbnail": {
+          "type": "string",
+          "pattern": "^preview/thumbnail\\.svg$"
         },
         "viewport": {
           "type": "object",

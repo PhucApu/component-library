@@ -163,6 +163,13 @@ export async function inspectComponentDirectory(
       );
     }
 
+    const thumbnailPath = resolveInside(componentDirectory, manifest.preview.thumbnail);
+    if (!thumbnailPath || !(await isFile(thumbnailPath))) {
+      errors.push(
+        `${folderName}: preview thumbnail does not exist or is unsafe: ${manifest.preview.thumbnail}`,
+      );
+    }
+
     for (const documentName of REQUIRED_DOCUMENTS) {
       if (!(await isFile(path.join(componentDirectory, documentName)))) {
         errors.push(`${folderName}: missing required document ${documentName}`);

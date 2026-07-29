@@ -1,33 +1,33 @@
 # Project Agent Instructions
 
-Bạn là **Senior Project Manager + Frontend Platform Architect + Design Systems Lead**
-làm việc trong repository `component-ui-collection`.
+You are a **Senior Project Manager + Frontend Platform Architect + Design Systems Lead**
+working in the `component-ui-collection` repository.
 
-## Bootstrap bắt buộc
+## Required bootstrap
 
-- Luôn làm việc và trả lời bằng tiếng Việt, ngắn gọn và nêu rõ file path khi cần.
-- Trước mọi task, đọc `.agents/rules/ui-component-rules.md`.
-- Chỉ đọc thêm source-of-truth và skill liên quan trực tiếp đến task.
-- Dùng `.agents/` làm nguồn chuẩn chung cho project rules và UI skills.
+- Communicate with the user in Vietnamese while keeping repository-owned content in English.
+- Read `.agents/rules/ui-component-rules.md` before every task.
+- Read only the source-of-truth documents and skill directly relevant to the task.
+- Use `.agents/` as the shared source of truth for project rules and UI skills.
 
 ## Skill routing
 
-| Ý định | Skill bắt buộc |
+| Intent | Required skill |
 |---|---|
-| Thiết kế component, variants, states, interaction, `DESIGN.md`, `PROMPT.md` | `.agents/skills/design-ui-component/SKILL.md` |
-| Tạo, sửa hoặc triển khai source UI component | `.agents/skills/build-ui-component/SKILL.md` |
-| Review, đánh giá contract, UX hoặc accessibility | `.agents/skills/review-ui-component/SKILL.md` |
+| Design components, variants, states, interactions, `DESIGN.md`, or `PROMPT.md` | `.agents/skills/design-ui-component/SKILL.md` |
+| Create, change, or implement UI component source | `.agents/skills/build-ui-component/SKILL.md` |
+| Review contracts, UX, or accessibility | `.agents/skills/review-ui-component/SKILL.md` |
 
-Có thể gọi trực tiếp bằng `$design-ui-component`, `$build-ui-component` hoặc
-`$review-ui-component`. Không nhân đôi nội dung các skill này sang thư mục khác.
+Skills may be invoked directly with `$design-ui-component`, `$build-ui-component`, or
+`$review-ui-component`. Do not duplicate these skills in another directory.
 
-Khối GitNexus bên dưới do công cụ quản lý. Giữ nguyên marker và áp dụng GitNexus khi task
-chạm symbol hoặc code flow hiện có.
+The GitNexus block below is tool-managed. Preserve its markers and use GitNexus when a task
+changes an existing symbol or code flow.
 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **component-ui-collection** (153 symbols, 315 relationships, 20 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **component-ui-collection** (483 symbols, 1187 relationships, 40 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > Index stale? Run `node .gitnexus/run.cjs analyze` from the project root — it auto-selects an available runner. No `.gitnexus/run.cjs` yet? `npx gitnexus analyze` (npm 11 crash → `npm i -g gitnexus`; #1939).
 

@@ -1,28 +1,30 @@
-# Quy ước đặt tên
+# Naming Conventions
 
-## Folder và ID
+## Directories and IDs
 
-- Dùng `kebab-case`: `animated-gradient-button`.
-- Không dùng category làm folder cha.
-- Không đổi ID chỉ vì component đổi category hoặc display name.
-- Variant ID cũng dùng `kebab-case`: `soft-shadow`, `high-contrast`.
+- Use `kebab-case`, for example `animated-gradient-button`.
+- Place every component directly under `components/`.
+- Do not change an ID when only the group, category, or display name changes.
+- Use `kebab-case` for variant IDs, such as `soft-shadow` or `high-contrast`.
+- The component directory name must exactly match `component.json.id`.
 
-## File
+## Files
 
-- Giữ nguyên các tên contract: `component.json`, `README.md`, `DESIGN.md`,
-  `PROMPT.md`.
-- Entry của mỗi variant luôn là `index.html`.
-- File dùng chung nên có tên mô tả ngắn: `shared.css`, `shared.js`.
-- Asset dùng chữ thường, dấu gạch ngang và có đuôi rõ ràng.
+- Preserve contract names: `component.json`, `README.md`, `DESIGN.md`, and `PROMPT.md`.
+- Every variant entry is named `index.html`.
+- Shared files use concise descriptive names such as `shared.css` and `shared.js`.
+- Assets use lowercase names, hyphens, and explicit file extensions.
+- The catalog thumbnail is always `preview/thumbnail.svg`.
 
 ## Metadata
 
-- `name`: tên hiển thị dễ đọc.
-- `description`: một câu mô tả hành vi hoặc giá trị chính.
-- `categories`: nhóm chức năng rộng, ví dụ `button`, `navigation`.
-- `tags`: đặc điểm tìm kiếm, ví dụ `animated`, `glass`, `hover`.
-- `technologies`: công nghệ thực sự cần để dùng component, ví dụ `html`, `css`,
-  `javascript`, `tailwind`.
+- `name`: readable display name.
+- `description`: one English sentence describing the primary behavior or value.
+- `group`: one schema taxonomy group.
+- `categories`: broad functional search terms.
+- `tags`: specific searchable traits.
+- `technologies`: only technologies required by the downloaded component.
+- `variants[].description`: one English sentence that distinguishes the variant.
 
-Không tạo class Tailwind bằng nối chuỗi động. Các class cần xuất hiện đầy đủ
-trong source để quá trình compile có thể phát hiện chúng.
+Do not construct Tailwind class names dynamically. Every class required by a component must be
+present in its browser-ready source.

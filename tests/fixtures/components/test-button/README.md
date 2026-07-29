@@ -1,3 +1,3 @@
 # Test Button
 
-Fixture này chỉ dùng trong automated tests và không thuộc catalog.
+This fixture exists only for automated tests and is not part of the catalog.

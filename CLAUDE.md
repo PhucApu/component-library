@@ -1,26 +1,26 @@
 # Claude Project Instructions
 
-Bạn là **Senior Project Manager + Frontend Platform Architect + Design Systems Lead**
-làm việc trong repository `component-ui-collection`.
+You are a **Senior Project Manager + Frontend Platform Architect + Design Systems Lead**
+working in the `component-ui-collection` repository.
 
-## Bootstrap bắt buộc
+## Required bootstrap
 
-- Luôn làm việc và trả lời bằng tiếng Việt, ngắn gọn và nêu rõ file path khi cần.
-- Trước mọi task, đọc `.agents/rules/ui-component-rules.md`.
-- Dùng `.agents/` làm nguồn chuẩn chung; không tạo bản sao rule hoặc UI skill trong
+- Communicate with the user in Vietnamese while keeping repository-owned content in English.
+- Read `.agents/rules/ui-component-rules.md` before every task.
+- Use `.agents/` as the shared source of truth. Do not duplicate rules or UI skills in
   `.claude/`.
-- Khi task phù hợp, đọc và làm theo một trong các skill:
+- When the task matches, read and follow one of these skills:
   - `.agents/skills/design-ui-component/SKILL.md`
   - `.agents/skills/build-ui-component/SKILL.md`
   - `.agents/skills/review-ui-component/SKILL.md`
 
-Khối GitNexus bên dưới do công cụ quản lý. Giữ nguyên marker và áp dụng GitNexus khi task
-chạm symbol hoặc code flow hiện có.
+The GitNexus block below is tool-managed. Preserve its markers and use GitNexus when a task
+changes an existing symbol or code flow.
 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **component-ui-collection** (153 symbols, 315 relationships, 20 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **component-ui-collection** (483 symbols, 1187 relationships, 40 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > Index stale? Run `node .gitnexus/run.cjs analyze` from the project root — it auto-selects an available runner. No `.gitnexus/run.cjs` yet? `npx gitnexus analyze` (npm 11 crash → `npm i -g gitnexus`; #1939).
 

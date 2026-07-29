@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" class="temporal-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Temporal Picker civil date selection example." />
+    <title>Temporal Picker - Date</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="temporal-demo">
+      <div class="temporal-demo__shell">
+        <section class="temporal-demo__card" aria-labelledby="date-demo-label">
+          <p id="date-demo-label" class="temporal-demo__label">Execution date</p>
+          <temporal-picker
+            mode="date"
+            locale="en-US"
+            week-starts-on="1"
+            aria-label="Choose an execution date"
+          ></temporal-picker>
+          <p class="temporal-demo__label">Raw output</p>
+          <output class="temporal-demo__output" aria-live="polite">Loading local value...</output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeTemporalDemo } from '../../demo.js';
+
+      initializeTemporalDemo({ useCurrentValue: true });
+    </script>
+  </body>
+</html>

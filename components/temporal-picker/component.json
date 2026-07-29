@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "temporal-picker",
+  "version": "0.3.0",
+  "name": "Temporal Picker",
+  "description": "A framework-free Web Component for selecting a year, month, date, time, or local datetime without timezone conversion.",
+  "group": "inputs",
+  "categories": ["date-time", "form-control"],
+  "tags": ["calendar", "date-picker", "time-picker", "web-component", "accessible"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "year",
+      "name": "Year",
+      "description": "Open on the current system year, select from an accessible twelve-year grid, and commit immediately.",
+      "entry": "source/variants/year/index.html"
+    },
+    {
+      "id": "month",
+      "name": "Month",
+      "description": "Open on the current system month, select a month and year, and commit immediately.",
+      "entry": "source/variants/month/index.html"
+    },
+    {
+      "id": "date",
+      "name": "Date",
+      "description": "Open on the current system date and select from a keyboard-accessible six-week Gregorian calendar.",
+      "entry": "source/variants/date/index.html"
+    },
+    {
+      "id": "time",
+      "name": "Time",
+      "description": "Search and select hour, minute, and second values, then confirm the draft with Apply.",
+      "entry": "source/variants/time/index.html"
+    },
+    {
+      "id": "datetime",
+      "name": "Datetime",
+      "description": "Open on the current local datetime and select an unrestricted date with searchable time controls.",
+      "entry": "source/variants/datetime/index.html"
+    },
+    {
+      "id": "bounded-datetime",
+      "name": "Bounded Datetime",
+      "description": "Select inside an inclusive range with dynamic unavailable states and current-date indicators disabled.",
+      "entry": "source/variants/bounded-datetime/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "datetime",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

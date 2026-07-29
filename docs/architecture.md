@@ -1,67 +1,69 @@
-# Kiến trúc dự án
+# Project Architecture
 
-Tài liệu này cùng `schemas/component.schema.json` là source-of-truth ban đầu của
+This document and `schemas/component.schema.json` are the architectural source of truth for
 `component-ui-collection`.
 
-## Mục tiêu
+## Goal
 
-Catalog phải chạy dưới dạng static site, không phụ thuộc React, Next.js hoặc UI
-framework. Vite chỉ cung cấp development server, xử lý Tailwind CSS và build
-production assets.
+The catalog is a static multi-page site without React, Next.js, or a UI framework. Vite provides
+the development server, Tailwind processing for the catalog only, and production builds.
 
-Component là đơn vị sở hữu độc lập. Mỗi component phải:
+Each component is an independent distribution unit that:
 
-- Mở được entry HTML mà không cần JavaScript hoặc CSS của catalog.
-- Giữ toàn bộ source và asset bên trong thư mục của chính nó.
-- Có metadata, prompt và tài liệu thiết kế.
-- Có ít nhất một variant có thể chạy trong iframe.
+- Opens its HTML entries without catalog JavaScript or CSS.
+- Keeps every required source file and asset inside its own directory.
+- Includes metadata, a recreation prompt, and design documentation.
+- Provides at least one iframe-ready variant.
 
-## Ranh giới thư mục
+## Boundaries
 
-- `catalog/` chỉ chứa code website danh mục.
-- `components/` chỉ chứa nội dung component được phân phối.
-- `generated/` là dữ liệu trung gian sinh từ manifest.
-- `dist/` là output deploy/download.
-- `tests/fixtures/` chỉ phục vụ kiểm thử và không được scan vào registry.
+- `catalog/` contains only catalog website code.
+- `components/` contains only distributable component content.
+- `generated/` contains intermediate build data.
+- `dist/` contains deployable output and ZIP packages.
+- `tests/fixtures/` never enters the production registry.
 
-Không import CSS/JavaScript của một component vào catalog. Catalog tải preview
-qua iframe để tránh xung đột layout, style và global variables.
+The catalog never imports component CSS or JavaScript. Preview entries run in iframes to isolate
+layout, styles, and global variables.
 
-## Luồng build
+## Build flow
 
 ```text
+English validation
+        |
 components/*/component.json
-          │
-          ▼
-validate-components
-          │
-          ├──► generated/components-index.json
-          │                │
-          │                ▼
-          │           Vite multi-page build
-          │
-          └──► publish source/docs/preview + ZIP
-                           │
-                           ▼
-                          dist/
+        |
+component validation
+        |
+        +----> generated/components-index.json
+        |                     |
+        |                     +----> Vite multi-page build
+        |
+        +----> publish source, docs, thumbnail, QA previews, and ZIP
+                                      |
+                                      +----> dist/
 ```
 
-`npm run build` dừng ngay nếu manifest, tài liệu, entry hoặc preview production
-không hợp lệ.
+`pnpm run build` stops when English content, a manifest, documentation, an entry, a thumbnail, or
+a required production preview is invalid.
+
+## Manifest and registry
+
+Schema version 2 adds a top-level taxonomy group, English descriptions for every variant, and an
+authored static SVG thumbnail. The generated registry resolves public URLs and includes a stable
+list of distributable text/code source files for the detail page.
 
 ## URL contract
 
-- `index.html`: load registry và render/search danh mục.
-- `component.html?id=<component-id>`: tìm component theo ID.
-- `components/<id>/...`: source, docs và preview đã publish.
-- `downloads/<id>-<version>.zip`: gói tải về.
+- `index.html`: grouped catalog and search.
+- `component.html?id=<component-id>`: component detail.
+- `components/<id>/...`: published source, docs, thumbnail, and preview assets.
+- `downloads/<id>-<version>.zip`: component distribution package.
 
-Tất cả URL được tạo relative với `document.baseURI` để production build có thể
-được deploy dưới subpath.
+Every runtime URL resolves relative to `document.baseURI`, allowing deployment under a subpath.
 
-## Mô hình tin cậy
+## Trust model
 
-V1 coi component trong repository là nguồn tin cậy. Iframe được dùng chủ yếu để
-cô lập CSS và runtime, chưa phải security boundary cho contribution không tin
-cậy. Nếu cho phép upload hoặc contribution bên ngoài, preview phải chuyển sang
-origin riêng và có sandbox policy chặt hơn.
+Repository components are trusted in the current version. The iframe isolates presentation but
+is not a security boundary for untrusted contributions. External uploads would require a
+separate origin and a stricter sandbox policy.

@@ -38,6 +38,10 @@ async function createArchive(record, outputDirectory) {
       REQUIRED_DOCUMENTS.forEach((documentName) => {
         archive.file(path.join(componentDirectory, documentName), { name: documentName });
       });
+      archive.file(
+        path.join(componentDirectory, ...manifest.preview.thumbnail.split('/')),
+        { name: manifest.preview.thumbnail },
+      );
       archive.directory(path.join(componentDirectory, 'source'), 'source');
       archive.finalize();
     });
@@ -78,7 +82,7 @@ if (isExecutedDirectly(import.meta.url)) {
   const componentId = process.argv[2];
 
   if (!componentId) {
-    console.error('Usage: npm run package:component -- <component-id>');
+    console.error('Usage: pnpm run package:component <component-id>');
     process.exitCode = 1;
   } else {
     try {

@@ -1,9 +1,10 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "test-button",
   "version": "0.1.0",
   "name": "Test Button",
   "description": "A fixture button used only by automated tooling tests.",
+  "group": "inputs",
   "categories": ["button"],
   "tags": ["fixture", "interactive"],
   "technologies": ["html", "css", "javascript"],
@@ -11,11 +12,13 @@
     {
       "id": "default",
       "name": "Default",
+      "description": "A minimal button variant used to verify the component tooling contract.",
       "entry": "source/variants/default/index.html"
     }
   ],
   "preview": {
     "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
     "viewport": {
       "width": 800,
       "height": 600

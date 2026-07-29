@@ -1,0 +1,700 @@
+:root {
+  color-scheme: light;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.temporal-demo-page,
+.temporal-demo-page body {
+  background: #0f1115;
+  color-scheme: dark;
+}
+
+temporal-picker {
+  --temporal-surface: #ffffff;
+  --temporal-surface-subtle: #f8fafc;
+  --temporal-text: #111827;
+  --temporal-muted: #5f6878;
+  --temporal-border: #cbd5e1;
+  --temporal-accent: #4f46e5;
+  --temporal-accent-strong: #4338ca;
+  --temporal-focus: #6366f1;
+  --temporal-danger: #b42318;
+  --temporal-current: #7c3aed;
+  --temporal-scrollbar-track: #eef2f7;
+  --temporal-scrollbar-thumb: #94a3b8;
+  --temporal-scrollbar-thumb-hover: #64748b;
+  --temporal-radius: 12px;
+  --temporal-shadow: 0 18px 48px rgb(15 23 42 / 0.18);
+
+  color-scheme: light;
+  display: inline-block;
+  max-inline-size: 100%;
+  color: var(--temporal-text);
+  font: 400 0.9375rem/1.45
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.temporal-picker__root {
+  inline-size: min(100%, 19rem);
+}
+
+.temporal-picker__trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  inline-size: 100%;
+  min-block-size: 2.75rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--temporal-border);
+  border-radius: var(--temporal-radius);
+  background: var(--temporal-surface);
+  color: var(--temporal-text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    background-color 140ms ease;
+}
+
+.temporal-picker__trigger:hover:not(:disabled) {
+  border-color: #94a3b8;
+  background: var(--temporal-surface-subtle);
+}
+
+.temporal-picker__trigger:focus-visible,
+.temporal-picker__button:focus-visible,
+.temporal-picker__icon-button:focus-visible,
+.temporal-picker__calendar-title button:focus-visible,
+.temporal-picker__view-title:focus-visible,
+.temporal-picker__day:focus-visible,
+.temporal-picker__choice:focus-visible,
+.temporal-picker__time-input:focus-visible,
+.temporal-picker__time-option:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--temporal-focus) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.temporal-picker__trigger[aria-expanded="true"] {
+  border-color: var(--temporal-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--temporal-focus) 18%, transparent);
+}
+
+.temporal-picker__trigger[aria-invalid] {
+  border-color: var(--temporal-danger);
+}
+
+.temporal-picker__trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.temporal-picker__trigger-value {
+  min-inline-size: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.temporal-picker__trigger-value[data-empty="true"] {
+  color: var(--temporal-muted);
+}
+
+.temporal-picker__icon,
+.temporal-picker__chevron {
+  display: block;
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.75;
+}
+
+.temporal-picker__chevron {
+  inline-size: 1rem;
+  block-size: 1rem;
+  color: var(--temporal-muted);
+  transition: transform 140ms ease;
+}
+
+.temporal-picker__trigger[aria-expanded="true"] .temporal-picker__chevron {
+  transform: rotate(180deg);
+}
+
+.temporal-picker__panel {
+  position: fixed;
+  inset: auto;
+  z-index: 1000;
+  inline-size: min(22rem, calc(100vw - 24px));
+  margin: 0;
+  padding: 0.875rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--temporal-scrollbar-thumb) var(--temporal-scrollbar-track);
+  scrollbar-width: thin;
+  border: 1px solid var(--temporal-border);
+  border-radius: var(--temporal-radius);
+  background: var(--temporal-surface);
+  box-shadow: var(--temporal-shadow);
+  color: var(--temporal-text);
+  font: inherit;
+  opacity: 1;
+  transform: translateY(0);
+  transform-origin: center top;
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+}
+
+.temporal-picker__panel[data-placement="top"] {
+  transform-origin: center bottom;
+}
+
+.temporal-picker__panel:not(:popover-open):not(.is-open) {
+  display: none;
+}
+
+.temporal-picker__notice,
+.temporal-picker__error {
+  margin: 0 0 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--temporal-danger) 32%, white);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--temporal-danger) 7%, white);
+  color: var(--temporal-danger);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.temporal-picker__notice {
+  padding: 0.625rem 0.75rem;
+}
+
+.temporal-picker__error {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.temporal-picker__error .temporal-picker__button {
+  justify-self: start;
+}
+
+.temporal-picker__calendar,
+.temporal-picker__selection-view,
+.temporal-picker__time-view {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.temporal-picker__calendar-header {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr) 2.25rem;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.temporal-picker__calendar-title {
+  display: flex;
+  min-inline-size: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.temporal-picker__calendar-title button,
+.temporal-picker__view-title {
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--temporal-text);
+  font: inherit;
+  font-weight: 650;
+}
+
+.temporal-picker__calendar-title button {
+  min-inline-size: 0;
+  padding: 0.375rem 0.25rem;
+  cursor: pointer;
+}
+
+.temporal-picker__calendar-title button:hover,
+button.temporal-picker__view-title:hover {
+  background: var(--temporal-surface-subtle);
+}
+
+span.temporal-picker__view-title {
+  text-align: center;
+}
+
+button.temporal-picker__view-title {
+  padding: 0.375rem 0.5rem;
+  cursor: pointer;
+}
+
+.temporal-picker__icon-button {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--temporal-text);
+  font: 500 1.5rem/1 ui-sans-serif, system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.temporal-picker__icon-button:hover:not(:disabled) {
+  border-color: var(--temporal-border);
+  background: var(--temporal-surface-subtle);
+}
+
+.temporal-picker__icon-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.temporal-picker__weekdays,
+.temporal-picker__day-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.temporal-picker__weekdays span {
+  padding: 0.25rem 0;
+  color: var(--temporal-muted);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.temporal-picker__day-cell {
+  display: grid;
+  place-items: center;
+  min-inline-size: 0;
+}
+
+.temporal-picker__day {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--temporal-text);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.temporal-picker__day:hover:not(:disabled):not(.is-selected) {
+  border-color: var(--temporal-border);
+  background: var(--temporal-surface-subtle);
+}
+
+.temporal-picker__day.is-outside:not(.is-selected) {
+  color: var(--temporal-muted);
+  font-size: 0.8125rem;
+}
+
+.temporal-picker__day.is-current,
+.temporal-picker__choice.is-current {
+  border-color: var(--temporal-current);
+  font-weight: 700;
+}
+
+.temporal-picker__day.is-selected,
+.temporal-picker__choice.is-selected {
+  border-color: var(--temporal-accent);
+  background: var(--temporal-accent);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Selection repaints the border, so the current marker falls back to a single
+   hairline ring that stays readable on top of the accent fill. */
+.temporal-picker__day.is-current.is-selected,
+.temporal-picker__choice.is-current.is-selected {
+  box-shadow: 0 0 0 1px var(--temporal-current);
+}
+
+.temporal-picker__day.is-selected:hover:not(:disabled),
+.temporal-picker__day.is-selected:focus-visible {
+  border-color: var(--temporal-accent);
+  background: var(--temporal-accent);
+  color: #ffffff;
+}
+
+.temporal-picker__day:disabled,
+.temporal-picker__choice:disabled {
+  opacity: 0.35;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.temporal-picker__choice-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.temporal-picker__choice {
+  inline-size: 100%;
+  min-block-size: 2.5rem;
+  padding: 0.5rem 0.375rem;
+  overflow: hidden;
+  border: 1px solid var(--temporal-border);
+  border-radius: 9px;
+  background: var(--temporal-surface);
+  color: var(--temporal-text);
+  font: inherit;
+  font-size: 0.8125rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.temporal-picker__choice:hover:not(:disabled):not(.is-selected) {
+  background: var(--temporal-surface-subtle);
+}
+
+.temporal-picker__datetime-time {
+  padding-block-start: 0.75rem;
+  border-block-start: 1px solid var(--temporal-border);
+}
+
+.temporal-picker__time-controls {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
+  gap: 0.375rem;
+}
+
+.temporal-picker__field {
+  display: grid;
+  gap: 0.375rem;
+  color: var(--temporal-muted);
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.temporal-picker__time-input {
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 2.625rem;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid var(--temporal-border);
+  border-radius: 9px;
+  background: var(--temporal-surface);
+  color: var(--temporal-text);
+  font: 500 0.9375rem/1 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  text-align: center;
+  appearance: none;
+}
+
+.temporal-picker__time-input::placeholder {
+  color: var(--temporal-muted);
+  opacity: 0.75;
+}
+
+.temporal-picker__time-input[aria-expanded="true"] {
+  border-color: var(--temporal-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--temporal-focus) 24%, transparent);
+}
+
+.temporal-picker__time-separator {
+  padding-block-end: 0.65rem;
+  color: var(--temporal-muted);
+  font-weight: 700;
+}
+
+.temporal-picker__time-options {
+  grid-column: 1 / -1;
+  min-inline-size: 0;
+  margin-block-start: 0.125rem;
+  overflow: hidden;
+  border: 1px solid var(--temporal-border);
+  border-radius: 10px;
+  background: var(--temporal-surface);
+  box-shadow: 0 12px 28px rgb(15 23 42 / 0.12);
+}
+
+.temporal-picker__time-options[hidden] {
+  display: none;
+}
+
+.temporal-picker__time-status {
+  padding: 0.5rem 0.625rem;
+  border-block-end: 1px solid var(--temporal-border);
+  color: var(--temporal-muted);
+  font-size: 0.6875rem;
+  font-weight: 650;
+}
+
+.temporal-picker__time-listbox {
+  max-block-size: 10.5rem;
+  padding: 0.25rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--temporal-scrollbar-thumb) var(--temporal-scrollbar-track);
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}
+
+.temporal-picker__panel::-webkit-scrollbar,
+.temporal-picker__time-listbox::-webkit-scrollbar {
+  inline-size: 0.625rem;
+  block-size: 0.625rem;
+}
+
+.temporal-picker__panel::-webkit-scrollbar-track,
+.temporal-picker__time-listbox::-webkit-scrollbar-track {
+  background: var(--temporal-scrollbar-track);
+  border-radius: 999px;
+}
+
+.temporal-picker__panel::-webkit-scrollbar-thumb,
+.temporal-picker__time-listbox::-webkit-scrollbar-thumb {
+  border: 2px solid var(--temporal-scrollbar-track);
+  border-radius: 999px;
+  background: var(--temporal-scrollbar-thumb);
+}
+
+.temporal-picker__panel::-webkit-scrollbar-thumb:hover,
+.temporal-picker__time-listbox::-webkit-scrollbar-thumb:hover {
+  background: var(--temporal-scrollbar-thumb-hover);
+}
+
+.temporal-picker__time-option {
+  display: flex;
+  inline-size: 100%;
+  min-block-size: 2.25rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.45rem 0.625rem;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--temporal-text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.temporal-picker__time-option:hover:not(:disabled),
+.temporal-picker__time-option.is-active {
+  background: var(--temporal-surface-subtle);
+}
+
+.temporal-picker__time-option.is-active {
+  box-shadow: inset 0 0 0 1px var(--temporal-accent);
+}
+
+.temporal-picker__time-option.is-selected {
+  color: var(--temporal-accent);
+  font-weight: 700;
+}
+
+.temporal-picker__time-option:disabled {
+  color: var(--temporal-muted);
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.temporal-picker__time-option-value {
+  font: 600 0.875rem/1 ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.temporal-picker__time-option-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 650;
+}
+
+.temporal-picker__time-empty {
+  margin: 0;
+  padding: 1rem 0.625rem;
+  color: var(--temporal-muted);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+.temporal-picker__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-block-start: 0.875rem;
+  padding-block-start: 0.75rem;
+  border-block-start: 1px solid var(--temporal-border);
+}
+
+.temporal-picker__actions-spacer {
+  flex: 1;
+}
+
+.temporal-picker__button {
+  display: inline-flex;
+  min-block-size: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--temporal-border);
+  border-radius: 8px;
+  background: var(--temporal-surface);
+  color: var(--temporal-text);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.temporal-picker__button:hover:not(:disabled) {
+  background: var(--temporal-surface-subtle);
+}
+
+.temporal-picker__button--primary {
+  border-color: var(--temporal-accent);
+  background: var(--temporal-accent);
+  color: #ffffff;
+}
+
+.temporal-picker__button--primary:hover:not(:disabled) {
+  background: var(--temporal-accent-strong);
+}
+
+.temporal-picker__button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.temporal-picker__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.temporal-demo {
+  display: grid;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background:
+    radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
+    #0f1115;
+  color: #f4f6fa;
+}
+
+.temporal-demo__shell {
+  inline-size: min(100%, 48rem);
+}
+
+.temporal-demo__card {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid #292d36;
+  border-radius: 18px;
+  background: rgb(23 26 32 / 0.88);
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+}
+
+.temporal-demo__label {
+  margin: 0;
+  color: #a8afbc;
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.temporal-demo temporal-picker {
+  --temporal-surface: #171a20;
+  --temporal-surface-subtle: #1d2128;
+  --temporal-text: #f4f6fa;
+  --temporal-muted: #a8afbc;
+  --temporal-border: #3b414c;
+  --temporal-accent: #4968e8;
+  --temporal-accent-strong: #3857d6;
+  --temporal-focus: #86a0ff;
+  --temporal-danger: #ff8e87;
+  --temporal-current: #91a8ff;
+  --temporal-scrollbar-track: #111318;
+  --temporal-scrollbar-thumb: #4a5260;
+  --temporal-scrollbar-thumb-hover: #697385;
+  --temporal-shadow: 0 22px 56px rgb(0 0 0 / 0.42);
+
+  color-scheme: dark;
+}
+
+.temporal-demo__output {
+  display: block;
+  min-block-size: 2.75rem;
+  padding: 0.75rem;
+  border: 1px solid #292d36;
+  border-radius: 10px;
+  background: #0b0c0e;
+  color: #f4f6fa;
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .temporal-picker__panel {
+    padding: 0.75rem;
+  }
+
+  .temporal-picker__day {
+    inline-size: min(2.5rem, calc((100vw - 68px) / 7));
+    min-inline-size: 2rem;
+  }
+
+  .temporal-picker__actions-spacer {
+    display: none;
+  }
+
+  .temporal-picker__actions {
+    justify-content: flex-end;
+  }
+
+  .temporal-picker__actions [data-action="current"] {
+    margin-inline-end: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .temporal-picker__trigger,
+  .temporal-picker__chevron,
+  .temporal-picker__panel {
+    scroll-behavior: auto;
+    transition: none;
+  }
+}

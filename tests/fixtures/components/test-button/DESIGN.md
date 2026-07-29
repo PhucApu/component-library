@@ -1,3 +1,3 @@
 # Design
 
-Fixture có thiết kế tối giản để kiểm tra contract và packaging.
+This fixture uses a minimal design to verify the component and packaging contracts.

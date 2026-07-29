@@ -1,97 +1,87 @@
 <!doctype html>
-<html lang="vi">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Khám phá các UI component độc lập framework, có preview tương tác và mã nguồn tải về."
+      content="Explore framework-free UI components with interactive previews and downloadable source packages."
     />
     <title>Component UI Collection</title>
+    <link
+      rel="preload"
+      href="./catalog/assets/fonts/Geist-Variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="./catalog/styles/main.css" />
   </head>
-  <body class="min-h-screen bg-canvas text-ink antialiased">
-    <div class="page-glow" aria-hidden="true"></div>
-
-    <header class="relative z-10 border-b border-line/70">
-      <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8">
+  <body class="catalog-page">
+    <header class="site-header">
+      <div class="site-header__inner">
         <a class="brand-mark" href="./index.html" aria-label="Component UI Collection">
           <span class="brand-mark__icon" aria-hidden="true">C</span>
-          <span>
-            <span class="block text-sm font-semibold tracking-tight">Component UI</span>
-            <span class="block text-xs text-muted">Framework-free collection</span>
-          </span>
+          <span class="brand-mark__label">Component UI</span>
         </a>
-
-        <span
-          id="component-count"
-          class="rounded-full border border-line bg-surface/70 px-3 py-1.5 text-xs font-medium text-muted backdrop-blur"
-        >
-          0 components
-        </span>
+        <span id="component-count" class="site-header__count">0 components</span>
       </div>
     </header>
 
-    <main class="relative z-10 mx-auto max-w-7xl px-5 pb-20 pt-14 sm:px-8 sm:pt-20">
-      <section class="max-w-3xl" aria-labelledby="catalog-title">
-        <p class="eyebrow">CURATED INTERACTIONS · VANILLA WEB</p>
-        <h1
-          id="catalog-title"
-          class="mt-5 text-balance text-4xl font-semibold tracking-[-0.045em] sm:text-6xl"
-        >
-          Thành phần giao diện,
-          <span class="text-gradient">sẵn sàng để khám phá.</span>
+    <main class="catalog-container catalog-main">
+      <section class="catalog-hero" aria-labelledby="catalog-title">
+        <p class="eyebrow">FRAMEWORK-FREE UI LIBRARY</p>
+        <h1 id="catalog-title" class="catalog-hero__title">
+          Discover components. Use them when you need them.
         </h1>
-        <p class="mt-6 max-w-2xl text-pretty text-base leading-7 text-muted sm:text-lg">
-          Tìm kiếm, tương tác và tải về các component HTML, CSS, JavaScript hoặc
-          Tailwind mà không bị khóa vào một framework.
+        <p class="catalog-hero__description">
+          Search, preview, and download independent HTML, CSS, JavaScript, and Tailwind
+          components without a UI framework.
         </p>
+
+        <div class="catalog-search">
+          <label class="search-shell" for="component-search">
+            <svg
+              class="ui-icon search-shell__icon"
+              data-icon="search"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="m21 21-4.34-4.34"></path>
+              <circle cx="11" cy="11" r="8"></circle>
+            </svg>
+            <input
+              id="component-search"
+              class="search-shell__input"
+              type="search"
+              autocomplete="off"
+              placeholder="Search by component name or slug..."
+            />
+            <kbd class="search-shell__shortcut" aria-hidden="true">/</kbd>
+          </label>
+        </div>
       </section>
 
-      <section class="mt-10" aria-label="Tìm kiếm component">
-        <label class="search-shell" for="component-search">
-          <span class="search-shell__icon" aria-hidden="true"></span>
-          <span class="sr-only">Tìm kiếm theo tên, category hoặc tag</span>
-          <input
-            id="component-search"
-            class="w-full bg-transparent py-4 pr-4 text-sm text-ink outline-none placeholder:text-muted/70 sm:text-base"
-            type="search"
-            autocomplete="off"
-            placeholder="Tìm button, card, navigation..."
-          />
-          <kbd class="hidden rounded-md border border-line bg-canvas px-2 py-1 text-[11px] text-muted sm:block">
-            /
-          </kbd>
-        </label>
-      </section>
-
-      <section class="mt-12" aria-labelledby="results-title">
-        <div class="flex items-end justify-between gap-4">
-          <div>
-            <p class="text-xs font-medium uppercase tracking-[0.18em] text-muted">Library</p>
-            <h2 id="results-title" class="mt-2 text-xl font-semibold tracking-tight">
-              Tất cả component
-            </h2>
-          </div>
-          <p id="result-summary" class="text-sm text-muted" aria-live="polite">0 kết quả</p>
+      <section class="catalog-results" aria-labelledby="results-title">
+        <div class="catalog-toolbar">
+          <h2 id="results-title" class="catalog-toolbar__title">All components</h2>
+          <p id="result-summary" class="catalog-toolbar__summary" aria-live="polite">
+            0 results
+          </p>
         </div>
 
-        <div
-          id="component-grid"
-          class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3"
-          aria-live="polite"
-        ></div>
+        <div id="component-grid" class="catalog-groups" aria-live="polite"></div>
 
-        <div id="empty-state" class="empty-state mt-6" role="status">
+        <div id="empty-state" class="empty-state catalog-empty-state" role="status">
           <div class="empty-state__visual" aria-hidden="true">
             <span></span>
             <span></span>
             <span></span>
           </div>
-          <p id="empty-title" class="mt-6 text-lg font-semibold">Chưa có component nào</p>
-          <p id="empty-description" class="mt-2 max-w-md text-sm leading-6 text-muted">
-            Bộ khung đã sẵn sàng. Component đầu tiên được thêm vào
-            <code>components/</code> sẽ tự động xuất hiện ở đây sau khi tạo registry.
+          <p id="empty-title" class="empty-state__title">No components yet</p>
+          <p id="empty-description" class="empty-state__description">
+            The catalog is ready. The first component added to <code>components/</code>
+            will appear here after the registry is generated.
           </p>
         </div>
       </section>
@@ -101,28 +91,20 @@
       <article class="component-card">
         <a class="component-card__link" data-component-link>
           <div class="component-card__preview">
-            <video
-              data-component-motion
-              class="h-full w-full object-cover"
-              muted
-              loop
-              playsinline
-              preload="metadata"
-            ></video>
             <div data-preview-fallback class="preview-fallback">
               <span aria-hidden="true"></span>
             </div>
+            <img
+              data-component-thumbnail
+              class="component-card__thumbnail"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
-          <div class="p-5">
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <h3 data-component-name class="font-semibold tracking-tight"></h3>
-                <p data-component-description class="mt-2 line-clamp-2 text-sm leading-6 text-muted"></p>
-              </div>
-              <span class="component-card__arrow" aria-hidden="true">↗</span>
-            </div>
-            <div data-component-tags class="mt-5 flex flex-wrap gap-2"></div>
-          </div>
+          <footer class="component-card__footer">
+            <h3 data-component-name class="component-card__name"></h3>
+            <span data-component-technology class="component-card__technology"></span>
+          </footer>
         </a>
       </article>
     </template>
