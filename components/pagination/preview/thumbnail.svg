@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="A table of orders with a pagination control beneath it, page three of six">
+  <defs>
+    <radialGradient id="glow" cx="12%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#4968e8" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#4968e8" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect width="640" height="360" fill="url(#glow)" />
+
+  <rect x="40" y="24" width="560" height="312" rx="18" fill="#171a20" stroke="#292d36" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <rect x="64" y="48" width="512" height="182" rx="12" fill="#10131a" stroke="#292d36" />
+    <text x="84" y="74" fill="#a8afbc" font-size="12" font-weight="650">Orders</text>
+
+    <rect x="65" y="86" width="510" height="30" fill="#1a1e26" />
+    <text x="84" y="106" fill="#a8afbc" font-size="11" font-weight="650">Order</text>
+    <text x="192" y="106" fill="#a8afbc" font-size="11" font-weight="650">Customer</text>
+    <text x="372" y="106" fill="#a8afbc" font-size="11" font-weight="650">Status</text>
+    <text x="556" y="106" fill="#a8afbc" font-size="11" font-weight="650" text-anchor="end">Total</text>
+    <line x1="65" y1="116" x2="575" y2="116" stroke="#292d36" />
+
+    <text x="84" y="136" fill="#f4f6fa" font-size="12">AP-1011</text>
+    <text x="192" y="136" fill="#f4f6fa" font-size="12">Nadia Haddad</text>
+    <text x="372" y="136" fill="#f4f6fa" font-size="12">Shipped</text>
+    <text x="556" y="136" fill="#f4f6fa" font-size="12" text-anchor="end">2,480.00</text>
+    <line x1="65" y1="146" x2="575" y2="146" stroke="#292d36" />
+
+    <text x="84" y="166" fill="#f4f6fa" font-size="12">AP-1012</text>
+    <text x="192" y="166" fill="#f4f6fa" font-size="12">Lars Nilsen</text>
+    <text x="372" y="166" fill="#f4f6fa" font-size="12">Cancelled</text>
+    <text x="556" y="166" fill="#f4f6fa" font-size="12" text-anchor="end">17.99</text>
+    <line x1="65" y1="176" x2="575" y2="176" stroke="#292d36" />
+
+    <text x="84" y="196" fill="#f4f6fa" font-size="12">AP-1013</text>
+    <text x="192" y="196" fill="#f4f6fa" font-size="12">Mei Chen</text>
+    <text x="372" y="196" fill="#f4f6fa" font-size="12">Shipped</text>
+    <text x="556" y="196" fill="#f4f6fa" font-size="12" text-anchor="end">605.40</text>
+    <line x1="65" y1="206" x2="575" y2="206" stroke="#292d36" />
+
+    <text x="84" y="224" fill="#f4f6fa" font-size="12">AP-1014</text>
+    <text x="192" y="224" fill="#f4f6fa" font-size="12">Rafael Costa</text>
+    <text x="372" y="224" fill="#f4f6fa" font-size="12">Packing</text>
+    <text x="556" y="224" fill="#f4f6fa" font-size="12" text-anchor="end">88.20</text>
+
+    <text x="64" y="256" fill="#a8afbc" font-size="12">Showing 11 to 15 of 26</text>
+
+    <g>
+      <rect x="64" y="278" width="34" height="34" rx="9" fill="none" stroke="#3b414c" />
+      <path d="M85 289l-6 6 6 6M78 289v12" fill="none" stroke="#c2cad8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+
+      <rect x="104" y="278" width="34" height="34" rx="9" fill="none" stroke="#3b414c" />
+      <path d="M124 289l-6 6 6 6" fill="none" stroke="#c2cad8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+
+      <text x="161" y="301" fill="#c2cad8" font-size="14" text-anchor="middle">1</text>
+      <text x="201" y="301" fill="#c2cad8" font-size="14" text-anchor="middle">2</text>
+
+      <rect x="224" y="278" width="34" height="34" rx="9" fill="#4968e8" />
+      <text x="241" y="301" fill="#ffffff" font-size="14" font-weight="680" text-anchor="middle">3</text>
+
+      <text x="281" y="301" fill="#c2cad8" font-size="14" text-anchor="middle">4</text>
+      <text x="321" y="301" fill="#c2cad8" font-size="14" text-anchor="middle">5</text>
+      <text x="361" y="301" fill="#c2cad8" font-size="14" text-anchor="middle">6</text>
+
+      <rect x="384" y="278" width="34" height="34" rx="9" fill="none" stroke="#3b414c" />
+      <path d="M398 289l6 6-6 6" fill="none" stroke="#c2cad8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+
+      <rect x="424" y="278" width="34" height="34" rx="9" fill="none" stroke="#3b414c" />
+      <path d="M434 289l6 6-6 6M446 289v12" fill="none" stroke="#c2cad8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+  </g>
+</svg>

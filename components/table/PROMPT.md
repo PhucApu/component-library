@@ -69,6 +69,12 @@ their layout broke.
 Three states — ascending, descending, and back to the order the data arrived in. Record
 every row's source position before the first comparison runs, or there is no way back.
 
+- Draw a **pair** of triangles facing apart while the column is unsorted and a single
+  larger one once it is sorted. The pair is what says the column can be sorted at all, so
+  show it from the start; an icon that only appears on hover tells a touch user nothing.
+  Fill the marks rather than stroking them: at sixteen pixels a two-pixel outline turns to
+  mush, and open chevrons read as two loose marks instead of one glyph. Separate the sorted
+  state on three counts at once — one mark instead of two, larger, and in the accent colour.
 - Write `aria-sort` on the `th`, never on the button inside it. The state belongs to the
   column, not to the control that changes it.
 - **Blank cells sort last in both directions.** No value is not a small value, and a column
@@ -88,6 +94,10 @@ looking empty.
 Count only the rows the header can actually operate. Counting an unavailable row against
 the total leaves "select all" unable to reach "all": it ticks every row it can, finds the
 count short, and immediately draws itself half-on again.
+
+Then **make those rows look unavailable**. Getting the counting right is not enough: a row
+that "select all" visibly steps over, drawn at full strength, reads as a row the header
+checkbox forgot, and the first person to see it reports a bug.
 
 ## Presentation and accessibility
 

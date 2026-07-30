@@ -15,9 +15,9 @@ import {
  */
 const SORT_ICON = `
   <svg class="table__chevron" viewBox="0 0 24 24" aria-hidden="true">
-    <path class="table__sort-idle" d="m8 10.5 4-4 4 4M8 13.5l4 4 4-4"></path>
-    <path class="table__sort-asc" d="m7 14.5 5-5 5 5"></path>
-    <path class="table__sort-desc" d="m7 9.5 5 5 5-5"></path>
+    <path class="table__sort-idle" d="M12 5 17 10.5H7zM12 19 7 13.5h10z"></path>
+    <path class="table__sort-asc" d="M12 7 17.5 15.5h-11z"></path>
+    <path class="table__sort-desc" d="M12 17 6.5 8.5h11z"></path>
   </svg>
 `;
 

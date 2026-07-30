@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="An image viewer open over a dimmed gallery, with a thumbnail strip beneath">
+  <defs>
+    <linearGradient id="shot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b1b3d" />
+      <stop offset="0.55" stop-color="#c4544a" />
+      <stop offset="1" stop-color="#f2a65a" />
+    </linearGradient>
+  </defs>
+
+  <rect width="640" height="360" fill="#12141a" />
+
+  <rect width="640" height="34" fill="#1a1e26" />
+  <line x1="0" y1="34" x2="640" y2="34" stroke="#2e3440" />
+  <text x="18" y="22" fill="#a8afbc" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="11">1 of 6</text>
+
+  <g stroke="#f4f6fa" stroke-width="1.8" stroke-linecap="round" fill="none">
+    <path d="M540 12h12M546 6v12" />
+    <path d="M574 17h12" />
+    <path d="m610 11 12 12M622 11l-12 12" />
+  </g>
+
+  <rect x="196" y="60" width="248" height="186" rx="6" fill="url(#shot)" />
+  <circle cx="320" cy="172" r="27" fill="#ffd9a0" opacity="0.95" />
+  <rect x="196" y="184" width="248" height="62" fill="#1b1430" opacity="0.55" />
+  <g fill="#ffd9a0" opacity="0.35">
+    <rect x="234" y="194" width="172" height="3" rx="1.5" />
+    <rect x="258" y="206" width="124" height="3" rx="1.5" />
+    <rect x="278" y="218" width="84" height="3" rx="1.5" />
+  </g>
+
+  <g>
+    <rect x="24" y="132" width="42" height="42" rx="9" fill="#1a1e26" stroke="#2e3440" />
+    <path d="M50 145l-8 8 8 8" fill="none" stroke="#f4f6fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <rect x="574" y="132" width="42" height="42" rx="9" fill="#1a1e26" stroke="#2e3440" />
+    <path d="M590 145l8 8-8 8" fill="none" stroke="#f4f6fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <rect y="284" width="640" height="76" fill="#1a1e26" />
+  <line x1="0" y1="284" x2="640" y2="284" stroke="#2e3440" />
+
+  <g>
+    <rect x="18" y="308" width="28" height="28" rx="7" fill="none" stroke="#2e3440" />
+    <path d="M34 317l-5 5 5 5" fill="none" stroke="#f4f6fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    <rect x="594" y="308" width="28" height="28" rx="7" fill="none" stroke="#2e3440" />
+    <path d="M606 317l5 5-5 5" fill="none" stroke="#f4f6fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <g>
+    <rect x="182" y="300" width="52" height="44" rx="6" fill="url(#shot)" stroke="#86a0ff" stroke-width="2" />
+    <rect x="242" y="300" width="52" height="44" rx="6" fill="#41666a" opacity="0.55" />
+    <rect x="302" y="300" width="52" height="44" rx="6" fill="#d1874a" opacity="0.55" />
+    <rect x="362" y="300" width="52" height="44" rx="6" fill="#141a3c" opacity="0.55" />
+    <rect x="422" y="300" width="52" height="44" rx="6" fill="#1d6f8b" opacity="0.55" />
+  </g>
+</svg>

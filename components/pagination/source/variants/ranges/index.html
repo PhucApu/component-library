@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" class="pagination-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="How many pages stay at the ends and beside the current one." />
+    <title>Pagination - Ranges</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="pagination-demo">
+      <div class="pagination-demo__shell">
+        <section class="pagination-demo__card">
+          <p class="pagination-demo__label">Same page, four different shapes</p>
+          <p class="pagination-demo__note">
+            All four sit on page 10 of 24. Boundary pages stay at each end so the first and
+            last are always one press away; sibling pages sit either side of where you are.
+          </p>
+
+          <p class="pagination-demo__label">One of each, the default</p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="10" count="24" sibling-count="1" boundary-count="1">
+              <nav aria-label="One sibling, one boundary"></nav>
+            </ui-pagination>
+          </div>
+
+          <p class="pagination-demo__label">Two siblings</p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="10" count="24" sibling-count="2" boundary-count="1">
+              <nav aria-label="Two siblings"></nav>
+            </ui-pagination>
+          </div>
+
+          <p class="pagination-demo__label">Two pages held at each end</p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="10" count="24" sibling-count="1" boundary-count="2">
+              <nav aria-label="Two boundaries"></nav>
+            </ui-pagination>
+          </div>
+
+          <p class="pagination-demo__label">No siblings at all</p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="10" count="24" sibling-count="0" boundary-count="1">
+              <nav aria-label="No siblings"></nav>
+            </ui-pagination>
+          </div>
+
+          <p class="pagination-demo__label">A gap of exactly one page shows the page</p>
+          <p class="pagination-demo__note">
+            Page 7 of 9 collapses on the left but not on the right, where only page 8 would
+            be hidden. An ellipsis standing in for a single number is the same width and one
+            fewer thing anybody can reach, so the number stays.
+          </p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="7" count="9">
+              <nav aria-label="Single gap"></nav>
+            </ui-pagination>
+          </div>
+
+          <output class="pagination-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializePaginationDemo } from '../../demo.js';
+
+      initializePaginationDemo();
+    </script>
+  </body>
+</html>

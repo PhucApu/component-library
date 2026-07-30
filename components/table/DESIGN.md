@@ -58,6 +58,16 @@ Ascending, descending, and back to the order the data arrived in. Without the th
 who sorted a column to check one thing can never see the original order again, so the source
 position of every row is recorded before the first comparison runs.
 
+The icon carries all three: a **pair** of triangles facing apart while the column is
+unsorted, a single larger one once it is. The pair is what says the column can be sorted at
+all, so it is drawn from the start rather than appearing on hover — an icon that needs a
+pointer to appear tells a touch user nothing.
+
+The marks are **filled, not stroked**. At sixteen pixels a two-pixel outline turns to mush,
+and a pair of open chevrons reads as two loose marks rather than one glyph meaning
+"sortable". Three things separate the sorted state from the resting one at a glance: one
+mark instead of two, larger, and in the accent colour instead of muted.
+
 Two decisions inside that:
 
 - **`aria-sort` goes on the `th`**, never on the button inside it. The state belongs to the
@@ -81,6 +91,11 @@ The trap found while building this: counting an unavailable row against the tota
 short, and immediately draws itself half-on again. The header checkbox therefore counts only
 the rows it can actually operate, while the reported selection still includes any row the
 author locked in.
+
+A second one found at review: getting that right is not enough if the row does not **look**
+unavailable. Left at full strength, a row that "select all" steps over reads as a row the
+header checkbox simply forgot, and the first person to see it reports a bug. Such rows are
+marked `data-unavailable` and drawn in the muted colour with a dimmed, not-allowed checkbox.
 
 ## 8. Detail is a row, not a panel
 

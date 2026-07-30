@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" class="pagination-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The two scales and the unavailable state." />
+    <title>Pagination - Sizes</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="pagination-demo">
+      <div class="pagination-demo__shell">
+        <section class="pagination-demo__card">
+          <p class="pagination-demo__label">Standard</p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="4" count="12" size="md">
+              <nav aria-label="Standard size"></nav>
+            </ui-pagination>
+          </div>
+
+          <p class="pagination-demo__label">Compact scale</p>
+          <p class="pagination-demo__note">
+            For a toolbar or a dense table footer. Each control stays at least 24 pixels
+            across so it remains a reachable target.
+          </p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="4" count="12" size="sm">
+              <nav aria-label="Compact size"></nav>
+            </ui-pagination>
+          </div>
+
+          <p class="pagination-demo__label">Unavailable while something else is loading</p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="4" count="12" disabled>
+              <nav aria-label="Unavailable"></nav>
+            </ui-pagination>
+          </div>
+
+          <output class="pagination-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializePaginationDemo } from '../../demo.js';
+
+      initializePaginationDemo();
+    </script>
+  </body>
+</html>

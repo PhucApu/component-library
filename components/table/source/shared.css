@@ -125,6 +125,8 @@ ui-table[data-sticky] .table__table thead th {
 
 /* Selecting everything visibly steps over this row, so it has to read as unavailable
    rather than as one the header checkbox forgot. */
+/* Selecting everything visibly steps over this row, so it has to read as unavailable
+   rather than as one the header checkbox forgot. */
 .table__table tbody tr[data-unavailable] td,
 .table__table tbody tr[data-unavailable] th {
   color: var(--table-muted);
@@ -165,18 +167,17 @@ ui-table[data-sticky] .table__table thead th {
   outline-offset: 1px;
 }
 
+/* Filled rather than stroked. A two-pixel outline at this size turns to mush, and the pair
+   read as two loose marks instead of one glyph meaning "sortable". */
 .table__chevron {
-  inline-size: 1rem;
-  block-size: 1rem;
+  inline-size: 1.05rem;
+  block-size: 1.05rem;
   flex: none;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2;
-  /* Visible from the start: the pair of arrows is what says the column can be sorted at
-     all. An icon that only appears on hover tells a touch user nothing. */
-  opacity: 0.5;
+  fill: currentColor;
+  stroke: none;
+  /* Visible from the start: the pair is what says the column can be sorted at all. An icon
+     that only appears on hover tells a touch user nothing. */
+  opacity: 0.45;
 }
 
 .table__sort:hover .table__chevron {

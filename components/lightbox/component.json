@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "lightbox",
+  "version": "0.1.0",
+  "name": "Lightbox",
+  "description": "A framework-free Web Component that turns a gallery of links into a full viewer, with magnification by wheel, button and key, dragging once magnified, and a thumbnail strip that scrolls on its own arrows.",
+  "group": "surface",
+  "categories": ["surface", "overlay", "media"],
+  "tags": ["lightbox", "gallery", "image-viewer", "zoom", "dialog", "web-component", "accessible"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A grid of pictures that opens into the viewer, built on links that still work with no script.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "zoom",
+      "name": "Zoom",
+      "description": "Magnifying by wheel, by button and by key, magnifying towards the pointer, and dragging once magnified.",
+      "entry": "source/variants/zoom/index.html"
+    },
+    {
+      "id": "navigation",
+      "name": "Navigation",
+      "description": "A strip long enough to need its end arrows, following the current picture back into view, in a set that loops.",
+      "entry": "source/variants/navigation/index.html"
+    },
+    {
+      "id": "captions",
+      "name": "Captions",
+      "description": "Pictures carrying a caption beside the alternative text that a caption never replaces.",
+      "entry": "source/variants/captions/index.html"
+    },
+    {
+      "id": "aspect",
+      "name": "Aspect",
+      "description": "Tall, wide and square pictures in one set, cropped in the grid and shown whole in the viewer.",
+      "entry": "source/variants/aspect/index.html"
+    },
+    {
+      "id": "single",
+      "name": "Single",
+      "description": "One picture, where the arrows and the strip are removed rather than turned off.",
+      "entry": "source/variants/single/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

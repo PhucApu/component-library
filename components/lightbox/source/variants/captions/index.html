@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" class="lightbox-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Pictures carrying a caption in the viewer." />
+    <title>Lightbox - Captions</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="lightbox-demo">
+      <div class="lightbox-demo__shell">
+        <section class="lightbox-demo__card">
+          <p class="lightbox-demo__label">A caption is not a description</p>
+          <p class="lightbox-demo__note">
+            The <code>alt</code> text says what the picture shows, and is what a screen
+            reader reads. The caption says something the picture cannot: where it was taken,
+            or when. They are different jobs, so a caption never replaces an alt.
+          </p>
+
+          <ui-lightbox>
+            <ul class="lightbox__gallery">
+              <li>
+                <a
+                  class="lightbox__item"
+                  href="../../assets/glacier-pass.svg"
+                  data-caption="Bergsee Pass, 2,140 m. Shot at first light in early June."
+                >
+                  <img
+                    src="../../assets/glacier-pass.svg"
+                    alt="A glacier pass between two snow-streaked peaks"
+                  />
+                </a>
+              </li>
+              <li>
+                <a
+                  class="lightbox__item"
+                  href="../../assets/coral-bay.svg"
+                  data-caption="Ras Nungwi shallows. Three metres down, no filter."
+                >
+                  <img
+                    src="../../assets/coral-bay.svg"
+                    alt="Coral heads in a shallow turquoise bay"
+                  />
+                </a>
+              </li>
+              <li>
+                <a class="lightbox__item" href="../../assets/wheat-field.svg">
+                  <img
+                    src="../../assets/wheat-field.svg"
+                    alt="A wheat field in late light, stalks catching the low sun"
+                  />
+                </a>
+              </li>
+              <li>
+                <a
+                  class="lightbox__item"
+                  href="../../assets/storm-front.svg"
+                  data-caption="Forty minutes before the hail. The car did not survive."
+                >
+                  <img
+                    src="../../assets/storm-front.svg"
+                    alt="A storm front crossing open ground, with a single fork of lightning"
+                  />
+                </a>
+              </li>
+            </ul>
+          </ui-lightbox>
+
+          <output class="lightbox-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeLightboxDemo } from '../../demo.js';
+
+      initializeLightboxDemo();
+    </script>
+  </body>
+</html>

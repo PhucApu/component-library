@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="squall" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#4a4763" />
+      <stop offset="0.6" stop-color="#6f6a86" />
+      <stop offset="1" stop-color="#2e2b3d" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#squall)" />
+  <g fill="#8f8aa6" opacity="0.7">
+    <ellipse cx="220" cy="170" rx="150" ry="52" />
+    <ellipse cx="380" cy="140" rx="120" ry="44" />
+    <ellipse cx="580" cy="186" rx="160" ry="56" />
+  </g>
+  <g stroke="#c9c4dd" stroke-width="3" stroke-linecap="round" opacity="0.5">
+    <path d="M120 260l-40 110M200 250l-40 120M280 268l-40 104M360 246l-40 126M440 262l-40 108M520 250l-40 120M600 266l-40 106M680 252l-40 118" />
+  </g>
+  <path d="M430 240l-58 110h52l-34 106 96-140h-56l40-76z" fill="#ffe27a" />
+  <rect y="486" width="800" height="114" fill="#221f30" />
+  <g fill="#3a3550" opacity="0.8">
+    <path d="M0 486q120 30 240 0t240 0 240 0v22q-120 30-240 0t-240 0-240 0z" />
+  </g>
+</svg>

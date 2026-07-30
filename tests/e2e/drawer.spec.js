@@ -147,6 +147,9 @@ test('a panel that needs an answer ignores the backdrop but still answers Escape
   const panel = page.locator('#held .drawer__panel');
   await page.locator('#held-button').click();
   await expect(panel).toBeVisible();
+  // Let the slide settle, so the press below is judged against where the panel rests
+  // rather than against where it happened to be mid-animation.
+  await page.waitForTimeout(320);
 
   await page.mouse.click(480, 80);
   await page.waitForTimeout(300);
@@ -301,6 +304,46 @@ test('the panel body scrolls while its header stays put', async ({ page }) => {
 
   expect(measured.scrolled).toBeGreaterThan(0);
   expect(measured.headerMoved).toBeLessThan(2);
+});
+
+test('the panel is toned to the page around it', async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 720 });
+  await ready(page, 'default');
+
+  await page.locator('#menu-button').click();
+  await expect(page.locator('.drawer__panel')).toBeVisible();
+
+  // A modal panel is a sibling of the main content, not a child of it, so an override
+  // scoped to the demo container never reaches it and the panel stays on its light
+  // defaults — a white slab over a dark page.
+  const measured = await page.evaluate(() => {
+    const linear = (channel) => {
+      const value = channel / 255;
+      return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+    };
+    const luminance = (colour) => {
+      const [r, g, b] = colour.match(/[\d.]+/g).slice(0, 3).map(Number);
+      return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
+    };
+    const ratio = (a, b) => {
+      const [light, dark] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+      return (light + 0.05) / (dark + 0.05);
+    };
+
+    const panel = getComputedStyle(document.querySelector('.drawer__panel'));
+    const card = getComputedStyle(document.querySelector('.drawer-demo__card'));
+
+    return {
+      panel: panel.backgroundColor,
+      againstCard: ratio(panel.backgroundColor, card.backgroundColor),
+      textOnPanel: ratio(panel.color, panel.backgroundColor),
+    };
+  });
+
+  expect(measured.panel).not.toBe('rgb(255, 255, 255)');
+  // Effectively the same tone as the surfaces beside it.
+  expect(measured.againstCard).toBeLessThan(1.2);
+  expect(measured.textOnPanel).toBeGreaterThanOrEqual(4.5);
 });
 
 test('reduced motion removes the slide', async ({ page }) => {

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="canyon" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd9a8" />
+      <stop offset="1" stop-color="#7c2f1c" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#canyon)" />
+  <path d="M0 0h250l-90 600H0z" fill="#a8452a" />
+  <path d="M800 0H560l70 600h170z" fill="#93381f" />
+  <path d="M250 0h90l-40 600h-140z" fill="#c25a34" opacity="0.8" />
+  <path d="M560 0h-80l30 600h120z" fill="#b04c2b" opacity="0.8" />
+  <g stroke="#5e2013" stroke-width="5" opacity="0.35" fill="none" stroke-linecap="round">
+    <path d="M40 120q60 60 30 140M120 60q50 90 20 200M660 100q-50 70-20 180M740 40q-40 100-10 220" />
+  </g>
+  <rect y="560" width="800" height="40" fill="#5e2013" />
+</svg>

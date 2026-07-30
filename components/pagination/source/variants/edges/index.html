@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" class="pagination-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="First, last, previous and next buttons." />
+    <title>Pagination - Edges</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="pagination-demo">
+      <div class="pagination-demo__shell">
+        <section class="pagination-demo__card">
+          <p class="pagination-demo__label">Jumping to the ends</p>
+          <p class="pagination-demo__note">
+            Each arrow is named for where it goes. When you reach an end, the button that
+            took you there becomes unavailable — and because a disabled control cannot hold
+            focus, focus moves to the current page rather than dropping to the top of the
+            document.
+          </p>
+
+          <div class="pagination-demo__frame">
+            <ui-pagination page="5" count="12" show-first show-last>
+              <nav aria-label="With first and last"></nav>
+            </ui-pagination>
+          </div>
+
+          <p class="pagination-demo__label">Numbers only</p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="5" count="12" hide-prev hide-next>
+              <nav aria-label="Numbers only"></nav>
+            </ui-pagination>
+          </div>
+
+          <p class="pagination-demo__label">Already at the first page</p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="1" count="12" show-first show-last>
+              <nav aria-label="At the start"></nav>
+            </ui-pagination>
+          </div>
+
+          <p class="pagination-demo__label">A single page has nowhere to go</p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="1" count="1" show-first show-last>
+              <nav aria-label="One page"></nav>
+            </ui-pagination>
+          </div>
+
+          <output class="pagination-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializePaginationDemo } from '../../demo.js';
+
+      initializePaginationDemo();
+    </script>
+  </body>
+</html>

@@ -83,6 +83,9 @@ owns.
   nothing waits on an animation that is not running.
 - Define every CSS custom property the component reads inside the component itself, and
   reference nothing outside it.
+- Scope any theme override to the **page**, not to the content container. A modal panel is a
+  sibling of the content rather than a child of it, so a container-scoped override never
+  reaches it and the panel keeps its light defaults — a white slab over a dark page.
 
 ## Verify before calling it done
 

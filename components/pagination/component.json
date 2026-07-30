@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "pagination",
+  "version": "0.1.0",
+  "name": "Pagination",
+  "description": "A framework-free Web Component that builds a list of pages, keeps focus where it was after the list is rebuilt, and announces the page change that nothing else would report.",
+  "group": "navigation",
+  "categories": ["navigation", "pagination"],
+  "tags": ["pagination", "pager", "web-component", "accessible", "live-region"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A list of pages with previous and next, shown at the start, in the middle, and short enough to need no collapsing.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "ranges",
+      "name": "Ranges",
+      "description": "The same page under four different sibling and boundary counts, and the gap that shows a number instead of an ellipsis.",
+      "entry": "source/variants/ranges/index.html"
+    },
+    {
+      "id": "edges",
+      "name": "Edges",
+      "description": "Jumps to the first and last page, a numbers-only arrangement, and what happens when an end is reached.",
+      "entry": "source/variants/edges/index.html"
+    },
+    {
+      "id": "sizes",
+      "name": "Sizes",
+      "description": "The standard and compact scales beside the unavailable state.",
+      "entry": "source/variants/sizes/index.html"
+    },
+    {
+      "id": "compact",
+      "name": "Compact",
+      "description": "A stated position with two arrows, for a column too narrow to hold a row of numbers.",
+      "entry": "source/variants/compact/index.html"
+    },
+    {
+      "id": "table",
+      "name": "Table",
+      "description": "Pagination driving a plain semantic table, with rows per page and the row range it currently covers.",
+      "entry": "source/variants/table/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "table",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

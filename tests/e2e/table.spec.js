@@ -165,6 +165,66 @@ test('aria-sort lives on the header cell, and only on the active one', async ({ 
   expect(onButton).toBe(false);
 });
 
+test('the sort icon shows a pair at rest and one arrow once sorted', async ({ page }) => {
+  await page.setViewportSize({ width: 1100, height: 720 });
+  await ready(page, 'sortable');
+
+  const icon = () =>
+    page.evaluate(() => {
+      const header = document.querySelector('th[data-column="cores"]');
+      return {
+        ariaSort: header.getAttribute('aria-sort'),
+        shown: [...header.querySelectorAll('.table__chevron path')]
+          .filter((path) => getComputedStyle(path).display !== 'none')
+          .map((path) => path.getAttribute('class')),
+        visible: Number(getComputedStyle(header.querySelector('.table__chevron')).opacity) > 0,
+      };
+    });
+
+  // The pair is what says the column can be sorted at all, so it is there before anyone
+  // presses. An icon that only appears on hover tells a touch user nothing.
+  expect(await icon()).toEqual({
+    ariaSort: 'none',
+    shown: ['table__sort-idle'],
+    visible: true,
+  });
+
+  const cores = page.locator('th[data-column="cores"] .table__sort');
+
+  await cores.click();
+  expect(await icon()).toMatchObject({ ariaSort: 'ascending', shown: ['table__sort-asc'] });
+
+  await cores.click();
+  expect(await icon()).toMatchObject({ ariaSort: 'descending', shown: ['table__sort-desc'] });
+
+  await cores.click();
+  expect(await icon()).toMatchObject({ ariaSort: 'none', shown: ['table__sort-idle'] });
+});
+
+test('a row select-all cannot reach is shown as unavailable', async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 720 });
+  await ready(page, 'selectable');
+
+  await page.locator('.table__select-all').check();
+
+  const rows = await page.evaluate(() =>
+    [...document.querySelectorAll('tbody tr')].map((row) => ({
+      key: row.dataset.key,
+      selected: row.hasAttribute('data-selected'),
+      unavailable: row.hasAttribute('data-unavailable'),
+      colour: getComputedStyle(row.querySelector('th')).color,
+      boxOpacity: Number(getComputedStyle(row.querySelector('input')).opacity),
+    })),
+  );
+
+  const skipped = rows.at(-1);
+  expect(skipped).toMatchObject({ key: 'tomas', selected: false, unavailable: true });
+
+  // Left at full strength it reads as a row the header checkbox simply forgot.
+  expect(skipped.colour).not.toBe(rows[0].colour);
+  expect(skipped.boxOpacity).toBeLessThan(rows[0].boxOpacity);
+});
+
 test('a blank cell stays last in both directions', async ({ page }) => {
   await page.setViewportSize({ width: 1100, height: 720 });
   await ready(page, 'sortable');

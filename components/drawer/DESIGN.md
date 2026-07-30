@@ -73,20 +73,30 @@ exactly that.
 | `--drawer-backdrop` | `rgb(9 12 20 / 0.55)` | The dimmed page |
 | `--drawer-size` | `20rem` | Panel width or height |
 
-## 9. Anchors
+## 9. Theming reaches a panel that sits outside the layout
+
+A modal panel is a **sibling** of the page content, not a child of it — it has to be, to sit
+in the top layer without inheriting a stacking context. So a theme scoped to the content
+container never reaches it, and the panel keeps its light defaults: a white slab over a dark
+page. Scope overrides to the page instead.
+
+Found at review, and the second time in this collection: Snackbar has the same shape and the
+same fix.
+
+## 10. Anchors
 
 Four edges. The horizontal pair is named `start` and `end` rather than left and right, so
 they follow the writing direction. A panel never exceeds `100vw - 3rem`, so the page behind
 is always visible enough to press.
 
-## 10. Responsive without changing what the element is
+## 11. Responsive without changing what the element is
 
 A permanent panel on a wide screen and a modal one on a narrow screen are two different
 things, so the Responsive variant ships both and shows one at a time. Swapping a `nav` for a
 `dialog` at a breakpoint would change what assistive technology has been told about the
 page, halfway through someone using it.
 
-## 11. Motion
+## 12. Motion
 
 Slide and fade at `220ms` on a decelerating curve. The panel is revealed in two steps — one
 attribute renders it at its starting offset, a layout read flushes that, and a second

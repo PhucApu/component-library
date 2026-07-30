@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" class="lightbox-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="One picture, with nothing to navigate between." />
+    <title>Lightbox - Single</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="lightbox-demo">
+      <div class="lightbox-demo__shell">
+        <section class="lightbox-demo__card">
+          <p class="lightbox-demo__label">Nothing to move between</p>
+          <p class="lightbox-demo__note">
+            With one picture the arrows and the strip are gone rather than turned off.
+            Disabled controls that could never do anything are furniture, and they take
+            tab stops with them. Magnifying still works, because that is about this
+            picture rather than about the set.
+          </p>
+
+          <ui-lightbox>
+            <ul class="lightbox__gallery">
+              <li>
+                <a
+                  class="lightbox__item"
+                  href="../../assets/harbour-sunrise.svg"
+                  data-caption="The only frame worth keeping from that morning."
+                >
+                  <img
+                    src="../../assets/harbour-sunrise.svg"
+                    alt="Sunrise over a quiet harbour, two moored boats in silhouette"
+                  />
+                </a>
+              </li>
+            </ul>
+          </ui-lightbox>
+
+          <output class="lightbox-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeLightboxDemo } from '../../demo.js';
+
+      initializeLightboxDemo();
+    </script>
+  </body>
+</html>

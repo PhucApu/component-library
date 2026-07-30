@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" class="lightbox-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A gallery that opens into a full viewer." />
+    <title>Lightbox - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="lightbox-demo">
+      <div class="lightbox-demo__shell">
+        <section class="lightbox-demo__card">
+          <p class="lightbox-demo__label">Press a picture to see it whole</p>
+          <p class="lightbox-demo__note">
+            The gallery is a list of links to the full pictures, so with no script at all
+            pressing one opens that picture. With script, the viewer opens instead: a
+            dialog, which is where the focus trap, Escape, and the dimmed page come from.
+            Scroll to zoom, drag to move, and close with Escape or the dimmed area.
+          </p>
+
+          <ui-lightbox>
+            <ul class="lightbox__gallery">
+              <li>
+                <a class="lightbox__item" href="../../assets/harbour-sunrise.svg">
+                  <img
+                    src="../../assets/harbour-sunrise.svg"
+                    alt="Sunrise over a quiet harbour, two moored boats in silhouette"
+                  />
+                </a>
+              </li>
+              <li>
+                <a class="lightbox__item" href="../../assets/pine-ridge.svg">
+                  <img
+                    src="../../assets/pine-ridge.svg"
+                    alt="Layered pine ridges fading into morning mist"
+                  />
+                </a>
+              </li>
+              <li>
+                <a class="lightbox__item" href="../../assets/desert-dune.svg">
+                  <img
+                    src="../../assets/desert-dune.svg"
+                    alt="Rolling desert dunes under a high midday sun"
+                  />
+                </a>
+              </li>
+              <li>
+                <a class="lightbox__item" href="../../assets/night-city.svg">
+                  <img
+                    src="../../assets/night-city.svg"
+                    alt="A city skyline at dusk with lit windows scattered across the towers"
+                  />
+                </a>
+              </li>
+              <li>
+                <a class="lightbox__item" href="../../assets/coral-bay.svg">
+                  <img
+                    src="../../assets/coral-bay.svg"
+                    alt="Coral heads in a shallow turquoise bay"
+                  />
+                </a>
+              </li>
+              <li>
+                <a class="lightbox__item" href="../../assets/glacier-pass.svg">
+                  <img
+                    src="../../assets/glacier-pass.svg"
+                    alt="A glacier pass between two snow-streaked peaks"
+                  />
+                </a>
+              </li>
+            </ul>
+          </ui-lightbox>
+
+          <output class="lightbox-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeLightboxDemo } from '../../demo.js';
+
+      initializeLightboxDemo();
+    </script>
+  </body>
+</html>

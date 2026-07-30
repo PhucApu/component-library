@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" class="pagination-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A list of pages with previous and next." />
+    <title>Pagination - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="pagination-demo">
+      <div class="pagination-demo__shell">
+        <section class="pagination-demo__card">
+          <p class="pagination-demo__label">Ten pages, currently on the first</p>
+          <p class="pagination-demo__note">
+            Every button says where it goes, not just what it reads: "Go to page 3", not
+            "3". Moving page rewrites the content elsewhere while focus stays here, so the
+            change is also announced.
+          </p>
+
+          <div class="pagination-demo__frame">
+            <ui-pagination page="1" count="10">
+              <nav aria-label="Search results"></nav>
+            </ui-pagination>
+          </div>
+
+          <p class="pagination-demo__label">Further along, with the middle collapsed</p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="6" count="24">
+              <nav aria-label="Archive"></nav>
+            </ui-pagination>
+          </div>
+
+          <p class="pagination-demo__label">Few enough pages to show them all</p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="2" count="4">
+              <nav aria-label="Drafts"></nav>
+            </ui-pagination>
+          </div>
+
+          <output class="pagination-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializePaginationDemo } from '../../demo.js';
+
+      initializePaginationDemo();
+    </script>
+  </body>
+</html>

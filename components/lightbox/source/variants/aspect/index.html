@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" class="lightbox-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Tall and wide pictures in one set." />
+    <title>Lightbox - Aspect</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="lightbox-demo">
+      <div class="lightbox-demo__shell">
+        <section class="lightbox-demo__card">
+          <p class="lightbox-demo__label">One set, three different shapes</p>
+          <p class="lightbox-demo__note">
+            The gallery crops every thumbnail to the same tile so the grid stays a grid. The
+            viewer does the opposite: it fits each picture whole, so a tall one is limited by
+            the height and a wide one by the width. Nothing is cropped once it is open.
+          </p>
+          <p class="lightbox-demo__note">
+            The limit on dragging follows from that. A picture narrower than the frame cannot
+            be moved sideways at all, however far it is magnified vertically.
+          </p>
+
+          <ui-lightbox>
+            <ul class="lightbox__gallery">
+              <li>
+                <a class="lightbox__item" href="../../assets/tall-falls.svg">
+                  <img
+                    src="../../assets/tall-falls.svg"
+                    alt="A tall waterfall dropping through a narrow green gorge"
+                  />
+                </a>
+              </li>
+              <li>
+                <a class="lightbox__item" href="../../assets/wide-salt-flat.svg">
+                  <img
+                    src="../../assets/wide-salt-flat.svg"
+                    alt="A cracked salt flat stretching to the horizon under a pale sky"
+                  />
+                </a>
+              </li>
+              <li>
+                <a class="lightbox__item" href="../../assets/pine-ridge.svg">
+                  <img
+                    src="../../assets/pine-ridge.svg"
+                    alt="Layered pine ridges fading into morning mist"
+                  />
+                </a>
+              </li>
+              <li>
+                <a class="lightbox__item" href="../../assets/desert-dune.svg">
+                  <img
+                    src="../../assets/desert-dune.svg"
+                    alt="Rolling desert dunes under a high midday sun"
+                  />
+                </a>
+              </li>
+            </ul>
+          </ui-lightbox>
+
+          <output class="lightbox-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeLightboxDemo } from '../../demo.js';
+
+      initializeLightboxDemo();
+    </script>
+  </body>
+</html>

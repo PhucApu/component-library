@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 800" width="450" height="800">
+  <defs>
+    <linearGradient id="gorge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b9d6c6" />
+      <stop offset="1" stop-color="#294a3c" />
+    </linearGradient>
+  </defs>
+  <rect width="450" height="800" fill="url(#gorge)" />
+  <path d="M0 0h140l40 800H0z" fill="#2f5344" />
+  <path d="M450 0H310l-40 800h180z" fill="#38604e" />
+  <path d="M190 90h72l-14 560h-44z" fill="#e8f5ee" opacity="0.9" />
+  <g fill="#ffffff" opacity="0.55">
+    <ellipse cx="226" cy="664" rx="86" ry="26" />
+    <ellipse cx="226" cy="700" rx="112" ry="30" />
+  </g>
+  <rect y="712" width="450" height="88" fill="#1d382e" />
+  <g stroke="#9dc7b1" stroke-width="4" stroke-linecap="round" opacity="0.4" fill="none">
+    <path d="M40 250v120M76 300v90M374 230v140M410 290v100" />
+  </g>
+</svg>

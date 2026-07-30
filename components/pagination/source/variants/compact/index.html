@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" class="pagination-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Previous, next, and a position, for a narrow column." />
+    <title>Pagination - Compact</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="pagination-demo">
+      <div class="pagination-demo__shell">
+        <section class="pagination-demo__card">
+          <p class="pagination-demo__label">When there is no room for a row of numbers</p>
+          <p class="pagination-demo__note">
+            Nine buttons do not fit in a phone-width column, and wrapping them onto three
+            lines is worse than not showing them. The position is stated instead, and the
+            two arrows still reach every page.
+          </p>
+
+          <div class="pagination-demo__frame pagination-demo__frame--narrow">
+            <ui-pagination page="7" count="42" compact>
+              <nav aria-label="Compact results"></nav>
+            </ui-pagination>
+          </div>
+
+          <p class="pagination-demo__label">With jumps to either end</p>
+          <div class="pagination-demo__frame pagination-demo__frame--narrow">
+            <ui-pagination page="7" count="42" compact show-first show-last>
+              <nav aria-label="Compact with edges"></nav>
+            </ui-pagination>
+          </div>
+
+          <p class="pagination-demo__label">The same range at full width, for comparison</p>
+          <div class="pagination-demo__frame">
+            <ui-pagination page="7" count="42">
+              <nav aria-label="Full width"></nav>
+            </ui-pagination>
+          </div>
+
+          <output class="pagination-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializePaginationDemo } from '../../demo.js';
+
+      initializePaginationDemo();
+    </script>
+  </body>
+</html>
