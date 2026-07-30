@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" class="chip-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Chip button and link examples." />
+    <title>Chip - Action</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chip-demo">
+      <div class="chip-demo__shell">
+        <section class="chip-demo__card">
+          <p class="chip-demo__label">Buttons</p>
+          <div class="chip-demo__row">
+            <ui-chip><button type="button">Add label</button></ui-chip>
+            <ui-chip intent="accent"><button type="button">Assign to me</button></ui-chip>
+            <ui-chip disabled><button type="button">Archive</button></ui-chip>
+          </div>
+
+          <p class="chip-demo__label">Links</p>
+          <div class="chip-demo__row">
+            <ui-chip><a href="#design">Browse design</a></ui-chip>
+            <ui-chip intent="success"><a href="#shipped">Browse shipped</a></ui-chip>
+            <ui-chip disabled><a href="#archive">Browse archive</a></ui-chip>
+          </div>
+
+          <p class="chip-demo__label">Acting and removing together</p>
+          <div class="chip-demo__row">
+            <ui-chip removable><button type="button">Filter: Design</button></ui-chip>
+          </div>
+          <p class="chip-demo__label">
+            The remove button sits beside the author's control rather than inside it,
+            because a button nested in a button is invalid markup.
+          </p>
+          <output class="chip-demo__output" aria-live="polite">nothing yet</output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeChipDemo } from '../../demo.js';
+
+      initializeChipDemo();
+    </script>
+  </body>
+</html>

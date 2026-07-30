@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" class="radio-group-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Radio Group row layout example." />
+    <title>Radio Group - Horizontal</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="radio-group-demo">
+      <div class="radio-group-demo__shell">
+        <section class="radio-group-demo__card">
+          <ui-radio-group name="seats" value="2" layout="row">
+            <fieldset>
+              <legend>Number of seats</legend>
+              <div class="radio-group__options">
+                <label>
+                  <input type="radio" name="seats" value="1" />
+                  <span class="radio-group__text">One</span>
+                </label>
+                <label>
+                  <input type="radio" name="seats" value="2" />
+                  <span class="radio-group__text">Two</span>
+                </label>
+                <label>
+                  <input type="radio" name="seats" value="4" />
+                  <span class="radio-group__text">Four</span>
+                </label>
+                <label>
+                  <input type="radio" name="seats" value="6" />
+                  <span class="radio-group__text">Six</span>
+                </label>
+                <label>
+                  <input type="radio" name="seats" value="8" />
+                  <span class="radio-group__text">Eight</span>
+                </label>
+              </div>
+            </fieldset>
+          </ui-radio-group>
+          <p class="radio-group-demo__label">Raw output</p>
+          <output class="radio-group-demo__output" aria-live="polite">""</output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeRadioGroupDemo } from '../../demo.js';
+
+      initializeRadioGroupDemo();
+    </script>
+  </body>
+</html>

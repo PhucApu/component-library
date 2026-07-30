@@ -191,11 +191,14 @@ test('thumbnail failure keeps a stable fallback without changing card height', a
       technologies: ['html'],
       preview: { thumbnail: 'data:image/svg+xml,not-valid-svg' },
     });
-    document.querySelector('.component-group__grid').append(card);
+    // Scoped to one grid: the homepage renders a section per taxonomy group, so an
+    // unscoped selector matches every group once a second one exists.
+    const grid = document.querySelector('#inputs .component-group__grid');
+    grid.append(card);
     const preview = card.querySelector('.component-card__preview');
     return {
       before: preview.getBoundingClientRect().height,
-      cardSelector: '.component-card:last-child',
+      cardSelector: '#inputs .component-card:last-child',
     };
   });
 
@@ -223,6 +226,7 @@ test('catalog grid remains responsive and the sticky header does not overflow', 
 
     const columnCount = await page
       .locator('.component-group__grid')
+      .first()
       .evaluate((grid) =>
         getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length,
       );

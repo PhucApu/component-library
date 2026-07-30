@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" class="chip-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Chip static token example." />
+    <title>Chip - Static</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chip-demo">
+      <div class="chip-demo__shell">
+        <section class="chip-demo__card">
+          <p class="chip-demo__label">Applied labels</p>
+          <div class="chip-demo__row">
+            <ui-chip><span>Design</span></ui-chip>
+            <ui-chip intent="accent"><span>In review</span></ui-chip>
+            <ui-chip intent="success"><span>Shipped</span></ui-chip>
+            <ui-chip intent="warning"><span>Needs triage</span></ui-chip>
+            <ui-chip intent="danger"><span>Blocked</span></ui-chip>
+          </div>
+          <p class="chip-demo__label">
+            A static chip presents information and is not focusable, so keyboard users are
+            not asked to tab through something they cannot act on.
+          </p>
+          <output class="chip-demo__output" aria-live="polite">nothing yet</output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeChipDemo } from '../../demo.js';
+
+      initializeChipDemo();
+    </script>
+  </body>
+</html>

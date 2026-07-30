@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" class="chip-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Chip with avatar, icon, and count." />
+    <title>Chip - Adorned</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chip-demo">
+      <div class="chip-demo__shell">
+        <section class="chip-demo__card">
+          <p class="chip-demo__label">With an avatar</p>
+          <div class="chip-demo__row">
+            <ui-chip removable>
+              <span>
+                <svg
+                  class="chip__avatar"
+                  viewBox="0 0 32 32"
+                  role="img"
+                  aria-label="Ha Linh"
+                >
+                  <circle cx="16" cy="16" r="16" fill="#4968e8"></circle>
+                  <text
+                    x="16"
+                    y="21"
+                    text-anchor="middle"
+                    fill="#ffffff"
+                    font-size="13"
+                    font-family="Inter, sans-serif"
+                  >HL</text>
+                </svg>
+                Ha Linh
+              </span>
+            </ui-chip>
+            <ui-chip removable>
+              <span>
+                <svg
+                  class="chip__avatar"
+                  viewBox="0 0 32 32"
+                  role="img"
+                  aria-label="Minh Quan"
+                >
+                  <circle cx="16" cy="16" r="16" fill="#3d6b4f"></circle>
+                  <text
+                    x="16"
+                    y="21"
+                    text-anchor="middle"
+                    fill="#ffffff"
+                    font-size="13"
+                    font-family="Inter, sans-serif"
+                  >MQ</text>
+                </svg>
+                Minh Quan
+              </span>
+            </ui-chip>
+          </div>
+
+          <p class="chip-demo__label">With a leading icon and a trailing count</p>
+          <div class="chip-demo__row">
+            <ui-chip intent="accent">
+              <span>
+                <svg class="chip__icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3v18M3 12h18"></path>
+                </svg>
+                Open issues
+                <span class="chip__count">24</span>
+              </span>
+            </ui-chip>
+            <ui-chip intent="danger">
+              <span>
+                <svg class="chip__icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 8v5M12 16.5v.5"></path>
+                  <circle cx="12" cy="12" r="9"></circle>
+                </svg>
+                Failing
+                <span class="chip__count">3</span>
+              </span>
+            </ui-chip>
+          </div>
+          <p class="chip-demo__label">
+            Decorative marks are hidden from assistive technology; an avatar standing in for
+            a person carries its own name.
+          </p>
+          <output class="chip-demo__output" aria-live="polite">nothing yet</output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeChipDemo } from '../../demo.js';
+
+      initializeChipDemo();
+    </script>
+  </body>
+</html>

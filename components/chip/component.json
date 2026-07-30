@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "chip",
+  "version": "0.1.0",
+  "name": "Chip",
+  "description": "A framework-free Web Component that styles a compact token and lets the author keep the semantics that match how the chip behaves.",
+  "group": "data-display",
+  "categories": ["tag", "selection"],
+  "tags": ["chip", "tag", "token", "web-component", "accessible"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "static",
+      "name": "Static",
+      "description": "A plain token that presents information and stays out of the tab order.",
+      "entry": "source/variants/static/index.html"
+    },
+    {
+      "id": "removable",
+      "name": "Removable",
+      "description": "A token with its own remove button, named after the chip and reachable by keyboard.",
+      "entry": "source/variants/removable/index.html"
+    },
+    {
+      "id": "action",
+      "name": "Action",
+      "description": "Chips that act, shown as a real button and as a real link so each keeps its own behavior.",
+      "entry": "source/variants/action/index.html"
+    },
+    {
+      "id": "filter",
+      "name": "Filter",
+      "description": "Toggle chips that report their state through aria-pressed rather than colour alone.",
+      "entry": "source/variants/filter/index.html"
+    },
+    {
+      "id": "adorned",
+      "name": "Adorned",
+      "description": "Chips carrying a leading avatar or icon and a trailing count beside the label.",
+      "entry": "source/variants/adorned/index.html"
+    },
+    {
+      "id": "appearance",
+      "name": "Appearance",
+      "description": "Every combination of filled and outlined across the five intents and both sizes.",
+      "entry": "source/variants/appearance/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "removable",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

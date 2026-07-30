@@ -1,0 +1,52 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 640 360"
+  width="640"
+  height="360"
+  role="img"
+  aria-label="Radio group shown as three selectable cards with the middle one chosen"
+>
+  <defs>
+    <radialGradient id="glow" cx="12%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#4968e8" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#4968e8" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect width="640" height="360" fill="url(#glow)" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <rect x="60" y="40" width="520" height="280" rx="16" fill="#171a20" stroke="#292d36" />
+    <text x="88" y="82" fill="#f4f6fa" font-size="15" font-weight="650">Choose a plan</text>
+
+    <rect x="88" y="104" width="152" height="104" rx="12" fill="#171a20" stroke="#3b414c" />
+    <circle cx="112" cy="130" r="8.5" fill="#171a20" stroke="#5a6272" stroke-width="2" />
+    <text x="130" y="135" fill="#f4f6fa" font-size="14">Free</text>
+    <text x="106" y="160" fill="#a8afbc" font-size="11.5">One project and</text>
+    <text x="106" y="176" fill="#a8afbc" font-size="11.5">community support.</text>
+
+    <rect x="252" y="104" width="152" height="104" rx="12" fill="#1b2338" stroke="#4968e8" stroke-width="1.5" />
+    <circle cx="276" cy="130" r="8.5" fill="#4968e8" stroke="#4968e8" stroke-width="2" />
+    <circle cx="276" cy="130" r="3.4" fill="#171a20" />
+    <text x="294" y="135" fill="#f4f6fa" font-size="14" font-weight="650">Pro</text>
+    <text x="270" y="160" fill="#a8afbc" font-size="11.5">Unlimited projects</text>
+    <text x="270" y="176" fill="#a8afbc" font-size="11.5">and version history.</text>
+
+    <rect x="416" y="104" width="152" height="104" rx="12" fill="#171a20" stroke="#3b414c" />
+    <circle cx="440" cy="130" r="8.5" fill="#171a20" stroke="#5a6272" stroke-width="2" />
+    <text x="458" y="135" fill="#f4f6fa" font-size="14">Team</text>
+    <text x="434" y="160" fill="#a8afbc" font-size="11.5">Shared workspaces</text>
+    <text x="434" y="176" fill="#a8afbc" font-size="11.5">and audit logs.</text>
+
+    <text x="88" y="248" fill="#a8afbc" font-size="12" font-weight="650">Raw output</text>
+    <rect x="88" y="260" width="480" height="36" rx="8" fill="#0b0c0e" stroke="#292d36" />
+    <text
+      x="104"
+      y="283"
+      fill="#f4f6fa"
+      font-size="12.5"
+      font-family="ui-monospace, SFMono-Regular, Consolas, monospace"
+    >pro</text>
+  </g>
+</svg>

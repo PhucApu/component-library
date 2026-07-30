@@ -1,0 +1,308 @@
+:root {
+  color-scheme: light;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.chip-demo-page,
+.chip-demo-page body {
+  background: #0f1115;
+  color-scheme: dark;
+}
+
+/* Soft tinted surfaces with strong text rather than saturated fills. A solid warning
+   fill with white text is the classic way a chip fails contrast at this text size. */
+ui-chip {
+  --chip-neutral-surface: #eef1f6;
+  --chip-neutral-text: #26303f;
+  --chip-neutral-border: #b9c2d0;
+  --chip-accent-surface: #e7e9ff;
+  --chip-accent-text: #2f2a86;
+  --chip-accent-border: #b0b5f2;
+  --chip-success-surface: #e2f5e9;
+  --chip-success-text: #14532d;
+  --chip-success-border: #a4d8b8;
+  --chip-warning-surface: #fdf0d5;
+  --chip-warning-text: #6b4708;
+  --chip-danger-surface: #fdeae8;
+  --chip-danger-text: #8a1c14;
+  --chip-danger-border: #f0b2ac;
+  --chip-warning-border: #e8c785;
+
+  --chip-focus: #6366f1;
+  --chip-radius: 999px;
+
+  --chip-surface: var(--chip-neutral-surface);
+  --chip-text: var(--chip-neutral-text);
+  --chip-border: var(--chip-neutral-border);
+
+  color-scheme: light;
+  display: inline-flex;
+  max-inline-size: 100%;
+  align-items: center;
+  gap: 0.15rem;
+  border-radius: var(--chip-radius);
+  font: 400 0.9375rem/1.45
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  vertical-align: middle;
+}
+
+ui-chip[data-intent='accent'] {
+  --chip-surface: var(--chip-accent-surface);
+  --chip-text: var(--chip-accent-text);
+  --chip-border: var(--chip-accent-border);
+}
+
+ui-chip[data-intent='success'] {
+  --chip-surface: var(--chip-success-surface);
+  --chip-text: var(--chip-success-text);
+  --chip-border: var(--chip-success-border);
+}
+
+ui-chip[data-intent='warning'] {
+  --chip-surface: var(--chip-warning-surface);
+  --chip-text: var(--chip-warning-text);
+  --chip-border: var(--chip-warning-border);
+}
+
+ui-chip[data-intent='danger'] {
+  --chip-surface: var(--chip-danger-surface);
+  --chip-text: var(--chip-danger-text);
+  --chip-border: var(--chip-danger-border);
+}
+
+ui-chip[data-appearance='filled'] {
+  border: 1px solid transparent;
+  background: var(--chip-surface);
+}
+
+ui-chip[data-appearance='outlined'] {
+  border: 1px solid var(--chip-border);
+  background: transparent;
+}
+
+/* The author's element. Styling by class rather than by tag keeps a span, a button, and
+   an anchor looking identical while each keeps its own behavior. */
+.chip__control {
+  display: inline-flex;
+  min-inline-size: 0;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  padding: 0.3rem 0.7rem;
+  color: var(--chip-text);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 550;
+  line-height: 1.35;
+  text-align: start;
+  text-decoration: none;
+}
+
+ui-chip[data-size='sm'] .chip__control {
+  padding: 0.15rem 0.55rem;
+  font-size: 0.75rem;
+}
+
+ui-chip[removable] .chip__control {
+  padding-inline-end: 0.3rem;
+}
+
+button.chip__control,
+a.chip__control {
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+button.chip__control:hover:not(:disabled),
+a.chip__control:hover:not([aria-disabled='true']) {
+  background: color-mix(in srgb, var(--chip-text) 12%, transparent);
+}
+
+/* Selection is carried by the ring as well as the surface, never by colour alone. */
+ui-chip[data-selected] {
+  --chip-surface: var(--chip-accent-surface);
+  --chip-text: var(--chip-accent-text);
+  --chip-border: var(--chip-accent-border);
+
+  box-shadow: inset 0 0 0 1px var(--chip-accent-border);
+}
+
+ui-chip[data-selected][data-appearance='filled'] {
+  background: var(--chip-accent-surface);
+}
+
+.chip__check {
+  display: inline-flex;
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
+  flex: none;
+}
+
+ui-chip:not([data-selected]) .chip__check {
+  display: none;
+}
+
+.chip__remove {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.35rem;
+  block-size: 1.35rem;
+  flex: none;
+  margin-inline-end: 0.2rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  color: var(--chip-text);
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+ui-chip[data-size='sm'] .chip__remove {
+  inline-size: 1.1rem;
+  block-size: 1.1rem;
+}
+
+.chip__remove:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--chip-text) 18%, transparent);
+}
+
+.chip__remove:disabled {
+  cursor: not-allowed;
+}
+
+.chip__icon {
+  display: block;
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.2;
+}
+
+.chip__avatar {
+  inline-size: 1.35rem;
+  block-size: 1.35rem;
+  flex: none;
+  margin-inline-start: -0.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.chip__count {
+  padding-inline-start: 0.2rem;
+  color: color-mix(in srgb, var(--chip-text) 72%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Disabled reads from the dimming plus the blocked cursor, not from colour alone. */
+ui-chip[disabled] {
+  opacity: 0.55;
+}
+
+ui-chip[disabled] .chip__control,
+ui-chip[disabled] .chip__remove {
+  cursor: not-allowed;
+}
+
+.chip__control:focus-visible,
+.chip__remove:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--chip-focus) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.chip-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background:
+    radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
+    #0f1115;
+  color: #f4f6fa;
+}
+
+.chip-demo__shell {
+  inline-size: min(100%, 48rem);
+}
+
+.chip-demo__card {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid #292d36;
+  border-radius: 18px;
+  background: rgb(23 26 32 / 0.88);
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+}
+
+.chip-demo__label {
+  margin: 0;
+  color: #a8afbc;
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.chip-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chip-demo ui-chip {
+  --chip-neutral-surface: #262b34;
+  --chip-neutral-text: #dde3ee;
+  --chip-neutral-border: #4a5260;
+  --chip-accent-surface: #232c48;
+  --chip-accent-text: #b9c8ff;
+  --chip-accent-border: #47588f;
+  --chip-success-surface: #1d3327;
+  --chip-success-text: #9fe0b6;
+  --chip-success-border: #3d6b4f;
+  --chip-warning-surface: #372c17;
+  --chip-warning-text: #f0cd8a;
+  --chip-warning-border: #6d5628;
+  --chip-danger-surface: #3a2321;
+  --chip-danger-text: #ffb1a9;
+  --chip-danger-border: #78403a;
+  --chip-focus: #86a0ff;
+
+  color-scheme: dark;
+}
+
+.chip-demo__output {
+  display: block;
+  min-block-size: 2.75rem;
+  padding: 0.75rem;
+  border: 1px solid #292d36;
+  border-radius: 10px;
+  background: #0b0c0e;
+  color: #f4f6fa;
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button.chip__control,
+  a.chip__control,
+  .chip__remove {
+    transition: none;
+  }
+}

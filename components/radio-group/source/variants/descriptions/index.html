@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" class="radio-group-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Radio Group options with supporting text." />
+    <title>Radio Group - Descriptions</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="radio-group-demo">
+      <div class="radio-group-demo__shell">
+        <section class="radio-group-demo__card">
+          <ui-radio-group name="backup" value="daily">
+            <fieldset>
+              <legend>Backup frequency</legend>
+              <div class="radio-group__options">
+                <label>
+                  <input type="radio" name="backup" value="hourly" />
+                  <span class="radio-group__text">
+                    Hourly
+                    <small>Highest protection, uses the most storage.</small>
+                  </span>
+                </label>
+                <label>
+                  <input type="radio" name="backup" value="daily" />
+                  <span class="radio-group__text">
+                    Daily
+                    <small>A balance most teams settle on.</small>
+                  </span>
+                </label>
+                <label>
+                  <input type="radio" name="backup" value="weekly" />
+                  <span class="radio-group__text">
+                    Weekly
+                    <small>Lowest cost, longest window to lose work.</small>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+          </ui-radio-group>
+          <p class="radio-group-demo__label">Raw output</p>
+          <output class="radio-group-demo__output" aria-live="polite">""</output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeRadioGroupDemo } from '../../demo.js';
+
+      initializeRadioGroupDemo();
+    </script>
+  </body>
+</html>

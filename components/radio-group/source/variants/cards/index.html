@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" class="radio-group-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Radio Group selectable card example." />
+    <title>Radio Group - Cards</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="radio-group-demo">
+      <div class="radio-group-demo__shell">
+        <section class="radio-group-demo__card">
+          <ui-radio-group name="plan" value="pro" layout="row" appearance="card">
+            <fieldset>
+              <legend>Choose a plan</legend>
+              <div class="radio-group__options">
+                <label>
+                  <input type="radio" name="plan" value="free" />
+                  <span class="radio-group__text">
+                    Free
+                    <small>One project and community support.</small>
+                  </span>
+                </label>
+                <label>
+                  <input type="radio" name="plan" value="pro" />
+                  <span class="radio-group__text">
+                    Pro
+                    <small>Unlimited projects and version history.</small>
+                  </span>
+                </label>
+                <label>
+                  <input type="radio" name="plan" value="team" />
+                  <span class="radio-group__text">
+                    Team
+                    <small>Shared workspaces and audit logs.</small>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+          </ui-radio-group>
+          <p class="radio-group-demo__label">Raw output</p>
+          <output class="radio-group-demo__output" aria-live="polite">""</output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeRadioGroupDemo } from '../../demo.js';
+
+      initializeRadioGroupDemo();
+    </script>
+  </body>
+</html>
