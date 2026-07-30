@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "text-field",
+  "version": "0.1.0",
+  "name": "Text Field",
+  "description": "A framework-free Web Component that frames a native text input, wires its hint and error text, and reports validity after the person has actually typed.",
+  "group": "inputs",
+  "categories": ["form-control", "text-entry"],
+  "tags": ["input", "textarea", "validation", "web-component", "accessible"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "An outlined field with a static label above it and a line of supporting text below.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "filled",
+      "name": "Filled",
+      "description": "The filled surface treatment shown at both sizes beside the outlined one.",
+      "entry": "source/variants/filled/index.html"
+    },
+    {
+      "id": "validation",
+      "name": "Validation",
+      "description": "Required and typed fields that stay quiet until the person has interacted with them.",
+      "entry": "source/variants/validation/index.html"
+    },
+    {
+      "id": "adorned",
+      "name": "Adorned",
+      "description": "Fields carrying a prefix, a suffix, and a password reveal button inside the frame.",
+      "entry": "source/variants/adorned/index.html"
+    },
+    {
+      "id": "multiline",
+      "name": "Multiline",
+      "description": "A textarea with a character counter that does not read itself out on every keystroke.",
+      "entry": "source/variants/multiline/index.html"
+    },
+    {
+      "id": "restricted",
+      "name": "Restricted",
+      "description": "Read-only beside disabled, showing which one still submits its value with the form.",
+      "entry": "source/variants/restricted/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "validation",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

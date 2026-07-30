@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" class="text-field-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Text Field validation that waits for interaction." />
+    <title>Text Field - Validation</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="text-field-demo">
+      <div class="text-field-demo__shell">
+        <section class="text-field-demo__card">
+          <form novalidate>
+            <ui-text-field>
+              <label for="email">Email</label>
+              <div class="text-field__control">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  autocomplete="email"
+                  placeholder="you@example.com"
+                />
+              </div>
+              <p class="text-field__hint">
+                Required. The browser supplies the message in your own language.
+              </p>
+            </ui-text-field>
+
+            <ui-text-field error="Use four to sixteen lowercase letters or digits.">
+              <label for="handle">Handle</label>
+              <div class="text-field__control">
+                <span class="text-field__prefix" aria-hidden="true">@</span>
+                <input
+                  id="handle"
+                  name="handle"
+                  type="text"
+                  required
+                  pattern="[a-z0-9]{4,16}"
+                />
+              </div>
+              <p class="text-field__hint">
+                A pattern needs an author message: only you know the rule behind it.
+              </p>
+            </ui-text-field>
+
+            <div class="text-field-demo__actions">
+              <button class="text-field-demo__button" type="submit" data-demo-submit>
+                Submit
+              </button>
+            </div>
+          </form>
+
+          <p class="text-field-demo__label">
+            Nothing is marked wrong until you leave a field or submit.
+          </p>
+          <output class="text-field-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeTextFieldDemo } from '../../demo.js';
+
+      initializeTextFieldDemo({ reportForm: true });
+    </script>
+  </body>
+</html>

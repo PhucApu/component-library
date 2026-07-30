@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="A panel of four email notification switches, two on and two off">
+  <defs>
+    <radialGradient id="glow" cx="12%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#4968e8" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#4968e8" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect width="640" height="360" fill="url(#glow)" />
+
+  <rect x="48" y="36" width="544" height="288" rx="18" fill="#171a20" stroke="#292d36" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="76" y="78" fill="#a8afbc" font-size="14" font-weight="650">Email notifications</text>
+
+    <line x1="76" y1="144" x2="564" y2="144" stroke="#292d36" />
+    <line x1="76" y1="196" x2="564" y2="196" stroke="#292d36" />
+    <line x1="76" y1="248" x2="564" y2="248" stroke="#292d36" />
+
+    <text x="76" y="123" fill="#f4f6fa" font-size="15" font-weight="550">Comments on my work</text>
+    <rect x="500" y="106" width="44" height="24" rx="12" fill="#4968e8" stroke="#4968e8" />
+    <circle cx="531" cy="118" r="9" fill="#f4f6fa" />
+
+    <text x="76" y="175" fill="#f4f6fa" font-size="15" font-weight="550">Review requests</text>
+    <rect x="500" y="158" width="44" height="24" rx="12" fill="#4968e8" stroke="#4968e8" />
+    <circle cx="531" cy="170" r="9" fill="#f4f6fa" />
+
+    <text x="76" y="227" fill="#f4f6fa" font-size="15" font-weight="550">Release notes</text>
+    <rect x="500" y="210" width="44" height="24" rx="12" fill="#2b303a" stroke="#8b94a6" />
+    <circle cx="513" cy="222" r="9" fill="#f4f6fa" stroke="#8b94a6" />
+
+    <text x="76" y="279" fill="#f4f6fa" font-size="15" font-weight="550">Offers and surveys</text>
+    <rect x="500" y="262" width="44" height="24" rx="12" fill="#2b303a" stroke="#8b94a6" />
+    <circle cx="513" cy="274" r="9" fill="#f4f6fa" stroke="#8b94a6" />
+  </g>
+</svg>

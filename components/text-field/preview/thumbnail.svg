@@ -1,0 +1,38 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 640 360"
+  width="640"
+  height="360"
+  role="img"
+  aria-label="Two text fields, the second showing an error message below its frame"
+>
+  <defs>
+    <radialGradient id="glow" cx="12%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#4968e8" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#4968e8" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect width="640" height="360" fill="url(#glow)" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <rect x="110" y="34" width="420" height="292" rx="16" fill="#171a20" stroke="#292d36" />
+
+    <text x="140" y="76" fill="#f4f6fa" font-size="12.5" font-weight="650">Email</text>
+    <rect x="140" y="86" width="360" height="42" rx="10" fill="#171a20" stroke="#4968e8" stroke-width="1.5" />
+    <text x="156" y="112" fill="#f4f6fa" font-size="13.5">ha.linh@example.com</text>
+    <text x="140" y="148" fill="#a8afbc" font-size="11.5">Required. We only use this to send receipts.</text>
+
+    <text x="140" y="192" fill="#f4f6fa" font-size="12.5" font-weight="650">Handle</text>
+    <rect x="140" y="202" width="360" height="42" rx="10" fill="#171a20" stroke="#ff8e87" stroke-width="1.5" />
+    <text x="156" y="228" fill="#a8afbc" font-size="13.5">@</text>
+    <text x="172" y="228" fill="#f4f6fa" font-size="13.5">ab</text>
+    <text x="140" y="264" fill="#ff8e87" font-size="11.5" font-weight="650">
+      Use four to sixteen lowercase letters or digits.
+    </text>
+
+    <rect x="140" y="284" width="176" height="30" rx="8" fill="#1d2128" stroke="#3b414c" />
+    <text x="160" y="304" fill="#f4f6fa" font-size="12" font-weight="620">Submit</text>
+  </g>
+</svg>

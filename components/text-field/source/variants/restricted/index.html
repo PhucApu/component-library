@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" class="text-field-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Text Field read-only beside disabled." />
+    <title>Text Field - Restricted</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="text-field-demo">
+      <div class="text-field-demo__shell">
+        <section class="text-field-demo__card">
+          <form novalidate>
+            <ui-text-field>
+              <label for="account">Account ID</label>
+              <div class="text-field__control">
+                <input id="account" name="account" type="text" value="AC-9174" readonly />
+              </div>
+              <p class="text-field__hint">
+                Read-only: you can select and copy it, and it is still submitted.
+              </p>
+            </ui-text-field>
+
+            <ui-text-field>
+              <label for="legacy">Legacy region</label>
+              <div class="text-field__control">
+                <input id="legacy" name="legacy" type="text" value="ap-southeast-1" disabled />
+              </div>
+              <p class="text-field__hint">
+                Disabled: skipped by the keyboard and left out of the submission entirely.
+              </p>
+            </ui-text-field>
+
+            <div class="text-field-demo__actions">
+              <button class="text-field-demo__button" type="submit">
+                Show what would be sent
+              </button>
+            </div>
+          </form>
+
+          <output class="text-field-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeTextFieldDemo } from '../../demo.js';
+
+      initializeTextFieldDemo({ reportForm: true });
+    </script>
+  </body>
+</html>

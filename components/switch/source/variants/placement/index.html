@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" class="switch-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Switch with the label after it and with the label leading the row." />
+    <title>Switch - Placement</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="switch-demo">
+      <div class="switch-demo__shell">
+        <section class="switch-demo__card">
+          <p class="switch-demo__label">Label after the switch</p>
+          <div class="switch-demo__rows">
+            <ui-switch>
+              <input type="checkbox" id="autoplay" name="autoplay" class="switch__control" checked />
+              <label for="autoplay">Autoplay videos</label>
+            </ui-switch>
+
+            <ui-switch>
+              <input type="checkbox" id="captions" name="captions" class="switch__control" />
+              <label for="captions">Always show captions</label>
+            </ui-switch>
+          </div>
+
+          <p class="switch-demo__label">Label leading a full-width row</p>
+          <div class="switch-demo__rows switch-demo__rows--split">
+            <ui-switch placement="start">
+              <input type="checkbox" id="digest" name="digest" class="switch__control" checked />
+              <label for="digest">Weekly digest</label>
+            </ui-switch>
+
+            <ui-switch placement="start">
+              <input type="checkbox" id="mentions" name="mentions" class="switch__control" />
+              <label for="mentions">Mentions and replies</label>
+            </ui-switch>
+
+            <ui-switch placement="start">
+              <input type="checkbox" id="product" name="product" class="switch__control" />
+              <label for="product">Product announcements</label>
+            </ui-switch>
+          </div>
+
+          <output class="switch-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeSwitchDemo } from '../../demo.js';
+
+      initializeSwitchDemo();
+    </script>
+  </body>
+</html>

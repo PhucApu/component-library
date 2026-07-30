@@ -1,0 +1,333 @@
+:root {
+  color-scheme: light;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.switch-demo-page,
+.switch-demo-page body {
+  background: #0f1115;
+  color-scheme: dark;
+}
+
+ui-switch {
+  --switch-track: #cbd5e1;
+  --switch-accent: #4f46e5;
+  --switch-thumb: #ffffff;
+  --switch-outline: #4b5563;
+  --switch-focus: #6366f1;
+  --switch-text: #111827;
+  --switch-muted: #5f6878;
+  --switch-danger: #b42318;
+
+  --switch-track-inline: 2.75rem;
+  --switch-track-block: 1.5rem;
+  --switch-thumb-size: 1.125rem;
+  --switch-thumb-gap: 0.1875rem;
+
+  color-scheme: light;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 0.75rem;
+  row-gap: 0.15rem;
+  color: var(--switch-text);
+  font: 400 0.9375rem/1.45
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+ui-switch[data-size='sm'] {
+  --switch-track-inline: 2.25rem;
+  --switch-track-block: 1.25rem;
+  --switch-thumb-size: 0.875rem;
+}
+
+/* Supporting text pushes the row to two lines, so the switch rides at the top of the
+   block rather than floating beside the middle of a paragraph. */
+ui-switch:has(.switch__description) {
+  align-items: start;
+}
+
+/* The selector matches the element, not a class, so the switch still draws itself when
+   no script has run and even when the author omits the class. */
+ui-switch input[type='checkbox'] {
+  position: relative;
+  grid-area: 1 / 1;
+  inline-size: var(--switch-track-inline);
+  block-size: var(--switch-track-block);
+  flex: none;
+  margin: 0;
+  border: 1px solid var(--switch-outline);
+  border-radius: 999px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--switch-track);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+/* The thumb. Its position is the primary signal, so the state survives without colour. */
+ui-switch input[type='checkbox']::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: var(--switch-thumb-gap);
+  inline-size: var(--switch-thumb-size);
+  block-size: var(--switch-thumb-size);
+  border: 1px solid var(--switch-outline);
+  border-radius: 50%;
+  background: var(--switch-thumb);
+  translate: 0 -50%;
+  transition: translate 160ms ease;
+}
+
+/* WCAG 2.2 asks for a 24px target. The small track is 20px tall, so an invisible
+   extension carries the hit area without changing what is drawn. */
+ui-switch input[type='checkbox']::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: max(100%, 1.5rem);
+  block-size: max(100%, 1.5rem);
+  translate: -50% -50%;
+}
+
+ui-switch input[type='checkbox']:checked {
+  border-color: var(--switch-accent);
+  background: var(--switch-accent);
+}
+
+ui-switch input[type='checkbox']:checked::before {
+  border-color: var(--switch-accent);
+  translate: calc(
+      var(--switch-track-inline) - 2px - var(--switch-thumb-size) -
+        (var(--switch-thumb-gap) * 2)
+    )
+    -50%;
+}
+
+ui-switch input[type='checkbox']:hover:not(:focus-visible):not(:disabled) {
+  border-color: var(--switch-accent);
+}
+
+ui-switch input[type='checkbox']:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--switch-focus) 55%, transparent);
+  outline-offset: 2px;
+}
+
+ui-switch input[type='checkbox']:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+ui-switch[pending] input[type='checkbox'] {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+ui-switch label {
+  grid-area: 1 / 2;
+  cursor: pointer;
+  font-weight: 550;
+}
+
+ui-switch[data-disabled] label {
+  color: var(--switch-muted);
+  cursor: not-allowed;
+}
+
+ui-switch .switch__description {
+  grid-area: 2 / 2;
+  margin: 0;
+  color: var(--switch-muted);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+ui-switch[data-placement='start'] {
+  grid-template-columns: 1fr auto auto;
+}
+
+ui-switch[data-placement='start'] input[type='checkbox'] {
+  grid-area: 1 / 2;
+}
+
+ui-switch[data-placement='start'] label {
+  grid-area: 1 / 1;
+}
+
+ui-switch[data-placement='start'] .switch__description {
+  grid-area: 2 / 1;
+}
+
+.switch__spinner {
+  grid-area: 1 / 3;
+  inline-size: 0.9rem;
+  block-size: 0.9rem;
+  border: 2px solid color-mix(in srgb, var(--switch-accent) 32%, transparent);
+  border-block-start-color: var(--switch-accent);
+  border-radius: 50%;
+  animation: switch-spin 700ms linear infinite;
+}
+
+@keyframes switch-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+.switch__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* The catalog stage gives the frame a fixed height, so the demo has to fill it or the
+   background stops short of the frame and leaves a visible seam. */
+.switch-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background:
+    radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
+    #0f1115;
+  color: #f4f6fa;
+}
+
+.switch-demo__shell {
+  inline-size: min(100%, 34rem);
+}
+
+.switch-demo__card {
+  display: grid;
+  gap: 1.25rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid #292d36;
+  border-radius: 18px;
+  /* Opaque, so a contrast measurement against it is the real thing. */
+  background: #171a20;
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+}
+
+.switch-demo__label {
+  margin: 0;
+  color: #a8afbc;
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.switch-demo__fieldset {
+  margin: 0 0 1.25rem;
+  border: 1px solid #292d36;
+  border-radius: 12px;
+  padding: 0.35rem 1rem 0.85rem;
+}
+
+.switch-demo__fieldset:disabled {
+  opacity: 0.7;
+}
+
+.switch-demo__rows {
+  display: grid;
+  gap: 1rem;
+}
+
+.switch-demo__rows--split {
+  gap: 0;
+}
+
+.switch-demo__rows--split ui-switch {
+  padding-block: 0.85rem;
+  border-block-start: 1px solid #292d36;
+}
+
+.switch-demo__rows--split ui-switch:first-of-type {
+  border-block-start: 0;
+}
+
+.switch-demo__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.switch-demo__button {
+  border: 1px solid #3b414c;
+  border-radius: 9px;
+  background: #1d2128;
+  padding: 0.5rem 0.85rem;
+  color: #f4f6fa;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 620;
+  cursor: pointer;
+}
+
+.switch-demo__button:hover {
+  background: #262b34;
+}
+
+.switch-demo ui-switch {
+  --switch-track: #2b303a;
+  --switch-accent: #4968e8;
+  --switch-thumb: #f4f6fa;
+  --switch-outline: #8b94a6;
+  --switch-focus: #86a0ff;
+  --switch-text: #f4f6fa;
+  --switch-muted: #a8afbc;
+  --switch-danger: #ff8e87;
+
+  color-scheme: dark;
+}
+
+.switch-demo__output {
+  display: block;
+  min-block-size: 2.75rem;
+  padding: 0.75rem;
+  border: 1px solid #292d36;
+  border-radius: 10px;
+  background: #0b0c0e;
+  color: #f4f6fa;
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+
+.switch-demo__note {
+  margin: 0;
+  color: #ff8e87;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  min-block-size: 1.2rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ui-switch input[type='checkbox'],
+  ui-switch input[type='checkbox']::before {
+    transition: none;
+  }
+
+  /* The ring stops turning. The dimmed track and the status message still report the
+     busy state, so nothing is carried by the animation alone. */
+  .switch__spinner {
+    animation: none;
+  }
+}

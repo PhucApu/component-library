@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "switch",
+  "version": "0.1.0",
+  "name": "Switch",
+  "description": "A framework-free Web Component that draws a native checkbox as an on/off switch in CSS alone and adds a pending state for changes that have to travel to a server.",
+  "group": "inputs",
+  "categories": ["form-control", "toggle"],
+  "tags": ["switch", "toggle", "checkbox", "web-component", "accessible", "progressive-enhancement"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A single switch shown off and on, at the standard and the compact size.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "placement",
+      "name": "Placement",
+      "description": "The same switch with its label after it and with the label leading a full-width row.",
+      "entry": "source/variants/placement/index.html"
+    },
+    {
+      "id": "descriptions",
+      "name": "Descriptions",
+      "description": "Settings rows that pair each label with supporting text referenced as a description rather than a name.",
+      "entry": "source/variants/descriptions/index.html"
+    },
+    {
+      "id": "group",
+      "name": "Group",
+      "description": "A panel of related switches under a legend, reporting exactly what a submission would carry.",
+      "entry": "source/variants/group/index.html"
+    },
+    {
+      "id": "pending",
+      "name": "Pending",
+      "description": "Switches backed by an asynchronous commit that lock while in flight and return to their previous state when the request fails.",
+      "entry": "source/variants/pending/index.html"
+    },
+    {
+      "id": "restricted",
+      "name": "Restricted",
+      "description": "Unavailable switches in both the on and the off state beside a group that is disabled as a whole.",
+      "entry": "source/variants/restricted/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "group",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

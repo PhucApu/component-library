@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" class="switch-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Switch in its off and on states, at both sizes." />
+    <title>Switch - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="switch-demo">
+      <div class="switch-demo__shell">
+        <section class="switch-demo__card">
+          <p class="switch-demo__label">Standard size</p>
+          <div class="switch-demo__rows">
+            <ui-switch>
+              <input type="checkbox" id="wifi" name="wifi" class="switch__control" />
+              <label for="wifi">Wi-Fi</label>
+            </ui-switch>
+
+            <ui-switch>
+              <input type="checkbox" id="bluetooth" name="bluetooth" class="switch__control" checked />
+              <label for="bluetooth">Bluetooth</label>
+            </ui-switch>
+          </div>
+
+          <p class="switch-demo__label">Compact size</p>
+          <div class="switch-demo__rows">
+            <ui-switch size="sm">
+              <input type="checkbox" id="hotspot" name="hotspot" class="switch__control" />
+              <label for="hotspot">Personal hotspot</label>
+            </ui-switch>
+
+            <ui-switch size="sm">
+              <input type="checkbox" id="airdrop" name="airdrop" class="switch__control" checked />
+              <label for="airdrop">Nearby sharing</label>
+            </ui-switch>
+          </div>
+
+          <output class="switch-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeSwitchDemo } from '../../demo.js';
+
+      initializeSwitchDemo();
+    </script>
+  </body>
+</html>

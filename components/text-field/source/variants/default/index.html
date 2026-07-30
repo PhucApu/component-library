@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" class="text-field-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Text Field outlined example." />
+    <title>Text Field - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="text-field-demo">
+      <div class="text-field-demo__shell">
+        <section class="text-field-demo__card">
+          <ui-text-field>
+            <label for="full-name">Full name</label>
+            <div class="text-field__control">
+              <input id="full-name" name="full-name" type="text" autocomplete="name" />
+            </div>
+            <p class="text-field__hint">As it appears on your identity document.</p>
+          </ui-text-field>
+
+          <ui-text-field>
+            <label for="workspace">Workspace</label>
+            <div class="text-field__control">
+              <input id="workspace" name="workspace" type="text" value="Component UI" />
+            </div>
+          </ui-text-field>
+
+          <p class="text-field-demo__label">Raw output</p>
+          <output class="text-field-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeTextFieldDemo } from '../../demo.js';
+
+      initializeTextFieldDemo();
+    </script>
+  </body>
+</html>

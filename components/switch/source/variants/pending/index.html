@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" class="switch-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Switches backed by an asynchronous commit that can fail." />
+    <title>Switch - Pending</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="switch-demo">
+      <div class="switch-demo__shell">
+        <section class="switch-demo__card">
+          <p class="switch-demo__label">Saved on the server as you toggle</p>
+          <div class="switch-demo__rows switch-demo__rows--split">
+            <ui-switch data-demo-commit="succeeding">
+              <input type="checkbox" id="sync" name="sync" class="switch__control" />
+              <label for="sync">Sync across devices</label>
+              <p class="switch__description">
+                Takes about a second. The switch is locked until the server answers.
+              </p>
+            </ui-switch>
+
+            <ui-switch data-demo-commit="failing">
+              <input type="checkbox" id="backup" name="backup" class="switch__control" />
+              <label for="backup">Nightly backup</label>
+              <p class="switch__description">
+                This one always fails, so it returns to where it was rather than showing a
+                state the server never accepted.
+              </p>
+            </ui-switch>
+
+            <ui-switch data-demo-commit="failing">
+              <input type="checkbox" id="retention" name="retention" class="switch__control" checked />
+              <label for="retention">Extended history</label>
+              <p class="switch__description">
+                Failing in the other direction: turning it off is refused, so it comes back on.
+              </p>
+            </ui-switch>
+          </div>
+
+          <p class="switch-demo__note" data-demo-note role="alert"></p>
+
+          <output class="switch-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { attachDemoCommit, initializeSwitchDemo } from '../../demo.js';
+
+      attachDemoCommit({ delayMs: 900 });
+      initializeSwitchDemo();
+    </script>
+  </body>
+</html>
