@@ -381,8 +381,17 @@ test('the surface meets contrast at every severity', async ({ page }) => {
         const value = channel / 255;
         return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
       };
+      // `color-mix()` computes to `color(srgb r g b)` with 0-1 channels, not `rgb()`.
+      // Reading it with a plain digit match produced ratios in the hundreds of millions,
+      // which is to say a threshold that could never fail.
+      const channels = (colour) => {
+        const srgb = colour.match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)/);
+        return srgb
+          ? [Number(srgb[1]) * 255, Number(srgb[2]) * 255, Number(srgb[3]) * 255]
+          : colour.match(/[\d.]+/g).slice(0, 3).map(Number);
+      };
       const luminance = (colour) => {
-        const [r, g, b] = colour.match(/\d+/g).map(Number);
+        const [r, g, b] = channels(colour);
         return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
       };
       const ratio = (a, b) => {

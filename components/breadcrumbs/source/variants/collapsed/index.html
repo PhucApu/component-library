@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" class="breadcrumbs-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A long trail with its middle behind a button." />
+    <title>Breadcrumbs - Collapsed</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="breadcrumbs-demo">
+      <div class="breadcrumbs-demo__shell">
+        <section class="breadcrumbs-demo__card">
+          <p class="breadcrumbs-demo__label">Six levels, four put away</p>
+          <p class="breadcrumbs-demo__note">
+            The ellipsis is a button, not a character. A static one would leave the levels
+            behind it unreachable by keyboard, by pointer, and by screen reader alike.
+          </p>
+
+          <div class="breadcrumbs-demo__frame">
+            <ui-breadcrumbs max-items="3" items-before-collapse="1" items-after-collapse="1">
+              <nav aria-label="Breadcrumb">
+                <ol class="breadcrumbs__list">
+                  <li><a href="#root">Workspace</a></li>
+                  <li><a href="#a">Engineering</a></li>
+                  <li><a href="#b">Platform</a></li>
+                  <li><a href="#c">Services</a></li>
+                  <li><a href="#d">Billing</a></li>
+                  <li><a href="#e" aria-current="page">Invoices</a></li>
+                </ol>
+              </nav>
+            </ui-breadcrumbs>
+          </div>
+
+          <p class="breadcrumbs-demo__label">Two levels shown either side</p>
+          <div class="breadcrumbs-demo__frame">
+            <ui-breadcrumbs max-items="4" items-before-collapse="2" items-after-collapse="2">
+              <nav aria-label="Breadcrumb">
+                <ol class="breadcrumbs__list">
+                  <li><a href="#root">Workspace</a></li>
+                  <li><a href="#a">Engineering</a></li>
+                  <li><a href="#b">Platform</a></li>
+                  <li><a href="#c">Services</a></li>
+                  <li><a href="#d">Billing</a></li>
+                  <li><a href="#e" aria-current="page">Invoices</a></li>
+                </ol>
+              </nav>
+            </ui-breadcrumbs>
+          </div>
+
+          <p class="breadcrumbs-demo__label">Only one level would hide, so nothing collapses</p>
+          <div class="breadcrumbs-demo__frame">
+            <ui-breadcrumbs max-items="2" items-before-collapse="1" items-after-collapse="1">
+              <nav aria-label="Breadcrumb">
+                <ol class="breadcrumbs__list">
+                  <li><a href="#root">Workspace</a></li>
+                  <li><a href="#a">Engineering</a></li>
+                  <li><a href="#b" aria-current="page">Platform</a></li>
+                </ol>
+              </nav>
+            </ui-breadcrumbs>
+          </div>
+
+          <output class="breadcrumbs-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeBreadcrumbsDemo } from '../../demo.js';
+
+      initializeBreadcrumbsDemo();
+    </script>
+  </body>
+</html>

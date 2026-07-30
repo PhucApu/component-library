@@ -18,17 +18,29 @@ host and never edited again.
 
 Every token is defined by the component. Nothing is inherited from the catalog.
 
-| Token | Value | Role |
-|---|---|---|
-| `--snackbar-surface` | `#1f2430` | Message background |
-| `--snackbar-text` | `#f4f6fa` | Message text |
-| `--snackbar-border` | `#6b7484` | Edge against the page |
-| `--snackbar-action` | `#a8c0ff` | Action label |
-| `--snackbar-info` | `#86a0ff` | Information icon |
-| `--snackbar-success` | `#6ee7a8` | Success icon |
-| `--snackbar-warning` | `#fbbf5c` | Warning icon |
-| `--snackbar-error` | `#ff8e87` | Error icon |
-| `--snackbar-radius` | `12px` | Corner radius |
+The severity palette is Chip's, token for token: soft tinted surfaces carrying strong text
+rather than saturated fills, which is how a message this size stays legible.
+
+| Severity | Surface (light) | Text (light) | Surface (dark) | Text (dark) |
+|---|---|---|---|---|
+| `info` | `#e7e9ff` | `#2f2a86` | `#232c48` | `#b9c8ff` |
+| `success` | `#e2f5e9` | `#14532d` | `#1d3327` | `#9fe0b6` |
+| `warning` | `#fdf0d5` | `#6b4708` | `#372c17` | `#f0cd8a` |
+| `error` | `#fdeae8` | `#8a1c14` | `#3a2321` | `#ffb1a9` |
+
+`--snackbar-border` is not a token per level. It is derived:
+
+```css
+color-mix(in srgb, var(--snackbar-text) 60%, var(--snackbar-surface))
+```
+
+Pulling the text colour towards the surface darkens the edge on a light theme and lightens
+it on a dark one, so one formula keeps the boundary perceivable against the page in both
+directions instead of eight hand-tuned values.
+
+The icon, the action label, and the dismiss button all take `--snackbar-text`. The tint
+already says which kind of message this is, so a second hue would be one more thing to keep
+above `4.5:1` for no gain. The action is set apart by weight and an underline.
 
 ## 4. Anatomy
 
@@ -80,7 +92,7 @@ named buttons, and the sentence appears exactly once.
 Derived from the severity rather than set separately, so the two cannot disagree.
 
 The icon changes **shape** as well as colour, so the kind of message survives for anyone
-who cannot separate the two hues.
+who cannot separate the two tints.
 
 ## 8. Nothing you can act on runs a clock
 
@@ -126,8 +138,14 @@ spans the full width.
 
 ## 13. Contrast and motion
 
-Measured on the demo surface: message text `14.34:1`, action label `8.61:1`, icons between
-`6.27:1` and `10.09:1`, and the surface edge `4.01:1` against the page.
+Measured on the dark demo, across all four severities: message text, icon, action label,
+and dismiss button between `8.37:1` and `8.99:1` against their own surface; the derived
+edge between `5.21:1` and `5.93:1` against the page.
+
+One caution learned the hard way here. `color-mix()` computes to `color(srgb r g b)` with
+channels in the range `0-1`, not to `rgb()`. A contrast check that reads colours with a
+plain digit match turns that into ratios in the hundreds of millions — a threshold that can
+never fail. The check parses both notations.
 
 The message travels `1.5rem`, fading and scaling from `0.96` as it goes: `280ms` on a soft
 ease-out coming in, `170ms` ease-in going out. Leaving faster than arriving is the point —

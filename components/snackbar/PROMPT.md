@@ -82,6 +82,14 @@ the accessibility tree entirely.
 one. Derive this from the severity rather than offering it separately, so the two cannot
 disagree. Change the icon **shape** as well as its colour.
 
+Give each severity a soft tinted surface carrying strong text rather than a saturated
+fill, which is how a message this size fails contrast. Derive the border by pulling the
+text colour towards the surface — that darkens the edge on a light theme and lightens it
+on a dark one, so one rule keeps it perceivable in both. Let the icon, the action label,
+and the dismiss button all take the same text colour: the tint already says which kind of
+message this is, so a second hue is one more thing to keep above `4.5:1` for no gain. Set
+the action apart by weight and an underline.
+
 ## Timing
 
 A message carrying an action runs **no timer at all**. A button that disappears on a clock
@@ -113,7 +121,10 @@ displaces an urgent one, and one urgent message waits for another to finish.
 - Put the surface in the top layer with the Popover API rather than competing on `z-index`.
 - Below `30rem` every placement spans the full width.
 - Message text and the action label reach `4.5:1`; the icon and the surface edge reach
-  `3:1` against what is behind them.
+  `3:1` against what is behind them. Beware that `color-mix()` computes to
+  `color(srgb r g b)` with `0-1` channels rather than to `rgb()`: a contrast check that
+  reads colours with a plain digit match turns that into a ratio in the hundreds of
+  millions, which is a threshold that can never fail.
 - The message travels `1.5rem`, fading and scaling from `0.96`: `280ms` easing out on the
   way in, `170ms` easing in on the way out. Leaving faster than arriving is deliberate.
 - **It arrives out of the edge it is pinned to.** The two start anchors slide in from the

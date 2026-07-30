@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "drawer",
+  "version": "0.1.0",
+  "name": "Drawer",
+  "description": "A framework-free Web Component that slides a panel in from an edge, taking its focus trap, Escape key, and backdrop from a native dialog, and behaving as a plain panel when the author writes one.",
+  "group": "surface",
+  "categories": ["surface", "overlay"],
+  "tags": ["drawer", "dialog", "panel", "web-component", "accessible", "focus-trap"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A modal navigation panel built on a dialog, with the focus trap and backdrop supplied by the browser.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "anchor",
+      "name": "Anchor",
+      "description": "Panels arriving from each of the four edges, the horizontal pair named by logical direction.",
+      "entry": "source/variants/anchor/index.html"
+    },
+    {
+      "id": "inline",
+      "name": "Inline",
+      "description": "A persistent panel that pushes the content beside it and takes none of the modal behaviour.",
+      "entry": "source/variants/inline/index.html"
+    },
+    {
+      "id": "responsive",
+      "name": "Responsive",
+      "description": "A permanent panel on a wide screen and a modal one on a narrow screen, without either element pretending to be the other.",
+      "entry": "source/variants/responsive/index.html"
+    },
+    {
+      "id": "scrolling",
+      "name": "Scrolling",
+      "description": "A long panel with a fixed header and footer, over a page whose own scrolling is held still.",
+      "entry": "source/variants/scrolling/index.html"
+    },
+    {
+      "id": "dismissal",
+      "name": "Dismissal",
+      "description": "Every way out reported by name, beside a panel that ignores the backdrop because it needs an answer.",
+      "entry": "source/variants/dismissal/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

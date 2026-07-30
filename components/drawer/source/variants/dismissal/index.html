@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" class="drawer-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Every way out of a drawer, and one that has none." />
+    <title>Drawer - Dismissal</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="drawer-demo">
+      <div class="drawer-demo__shell">
+        <section class="drawer-demo__card">
+          <p class="drawer-demo__label">Four ways out, each reported by name</p>
+          <p class="drawer-demo__note">
+            Escape, the backdrop, the close button, and code. Knowing which one was used is
+            information nothing else provides: abandoning a panel is not the same as
+            finishing with it.
+          </p>
+
+          <div class="drawer-demo__actions">
+            <button class="drawer-demo__button" id="free-button" data-drawer-open="free">
+              Open a dismissable drawer
+            </button>
+            <button class="drawer-demo__button" id="held-button" data-drawer-open="held">
+              Open one that needs an answer
+            </button>
+          </div>
+
+          <output class="drawer-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+
+    <ui-drawer id="free" anchor="end" trigger="free-button">
+      <dialog class="drawer__panel" aria-labelledby="free-title">
+        <header class="drawer__header">
+          <h2 class="drawer__title" id="free-title">Leave any way you like</h2>
+          <button type="button" class="drawer__close">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+        <div class="drawer__body">
+          <p>Press Escape, click the dimmed area, or use the close button.</p>
+        </div>
+      </dialog>
+    </ui-drawer>
+
+    <ui-drawer id="held" anchor="bottom" trigger="held-button" no-backdrop-close>
+      <dialog class="drawer__panel" aria-labelledby="held-title">
+        <header class="drawer__header">
+          <h2 class="drawer__title" id="held-title">Discard this draft?</h2>
+        </header>
+        <div class="drawer__body">
+          <p>
+            The backdrop is ignored here, because clicking beside a question is not an
+            answer to it. Escape still works: taking away every way out would trap someone
+            who opened this by accident.
+          </p>
+        </div>
+        <footer class="drawer__footer drawer-demo__actions">
+          <button type="button" class="drawer-demo__button drawer__close">Keep editing</button>
+          <button type="button" class="drawer-demo__button drawer__close">Discard</button>
+        </footer>
+      </dialog>
+    </ui-drawer>
+
+    <script type="module">
+      import { initializeDrawerDemo } from '../../demo.js';
+
+      initializeDrawerDemo();
+    </script>
+  </body>
+</html>

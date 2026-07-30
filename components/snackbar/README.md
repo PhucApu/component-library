@@ -98,6 +98,21 @@ so they follow the writing direction. Each message arrives out of the edge it is
 The sideways travel is signed by direction too, so in a right-to-left document `top-start`
 comes from the right. Below `30rem` every anchor spans the full width.
 
+## Severity colours
+
+Each level carries the same tint Chip uses for the matching intent — a soft surface with
+strong text, not a saturated fill:
+
+| Severity | Chip intent | Surface (dark) | Text (dark) |
+|---|---|---|---|
+| `info` | `accent` | `#232c48` | `#b9c8ff` |
+| `success` | `success` | `#1d3327` | `#9fe0b6` |
+| `warning` | `warning` | `#372c17` | `#f0cd8a` |
+| `error` | `danger` | `#3a2321` | `#ffb1a9` |
+
+Override `--snackbar-<level>-surface` and `--snackbar-<level>-text` to retint. The border
+is derived from the pair, so it follows whatever you set.
+
 ## Announcements
 
 Two visually hidden regions, `role="status"` and `role="alert"`, sit in the document from

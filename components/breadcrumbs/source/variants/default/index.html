@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" class="breadcrumbs-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A trail of links ending on the current page." />
+    <title>Breadcrumbs - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="breadcrumbs-demo">
+      <div class="breadcrumbs-demo__shell">
+        <section class="breadcrumbs-demo__card">
+          <p class="breadcrumbs-demo__label">Where you are, and how you got here</p>
+          <p class="breadcrumbs-demo__note">
+            A landmark, an ordered list, and links. Nothing here needs a script to work; the
+            component only adds the sizing and the collapsing.
+          </p>
+
+          <div class="breadcrumbs-demo__frame">
+            <ui-breadcrumbs>
+              <nav aria-label="Breadcrumb">
+                <ol class="breadcrumbs__list">
+                  <li><a href="#home">Home</a></li>
+                  <li><a href="#library">Library</a></li>
+                  <li><a href="#data" aria-current="page">Data</a></li>
+                </ol>
+              </nav>
+            </ui-breadcrumbs>
+          </div>
+
+          <p class="breadcrumbs-demo__label">The last level as plain text</p>
+          <p class="breadcrumbs-demo__note">
+            Either is correct. A link that points at the page you are on is still useful for
+            reloading, but a span says plainly that there is nowhere to go.
+          </p>
+
+          <div class="breadcrumbs-demo__frame">
+            <ui-breadcrumbs>
+              <nav aria-label="Breadcrumb">
+                <ol class="breadcrumbs__list">
+                  <li><a href="#home">Home</a></li>
+                  <li><a href="#library">Library</a></li>
+                  <li><span aria-current="page">Data</span></li>
+                </ol>
+              </nav>
+            </ui-breadcrumbs>
+          </div>
+
+          <output class="breadcrumbs-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeBreadcrumbsDemo } from '../../demo.js';
+
+      initializeBreadcrumbsDemo();
+    </script>
+  </body>
+</html>

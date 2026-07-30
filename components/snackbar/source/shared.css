@@ -20,15 +20,20 @@ body {
 }
 
 ui-snackbar {
-  --snackbar-surface: #1f2430;
-  --snackbar-text: #f4f6fa;
-  --snackbar-border: #6b7484;
-  --snackbar-action: #a8c0ff;
-  --snackbar-focus: #86a0ff;
-  --snackbar-info: #86a0ff;
-  --snackbar-success: #6ee7a8;
-  --snackbar-warning: #fbbf5c;
-  --snackbar-error: #ff8e87;
+  /* The same soft tinted surfaces carrying strong text that Chip uses for its intents. A
+     saturated fill is how a message this size fails contrast. */
+  --snackbar-info-surface: #e7e9ff;
+  --snackbar-info-text: #2f2a86;
+  --snackbar-success-surface: #e2f5e9;
+  --snackbar-success-text: #14532d;
+  --snackbar-warning-surface: #fdf0d5;
+  --snackbar-warning-text: #6b4708;
+  --snackbar-error-surface: #fdeae8;
+  --snackbar-error-text: #8a1c14;
+
+  --snackbar-surface: var(--snackbar-info-surface);
+  --snackbar-text: var(--snackbar-info-text);
+  --snackbar-focus: #6366f1;
   --snackbar-radius: 12px;
   --snackbar-inset: 1rem;
 
@@ -56,6 +61,10 @@ ui-snackbar {
   --snackbar-enter-y: 1.5rem;
   /* Flips the horizontal arrival so a start anchor always enters from the start edge. */
   --snackbar-dir: 1;
+  /* Derived rather than hand-picked per severity. Pulling the text colour towards the
+     surface darkens the edge on a light theme and lightens it on a dark one, which is
+     what keeps it perceivable against the page in both. */
+  --snackbar-border: color-mix(in srgb, var(--snackbar-text) 60%, var(--snackbar-surface));
 
   position: fixed;
   /* The popover user-agent rule sets `inset: 0`. Left with all four edges pinned, the
@@ -88,6 +97,26 @@ ui-snackbar {
     opacity 170ms ease-in,
     translate 170ms ease-in,
     scale 170ms ease-in;
+}
+
+.snackbar__surface[data-severity='info'] {
+  --snackbar-surface: var(--snackbar-info-surface);
+  --snackbar-text: var(--snackbar-info-text);
+}
+
+.snackbar__surface[data-severity='success'] {
+  --snackbar-surface: var(--snackbar-success-surface);
+  --snackbar-text: var(--snackbar-success-text);
+}
+
+.snackbar__surface[data-severity='warning'] {
+  --snackbar-surface: var(--snackbar-warning-surface);
+  --snackbar-text: var(--snackbar-warning-text);
+}
+
+.snackbar__surface[data-severity='error'] {
+  --snackbar-surface: var(--snackbar-error-surface);
+  --snackbar-text: var(--snackbar-error-text);
 }
 
 .snackbar__surface:dir(rtl) {
@@ -142,8 +171,8 @@ ui-snackbar[data-placement$='center'] .snackbar__surface {
   inset-inline-start: 50%;
 }
 
-/* The shape differs per severity as well as the colour, so the kind of message survives
-   for anyone who cannot separate the two. */
+/* Drawn in the surface's own text colour: the tint already carries the severity, and the
+   shape differs per level, so the kind of message survives without relying on hue. */
 .snackbar__icon {
   inline-size: 1.25rem;
   block-size: 1.25rem;
@@ -153,22 +182,6 @@ ui-snackbar[data-placement$='center'] .snackbar__surface {
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 1.8;
-}
-
-.snackbar__surface[data-severity='info'] .snackbar__icon {
-  color: var(--snackbar-info);
-}
-
-.snackbar__surface[data-severity='success'] .snackbar__icon {
-  color: var(--snackbar-success);
-}
-
-.snackbar__surface[data-severity='warning'] .snackbar__icon {
-  color: var(--snackbar-warning);
-}
-
-.snackbar__surface[data-severity='error'] .snackbar__icon {
-  color: var(--snackbar-error);
 }
 
 .snackbar__message {
@@ -183,9 +196,13 @@ ui-snackbar[data-placement$='center'] .snackbar__surface {
   border-radius: 8px;
   background: transparent;
   padding: 0.35rem 0.6rem;
-  color: var(--snackbar-action);
+  /* Weight sets it apart from the message, not a second colour. On a tinted surface an
+     extra hue is one more thing to keep above 4.5:1 for no gain. */
+  color: var(--snackbar-text);
   font: inherit;
-  font-weight: 680;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
 }
 
@@ -194,7 +211,7 @@ ui-snackbar[data-placement$='center'] .snackbar__surface {
 }
 
 .snackbar__action:hover {
-  background: color-mix(in srgb, var(--snackbar-action) 16%, transparent);
+  background: color-mix(in srgb, var(--snackbar-text) 16%, transparent);
 }
 
 .snackbar__close {
@@ -207,14 +224,14 @@ ui-snackbar[data-placement$='center'] .snackbar__surface {
   border-radius: 8px;
   background: transparent;
   padding: 0;
+  /* Full strength rather than dimmed. Fading a control that small is how its icon slips
+     under the contrast it needs. */
   color: var(--snackbar-text);
   cursor: pointer;
-  opacity: 0.75;
 }
 
 .snackbar__close:hover {
   background: color-mix(in srgb, var(--snackbar-text) 14%, transparent);
-  opacity: 1;
 }
 
 .snackbar__close svg {
@@ -314,6 +331,22 @@ ui-snackbar[data-placement$='center'] .snackbar__surface {
 .snackbar-demo__button:focus-visible {
   outline: 3px solid rgb(134 160 255 / 0.6);
   outline-offset: 2px;
+}
+
+/* The dark counterpart of the same intents, matching Chip token for token. Scoped to the
+   page rather than to the demo container: the host is a sibling of it, not a child. */
+.snackbar-demo-page ui-snackbar {
+  --snackbar-info-surface: #232c48;
+  --snackbar-info-text: #b9c8ff;
+  --snackbar-success-surface: #1d3327;
+  --snackbar-success-text: #9fe0b6;
+  --snackbar-warning-surface: #372c17;
+  --snackbar-warning-text: #f0cd8a;
+  --snackbar-error-surface: #3a2321;
+  --snackbar-error-text: #ffb1a9;
+  --snackbar-focus: #86a0ff;
+
+  color-scheme: dark;
 }
 
 .snackbar-demo__output {

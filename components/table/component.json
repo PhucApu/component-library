@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "table",
+  "version": "0.1.0",
+  "name": "Table",
+  "description": "A framework-free Web Component that frames a native table, adds three-state sorting and a three-state header checkbox, and makes the scroll region reachable by keyboard only while it actually overflows.",
+  "group": "data-display",
+  "categories": ["data-display", "tabular"],
+  "tags": ["table", "sorting", "selection", "sticky-header", "web-component", "accessible"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A captioned table with scoped headers and nothing that depends on script.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "sortable",
+      "name": "Sortable",
+      "description": "Columns cycling through ascending, descending, and back to the order the data arrived in.",
+      "entry": "source/variants/sortable/index.html"
+    },
+    {
+      "id": "selectable",
+      "name": "Selectable",
+      "description": "Row selection driving a header checkbox that has a third, partly-selected state.",
+      "entry": "source/variants/selectable/index.html"
+    },
+    {
+      "id": "sticky",
+      "name": "Sticky",
+      "description": "A header that keeps its place, and its underline, while the rows scroll beneath it.",
+      "entry": "source/variants/sticky/index.html"
+    },
+    {
+      "id": "expandable",
+      "name": "Expandable",
+      "description": "Rows opening a real detail row that spans the columns and keeps its place in the reading order.",
+      "entry": "source/variants/expandable/index.html"
+    },
+    {
+      "id": "dense",
+      "name": "Dense",
+      "description": "Compact rows in a table wider than its column, where the scroll region becomes a keyboard target.",
+      "entry": "source/variants/dense/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "selectable",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

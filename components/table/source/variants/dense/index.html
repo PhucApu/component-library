@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" class="table-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Compact rows and a table wider than its column." />
+    <title>Table - Dense</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="table-demo">
+      <div class="table-demo__shell">
+        <section class="table-demo__card">
+          <p class="table-demo__label">More rows in the same height</p>
+          <p class="table-demo__note">
+            This table is deliberately wider than its column. Tab to the scroll box and use
+            the arrow keys: a scrollable area that cannot take focus cannot be scrolled by
+            anyone without a pointer. Widen the window and the tab stop disappears again,
+            because a stop that leads nowhere is worse than none.
+          </p>
+
+          <ui-table density="compact">
+            <div class="table__scroll">
+              <table>
+                <caption>Regional performance</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Region</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col" class="table__numeric">Accounts</th>
+                    <th scope="col" class="table__numeric">Active</th>
+                    <th scope="col" class="table__numeric">Churn</th>
+                    <th scope="col" class="table__numeric">Revenue</th>
+                    <th scope="col" class="table__numeric">Forecast</th>
+                    <th scope="col">Reviewed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-key="1"><th scope="row">eu-west</th><td>Ha Linh Nguyen</td><td class="table__numeric">1,204</td><td class="table__numeric">1,118</td><td class="table__numeric">2.1%</td><td class="table__numeric">$482,000</td><td class="table__numeric">$510,000</td><td>12 March</td></tr>
+                  <tr data-key="2"><th scope="row">us-east</th><td>Marcus Bell</td><td class="table__numeric">3,881</td><td class="table__numeric">3,402</td><td class="table__numeric">4.6%</td><td class="table__numeric">$1,240,000</td><td class="table__numeric">$1,190,000</td><td>11 March</td></tr>
+                  <tr data-key="3"><th scope="row">ap-south</th><td>Priya Raman</td><td class="table__numeric">942</td><td class="table__numeric">905</td><td class="table__numeric">1.4%</td><td class="table__numeric">$268,000</td><td class="table__numeric">$312,000</td><td>12 March</td></tr>
+                  <tr data-key="4"><th scope="row">sa-east</th><td>Tomas Vogel</td><td class="table__numeric">417</td><td class="table__numeric">330</td><td class="table__numeric">8.2%</td><td class="table__numeric">$96,400</td><td class="table__numeric">$88,000</td><td>08 March</td></tr>
+                  <tr data-key="5"><th scope="row">af-north</th><td>Amara Diallo</td><td class="table__numeric">158</td><td class="table__numeric">151</td><td class="table__numeric">0.9%</td><td class="table__numeric">$41,200</td><td class="table__numeric">$52,600</td><td>10 March</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </ui-table>
+
+          <output class="table-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeTableDemo } from '../../demo.js';
+
+      initializeTableDemo();
+    </script>
+  </body>
+</html>

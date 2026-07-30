@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" class="table-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Columns that sort through three states." />
+    <title>Table - Sortable</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="table-demo">
+      <div class="table-demo__shell">
+        <section class="table-demo__card">
+          <p class="table-demo__label">Ascending, descending, and back to how it arrived</p>
+          <p class="table-demo__note">
+            Three states, not two. Without a way back, someone who sorted a column to check
+            one thing can never see the original order again. Blank cells stay at the bottom
+            in both directions, because no value is not a small value.
+          </p>
+
+          <ui-table sortable>
+            <div class="table__scroll">
+              <table>
+                <caption>Server fleet</caption>
+                <thead>
+                  <tr>
+                    <th scope="col" data-sortable data-column="host">Host</th>
+                    <th scope="col" data-sortable data-column="region">Region</th>
+                    <th scope="col" data-sortable data-column="cores" class="table__numeric">
+                      Cores
+                    </th>
+                    <th scope="col" data-sortable data-column="cost" class="table__numeric">
+                      Monthly
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-key="a">
+                    <th scope="row">atlas-01</th>
+                    <td>eu-west</td>
+                    <td class="table__numeric" data-sort-value="8">8</td>
+                    <td class="table__numeric" data-sort-value="184">$184</td>
+                  </tr>
+                  <tr data-key="b">
+                    <th scope="row">beacon-11</th>
+                    <td>us-east</td>
+                    <td class="table__numeric" data-sort-value="64">64</td>
+                    <td class="table__numeric" data-sort-value="1420">$1,420</td>
+                  </tr>
+                  <tr data-key="c">
+                    <th scope="row">cinder-04</th>
+                    <td>ap-south</td>
+                    <td class="table__numeric" data-sort-value="16">16</td>
+                    <td class="table__numeric" data-sort-value="96">$96</td>
+                  </tr>
+                  <tr data-key="d">
+                    <th scope="row">delta-07</th>
+                    <td></td>
+                    <td class="table__numeric" data-sort-value="2">2</td>
+                    <td class="table__numeric"></td>
+                  </tr>
+                  <tr data-key="e">
+                    <th scope="row">ember-02</th>
+                    <td>eu-west</td>
+                    <td class="table__numeric" data-sort-value="128">128</td>
+                    <td class="table__numeric" data-sort-value="2960">$2,960</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ui-table>
+
+          <output class="table-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeTableDemo } from '../../demo.js';
+
+      initializeTableDemo();
+    </script>
+  </body>
+</html>

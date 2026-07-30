@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" class="drawer-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A long panel with a fixed header and footer." />
+    <title>Drawer - Scrolling</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="drawer-demo">
+      <div class="drawer-demo__shell">
+        <section class="drawer-demo__card">
+          <p class="drawer-demo__label">The panel scrolls; the page behind it does not</p>
+          <p class="drawer-demo__note">
+            `showModal()` puts the dialog in the top layer but leaves the document free to
+            scroll underneath. Without locking it, a drawer slides over a page that keeps
+            moving. Scroll inside the panel, then try to scroll the page.
+          </p>
+
+          <div class="drawer-demo__actions">
+            <button class="drawer-demo__button" id="long-button" data-drawer-open="long">
+              Open a long panel
+            </button>
+          </div>
+
+          <ul class="drawer-demo__filler">
+            <li>The list below exists so the page has somewhere to scroll to.</li>
+            <li>One</li><li>Two</li><li>Three</li><li>Four</li><li>Five</li>
+            <li>Six</li><li>Seven</li><li>Eight</li><li>Nine</li><li>Ten</li>
+            <li>Eleven</li><li>Twelve</li><li>Thirteen</li><li>Fourteen</li>
+            <li>Fifteen</li><li>Sixteen</li><li>Seventeen</li><li>Eighteen</li>
+            <li>Nineteen</li><li>Twenty</li><li>Twenty-one</li><li>Twenty-two</li>
+            <li>Twenty-three</li><li>Twenty-four</li><li>Twenty-five</li>
+          </ul>
+
+          <output class="drawer-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+
+    <ui-drawer id="long" anchor="end" trigger="long-button">
+      <dialog class="drawer__panel" aria-labelledby="long-title">
+        <header class="drawer__header">
+          <h2 class="drawer__title" id="long-title">Filters</h2>
+          <button type="button" class="drawer__close">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+        <div class="drawer__body">
+          <ul class="drawer__nav">
+            <li><a href="#f1">Status: any</a></li>
+            <li><a href="#f2">Owner: anyone</a></li>
+            <li><a href="#f3">Region: all</a></li>
+            <li><a href="#f4">Created: any time</a></li>
+            <li><a href="#f5">Updated: any time</a></li>
+            <li><a href="#f6">Tier: all</a></li>
+            <li><a href="#f7">Currency: all</a></li>
+            <li><a href="#f8">Payment method: all</a></li>
+            <li><a href="#f9">Risk score: any</a></li>
+            <li><a href="#f10">Source: all</a></li>
+            <li><a href="#f11">Campaign: all</a></li>
+            <li><a href="#f12">Channel: all</a></li>
+            <li><a href="#f13">Segment: all</a></li>
+            <li><a href="#f14">Language: all</a></li>
+            <li><a href="#f15">Timezone: all</a></li>
+            <li><a href="#f16">Contract: all</a></li>
+            <li><a href="#f17">Renewal: any</a></li>
+            <li><a href="#f18">Support plan: all</a></li>
+          </ul>
+        </div>
+        <footer class="drawer__footer">
+          <button type="button" class="drawer-demo__button drawer__close">Apply filters</button>
+        </footer>
+      </dialog>
+    </ui-drawer>
+
+    <script type="module">
+      import { initializeDrawerDemo } from '../../demo.js';
+
+      initializeDrawerDemo();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en" class="table-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Rows that open a detail row beneath them." />
+    <title>Table - Expandable</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="table-demo">
+      <div class="table-demo__shell">
+        <section class="table-demo__card">
+          <p class="table-demo__label">Detail without leaving the table</p>
+          <p class="table-demo__note">
+            The detail is a real row spanning the columns, not a floating panel, so it keeps
+            its place in the reading order. The trigger carries `aria-expanded` and renames
+            itself for what it will do next.
+          </p>
+
+          <ui-table>
+            <div class="table__scroll">
+              <table>
+                <caption>Invoices</caption>
+                <thead>
+                  <tr>
+                    <th scope="col"><span class="table__sr-only">Details</span></th>
+                    <th scope="col">Invoice</th>
+                    <th scope="col">Client</th>
+                    <th scope="col" class="table__numeric">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-key="inv-1">
+                    <td>
+                      <button type="button" class="table__toggle" data-expands="inv-1">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4" /></svg>
+                      </button>
+                    </td>
+                    <th scope="row">INV-2041</th>
+                    <td>Northwind Trading</td>
+                    <td class="table__numeric">$4,280.00</td>
+                  </tr>
+                  <tr class="table__detail" data-detail="inv-1" hidden>
+                    <td colspan="4">
+                      Two line items: annual platform licence ($3,600.00) and onboarding
+                      support ($680.00). Due 30 days from issue.
+                    </td>
+                  </tr>
+
+                  <tr data-key="inv-2">
+                    <td>
+                      <button type="button" class="table__toggle" data-expands="inv-2">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4" /></svg>
+                      </button>
+                    </td>
+                    <th scope="row">INV-2042</th>
+                    <td>Harbourline Logistics</td>
+                    <td class="table__numeric">$915.50</td>
+                  </tr>
+                  <tr class="table__detail" data-detail="inv-2" hidden>
+                    <td colspan="4">
+                      One line item: overage for February data transfer. Paid in full on 3
+                      March.
+                    </td>
+                  </tr>
+
+                  <tr data-key="inv-3">
+                    <td>
+                      <button type="button" class="table__toggle" data-expands="inv-3">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4" /></svg>
+                      </button>
+                    </td>
+                    <th scope="row">INV-2043</th>
+                    <td>Vale Analytics</td>
+                    <td class="table__numeric">$12,000.00</td>
+                  </tr>
+                  <tr class="table__detail" data-detail="inv-3" hidden>
+                    <td colspan="4">
+                      Three line items across two cost centres. Awaiting purchase order
+                      before it can be sent.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ui-table>
+
+          <output class="table-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeTableDemo } from '../../demo.js';
+
+      initializeTableDemo();
+    </script>
+  </body>
+</html>

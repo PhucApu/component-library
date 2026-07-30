@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "breadcrumbs",
+  "version": "0.1.0",
+  "name": "Breadcrumbs",
+  "description": "A framework-free Web Component that styles a native trail of links, keeps the separator out of the accessibility tree, and puts the middle of a long path behind a real button.",
+  "group": "navigation",
+  "categories": ["navigation", "wayfinding"],
+  "tags": ["breadcrumbs", "trail", "web-component", "accessible", "progressive-enhancement"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A short trail of links ending on the current page.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "separators",
+      "name": "Separators",
+      "description": "The three built-in dividers beside one supplied entirely by the consumer.",
+      "entry": "source/variants/separators/index.html"
+    },
+    {
+      "id": "icons",
+      "name": "Icons",
+      "description": "Levels carrying a leading icon, with decorative marks kept out of the reading order.",
+      "entry": "source/variants/icons/index.html"
+    },
+    {
+      "id": "collapsed",
+      "name": "Collapsed",
+      "description": "A long path with its middle behind a button, and a short one that refuses to collapse.",
+      "entry": "source/variants/collapsed/index.html"
+    },
+    {
+      "id": "truncation",
+      "name": "Truncation",
+      "description": "Long labels giving way inside a narrow container while the current page stays whole.",
+      "entry": "source/variants/truncation/index.html"
+    },
+    {
+      "id": "sizes",
+      "name": "Sizes",
+      "description": "The standard and compact scales shown against the same path.",
+      "entry": "source/variants/sizes/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "collapsed",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

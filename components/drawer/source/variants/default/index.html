@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" class="drawer-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A modal drawer built on the dialog element." />
+    <title>Drawer - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="drawer-demo">
+      <div class="drawer-demo__shell">
+        <section class="drawer-demo__card">
+          <p class="drawer-demo__label">A dialog does the hard part</p>
+          <p class="drawer-demo__note">
+            Because the panel is a `dialog`, the browser supplies the focus trap, the Escape
+            key, the top layer, the backdrop, and returning focus to the button you opened
+            it with. Tab around inside it: focus never escapes to the page behind.
+          </p>
+
+          <div class="drawer-demo__actions">
+            <button class="drawer-demo__button" id="menu-button" data-drawer-open="nav-drawer">
+              Open navigation
+            </button>
+          </div>
+
+          <output class="drawer-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+
+    <ui-drawer id="nav-drawer" anchor="start" trigger="menu-button">
+      <dialog class="drawer__panel" aria-labelledby="nav-drawer-title">
+        <header class="drawer__header">
+          <h2 class="drawer__title" id="nav-drawer-title">Navigation</h2>
+          <button type="button" class="drawer__close">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+        <div class="drawer__body">
+          <ul class="drawer__nav">
+            <li><a href="#overview" aria-current="page">Overview</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#reports">Reports</a></li>
+            <li><a href="#members">Members</a></li>
+            <li><a href="#settings">Settings</a></li>
+          </ul>
+        </div>
+      </dialog>
+    </ui-drawer>
+
+    <script type="module">
+      import { initializeDrawerDemo } from '../../demo.js';
+
+      initializeDrawerDemo();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" class="drawer-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A persistent panel that pushes the content aside." />
+    <title>Drawer - Inline</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="drawer-demo">
+      <div class="drawer-demo__shell">
+        <section class="drawer-demo__card">
+          <p class="drawer-demo__label">Not a dialog, so none of the dialog rules apply</p>
+          <p class="drawer-demo__note">
+            This panel is a `nav`, not a `dialog`. It does not trap focus, it does not take
+            Escape, and it does not cover anything — it pushes the content beside it. The
+            mode comes from the element the author wrote, so the two can never disagree.
+          </p>
+
+          <div class="drawer-demo__actions">
+            <button class="drawer-demo__button" id="inline-button" data-drawer-toggle="side">
+              Toggle panel
+            </button>
+          </div>
+
+          <div class="drawer-demo__split">
+            <ui-drawer id="side" anchor="start" open trigger="inline-button">
+              <nav class="drawer__panel" aria-label="Sections">
+                <div class="drawer__body">
+                  <ul class="drawer__nav">
+                    <li><a href="#a" aria-current="page">Overview</a></li>
+                    <li><a href="#b">Usage</a></li>
+                    <li><a href="#c">Billing</a></li>
+                    <li><a href="#d">Audit log</a></li>
+                  </ul>
+                </div>
+              </nav>
+            </ui-drawer>
+
+            <div class="drawer-demo__content">
+              <p class="drawer-demo__label">Workspace overview</p>
+              <ul class="drawer-demo__filler">
+                <li>The content keeps its own scroll and its own focus order.</li>
+                <li>Nothing behind it is inert, because nothing is in front of it.</li>
+                <li>Closing the panel simply gives the width back.</li>
+              </ul>
+            </div>
+          </div>
+
+          <output class="drawer-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeDrawerDemo } from '../../demo.js';
+
+      initializeDrawerDemo();
+    </script>
+  </body>
+</html>

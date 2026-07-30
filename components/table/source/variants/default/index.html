@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" class="table-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A plain table with a caption and column headers." />
+    <title>Table - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="table-demo">
+      <div class="table-demo__shell">
+        <section class="table-demo__card">
+          <p class="table-demo__label">Structure the browser already understands</p>
+          <p class="table-demo__note">
+            A caption names the table, every header declares its scope, and none of it needs
+            a script. Narrow the window and the scroll box becomes reachable by keyboard.
+          </p>
+
+          <ui-table>
+            <div class="table__scroll">
+              <table>
+                <caption>Recent orders</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Order</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Placed</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="table__numeric">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-key="1001">
+                    <th scope="row">1001</th>
+                    <td>Ha Linh Nguyen</td>
+                    <td>12 March</td>
+                    <td>Shipped</td>
+                    <td class="table__numeric">248.00</td>
+                  </tr>
+                  <tr data-key="1002">
+                    <th scope="row">1002</th>
+                    <td>Marcus Bell</td>
+                    <td>12 March</td>
+                    <td>Packing</td>
+                    <td class="table__numeric">1,120.50</td>
+                  </tr>
+                  <tr data-key="1003">
+                    <th scope="row">1003</th>
+                    <td>Priya Raman</td>
+                    <td>11 March</td>
+                    <td>Shipped</td>
+                    <td class="table__numeric">64.25</td>
+                  </tr>
+                  <tr data-key="1004">
+                    <th scope="row">1004</th>
+                    <td>Tomas Vogel</td>
+                    <td>10 March</td>
+                    <td>Cancelled</td>
+                    <td class="table__numeric">399.99</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ui-table>
+
+          <output class="table-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeTableDemo } from '../../demo.js';
+
+      initializeTableDemo();
+    </script>
+  </body>
+</html>

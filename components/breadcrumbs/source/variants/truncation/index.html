@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" class="breadcrumbs-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Long labels giving way inside a narrow container." />
+    <title>Breadcrumbs - Truncation</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="breadcrumbs-demo">
+      <div class="breadcrumbs-demo__shell">
+        <section class="breadcrumbs-demo__card">
+          <p class="breadcrumbs-demo__label">Long labels, narrow column</p>
+          <p class="breadcrumbs-demo__note">
+            Earlier levels give way; the current page never does, because that is the one
+            piece of the trail that has to stay readable. The full text stays available
+            through the link's own title.
+          </p>
+
+          <div class="breadcrumbs-demo__frame breadcrumbs-demo__frame--narrow">
+            <ui-breadcrumbs data-truncate separator="chevron">
+              <nav aria-label="Breadcrumb">
+                <ol class="breadcrumbs__list">
+                  <li>
+                    <a href="#a" title="Northern Europe regional operations">
+                      Northern Europe regional operations
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#b" title="Quarterly reconciliation archive">
+                      Quarterly reconciliation archive
+                    </a>
+                  </li>
+                  <li><a href="#c" aria-current="page">March</a></li>
+                </ol>
+              </nav>
+            </ui-breadcrumbs>
+          </div>
+
+          <p class="breadcrumbs-demo__label">Without truncation, the trail wraps instead</p>
+          <div class="breadcrumbs-demo__frame breadcrumbs-demo__frame--narrow">
+            <ui-breadcrumbs separator="chevron">
+              <nav aria-label="Breadcrumb, untruncated">
+                <ol class="breadcrumbs__list">
+                  <li><a href="#a">Northern Europe regional operations</a></li>
+                  <li><a href="#b">Quarterly reconciliation archive</a></li>
+                  <li><a href="#c" aria-current="page">March</a></li>
+                </ol>
+              </nav>
+            </ui-breadcrumbs>
+          </div>
+
+          <output class="breadcrumbs-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeBreadcrumbsDemo } from '../../demo.js';
+
+      initializeBreadcrumbsDemo();
+    </script>
+  </body>
+</html>

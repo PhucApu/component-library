@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" class="breadcrumbs-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The standard and compact scales." />
+    <title>Breadcrumbs - Sizes</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="breadcrumbs-demo">
+      <div class="breadcrumbs-demo__shell">
+        <section class="breadcrumbs-demo__card">
+          <p class="breadcrumbs-demo__label">Standard</p>
+          <div class="breadcrumbs-demo__frame">
+            <ui-breadcrumbs size="md" separator="chevron">
+              <nav aria-label="Breadcrumb, standard size">
+                <ol class="breadcrumbs__list">
+                  <li><a href="#a">Settings</a></li>
+                  <li><a href="#b">Workspace</a></li>
+                  <li><a href="#c" aria-current="page">Members</a></li>
+                </ol>
+              </nav>
+            </ui-breadcrumbs>
+          </div>
+
+          <p class="breadcrumbs-demo__label">Compact</p>
+          <p class="breadcrumbs-demo__note">
+            For a trail sitting above a dense table or inside a panel, where it should
+            report position without competing with the content below it.
+          </p>
+          <div class="breadcrumbs-demo__frame">
+            <ui-breadcrumbs size="sm" separator="chevron">
+              <nav aria-label="Breadcrumb, compact size">
+                <ol class="breadcrumbs__list">
+                  <li><a href="#a">Settings</a></li>
+                  <li><a href="#b">Workspace</a></li>
+                  <li><a href="#c" aria-current="page">Members</a></li>
+                </ol>
+              </nav>
+            </ui-breadcrumbs>
+          </div>
+
+          <output class="breadcrumbs-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeBreadcrumbsDemo } from '../../demo.js';
+
+      initializeBreadcrumbsDemo();
+    </script>
+  </body>
+</html>

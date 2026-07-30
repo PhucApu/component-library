@@ -1,0 +1,358 @@
+:root {
+  color-scheme: light;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.table-demo-page,
+.table-demo-page body {
+  background: #0f1115;
+  color-scheme: dark;
+}
+
+ui-table {
+  --table-surface: #ffffff;
+  --table-head: #f4f6fa;
+  --table-text: #111827;
+  --table-muted: #5f6878;
+  --table-border: #dfe4ec;
+  --table-border-strong: #b9c2d0;
+  --table-hover: #f6f8fc;
+  --table-selected: #eef1ff;
+  --table-accent: #4f46e5;
+  --table-focus: #6366f1;
+  --table-radius: 12px;
+
+  display: block;
+  /* A grid or flex item refuses by default to shrink below its own content, so a wide
+     table would push the surrounding layout sideways instead of scrolling inside its box.
+     Set here rather than left to the consumer, because the consumer cannot see why. */
+  min-inline-size: 0;
+  color: var(--table-text);
+  font: 400 0.9375rem/1.45
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* Written in the markup rather than created by script, so a page with no JavaScript can
+   still be scrolled by pointer and by touch. */
+.table__scroll {
+  overflow-x: auto;
+  border: 1px solid var(--table-border);
+  border-radius: var(--table-radius);
+  background: var(--table-surface);
+}
+
+/* Only present while the table actually overflows, so it never becomes a tab stop that
+   leads nowhere. */
+.table__scroll:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--table-focus) 55%, transparent);
+  outline-offset: 2px;
+}
+
+ui-table[data-sticky] .table__scroll {
+  overflow-y: auto;
+  max-block-size: 20rem;
+}
+
+/* Separate rather than collapsed: a collapsed border is painted by the cell that scrolls
+   away, so a sticky header loses its underline the moment it starts sticking. */
+.table__table {
+  inline-size: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table__table caption {
+  padding: 0.85rem 1rem;
+  color: var(--table-muted);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  text-align: start;
+}
+
+.table__table th,
+.table__table td {
+  border-block-end: 1px solid var(--table-border);
+  padding: 0.7rem 1rem;
+  text-align: start;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+ui-table[data-density='compact'] .table__table th,
+ui-table[data-density='compact'] .table__table td {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.table__table thead th {
+  background: var(--table-head);
+  color: var(--table-muted);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+ui-table[data-sticky] .table__table thead th {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+}
+
+.table__table tbody tr:last-child th,
+.table__table tbody tr:last-child td {
+  border-block-end: 0;
+}
+
+.table__table tbody tr:hover td,
+.table__table tbody tr:hover th {
+  background: var(--table-hover);
+}
+
+.table__table tbody tr[data-selected] td,
+.table__table tbody tr[data-selected] th {
+  background: var(--table-selected);
+}
+
+/* Selecting everything visibly steps over this row, so it has to read as unavailable
+   rather than as one the header checkbox forgot. */
+.table__table tbody tr[data-unavailable] td,
+.table__table tbody tr[data-unavailable] th {
+  color: var(--table-muted);
+}
+
+.table__select input:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.table__numeric {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: -0.2rem -0.4rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  padding: 0.2rem 0.4rem;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.table__sort:hover {
+  background: color-mix(in srgb, var(--table-muted) 14%, transparent);
+  color: var(--table-text);
+}
+
+.table__sort:focus-visible,
+.table__toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--table-focus) 55%, transparent);
+  outline-offset: 1px;
+}
+
+.table__chevron {
+  inline-size: 1rem;
+  block-size: 1rem;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  /* Visible from the start: the pair of arrows is what says the column can be sorted at
+     all. An icon that only appears on hover tells a touch user nothing. */
+  opacity: 0.5;
+}
+
+.table__sort:hover .table__chevron {
+  opacity: 0.8;
+}
+
+/* One of the three marks at a time. */
+.table__sort-asc,
+.table__sort-desc {
+  display: none;
+}
+
+th[aria-sort='ascending'] .table__sort-idle,
+th[aria-sort='descending'] .table__sort-idle {
+  display: none;
+}
+
+th[aria-sort='ascending'] .table__sort-asc,
+th[aria-sort='descending'] .table__sort-desc {
+  display: inline;
+}
+
+th[data-sorted] {
+  color: var(--table-text);
+}
+
+th[data-sorted] .table__chevron {
+  color: var(--table-accent);
+  opacity: 1;
+}
+
+.table__select {
+  inline-size: 1px;
+  padding-inline-end: 0.4rem;
+}
+
+.table__select input {
+  display: block;
+  inline-size: 1.05rem;
+  block-size: 1.05rem;
+  margin: 0;
+  accent-color: var(--table-accent);
+  cursor: pointer;
+}
+
+.table__toggle {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  border: 1px solid var(--table-border-strong);
+  border-radius: 7px;
+  background: transparent;
+  padding: 0;
+  color: var(--table-muted);
+  cursor: pointer;
+}
+
+.table__toggle:hover {
+  background: color-mix(in srgb, var(--table-muted) 14%, transparent);
+  color: var(--table-text);
+}
+
+.table__toggle svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  transition: rotate 160ms ease;
+}
+
+.table__toggle[aria-expanded='true'] svg {
+  rotate: 180deg;
+}
+
+.table__detail td {
+  background: color-mix(in srgb, var(--table-muted) 6%, transparent);
+  color: var(--table-muted);
+  font-size: 0.875rem;
+  white-space: normal;
+}
+
+.table__status {
+  margin: 0;
+  color: var(--table-muted);
+  font-size: 0.8125rem;
+}
+
+.table__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* The catalog stage gives the frame a fixed height, so the demo has to fill it or the
+   background stops short of the frame and leaves a visible seam. */
+.table-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background:
+    radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
+    #0f1115;
+  color: #f4f6fa;
+}
+
+.table-demo__shell {
+  /* Without this a grid item refuses to shrink below its content, so a wide table pushes
+     the whole page sideways instead of scrolling inside its own box. */
+  min-inline-size: 0;
+  inline-size: min(100%, 46rem);
+}
+
+.table-demo__card {
+  display: grid;
+  gap: 1.1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid #292d36;
+  border-radius: 18px;
+  background: #171a20;
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+}
+
+.table-demo__label {
+  margin: 0;
+  color: #a8afbc;
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.table-demo__note {
+  margin: 0;
+  color: #a8afbc;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.table-demo ui-table {
+  --table-surface: #10131a;
+  --table-head: #1a1e26;
+  --table-text: #f4f6fa;
+  --table-muted: #a8afbc;
+  --table-border: #292d36;
+  --table-border-strong: #4a5260;
+  --table-hover: #1b1f28;
+  --table-selected: #1f2740;
+  --table-accent: #86a0ff;
+  --table-focus: #86a0ff;
+
+  color-scheme: dark;
+}
+
+.table-demo__output {
+  display: block;
+  min-block-size: 2.5rem;
+  padding: 0.75rem;
+  border: 1px solid #292d36;
+  border-radius: 10px;
+  background: #0b0c0e;
+  color: #f4f6fa;
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .table__toggle svg {
+    transition: none;
+  }
+}

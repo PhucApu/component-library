@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" class="drawer-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A panel that is permanent on a wide screen and modal on a narrow one." />
+    <title>Drawer - Responsive</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+    <style>
+      /* Two drawers, one shown at a time. Swapping a `nav` for a `dialog` at a breakpoint
+         would mean changing which element the panel is, and with it what assistive
+         technology has been told about the page. Two panels and a media query is honest
+         about there being two different things. */
+      .responsive-wide {
+        display: contents;
+      }
+
+      .responsive-narrow-trigger {
+        display: none;
+      }
+
+      @media (max-width: 46rem) {
+        .responsive-wide {
+          display: none;
+        }
+
+        .responsive-narrow-trigger {
+          display: inline-block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="drawer-demo">
+      <div class="drawer-demo__shell">
+        <section class="drawer-demo__card">
+          <p class="drawer-demo__label">Permanent when there is room, modal when there is not</p>
+          <p class="drawer-demo__note">
+            Narrow the window past <code>46rem</code>. The side panel disappears and a
+            button appears in its place. Nothing changes element as the width changes: the
+            wide panel is a `nav` and the narrow one is a `dialog`, and each is only ever
+            the thing it says it is.
+          </p>
+
+          <div class="drawer-demo__actions">
+            <button
+              class="drawer-demo__button responsive-narrow-trigger"
+              id="compact-button"
+              data-drawer-open="compact"
+            >
+              Open sections
+            </button>
+          </div>
+
+          <div class="drawer-demo__split">
+            <div class="responsive-wide">
+              <ui-drawer id="wide" anchor="start" open>
+                <nav class="drawer__panel" aria-label="Sections">
+                  <div class="drawer__body">
+                    <ul class="drawer__nav">
+                      <li><a href="#a" aria-current="page">Overview</a></li>
+                      <li><a href="#b">Usage</a></li>
+                      <li><a href="#c">Billing</a></li>
+                    </ul>
+                  </div>
+                </nav>
+              </ui-drawer>
+            </div>
+
+            <div class="drawer-demo__content">
+              <p class="drawer-demo__label">Workspace overview</p>
+              <ul class="drawer-demo__filler">
+                <li>The content column keeps the space the panel is not using.</li>
+                <li>On a narrow screen the panel would cover this rather than squeeze it.</li>
+              </ul>
+            </div>
+          </div>
+
+          <output class="drawer-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+
+    <ui-drawer id="compact" anchor="start" trigger="compact-button">
+      <dialog class="drawer__panel" aria-labelledby="compact-title">
+        <header class="drawer__header">
+          <h2 class="drawer__title" id="compact-title">Sections</h2>
+          <button type="button" class="drawer__close">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+        <div class="drawer__body">
+          <ul class="drawer__nav">
+            <li><a href="#a" aria-current="page">Overview</a></li>
+            <li><a href="#b">Usage</a></li>
+            <li><a href="#c">Billing</a></li>
+          </ul>
+        </div>
+      </dialog>
+    </ui-drawer>
+
+    <script type="module">
+      import { initializeDrawerDemo } from '../../demo.js';
+
+      initializeDrawerDemo();
+    </script>
+  </body>
+</html>

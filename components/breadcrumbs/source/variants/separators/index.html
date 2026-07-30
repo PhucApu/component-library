@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" class="breadcrumbs-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The built-in dividers beside a custom one." />
+    <title>Breadcrumbs - Separators</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="breadcrumbs-demo">
+      <div class="breadcrumbs-demo__shell">
+        <section class="breadcrumbs-demo__card">
+          <p class="breadcrumbs-demo__label">Three built in, and anything you like</p>
+          <p class="breadcrumbs-demo__note">
+            The divider is drawn by the stylesheet and never enters the document, so no
+            reading of this trail ever contains the word "slash".
+          </p>
+
+          <div class="breadcrumbs-demo__frame">
+            <ui-breadcrumbs separator="slash">
+              <nav aria-label="Breadcrumb with slashes">
+                <ol class="breadcrumbs__list">
+                  <li><a href="#a">Home</a></li>
+                  <li><a href="#b">Projects</a></li>
+                  <li><a href="#c" aria-current="page">Atlas</a></li>
+                </ol>
+              </nav>
+            </ui-breadcrumbs>
+          </div>
+
+          <div class="breadcrumbs-demo__frame">
+            <ui-breadcrumbs separator="chevron">
+              <nav aria-label="Breadcrumb with chevrons">
+                <ol class="breadcrumbs__list">
+                  <li><a href="#a">Home</a></li>
+                  <li><a href="#b">Projects</a></li>
+                  <li><a href="#c" aria-current="page">Atlas</a></li>
+                </ol>
+              </nav>
+            </ui-breadcrumbs>
+          </div>
+
+          <div class="breadcrumbs-demo__frame">
+            <ui-breadcrumbs separator="arrow">
+              <nav aria-label="Breadcrumb with arrows">
+                <ol class="breadcrumbs__list">
+                  <li><a href="#a">Home</a></li>
+                  <li><a href="#b">Projects</a></li>
+                  <li><a href="#c" aria-current="page">Atlas</a></li>
+                </ol>
+              </nav>
+            </ui-breadcrumbs>
+          </div>
+
+          <div class="breadcrumbs-demo__frame">
+            <ui-breadcrumbs style="--breadcrumbs-separator: '\2022'">
+              <nav aria-label="Breadcrumb with bullets">
+                <ol class="breadcrumbs__list">
+                  <li><a href="#a">Home</a></li>
+                  <li><a href="#b">Projects</a></li>
+                  <li><a href="#c" aria-current="page">Atlas</a></li>
+                </ol>
+              </nav>
+            </ui-breadcrumbs>
+          </div>
+
+          <output class="breadcrumbs-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeBreadcrumbsDemo } from '../../demo.js';
+
+      initializeBreadcrumbsDemo();
+    </script>
+  </body>
+</html>

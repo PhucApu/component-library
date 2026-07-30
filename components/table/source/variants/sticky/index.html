@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" class="table-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A header that stays while the rows scroll." />
+    <title>Table - Sticky</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="table-demo">
+      <div class="table-demo__shell">
+        <section class="table-demo__card">
+          <p class="table-demo__label">The header stays put</p>
+          <p class="table-demo__note">
+            Borders are drawn on the cells rather than collapsed between them. A collapsed
+            border belongs to whichever cell scrolls away first, so a sticky header loses
+            its underline the moment it starts sticking.
+          </p>
+
+          <ui-table sticky-header density="compact">
+            <div class="table__scroll">
+              <table>
+                <caption>Deployment log</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Build</th>
+                    <th scope="col">Branch</th>
+                    <th scope="col">Result</th>
+                    <th scope="col" class="table__numeric">Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-key="1"><th scope="row">#4821</th><td>main</td><td>Passed</td><td class="table__numeric">3m 04s</td></tr>
+                  <tr data-key="2"><th scope="row">#4820</th><td>main</td><td>Passed</td><td class="table__numeric">2m 51s</td></tr>
+                  <tr data-key="3"><th scope="row">#4819</th><td>release/3.2</td><td>Failed</td><td class="table__numeric">1m 12s</td></tr>
+                  <tr data-key="4"><th scope="row">#4818</th><td>main</td><td>Passed</td><td class="table__numeric">3m 22s</td></tr>
+                  <tr data-key="5"><th scope="row">#4817</th><td>feature/import</td><td>Passed</td><td class="table__numeric">4m 05s</td></tr>
+                  <tr data-key="6"><th scope="row">#4816</th><td>main</td><td>Passed</td><td class="table__numeric">3m 11s</td></tr>
+                  <tr data-key="7"><th scope="row">#4815</th><td>release/3.2</td><td>Passed</td><td class="table__numeric">2m 47s</td></tr>
+                  <tr data-key="8"><th scope="row">#4814</th><td>main</td><td>Cancelled</td><td class="table__numeric">0m 18s</td></tr>
+                  <tr data-key="9"><th scope="row">#4813</th><td>feature/export</td><td>Passed</td><td class="table__numeric">3m 58s</td></tr>
+                  <tr data-key="10"><th scope="row">#4812</th><td>main</td><td>Passed</td><td class="table__numeric">3m 02s</td></tr>
+                  <tr data-key="11"><th scope="row">#4811</th><td>main</td><td>Failed</td><td class="table__numeric">1m 44s</td></tr>
+                  <tr data-key="12"><th scope="row">#4810</th><td>release/3.1</td><td>Passed</td><td class="table__numeric">3m 30s</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </ui-table>
+
+          <output class="table-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeTableDemo } from '../../demo.js';
+
+      initializeTableDemo();
+    </script>
+  </body>
+</html>
