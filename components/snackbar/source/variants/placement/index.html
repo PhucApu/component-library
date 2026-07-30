@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" class="snackbar-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Snackbar anchored to each of the six edges." />
+    <title>Snackbar - Placement</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="snackbar-demo">
+      <div class="snackbar-demo__shell">
+        <section class="snackbar-demo__card">
+          <p class="snackbar-demo__label">Six anchors</p>
+          <p class="snackbar-demo__note">
+            Named by logical edge rather than by left and right, so the anchor follows the
+            writing direction instead of fighting it. On a narrow screen every placement
+            spans the full width.
+          </p>
+
+          <div class="snackbar-demo__actions">
+            <button class="snackbar-demo__button" data-demo-placement="top-start">top-start</button>
+            <button class="snackbar-demo__button" data-demo-placement="top-center">top-center</button>
+            <button class="snackbar-demo__button" data-demo-placement="top-end">top-end</button>
+          </div>
+          <div class="snackbar-demo__actions">
+            <button class="snackbar-demo__button" data-demo-placement="bottom-start">bottom-start</button>
+            <button class="snackbar-demo__button" data-demo-placement="bottom-center">bottom-center</button>
+            <button class="snackbar-demo__button" data-demo-placement="bottom-end">bottom-end</button>
+          </div>
+
+          <output class="snackbar-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+
+    <ui-snackbar placement="bottom-center"></ui-snackbar>
+
+    <script type="module">
+      import { initializeSnackbarDemo } from '../../demo.js';
+
+      initializeSnackbarDemo();
+    </script>
+  </body>
+</html>

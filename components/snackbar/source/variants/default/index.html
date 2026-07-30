@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" class="snackbar-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Snackbar reporting what just happened." />
+    <title>Snackbar - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="snackbar-demo">
+      <div class="snackbar-demo__shell">
+        <section class="snackbar-demo__card">
+          <p class="snackbar-demo__label">Report the outcome of an action</p>
+          <p class="snackbar-demo__note">
+            A snackbar is summoned in code, not written into the page. Focus stays exactly
+            where it was, so nothing interrupts what you were doing.
+          </p>
+
+          <div class="snackbar-demo__actions">
+            <button class="snackbar-demo__button" data-demo-show data-message="Draft saved">
+              Save draft
+            </button>
+            <button
+              class="snackbar-demo__button"
+              data-demo-show
+              data-message="Link copied to the clipboard"
+            >
+              Copy link
+            </button>
+            <button
+              class="snackbar-demo__button"
+              data-demo-show
+              data-message="Settings applied to all three devices"
+            >
+              Apply settings
+            </button>
+          </div>
+
+          <output class="snackbar-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+
+    <ui-snackbar placement="bottom-center"></ui-snackbar>
+
+    <script type="module">
+      import { initializeSnackbarDemo } from '../../demo.js';
+
+      initializeSnackbarDemo();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "snackbar",
+  "version": "0.1.0",
+  "name": "Snackbar",
+  "description": "A framework-free Web Component that reports what just happened through persistent live regions, queues messages one at a time, and never puts a time limit on one you can act on.",
+  "group": "feedback",
+  "categories": ["notification", "transient"],
+  "tags": ["snackbar", "toast", "live-region", "web-component", "accessible", "queue"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Plain messages summoned in code, leaving focus exactly where it was.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "severity",
+      "name": "Severity",
+      "description": "All four levels, with information and success waiting their turn while warning and error interrupt.",
+      "entry": "source/variants/severity/index.html"
+    },
+    {
+      "id": "action",
+      "name": "Action",
+      "description": "Messages offering an action, which run no timer because a button that expires cannot be reached in time.",
+      "entry": "source/variants/action/index.html"
+    },
+    {
+      "id": "placement",
+      "name": "Placement",
+      "description": "The six anchors, named by logical edge so they follow the writing direction.",
+      "entry": "source/variants/placement/index.html"
+    },
+    {
+      "id": "queue",
+      "name": "Queue",
+      "description": "Several messages arriving together and shown one at a time, in the order they were raised.",
+      "entry": "source/variants/queue/index.html"
+    },
+    {
+      "id": "timing",
+      "name": "Timing",
+      "description": "How long a message stays, and how hover, focus, and a hidden tab each stop the clock.",
+      "entry": "source/variants/timing/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "action",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

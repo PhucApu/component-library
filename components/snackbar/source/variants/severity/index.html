@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" class="snackbar-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Snackbar at all four severities." />
+    <title>Snackbar - Severity</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="snackbar-demo">
+      <div class="snackbar-demo__shell">
+        <section class="snackbar-demo__card">
+          <p class="snackbar-demo__label">Four levels, two ways of speaking</p>
+          <p class="snackbar-demo__note">
+            Information and success wait for a pause in the conversation. Warning and error
+            interrupt, because a problem heard after the message has gone is no use. The
+            icon changes shape as well as colour.
+          </p>
+
+          <div class="snackbar-demo__actions">
+            <button
+              class="snackbar-demo__button"
+              data-demo-show
+              data-message="Sync runs again in ten minutes"
+              data-severity="info"
+            >
+              Info
+            </button>
+            <button
+              class="snackbar-demo__button"
+              data-demo-show
+              data-message="Invoice sent to the billing address"
+              data-severity="success"
+            >
+              Success
+            </button>
+            <button
+              class="snackbar-demo__button"
+              data-demo-show
+              data-message="Two files were skipped because they are too large"
+              data-severity="warning"
+            >
+              Warning
+            </button>
+            <button
+              class="snackbar-demo__button"
+              data-demo-show
+              data-message="Upload failed: the connection was lost"
+              data-severity="error"
+            >
+              Error
+            </button>
+          </div>
+
+          <output class="snackbar-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+
+    <ui-snackbar placement="bottom-center"></ui-snackbar>
+
+    <script type="module">
+      import { initializeSnackbarDemo } from '../../demo.js';
+
+      initializeSnackbarDemo();
+    </script>
+  </body>
+</html>

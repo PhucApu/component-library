@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" class="snackbar-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="How long a snackbar stays, and what stops the clock." />
+    <title>Snackbar - Timing</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="snackbar-demo">
+      <div class="snackbar-demo__shell">
+        <section class="snackbar-demo__card">
+          <p class="snackbar-demo__label">What stops the clock</p>
+          <p class="snackbar-demo__note">
+            Hovering the message pauses it. So does moving focus into it, and so does
+            switching to another browser tab. When the clock starts again it counts the
+            time that was left, not a fresh window.
+          </p>
+          <p class="snackbar-demo__note">
+            Try it: show the long message, rest the pointer on it, and watch it wait.
+          </p>
+
+          <div class="snackbar-demo__actions">
+            <button
+              class="snackbar-demo__button"
+              data-demo-show
+              data-message="Gone in two seconds"
+              data-duration="2000"
+            >
+              Short
+            </button>
+            <button
+              class="snackbar-demo__button"
+              data-demo-show
+              data-message="Ten seconds, unless you hover to hold it"
+              data-duration="10000"
+            >
+              Long
+            </button>
+            <button
+              class="snackbar-demo__button"
+              data-demo-show
+              data-message="This one waits for you to close it"
+              data-severity="warning"
+              data-duration="0"
+            >
+              Until dismissed
+            </button>
+          </div>
+
+          <output class="snackbar-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+
+    <ui-snackbar placement="bottom-center"></ui-snackbar>
+
+    <script type="module">
+      import { initializeSnackbarDemo } from '../../demo.js';
+
+      initializeSnackbarDemo();
+    </script>
+  </body>
+</html>

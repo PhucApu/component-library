@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" class="snackbar-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Snackbar carrying an action, which never expires." />
+    <title>Snackbar - Action</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="snackbar-demo">
+      <div class="snackbar-demo__shell">
+        <section class="snackbar-demo__card">
+          <p class="snackbar-demo__label">A message you can act on does not expire</p>
+          <p class="snackbar-demo__note">
+            No timer runs while an action is offered. A button that disappears on a clock
+            loses the race against anyone still reading the sentence, and against anyone
+            reaching it by keyboard at all. It closes when you choose, and not before.
+          </p>
+
+          <div class="snackbar-demo__actions">
+            <button
+              class="snackbar-demo__button"
+              data-demo-show
+              data-message="Message moved to Trash"
+              data-action="Undo"
+            >
+              Delete message
+            </button>
+            <button
+              class="snackbar-demo__button"
+              data-demo-show
+              data-message="Could not reach the server"
+              data-severity="error"
+              data-action="Retry"
+            >
+              Publish
+            </button>
+            <button
+              class="snackbar-demo__button"
+              data-demo-show
+              data-message="Saved. This one clears itself."
+              data-severity="success"
+            >
+              Save (no action)
+            </button>
+          </div>
+
+          <output class="snackbar-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+
+    <ui-snackbar placement="bottom-center"></ui-snackbar>
+
+    <script type="module">
+      import { initializeSnackbarDemo } from '../../demo.js';
+
+      initializeSnackbarDemo();
+    </script>
+  </body>
+</html>

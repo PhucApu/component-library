@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" class="snackbar-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Several messages arriving at once, shown one at a time." />
+    <title>Snackbar - Queue</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="snackbar-demo">
+      <div class="snackbar-demo__shell">
+        <section class="snackbar-demo__card">
+          <p class="snackbar-demo__label">Four at once, in order</p>
+          <p class="snackbar-demo__note">
+            Messages queue rather than stack. The reason is not tidiness: two live regions
+            updating together trample each other, and a screen reader user hears neither
+            message in full.
+          </p>
+
+          <div class="snackbar-demo__actions">
+            <button class="snackbar-demo__button" data-demo-burst>Fire four at once</button>
+            <button
+              class="snackbar-demo__button"
+              data-demo-show
+              data-message="Added to the back of the queue"
+              data-duration="1600"
+            >
+              Add one more
+            </button>
+            <button class="snackbar-demo__button" data-demo-clear>Clear all</button>
+          </div>
+
+          <output class="snackbar-demo__output" aria-live="off"></output>
+        </section>
+      </div>
+    </main>
+
+    <ui-snackbar placement="bottom-center"></ui-snackbar>
+
+    <script type="module">
+      import { initializeSnackbarDemo } from '../../demo.js';
+
+      initializeSnackbarDemo();
+    </script>
+  </body>
+</html>
