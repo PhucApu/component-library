@@ -108,7 +108,8 @@ INPUT_RECEIVED
 - Do not communicate state only through color.
 - Support the declared responsive viewport.
 - Respect `prefers-reduced-motion`.
-- Use semantic visual tokens and never mix catalog tokens into component source.
+- Use semantic visual tokens and never mix catalog tokens into component source. Validation
+  rejects a `var()` the component does not define and any `catalog/` path in its source.
 - Implement relevant default, hover, focus, active, disabled, loading, empty, and error states.
 
 ## 8. Change safety

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "autocomplete",
+  "version": "0.1.0",
+  "name": "Autocomplete",
+  "description": "A framework-free Web Component that filters a list of options as the user types and commits one value or many.",
+  "group": "inputs",
+  "categories": ["form-control", "selection"],
+  "tags": ["combobox", "typeahead", "search", "web-component", "accessible"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "single",
+      "name": "Single",
+      "description": "Filter a fixed list and commit exactly one option, with the query reverting when nothing is chosen.",
+      "entry": "source/variants/single/index.html"
+    },
+    {
+      "id": "multiple",
+      "name": "Multiple",
+      "description": "Collect several options as removable chips, with Backspace removing the last one from an empty query.",
+      "entry": "source/variants/multiple/index.html"
+    },
+    {
+      "id": "free-text",
+      "name": "Free Text",
+      "description": "Accept a typed value that matches no option, committing it alongside the suggested ones.",
+      "entry": "source/variants/free-text/index.html"
+    },
+    {
+      "id": "grouped",
+      "name": "Grouped",
+      "description": "Present options under labelled groups whose headings are announced but skipped by keyboard navigation.",
+      "entry": "source/variants/grouped/index.html"
+    },
+    {
+      "id": "async",
+      "name": "Async",
+      "description": "Load suggestions after a simulated delay and expose loading, empty, and error states without a backend.",
+      "entry": "source/variants/async/index.html"
+    },
+    {
+      "id": "restricted",
+      "name": "Restricted",
+      "description": "Combine unavailable options with disabled and read-only controls to show every blocked state.",
+      "entry": "source/variants/restricted/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "multiple",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

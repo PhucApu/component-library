@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "radio-group",
+  "version": "0.1.0",
+  "name": "Radio Group",
+  "description": "A framework-free Web Component that styles native radio inputs and reports the chosen value without taking over selection or keyboard behavior.",
+  "group": "inputs",
+  "categories": ["form-control", "selection"],
+  "tags": ["radio", "fieldset", "web-component", "accessible", "progressive-enhancement"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A vertical group of options under a legend, showing the resting, checked, and focused states.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "horizontal",
+      "name": "Horizontal",
+      "description": "The same group laid out in a row that wraps onto more lines when space runs out.",
+      "entry": "source/variants/horizontal/index.html"
+    },
+    {
+      "id": "descriptions",
+      "name": "Descriptions",
+      "description": "Each option pairs its label with a line of supporting text that stays part of the accessible name.",
+      "entry": "source/variants/descriptions/index.html"
+    },
+    {
+      "id": "cards",
+      "name": "Cards",
+      "description": "Options rendered as selectable cards where the whole surface is the target, not only the dot.",
+      "entry": "source/variants/cards/index.html"
+    },
+    {
+      "id": "validation",
+      "name": "Validation",
+      "description": "A required group that reports an error message tied to the fieldset until a value is chosen.",
+      "entry": "source/variants/validation/index.html"
+    },
+    {
+      "id": "restricted",
+      "name": "Restricted",
+      "description": "Individually unavailable options beside a group that is disabled as a whole.",
+      "entry": "source/variants/restricted/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "cards",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

@@ -1,0 +1,255 @@
+:root {
+  color-scheme: light;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.radio-group-demo-page,
+.radio-group-demo-page body {
+  background: #0f1115;
+  color-scheme: dark;
+}
+
+ui-radio-group {
+  --radio-group-surface: #ffffff;
+  --radio-group-surface-subtle: #f8fafc;
+  --radio-group-text: #111827;
+  --radio-group-muted: #5f6878;
+  --radio-group-border: #cbd5e1;
+  --radio-group-border-strong: #94a3b8;
+  --radio-group-accent: #4f46e5;
+  --radio-group-accent-soft: #eef2ff;
+  --radio-group-focus: #6366f1;
+  --radio-group-danger: #b42318;
+  --radio-group-radius: 12px;
+
+  color-scheme: light;
+  display: block;
+  max-inline-size: 100%;
+  color: var(--radio-group-text);
+  font: 400 0.9375rem/1.45
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+ui-radio-group fieldset {
+  min-inline-size: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+ui-radio-group legend {
+  margin-block-end: 0.6rem;
+  padding: 0;
+  color: var(--radio-group-text);
+  font-size: 0.9375rem;
+  font-weight: 650;
+}
+
+.radio-group__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+ui-radio-group[data-layout='row'] .radio-group__options {
+  flex-flow: row wrap;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+ui-radio-group label {
+  display: flex;
+  align-items: start;
+  gap: 0.6rem;
+  color: var(--radio-group-text);
+  cursor: pointer;
+}
+
+ui-radio-group label.is-disabled {
+  color: var(--radio-group-muted);
+  cursor: not-allowed;
+}
+
+/* The native input is the control, restyled in place. Replacing it with a span would
+   give up arrow-key movement, roving focus, and form submission for nothing. */
+ui-radio-group input[type='radio'] {
+  appearance: none;
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  flex: none;
+  margin: 0;
+  margin-block-start: 0.14rem;
+  border: 2px solid var(--radio-group-border-strong);
+  border-radius: 50%;
+  background: var(--radio-group-surface);
+  cursor: inherit;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+ui-radio-group[data-size='sm'] input[type='radio'] {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+ui-radio-group label:hover:not(.is-disabled) input[type='radio']:not(:checked) {
+  border-color: var(--radio-group-accent);
+}
+
+ui-radio-group input[type='radio']:checked {
+  border-color: var(--radio-group-accent);
+  /* The dot is drawn by an inset ring so it scales with the control size. */
+  box-shadow: inset 0 0 0 0.22rem var(--radio-group-surface);
+  background: var(--radio-group-accent);
+}
+
+ui-radio-group input[type='radio']:disabled {
+  border-color: var(--radio-group-border);
+  background: var(--radio-group-surface-subtle);
+  cursor: not-allowed;
+}
+
+ui-radio-group input[type='radio']:checked:disabled {
+  box-shadow: inset 0 0 0 0.22rem var(--radio-group-surface-subtle);
+  background: var(--radio-group-border-strong);
+}
+
+/* One indicator only. The focus ring sits on the input, which is the real control, so
+   nothing else in the option draws a second outline. */
+ui-radio-group input[type='radio']:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--radio-group-focus) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.radio-group__text {
+  display: grid;
+  gap: 0.15rem;
+}
+
+ui-radio-group small {
+  color: var(--radio-group-muted);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+ui-radio-group[data-appearance='card'] label {
+  flex: 1 1 12rem;
+  align-items: start;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--radio-group-border);
+  border-radius: var(--radio-group-radius);
+  background: var(--radio-group-surface);
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease;
+}
+
+ui-radio-group[data-appearance='card'] label:hover:not(.is-disabled) {
+  border-color: var(--radio-group-border-strong);
+}
+
+/* Selection is carried by the border and the dot, not by the fill alone. */
+ui-radio-group[data-appearance='card'] label.is-checked {
+  border-color: var(--radio-group-accent);
+  background: var(--radio-group-accent-soft);
+}
+
+ui-radio-group[data-appearance='card'] label.is-disabled {
+  background: var(--radio-group-surface-subtle);
+  opacity: 0.65;
+}
+
+ui-radio-group[data-invalid] input[type='radio']:not(:disabled) {
+  border-color: var(--radio-group-danger);
+}
+
+.radio-group__error {
+  margin: 0.65rem 0 0;
+  color: var(--radio-group-danger);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.radio-group__error:empty {
+  display: none;
+}
+
+/* The catalog stage gives the frame a fixed height, so the demo has to fill it or the
+   background stops short of the frame and leaves a visible seam. */
+.radio-group-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background:
+    radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
+    #0f1115;
+  color: #f4f6fa;
+}
+
+.radio-group-demo__shell {
+  inline-size: min(100%, 48rem);
+}
+
+.radio-group-demo__card {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid #292d36;
+  border-radius: 18px;
+  background: rgb(23 26 32 / 0.88);
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+}
+
+.radio-group-demo__label {
+  margin: 0;
+  color: #a8afbc;
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.radio-group-demo ui-radio-group {
+  --radio-group-surface: #171a20;
+  --radio-group-surface-subtle: #1d2128;
+  --radio-group-text: #f4f6fa;
+  --radio-group-muted: #a8afbc;
+  --radio-group-border: #3b414c;
+  --radio-group-border-strong: #5a6272;
+  --radio-group-accent: #4968e8;
+  --radio-group-accent-soft: #1b2338;
+  --radio-group-focus: #86a0ff;
+  --radio-group-danger: #ff8e87;
+
+  color-scheme: dark;
+}
+
+.radio-group-demo__output {
+  display: block;
+  min-block-size: 2.75rem;
+  padding: 0.75rem;
+  border: 1px solid #292d36;
+  border-radius: 10px;
+  background: #0b0c0e;
+  color: #f4f6fa;
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ui-radio-group input[type='radio'],
+  ui-radio-group[data-appearance='card'] label {
+    transition: none;
+  }
+}

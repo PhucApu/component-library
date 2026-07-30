@@ -16,6 +16,11 @@ export const DEFAULT_SCHEMA_FILE = path.join(PROJECT_ROOT, 'schemas', 'component
 export const REQUIRED_DOCUMENTS = ['README.md', 'DESIGN.md', 'PROMPT.md'];
 export const PREVIEW_FILES = ['preview/poster.png', 'preview/demo.webm'];
 
+const PORTABILITY_EXTENSIONS = new Set(['.css', '.html', '.js', '.mjs']);
+const CUSTOM_PROPERTY_USE = /var\(\s*(--[\w-]+)/g;
+const CUSTOM_PROPERTY_DEFINE = /(--[\w-]+)\s*:/g;
+const CATALOG_REFERENCE = /\bcatalog\//;
+
 let validatorPromise;
 
 export class ComponentValidationError extends Error {
@@ -47,6 +52,79 @@ async function isFile(filePath) {
   } catch {
     return false;
   }
+}
+
+async function listSourceTextFiles(sourceDirectory) {
+  const files = [];
+
+  async function visit(directory) {
+    let entries;
+
+    try {
+      entries = await fs.readdir(directory, { withFileTypes: true });
+    } catch {
+      return;
+    }
+
+    for (const entry of entries) {
+      const entryPath = path.join(directory, entry.name);
+
+      if (entry.isDirectory()) {
+        await visit(entryPath);
+      } else if (
+        entry.isFile() &&
+        PORTABILITY_EXTENSIONS.has(path.extname(entry.name).toLowerCase())
+      ) {
+        files.push(entryPath);
+      }
+    }
+  }
+
+  await visit(sourceDirectory);
+  return files;
+}
+
+/**
+ * Checks that a component carries its own design system.
+ *
+ * A downloaded component runs without catalog CSS, so every custom property it reads has
+ * to be defined inside its own source. Checking definitions rather than a name prefix
+ * keeps the rule correct for any future component whatever it calls its tokens.
+ */
+async function findPortabilityErrors(componentDirectory, folderName) {
+  const errors = [];
+  const files = await listSourceTextFiles(path.join(componentDirectory, 'source'));
+  const defined = new Set();
+  const used = new Map();
+
+  for (const filePath of files) {
+    const contents = await fs.readFile(filePath, 'utf8');
+    const relativePath = path.relative(componentDirectory, filePath).replaceAll('\\', '/');
+
+    for (const match of contents.matchAll(CUSTOM_PROPERTY_DEFINE)) {
+      defined.add(match[1]);
+    }
+
+    for (const match of contents.matchAll(CUSTOM_PROPERTY_USE)) {
+      if (!used.has(match[1])) {
+        used.set(match[1], relativePath);
+      }
+    }
+
+    if (CATALOG_REFERENCE.test(contents)) {
+      errors.push(`${folderName}: ${relativePath} references a catalog path`);
+    }
+  }
+
+  for (const [property, relativePath] of used) {
+    if (!defined.has(property)) {
+      errors.push(
+        `${folderName}: ${relativePath} reads "${property}" but the component never defines it`,
+      );
+    }
+  }
+
+  return errors;
 }
 
 export function isSafeRelativePath(value) {
@@ -183,6 +261,8 @@ export async function inspectComponentDirectory(
         }
       }
     }
+
+    errors.push(...(await findPortabilityErrors(componentDirectory, folderName)));
   }
 
   return {

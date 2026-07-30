@@ -197,6 +197,65 @@ test('registry contains taxonomy, thumbnail, documents, and deterministic source
   assert.ok(component.source.files.every((file) => !file.path.includes('..')));
 });
 
+test('a component reading a custom property it never defines is rejected', async (t) => {
+  const { componentsDirectory } = await copyFixtureComponents(t);
+  const styleFile = path.join(componentsDirectory, 'test-button', 'source', 'shared.css');
+
+  // A borrowed catalog token: valid CSS, but the download would lose its styling.
+  await fs.appendFile(styleFile, '\n.test-button { color: var(--text-primary); }\n');
+
+  await assert.rejects(
+    readAndValidateComponents({ componentsDirectory }),
+    (error) =>
+      error instanceof ComponentValidationError &&
+      error.errors.some((message) =>
+        message.includes('reads "--text-primary" but the component never defines it'),
+      ),
+  );
+});
+
+test('a component pointing at a catalog path is rejected', async (t) => {
+  const { componentsDirectory } = await copyFixtureComponents(t);
+  const variantFile = path.join(
+    componentsDirectory,
+    'test-button',
+    'source',
+    'variants',
+    'default',
+    'index.html',
+  );
+
+  const markup = await fs.readFile(variantFile, 'utf8');
+  await fs.writeFile(
+    variantFile,
+    markup.replace(
+      '<title>',
+      '<link rel="stylesheet" href="/catalog/styles/main.css" />\n    <title>',
+    ),
+  );
+
+  // Same origin, so the "no external requests" browser check would never see this.
+  await assert.rejects(
+    readAndValidateComponents({ componentsDirectory }),
+    (error) =>
+      error instanceof ComponentValidationError &&
+      error.errors.some((message) => message.includes('references a catalog path')),
+  );
+});
+
+test('a component defining every property it reads passes', async (t) => {
+  const { componentsDirectory } = await copyFixtureComponents(t);
+  const styleFile = path.join(componentsDirectory, 'test-button', 'source', 'shared.css');
+
+  await fs.appendFile(
+    styleFile,
+    '\n.test-button { --test-button-ink: #fff; color: var(--test-button-ink); }\n',
+  );
+
+  const records = await readAndValidateComponents({ componentsDirectory });
+  assert.equal(records.length, 1);
+});
+
 test('publishing ships the thumbnail but leaves the QA poster and WebM behind', async (t) => {
   const { temporaryDirectory, componentsDirectory } = await copyFixtureComponents(t);
   const previewDirectory = path.join(componentsDirectory, 'test-button', 'preview');

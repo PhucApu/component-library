@@ -69,6 +69,32 @@ Allowed groups are `inputs`, `data-display`, `feedback`, `surface`, `navigation`
 `utilities`. Folder name and manifest ID must match. Variant entries always follow
 `source/variants/<variant-id>/index.html`.
 
+## Preview frame contract
+
+The detail page renders each variant in an iframe fixed at `preview.viewport.height` in every
+state. The height never reacts to the component, because a panel or menu opens inside the iframe
+and cannot escape it, so a frame that grew on open would reflow the whole page around it.
+
+Two consequences for a variant page:
+
+- Give the demo page a minimum height of `100dvh`. It is otherwise as tall as its content, and
+  any background it paints stops there, leaving a visible seam across the rest of the frame.
+- Pick `preview.viewport.height` large enough for the component's tallest open state. Anything
+  that does not fit is clipped by the iframe.
+
+## Portability
+
+A downloaded component runs without catalog CSS or JavaScript, and validation enforces this:
+
+- Every CSS custom property the source reads through `var()` must also be defined in that same
+  component's source. The check compares definitions rather than a name prefix, so a component
+  may name its tokens whatever it likes.
+- No source file may reference a `catalog/` path. A same-origin stylesheet link would slip past
+  the browser test for external requests, so this is caught during validation instead.
+
+A component built on browser-ready Tailwind would need these rules relaxed for the properties
+Tailwind generates. No component does that today.
+
 ## Documentation
 
 - `README.md`: integration, dependencies, browser support, and usage.

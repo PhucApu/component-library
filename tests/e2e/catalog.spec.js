@@ -1,5 +1,16 @@
 import { expect, test } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+
+async function readRegistry() {
+  return JSON.parse(
+    await readFile(path.resolve('generated', 'components-index.json'), 'utf8'),
+  );
+}
+
+function countLabel(count, noun) {
+  return `${count} ${noun}${count === 1 ? '' : 's'}`;
+}
 
 const MOCK_PROMPT =
   '# Prompt\n\nCreate a small accessible button for a tooling test fixture.\n';
@@ -109,11 +120,15 @@ test('homepage is English, grouped, searchable, and free of external requests', 
       level: 1,
     }),
   ).toBeVisible();
+  // Counts come from the registry so publishing another component does not fail this.
+  const registry = await readRegistry();
+  const inputs = registry.filter((component) => component.group === 'inputs');
+
   await expect(page.locator('#inputs')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Inputs', level: 2 })).toBeVisible();
-  await expect(page.locator('#inputs .component-card')).toHaveCount(1);
-  await expect(page.locator('#component-count')).toHaveText('1 component');
-  await expect(page.locator('#result-summary')).toHaveText('1 result');
+  await expect(page.locator('#inputs .component-card')).toHaveCount(inputs.length);
+  await expect(page.locator('#component-count')).toHaveText(countLabel(registry.length, 'component'));
+  await expect(page.locator('#result-summary')).toHaveText(countLabel(registry.length, 'result'));
   await expect(runtimeErrors).toEqual([]);
   expect(externalRequests).toEqual([]);
 });
@@ -128,9 +143,10 @@ test('search matches group metadata, hides empty groups, and supports the slash 
   await page.keyboard.press('/');
   await expect(search).toBeFocused();
 
+  const inputs = (await readRegistry()).filter((component) => component.group === 'inputs');
   await search.fill('Inputs');
   await expect(page.locator('#inputs')).toBeVisible();
-  await expect(page.locator('#result-summary')).toHaveText('1 result');
+  await expect(page.locator('#result-summary')).toHaveText(countLabel(inputs.length, 'result'));
 
   await search.fill('missing-query');
   await expect(page.locator('.component-group')).toHaveCount(0);

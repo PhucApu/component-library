@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" class="autocomplete-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Autocomplete deferred loading example." />
+    <title>Autocomplete - Async</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="autocomplete-demo">
+      <div class="autocomplete-demo__shell">
+        <section class="autocomplete-demo__card" aria-labelledby="async-demo-label">
+          <p id="async-demo-label" class="autocomplete-demo__label">Nearest office</p>
+          <ui-autocomplete
+            mode="single"
+            placeholder="Suggestions load on first focus"
+            aria-label="Choose the nearest office"
+          ></ui-autocomplete>
+          <p class="autocomplete-demo__label">Raw output</p>
+          <output class="autocomplete-demo__output" aria-live="polite">""</output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeAutocompleteDemo } from '../../demo.js';
+
+      initializeAutocompleteDemo({ remote: true });
+    </script>
+  </body>
+</html>

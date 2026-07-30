@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" class="autocomplete-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Autocomplete unavailable, read-only, and disabled states." />
+    <title>Autocomplete - Restricted</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="autocomplete-demo">
+      <div class="autocomplete-demo__shell">
+        <section class="autocomplete-demo__card" aria-labelledby="restricted-demo-label">
+          <p id="restricted-demo-label" class="autocomplete-demo__label">Seat class</p>
+          <ui-autocomplete
+            mode="single"
+            value="economy"
+            placeholder="Choose a seat class"
+            aria-label="Choose a seat class"
+          >
+            <option value="economy">Economy</option>
+            <option value="premium">Premium economy</option>
+            <option value="business" disabled>Business</option>
+            <option value="first" disabled>First</option>
+          </ui-autocomplete>
+          <p class="autocomplete-demo__label">Read-only</p>
+          <ui-autocomplete
+            mode="single"
+            value="premium"
+            readonly
+            aria-label="Seat class already confirmed"
+          >
+            <option value="economy">Economy</option>
+            <option value="premium">Premium economy</option>
+          </ui-autocomplete>
+          <p class="autocomplete-demo__label">Disabled</p>
+          <ui-autocomplete mode="multiple" disabled aria-label="Add-ons unavailable">
+            <option value="lounge">Lounge access</option>
+            <option value="baggage">Extra baggage</option>
+          </ui-autocomplete>
+          <p class="autocomplete-demo__label">Raw output</p>
+          <output class="autocomplete-demo__output" aria-live="polite">""</output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeAutocompleteDemo } from '../../demo.js';
+
+      initializeAutocompleteDemo();
+    </script>
+  </body>
+</html>

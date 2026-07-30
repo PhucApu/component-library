@@ -1,0 +1,64 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 640 360"
+  width="640"
+  height="360"
+  role="img"
+  aria-label="Autocomplete with two selected chips and an open filtered suggestion list"
+>
+  <defs>
+    <radialGradient id="glow" cx="12%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#4968e8" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#4968e8" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect width="640" height="360" fill="url(#glow)" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <rect x="70" y="28" width="500" height="304" rx="16" fill="#171a20" stroke="#292d36" />
+    <text x="94" y="60" fill="#a8afbc" font-size="12" font-weight="650">Skills</text>
+
+    <rect x="94" y="72" width="452" height="46" rx="12" fill="#171a20" stroke="#4968e8" stroke-width="1.5" />
+
+    <rect x="106" y="84" width="60" height="22" rx="11" fill="#232a3d" stroke="#3d4a7a" />
+    <text x="116" y="99" fill="#f4f6fa" font-size="12">CSS</text>
+    <path d="m152 91 6 6m0-6-6 6" stroke="#a8afbc" stroke-width="1.4" stroke-linecap="round" fill="none" />
+
+    <rect x="174" y="84" width="108" height="22" rx="11" fill="#232a3d" stroke="#3d4a7a" />
+    <text x="184" y="99" fill="#f4f6fa" font-size="12">Accessibility</text>
+    <path d="m268 91 6 6m0-6-6 6" stroke="#a8afbc" stroke-width="1.4" stroke-linecap="round" fill="none" />
+
+    <text x="292" y="100" fill="#f4f6fa" font-size="13">e</text>
+    <rect x="300" y="88" width="1.5" height="15" fill="#86a0ff" />
+
+    <path d="m506 90 10 10m0-10-10 10" stroke="#a8afbc" stroke-width="1.6" stroke-linecap="round" fill="none" />
+    <path d="m528 93 6 6 6-6" stroke="#a8afbc" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+
+    <rect x="94" y="130" width="452" height="182" rx="10" fill="#171a20" stroke="#3b414c" />
+
+    <rect x="102" y="138" width="436" height="38" rx="7" fill="#1d2128" stroke="#4968e8" />
+    <rect x="114" y="150" width="9" height="16" rx="2" fill="#4b3f12" />
+    <text x="114" y="163" fill="#ffe9a8" font-size="13" font-weight="700">e</text>
+    <text x="124" y="163" fill="#f4f6fa" font-size="13">sting</text>
+    <text x="112" y="163" fill="#f4f6fa" font-size="13" opacity="0">T</text>
+    <text x="106" y="163" fill="#f4f6fa" font-size="13">T</text>
+
+    <rect x="114" y="188" width="9" height="16" rx="2" fill="#4b3f12" />
+    <text x="114" y="201" fill="#ffe9a8" font-size="13" font-weight="700">e</text>
+    <text x="106" y="201" fill="#f4f6fa" font-size="13">D</text>
+    <text x="124" y="201" fill="#f4f6fa" font-size="13">sign systems</text>
+
+    <rect x="129" y="226" width="9" height="16" rx="2" fill="#4b3f12" />
+    <text x="129" y="239" fill="#ffe9a8" font-size="13" font-weight="700">e</text>
+    <text x="106" y="239" fill="#f4f6fa" font-size="13">Perf</text>
+    <text x="139" y="239" fill="#f4f6fa" font-size="13">rmance</text>
+
+    <rect x="121" y="264" width="9" height="16" rx="2" fill="#4b3f12" />
+    <text x="121" y="277" fill="#ffe9a8" font-size="13" font-weight="700">e</text>
+    <text x="106" y="277" fill="#f4f6fa" font-size="13">Acc</text>
+    <text x="131" y="277" fill="#f4f6fa" font-size="13">ssibility</text>
+    <path d="m512 270 4 4 8-8" stroke="#4968e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  </g>
+</svg>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" class="autocomplete-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Autocomplete free text entry example." />
+    <title>Autocomplete - Free Text</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="autocomplete-demo">
+      <div class="autocomplete-demo__shell">
+        <section class="autocomplete-demo__card" aria-labelledby="free-text-demo-label">
+          <p id="free-text-demo-label" class="autocomplete-demo__label">Tags</p>
+          <ui-autocomplete
+            mode="multiple"
+            free-text
+            placeholder="Pick or type a tag, then press Enter"
+            aria-label="Choose or invent tags"
+          >
+            <option value="bug">bug</option>
+            <option value="enhancement">enhancement</option>
+            <option value="documentation">documentation</option>
+            <option value="good-first-issue">good first issue</option>
+            <option value="regression">regression</option>
+          </ui-autocomplete>
+          <p class="autocomplete-demo__label">Raw output</p>
+          <output class="autocomplete-demo__output" aria-live="polite">""</output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeAutocompleteDemo } from '../../demo.js';
+
+      initializeAutocompleteDemo();
+    </script>
+  </body>
+</html>

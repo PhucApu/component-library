@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" class="autocomplete-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Autocomplete single selection example." />
+    <title>Autocomplete - Single</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="autocomplete-demo">
+      <div class="autocomplete-demo__shell">
+        <section class="autocomplete-demo__card" aria-labelledby="single-demo-label">
+          <p id="single-demo-label" class="autocomplete-demo__label">Destination</p>
+          <ui-autocomplete
+            mode="single"
+            placeholder="Search a city"
+            aria-label="Choose a destination city"
+          >
+            <option value="hanoi">Ha Noi</option>
+            <option value="danang">Da Nang</option>
+            <option value="hcmc">Ho Chi Minh City</option>
+            <option value="hue">Hue</option>
+            <option value="osaka">Osaka</option>
+            <option value="kyoto">Kyoto</option>
+            <option value="tokyo">Tokyo</option>
+            <option value="seoul">Seoul</option>
+            <option value="taipei">Taipei</option>
+            <option value="bangkok">Bangkok</option>
+          </ui-autocomplete>
+          <p class="autocomplete-demo__label">Raw output</p>
+          <output class="autocomplete-demo__output" aria-live="polite">""</output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeAutocompleteDemo } from '../../demo.js';
+
+      initializeAutocompleteDemo();
+    </script>
+  </body>
+</html>
