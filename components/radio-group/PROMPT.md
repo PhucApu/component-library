@@ -17,46 +17,6 @@ name, mirror the chosen value, and report changes.
 Rebuilding this with `role="radiogroup"` and `role="radio"` would be more code and a worse
 result. The group must keep working with scripting disabled, losing only the value API.
 
-## Output
-
-Create a portable component with this structure:
-
-```text
-components/radio-group/
-|-- component.json
-|-- README.md
-|-- DESIGN.md
-|-- PROMPT.md
-|-- PROMPT-STANDALONE.md
-|-- preview/thumbnail.svg
-`-- source/
-    |-- demo.js
-    |-- radio-group-core.js
-    |-- shared.css
-    |-- shared.js
-    `-- variants/
-        |-- default/index.html
-        |-- horizontal/index.html
-        |-- descriptions/index.html
-        |-- cards/index.html
-        |-- validation/index.html
-        `-- restricted/index.html
-```
-
-Use manifest schema version 2, component version `0.1.0`, group `inputs`, and English variant
-descriptions. Each entry runs directly in a browser or iframe, displays raw output, uses
-`lang="en"`, and stays independent from catalog code.
-
-Keep DOM-free rules in `radio-group-core.js` so they can be unit tested under `node:test`.
-`shared.js` extends `HTMLElement` and cannot be imported that way.
-
-Packaging concatenates the root modules into one script sharing a single top-level scope, so no
-two may declare the same top-level name. The component must define every CSS custom property it
-reads and must not reference any `catalog/` path; validation rejects both.
-
-The catalog thumbnail is a static, self-contained `640x360` SVG of the Cards variant with the
-middle option chosen. No animation, script, external asset, or embedded raster image.
-
 ## Markup contract
 
 ```html
@@ -125,6 +85,9 @@ One implementation serves all six; a variant is configuration.
 - `validation`: required group with an error message.
 - `restricted`: individually unavailable options plus a disabled group.
 
+Each has to run on its own, showing its current value as raw output and loading nothing from
+another origin.
+
 ## Presentation and accessibility
 
 - Restyle the input with `appearance: none`; draw the chosen dot with an inset ring so it scales
@@ -141,25 +104,19 @@ One implementation serves all six; a variant is configuration.
 - Let the row layout wrap, and flex cards from a `12rem` basis so a row reflows into a column.
 - Limit transitions to border and background at `140ms` and remove them under
   `prefers-reduced-motion: reduce`.
+- Define every CSS custom property the component reads inside the component itself, and reference
+  nothing outside it. That is what lets the group be lifted into another project unchanged.
 
-## Tests and delivery
+## Verify before calling it done
 
-Write `node:test` coverage for attribute normalisation, option model building including inputs
-with no value and duplicate values, selection resolution against a missing value, and generated
-group names.
+Keep the rules that decide things — normalising an attribute, building the option model,
+resolving a selection against a missing value, generating a group name — reachable without a
+browser, so they can be tested on their own.
 
-Write Playwright coverage for all six variants, choosing by click and by keyboard, the reported
-value, external `value` assignment, unknown-value invalidation, the disabled group, card
-selection, focus indicator count, mobile layout, reduced motion, document downloads, and the
-packaged ZIP.
-
-Cover these explicitly, because each is the point of the design:
+Check these explicitly, because each is the point of the design:
 
 - With scripting disabled the group still selects, arrow keys still move, and a form submit still
   carries the chosen value.
 - Arrow keys skip a disabled option.
 - Radios given no `name` in the markup still behave as one group.
 - Exactly one focus indicator is visible when an option is focused.
-
-Run English validation, component validation, registry generation, preview generation, packaging,
-publishing, and the full repository verification flow.

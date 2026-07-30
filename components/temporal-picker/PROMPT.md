@@ -4,45 +4,6 @@ You are a Senior Frontend Engineer. Build a Web Component named `<temporal-picke
 HTML, CSS, and JavaScript. Do not use React, TypeScript, a Tailwind runtime, a UI framework, a
 backend, or a new dependency.
 
-## Output
-
-Create a portable component with this structure:
-
-```text
-components/temporal-picker/
-|-- component.json
-|-- README.md
-|-- DESIGN.md
-|-- PROMPT.md
-|-- preview/thumbnail.svg
-`-- source/
-    |-- demo.js
-    |-- shared.css
-    |-- shared.js
-    |-- temporal-picker-core.js
-    `-- variants/
-        |-- year/index.html
-        |-- month/index.html
-        |-- date/index.html
-        |-- time/index.html
-        |-- datetime/index.html
-        `-- bounded-datetime/index.html
-```
-
-Use manifest schema version 2, component version `0.3.0`, group `inputs`, and English variant
-descriptions. Each entry must run directly in a browser or iframe, display raw output, use
-`lang="en"` and `locale="en-US"`, and remain independent from catalog code.
-
-Packaging concatenates the root modules into one distributable script, so they share a single
-top-level scope. No two of them may declare the same top-level name; put a shared helper such as
-a zero-padding function in one module and import it from the others. A duplicate is a
-`SyntaxError` in the packaged file.
-
-The catalog thumbnail must be a static, self-contained `640x360` SVG. Preserve the approved dark
-composition of the open Datetime variant, including the populated trigger, September 2027
-calendar, selected day 18, `08:45:30` time controls, Second field, and Apply action. Do not add
-animation, script, external assets, or embedded raster images.
-
 ## Public API
 
 ```html
@@ -119,6 +80,9 @@ to `value`. External `value` updates synchronize the draft even while the panel 
 - Current commits immediately for year, month, and date, but only updates the draft for time and
   datetime modes.
 
+Each has to run on its own, showing its current value as raw output and loading nothing from
+another origin.
+
 For Bounded Datetime, a date is enabled if any instant on that date intersects the range. An Hour
 is enabled if any Minute and Second candidate remains valid. A Minute is enabled if any Second
 candidate remains valid. A Second checks the complete candidate. Unavailable options remain
@@ -186,20 +150,17 @@ with `position: fixed`.
 - Support the documented day, month, and year grid keyboard interactions.
 - Keep live regions for view, validation, and time-search status.
 - Remove motion under `prefers-reduced-motion: reduce`.
+- Define every CSS custom property the component reads inside the component itself, and reference
+  nothing outside it. That is what lets the picker be lifted into another project unchanged.
 
-## Tests and delivery
+## Verify before calling it done
 
-Write `node:test` coverage for strict formats, seconds `00` and `59`, rejected legacy values,
-years `0001`, `0099`, and `9999`, leap dates, Gregorian grids, inclusive second boundaries,
-invalid bounds, range comparison, 60 minute options at step one, and absence of timezone output.
+Keep the rules that decide things — strict format parsing, leap years and month lengths, the
+42-cell grid, tuple comparison, inclusive bounds, minute-step normalisation — reachable without a
+browser, so they can be tested on their own. Cover seconds `00` and `59`, years `0001`, `0099`,
+and `9999`, invalid bounds, and the absence of any timezone in the output.
 
-Write Playwright coverage for all six variants, time search and filtering, keyboard/ARIA
-behavior, one-listbox behavior, draft and Apply timing, external synchronization, unrestricted
-calendar variants, current indicators, selected hover/focus styling, functional panel/listbox
-scrolling, dynamic bounded options, mobile overflow, reduced motion, document downloads, and ZIP
-version `0.3.0`.
-
-Cover the listbox behavior explicitly, because each of these has already regressed once:
+Check the listbox behavior explicitly, because each of these has already regressed once:
 
 - The listbox width matches the input it is anchored to, and it sits outside the panel so panel
   overflow cannot clip it.
@@ -210,6 +171,3 @@ Cover the listbox behavior explicitly, because each of these has already regress
 - Escape closes the listbox, and a second Escape closes the picker with focus back on the
   trigger. Assert this without waiting between presses: a re-render that restores focus a frame
   late lets the second Escape escape the panel entirely.
-
-Run English validation, component validation, registry generation, preview generation, packaging,
-publishing, and the full repository verification flow.

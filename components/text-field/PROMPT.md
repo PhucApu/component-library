@@ -10,46 +10,20 @@ backend, or a new dependency.
 submission, the correct mobile keyboard through `type` and `inputmode`, spellcheck, and constraint
 validation. Frame them; do not replace them. The element never rewrites its own markup.
 
-## Output
+## What to show
 
-Create a portable component with this structure:
+Demonstrate these six arrangements. One implementation serves all of them; an arrangement is
+configuration, not a separate build.
 
-```text
-components/text-field/
-|-- component.json
-|-- README.md
-|-- DESIGN.md
-|-- PROMPT.md
-|-- PROMPT-STANDALONE.md
-|-- preview/thumbnail.svg
-`-- source/
-    |-- demo.js
-    |-- shared.css
-    |-- shared.js
-    |-- text-field-core.js
-    `-- variants/
-        |-- default/index.html
-        |-- filled/index.html
-        |-- validation/index.html
-        |-- adorned/index.html
-        |-- multiline/index.html
-        `-- restricted/index.html
-```
+- **Default**: a plain outlined field with a label and a hint.
+- **Filled**: the same field on a filled surface with an underline instead of a full border.
+- **Validation**: a required field and a `pattern` field, both quiet until the person interacts.
+- **Adorned**: a prefix, a suffix, and a password field with a reveal button.
+- **Multiline**: a `textarea` with a character counter, beside one with no limit.
+- **Restricted**: a read-only field next to a disabled one, inside a form that reports what it
+  would send.
 
-Use manifest schema version 2, component version `0.1.0`, group `inputs`, and English variant
-descriptions. Each entry runs directly in a browser or iframe, uses `lang="en"`, and stays
-independent from catalog code.
-
-Keep DOM-free rules in `text-field-core.js` so they can be unit tested under `node:test`.
-`shared.js` extends `HTMLElement` and cannot be imported that way.
-
-Packaging concatenates the root modules into one script sharing a single top-level scope, so no
-two may declare the same top-level name. The component must define every CSS custom property it
-reads and must not reference any `catalog/` path; validation rejects both.
-
-The catalog thumbnail is a static, self-contained `640x360` SVG of the Validation variant with one
-focused field and one showing an error. No animation, script, external asset, or embedded raster
-image.
+Each has to run on its own, loading nothing from another origin.
 
 ## Markup contract
 
@@ -126,6 +100,9 @@ event, and let `validate()` force the state for a submit handler.
   hidden, a unit is read.
 - Limit transitions to border and shadow at `140ms` and remove them under
   `prefers-reduced-motion: reduce`.
+- Define every CSS custom property the component reads inside the component itself, and
+  reference nothing outside it. That is what lets the field be lifted into another project
+  unchanged.
 
 ## Read-only against disabled
 
@@ -133,22 +110,16 @@ Both stop editing and differ in submission: a read-only field is focusable, sele
 submitted; a disabled field is skipped by the keyboard and left out of the form data. Both
 attributes are real on a text input, so document which one to reach for.
 
-## Tests and delivery
+## Verify before calling it done
 
-Write `node:test` coverage for attribute normalisation, error-message resolution between the
-author's text and the browser's, the rule that decides whether an error is showable yet, counter
-state including the no-limit case, the announcement threshold, and the described-by join.
+Keep the rules that decide things — normalising an attribute, choosing between the author's
+message and the browser's, deciding whether an error may be shown yet, working out the counter
+state — reachable without a browser, so they can be tested on their own.
 
-Write Playwright coverage for all six variants, typing and reporting, the reveal button, the
-adornments, mobile layout, reduced motion, document downloads, and the packaged ZIP.
-
-Cover these explicitly, because each is a place this component can quietly go wrong:
+Check these explicitly, because each is a place this component quietly goes wrong:
 
 - A required field is not marked invalid on load, and becomes invalid only after blur or submit.
 - The counter element is not inside a live region.
 - A read-only value appears in `FormData` and a disabled one does not.
 - With scripting disabled the fields still accept text and the form still submits.
 - Exactly one focus indicator is visible when the field has focus.
-
-Run English validation, component validation, registry generation, preview generation, packaging,
-publishing, and the full repository verification flow.

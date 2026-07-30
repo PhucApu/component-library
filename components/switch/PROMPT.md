@@ -15,46 +15,19 @@ Keep in mind what separates a switch from a checkbox: a checkbox is a selection 
 when the form is submitted, a switch takes effect immediately. Every decision below
 follows from that.
 
-## Output
+## What to show
 
-Create a portable component with this structure:
+Demonstrate these six arrangements. One implementation serves all of them; an arrangement
+is configuration, not a separate build.
 
-```text
-components/switch/
-|-- component.json
-|-- README.md
-|-- DESIGN.md
-|-- PROMPT.md
-|-- PROMPT-STANDALONE.md
-|-- preview/thumbnail.svg
-`-- source/
-    |-- demo.js
-    |-- shared.css
-    |-- shared.js
-    |-- switch-core.js
-    `-- variants/
-        |-- default/index.html
-        |-- placement/index.html
-        |-- descriptions/index.html
-        |-- group/index.html
-        |-- pending/index.html
-        `-- restricted/index.html
-```
+- **Default**: a single switch off and on, at the standard and the compact size.
+- **Placement**: the label following the switch, and the label leading a full-width row.
+- **Descriptions**: settings rows pairing each label with a line of supporting text.
+- **Group**: related switches under a legend inside a form.
+- **Pending**: switches backed by an asynchronous commit, one of which fails.
+- **Restricted**: unavailable switches in both states, beside a group disabled as a whole.
 
-Use manifest schema version 2, component version `0.1.0`, group `inputs`, and English
-variant descriptions. Each entry runs directly in a browser or iframe, uses `lang="en"`,
-and stays independent from catalog code.
-
-Keep DOM-free rules in `switch-core.js` so they can be unit tested under `node:test`.
-`shared.js` extends `HTMLElement` and cannot be imported that way.
-
-Packaging concatenates the root modules into one script sharing a single top-level scope,
-so no two may declare the same top-level name. The component must define every CSS custom
-property it reads and must not reference any `catalog/` path; validation rejects both.
-
-The catalog thumbnail is a static, self-contained `640x360` SVG of the Group variant with
-some switches on and some off. No animation, script, external asset, or embedded raster
-image.
+Each has to run on its own, loading nothing from another origin.
 
 ## Markup contract
 
@@ -118,28 +91,26 @@ accepted is a lie.
 - Transitions cover the track colour and the thumb position at `160ms`.
   `prefers-reduced-motion: reduce` removes them and stops the spinner; the dimmed track
   and the status message still report the busy state.
+- Define every CSS custom property the component reads inside the component itself, and
+  reference nothing outside it. That is what lets the switch be lifted into another
+  project unchanged.
 
-## Tests and delivery
+## Verify before calling it done
 
-Write `node:test` coverage for size and placement normalisation, the rule that decides
-whether a toggle is blocked, template filling including the unlabelled case, and the
-status and failure wording in both directions.
+Keep the rules that decide things — normalising an attribute, choosing the wording of a
+message, deciding whether a press is blocked — reachable without a browser, so they can be
+tested on their own.
 
-Write Playwright coverage for all six variants, the label, the keyboard, form submission,
-mobile layout, reduced motion, document downloads, and the packaged ZIP.
-
-Cover these explicitly, because each is a place this component can quietly go wrong:
+Check these explicitly, because each is a place this component quietly goes wrong:
 
 - With scripting disabled the control is still drawn as a switch and still toggles.
 - `aria-checked` is absent and the accessibility tree still reports on and off. Read the
-  real tree over CDP rather than trusting the attributes.
+  tree the browser actually exposes rather than trusting the attributes.
 - A pending commit cannot be toggled by track, label, or keyboard, and never moves focus.
-  Hold the request open with a promise that never settles so the test is not a race, and
-  force the clicks: Playwright reads `aria-disabled` and would refuse on its own.
+  Hold the request open with a promise that never settles, or the check becomes a race
+  against the timeout; and force the press, because automation tools read `aria-disabled`
+  and refuse to click on their own.
 - A rejected commit returns the switch to its previous state, in both directions.
 - A disabled switch is left out of the submission whether the attribute is on the input or
   on a surrounding `fieldset`.
 - Space toggles and Enter does not.
-
-Run English validation, component validation, registry generation, preview generation,
-packaging, publishing, and the full repository verification flow.

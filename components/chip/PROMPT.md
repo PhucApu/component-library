@@ -24,48 +24,19 @@ switched by attributes is how a chip ends up announced as the wrong thing.
 treats it unpredictably. A chip that both acts and removes is two adjacent controls in one pill,
 with two tab stops.
 
-## Output
+## What to show
 
-Create a portable component with this structure:
+Demonstrate these six arrangements. One implementation serves all of them; an arrangement is
+configuration, not a separate build.
 
-```text
-components/chip/
-|-- component.json
-|-- README.md
-|-- DESIGN.md
-|-- PROMPT.md
-|-- PROMPT-STANDALONE.md
-|-- preview/thumbnail.svg
-`-- source/
-    |-- chip-core.js
-    |-- demo.js
-    |-- shared.css
-    |-- shared.js
-    `-- variants/
-        |-- static/index.html
-        |-- removable/index.html
-        |-- action/index.html
-        |-- filter/index.html
-        |-- adorned/index.html
-        `-- appearance/index.html
-```
+- **Static**: plain labels that present information and are not reachable by Tab.
+- **Removable**: tokens each carrying their own remove button.
+- **Action**: chips that run something, and chips that navigate.
+- **Filter**: chips that toggle on and off, showing which are selected.
+- **Adorned**: chips carrying an avatar, a leading icon, and a trailing count.
+- **Appearance**: every intent in both the filled and the outlined treatment.
 
-Use manifest schema version 2, component version `0.1.0`, group `data-display`, and English
-variant descriptions. Each entry runs directly in a browser or iframe, uses `lang="en"`, and stays
-independent from catalog code.
-
-Group `data-display` rather than `inputs`: the taxonomy question is what a component produces, and
-a chip presents a token rather than owning a value.
-
-Keep DOM-free rules in `chip-core.js` so they can be unit tested under `node:test`. `shared.js`
-extends `HTMLElement` and cannot be imported that way.
-
-Packaging concatenates the root modules into one script sharing a single top-level scope, so no
-two may declare the same top-level name. The component must define every CSS custom property it
-reads and must not reference any `catalog/` path; validation rejects both.
-
-The catalog thumbnail is a static, self-contained `640x360` SVG showing removable chips above a
-row of status chips. No animation, script, external asset, or embedded raster image.
+Each has to run on its own, loading nothing from another origin.
 
 ## Public API
 
@@ -123,24 +94,19 @@ Buttons take the native `disabled` attribute and need none of that.
 - Keep labels on one line and let rows of chips wrap.
 - Limit transitions to background at `140ms` and remove them under
   `prefers-reduced-motion: reduce`.
+- Define every CSS custom property the component reads inside the component itself, and reference
+  nothing outside it. That is what lets the chip be lifted into another project unchanged.
 
-## Tests and delivery
+## Verify before calling it done
 
-Write `node:test` coverage for attribute normalisation, the remove-label composition including an
-empty label, whitespace collapsing, and the rule that decides whether an element can be disabled
-natively or must be emulated.
+Keep the rules that decide things — normalising an attribute, composing the remove button's name,
+deciding whether an element can be disabled natively or must be emulated — reachable without a
+browser, so they can be tested on their own.
 
-Write Playwright coverage for all six variants, removing by button and by key, the reported label,
-toggling and `aria-pressed`, the disabled button, adornments, mobile wrapping, reduced motion,
-document downloads, and the packaged ZIP.
-
-Cover these explicitly, because each is the point of the design:
+Check these explicitly, because each is the point of the design:
 
 - No interactive element is nested inside another anywhere in the rendered output. Assert that
   `button button`, `a button`, and `button a` all match nothing.
 - A static chip is not reachable by Tab.
 - A disabled link chip does not navigate and has no `href`.
 - Every intent reaches `4.5:1` for its label against its surface, measured rather than eyeballed.
-
-Run English validation, component validation, registry generation, preview generation, packaging,
-publishing, and the full repository verification flow.

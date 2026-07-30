@@ -13,6 +13,7 @@
     "dev": "vite",
     "validate:english": "node scripts/validate-english.mjs",
     "validate:components": "node scripts/validate-components.mjs",
+    "validate:previews": "node scripts/validate-components.mjs --require-previews",
     "build:index": "node scripts/generate-component-index.mjs",
     "generate:previews": "node scripts/generate-previews.mjs",
     "package:component": "node scripts/package-component.mjs",
@@ -20,7 +21,7 @@
     "preview": "vite preview",
     "test:unit": "node --test tests/unit/*.test.mjs",
     "test:e2e": "playwright test",
-    "verify": "pnpm run validate:english && pnpm run test:unit && pnpm run build && pnpm run test:e2e"
+    "verify": "pnpm run validate:english && pnpm run test:unit && pnpm run validate:previews && pnpm run build && pnpm run test:e2e"
   },
   "devDependencies": {
     "@playwright/test": "1.62.0",

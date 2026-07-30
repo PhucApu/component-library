@@ -41,13 +41,16 @@ component validation
         |                     |
         |                     +----> Vite multi-page build
         |
-        +----> publish source, docs, thumbnail, QA previews, bundles, and ZIP
+        +----> publish source, docs, thumbnail, bundles, and ZIP
                                       |
                                       +----> dist/
 ```
 
-`pnpm run build` stops when English content, a manifest, documentation, an entry, a thumbnail, or
-a required production preview is invalid.
+`pnpm run build` stops when English content, a manifest, documentation, an entry, or a thumbnail
+is invalid. It runs from a clean clone, so it never requires the generated poster and WebM: those
+are gitignored QA evidence, no runtime URL requests them, and publishing therefore leaves them
+out. `pnpm run validate:previews` owns that gate and runs inside `pnpm run verify`, where the
+generated assets exist on disk.
 
 ## Manifest and registry
 

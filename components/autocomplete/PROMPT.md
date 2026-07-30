@@ -4,50 +4,6 @@ You are a Senior Frontend Engineer. Build a Web Component named `<ui-autocomplet
 HTML, CSS, and JavaScript. Do not use React, TypeScript, a Tailwind runtime, a UI framework, a
 backend, or a new dependency.
 
-## Output
-
-Create a portable component with this structure:
-
-```text
-components/autocomplete/
-|-- component.json
-|-- README.md
-|-- DESIGN.md
-|-- PROMPT.md
-|-- PROMPT-STANDALONE.md
-|-- preview/thumbnail.svg
-`-- source/
-    |-- autocomplete-core.js
-    |-- demo.js
-    |-- shared.css
-    |-- shared.js
-    `-- variants/
-        |-- single/index.html
-        |-- multiple/index.html
-        |-- free-text/index.html
-        |-- grouped/index.html
-        |-- async/index.html
-        `-- restricted/index.html
-```
-
-Use manifest schema version 2, component version `0.1.0`, group `inputs`, and English variant
-descriptions. Each entry must run directly in a browser or iframe, display raw output, use
-`lang="en"`, and remain independent from catalog code.
-
-Keep every DOM-free rule in `autocomplete-core.js` so it can be unit tested under `node:test`
-without a DOM. `shared.js` extends `HTMLElement` and cannot be imported that way.
-
-Packaging concatenates the root modules into one distributable script, so they share a single
-top-level scope. No two of them may declare the same top-level name. A duplicate is a
-`SyntaxError` in the packaged file.
-
-The component must define every CSS custom property it reads and must not reference any
-`catalog/` path; validation rejects both.
-
-The catalog thumbnail is a static, self-contained `640x360` SVG showing the Multiple variant with
-two chips and an open, filtered list. No animation, script, external asset, or embedded raster
-image.
-
 ## Public API
 
 ```html
@@ -124,9 +80,12 @@ One implementation serves all six; a variant is configuration.
 - `multiple`: chips for each choice, removable individually.
 - `free-text`: accept a typed value that matches no option.
 - `grouped`: options under `optgroup` labels.
-- `async`: simulate a delayed load with local data, exposing loading, error, and recovery. The
-  catalog ships no backend.
+- `async`: simulate a delayed load with local data, exposing loading, error, and recovery. There
+  is no backend, so the delay is faked.
 - `restricted`: unavailable options together with read-only and disabled fields.
+
+Each has to run on its own, showing its current value as raw output and loading nothing from
+another origin.
 
 ## Interaction, responsive behavior, and accessibility
 
@@ -162,24 +121,18 @@ One implementation serves all six; a variant is configuration.
 - Give each chip its own remove button named after the option.
 - Limit transitions to border and shadow at `140ms` and remove them under
   `prefers-reduced-motion: reduce`.
+- Define every CSS custom property the component reads inside the component itself, and reference
+  nothing outside it. That is what lets the field be lifted into another project unchanged.
 
-## Tests and delivery
+## Verify before calling it done
 
-Write `node:test` coverage for diacritic folding, substring matching, segment splitting including
-a label containing markup, JSON value parse and serialize, duplicate collapsing, option model
-building, group ordering, and skipping disabled options during navigation.
+Keep the rules that decide things — diacritic folding, substring matching, splitting a label into
+plain and matched segments, parsing and serialising the value, building the option model —
+reachable without a browser, so they can be tested on their own.
 
-Write Playwright coverage for all six variants, filtering, marking, keyboard and ARIA behavior,
-chip removal by button and by Backspace, free text commit, async loading and error states,
-unknown-value invalidation, list geometry, mobile overflow, reduced motion, document downloads,
-and the packaged ZIP.
-
-Cover these explicitly, because each is a place this component can silently break:
+Check these explicitly, because each is a place this component silently breaks:
 
 - A label containing `<script>` renders as text, never as markup.
 - Arrow navigation never lands on a disabled option or a group heading.
 - The list is not clipped when the field sits inside a scrolling ancestor.
 - A malformed `value` keeps its text and marks the field invalid.
-
-Run English validation, component validation, registry generation, preview generation, packaging,
-publishing, and the full repository verification flow.

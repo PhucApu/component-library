@@ -37,6 +37,7 @@ Open the URL printed by Vite:
 dev                    Start the Vite development server
 validate:english       Enforce English repository-owned content
 validate:components    Validate every manifest and distribution contract
+validate:previews      Validate the contract plus the generated QA previews
 build:index            Generate the normalized component registry
 generate:previews      Generate poster and WebM QA assets
 package:component      Create one component ZIP

@@ -16,10 +16,11 @@ const OPTIONAL_DOCUMENTS = ['PROMPT-STANDALONE.md'];
 export async function publishComponents({
   componentsDirectory = DEFAULT_COMPONENTS_DIRECTORY,
   distDirectory = DEFAULT_DIST_DIRECTORY,
+  requirePreviewAssets = false,
 } = {}) {
   const records = await readAndValidateComponents({
     componentsDirectory,
-    requirePreviewAssets: true,
+    requirePreviewAssets,
   });
   const publishedComponentsDirectory = path.join(distDirectory, 'components');
   const downloadsDirectory = path.join(distDirectory, 'downloads');
@@ -94,6 +95,10 @@ export async function publishComponents({
 
 if (isExecutedDirectly(import.meta.url)) {
   try {
+    // Publishing deliberately does not gate on the generated poster and WebM. They are
+    // gitignored QA evidence that nothing in dist requests, so a clean clone — every
+    // deployment build — never has them on disk. "pnpm run validate:previews" owns that
+    // gate, which keeps the deployment build reproducible from the repository alone.
     const count = await publishComponents();
     console.log(`Published ${count} component${count === 1 ? '' : 's'} to dist.`);
   } catch (error) {
