@@ -7,17 +7,24 @@ import {
   clampOffset,
   clampZoom,
   fillLabel,
+  formatZoomPercent,
   imageAnnouncement,
   nextIndex,
+  parseZoomPercent,
   pressedBeside,
+  shiftWindow,
+  stripWindow,
   zoomAt,
 } from '../../components/lightbox/source/lightbox-core.js';
 
 describe('clampZoom', () => {
   it('keeps a usable magnification', () => {
-    assert.equal(clampZoom(2.5), 2.5);
+    assert.equal(clampZoom(1.5), 1.5);
     assert.equal(clampZoom(MIN_ZOOM), MIN_ZOOM);
     assert.equal(clampZoom(MAX_ZOOM), MAX_ZOOM);
+    assert.equal(clampZoom(3.75), 3.75);
+    // Life size to four times it, which is what the field offers.
+    assert.deepEqual([MIN_ZOOM, MAX_ZOOM], [1, 4]);
   });
 
   it('refuses to shrink below life size or grow past the limit', () => {
@@ -129,6 +136,109 @@ describe('clampOffset', () => {
 
   it('survives being asked about nothing', () => {
     assert.deepEqual(clampOffset(), { x: 0, y: 0 });
+  });
+});
+
+describe('the zoom field', () => {
+  it('shows whole per cent, because nobody types 137.5', () => {
+    assert.equal(formatZoomPercent(1), 100);
+    assert.equal(formatZoomPercent(1.5), 150);
+    assert.equal(formatZoomPercent(1.337), 134);
+  });
+
+  it('reads a number however it was written', () => {
+    assert.equal(parseZoomPercent('150'), 1.5);
+    assert.equal(parseZoomPercent(' 150% '), 1.5);
+    assert.equal(parseZoomPercent('125'), 1.25);
+    // Three figures, now that the range runs past a hundred per cent twice over.
+    assert.equal(parseZoomPercent('275'), 2.75);
+    assert.equal(parseZoomPercent('400'), 4);
+  });
+
+  it('clamps rather than refusing a number outside the range', () => {
+    assert.equal(parseZoomPercent('900'), MAX_ZOOM);
+    assert.equal(parseZoomPercent('401'), MAX_ZOOM);
+    assert.equal(parseZoomPercent('10'), MIN_ZOOM);
+  });
+
+  it('returns nothing for anything unusable, so a half-typed number is left alone', () => {
+    // Clamping every keystroke is what makes such a field impossible to type into.
+    assert.equal(parseZoomPercent(''), null);
+    assert.equal(parseZoomPercent('abc'), null);
+    assert.equal(parseZoomPercent('0'), null);
+    assert.equal(parseZoomPercent(null), null);
+  });
+});
+
+describe('stripWindow', () => {
+  it('shows everything when there is little enough to show', () => {
+    assert.deepEqual(stripWindow({ index: 0, total: 4 }), { start: 0, end: 4 });
+    assert.deepEqual(stripWindow({ index: 0, total: 6 }), { start: 0, end: 6 });
+  });
+
+  it('holds still while the picture stays inside it', () => {
+    assert.deepEqual(stripWindow({ index: 3, total: 14, start: 2 }), { start: 2, end: 8 });
+  });
+
+  it('is dragged along when the picture would fall outside', () => {
+    // A strip that marks where you are is no use if that mark is not on it.
+    assert.deepEqual(stripWindow({ index: 11, total: 14, start: 0 }), { start: 7, end: 13 });
+    assert.deepEqual(stripWindow({ index: 1, total: 14, start: 6 }), { start: 0, end: 6 });
+  });
+
+  it('moves before the picture reaches the edge, not after', () => {
+    // What is coming next has to be on the strip already, or asking for it is a leap in
+    // the dark. Index 5 is the last of the window 0-5, so the window is already moving.
+    assert.deepEqual(stripWindow({ index: 4, total: 14, start: 0 }), { start: 0, end: 6 });
+    assert.deepEqual(stripWindow({ index: 5, total: 14, start: 0 }), { start: 1, end: 7 });
+    assert.deepEqual(stripWindow({ index: 3, total: 14, start: 3 }), { start: 2, end: 8 });
+  });
+
+  it('keeps no lookahead when asked for none', () => {
+    assert.deepEqual(stripWindow({ index: 5, total: 14, start: 0, margin: 0 }), {
+      start: 0,
+      end: 6,
+    });
+  });
+
+  it('will not ask for more room than the window has', () => {
+    // A margin of four either side of a window of six is impossible; it is capped rather
+    // than allowed to produce a window that jumps about.
+    assert.deepEqual(stripWindow({ index: 6, total: 14, start: 6, margin: 4 }), {
+      start: 4,
+      end: 10,
+    });
+  });
+
+  it('never runs past either end', () => {
+    assert.deepEqual(stripWindow({ index: 13, total: 14, start: 99 }), { start: 8, end: 14 });
+    assert.deepEqual(stripWindow({ index: 0, total: 14, start: -5 }), { start: 0, end: 6 });
+    assert.deepEqual(stripWindow({ index: 13, total: 14, start: 0 }), { start: 8, end: 14 });
+  });
+
+  it('survives being asked about nothing', () => {
+    assert.deepEqual(stripWindow(), { start: 0, end: 0 });
+  });
+});
+
+describe('shiftWindow', () => {
+  it('moves one place at a time', () => {
+    assert.equal(shiftWindow({ start: 0, delta: 1, total: 14 }), 1);
+    assert.equal(shiftWindow({ start: 4, delta: -1, total: 14 }), 3);
+  });
+
+  it('stops at both ends', () => {
+    assert.equal(shiftWindow({ start: 0, delta: -1, total: 14 }), 0);
+    // Fourteen pictures in a window of six leaves the last start at eight.
+    assert.equal(shiftWindow({ start: 8, delta: 1, total: 14 }), 8);
+  });
+
+  it('has nowhere to go when everything already fits', () => {
+    assert.equal(shiftWindow({ start: 0, delta: 1, total: 4 }), 0);
+  });
+
+  it('survives being asked about nothing', () => {
+    assert.equal(shiftWindow(), 0);
   });
 });
 

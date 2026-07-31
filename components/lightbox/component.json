@@ -3,7 +3,7 @@
   "id": "lightbox",
   "version": "0.1.0",
   "name": "Lightbox",
-  "description": "A framework-free Web Component that turns a gallery of links into a full viewer, with magnification by wheel, button and key, dragging once magnified, and a thumbnail strip that scrolls on its own arrows.",
+  "description": "A framework-free Web Component that turns a gallery of links into a full viewer, with magnification to 400% by wheel, button, key or typed level, dragging once magnified, and a thumbnail strip that steps through the pictures and folds away.",
   "group": "surface",
   "categories": ["surface", "overlay", "media"],
   "tags": ["lightbox", "gallery", "image-viewer", "zoom", "dialog", "web-component", "accessible"],
@@ -18,7 +18,7 @@
     {
       "id": "zoom",
       "name": "Zoom",
-      "description": "Magnifying by wheel, by button and by key, magnifying towards the pointer, and dragging once magnified.",
+      "description": "Magnifying to 400% by wheel, button, key or typed level, magnifying towards the pointer, and dragging once magnified.",
       "entry": "source/variants/zoom/index.html"
     },
     {

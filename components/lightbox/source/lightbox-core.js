@@ -1,9 +1,15 @@
 export const MIN_ZOOM = 1;
-export const MAX_ZOOM = 5;
+export const MAX_ZOOM = 4;
 export const ZOOM_STEP = 0.25;
+
+/** How many thumbnails stand on the strip at once. The rest wait out of sight. */
+export const STRIP_WINDOW = 6;
 
 export const DEFAULT_LABELS = Object.freeze({
   panel: 'Image viewer',
+  zoomLevel: 'Zoom level, per cent',
+  showStrip: 'Show thumbnails',
+  hideStrip: 'Hide thumbnails',
   counter: '{index} of {total}',
   announce: '{index} of {total}: {alt}',
   previous: 'Previous image',
@@ -13,8 +19,8 @@ export const DEFAULT_LABELS = Object.freeze({
   zoomOut: 'Zoom out',
   zoomReset: 'Reset zoom',
   thumb: 'Show image {index} of {total}: {alt}',
-  stripPrevious: 'Scroll thumbnails back',
-  stripNext: 'Scroll thumbnails forward',
+  stripPrevious: 'Previous thumbnail',
+  stripNext: 'Next thumbnail',
 });
 
 function finite(value, fallback) {
@@ -89,6 +95,83 @@ export function clampOffset({ offset, scale, frame, image } = {}) {
     x: Math.min(Math.max(finite(offset?.x, 0), -limitX), limitX),
     y: Math.min(Math.max(finite(offset?.y, 0), -limitY), limitY),
   };
+}
+
+/** What the zoom field shows. Whole per cent, because nobody types 137.5. */
+export function formatZoomPercent(scale) {
+  return Math.round(Math.max(0, finite(scale, 1)) * 100);
+}
+
+/**
+ * Reads what somebody typed into the zoom field.
+ *
+ * Returns `null` for anything unusable rather than a guess, so the caller can leave the
+ * field alone instead of overwriting a half-finished number. Clamping every keystroke is
+ * what makes such a field impossible to type into: the `1` of `150` becomes `100` and the
+ * rest of the number has nowhere to go.
+ */
+export function parseZoomPercent(text, { min = MIN_ZOOM, max = MAX_ZOOM } = {}) {
+  const digits = String(text ?? '').replace(/[^\d.]/g, '');
+
+  if (!digits) {
+    return null;
+  }
+
+  const value = Number.parseFloat(digits);
+
+  if (!Number.isFinite(value) || value <= 0) {
+    return null;
+  }
+
+  return clampZoom(value / 100, { min, max });
+}
+
+/** How close to the edge of the window the current picture gets before it slides on. */
+export const STRIP_LOOKAHEAD = 1;
+
+/**
+ * Which run of thumbnails is on the strip.
+ *
+ * The window slides before the current picture reaches the very edge rather than after, so
+ * what is coming next is always already on the strip. `margin` is how much of that is kept
+ * in hand; it is capped so it can never ask for more room than the window has.
+ */
+export function stripWindow({
+  index,
+  total,
+  size = STRIP_WINDOW,
+  start = 0,
+  margin = STRIP_LOOKAHEAD,
+} = {}) {
+  const count = Math.max(0, Math.floor(finite(total, 0)));
+  const span = Math.max(1, Math.floor(finite(size, STRIP_WINDOW)));
+
+  if (count <= span) {
+    return { start: 0, end: count };
+  }
+
+  const current = Math.min(Math.max(Math.floor(finite(index, 0)), 0), count - 1);
+  const lead = Math.max(0, Math.min(Math.floor(finite(margin, 0)), Math.floor((span - 1) / 2)));
+  let from = Math.min(Math.max(Math.floor(finite(start, 0)), 0), count - span);
+
+  if (current - lead < from) {
+    from = current - lead;
+  } else if (current + lead > from + span - 1) {
+    from = current + lead - span + 1;
+  }
+
+  from = Math.min(Math.max(from, 0), count - span);
+
+  return { start: from, end: from + span };
+}
+
+/** Moves the window along, never past either end. */
+export function shiftWindow({ start, delta, total, size = STRIP_WINDOW } = {}) {
+  const count = Math.max(0, Math.floor(finite(total, 0)));
+  const span = Math.max(1, Math.floor(finite(size, STRIP_WINDOW)));
+  const last = Math.max(0, count - span);
+
+  return Math.min(Math.max(Math.floor(finite(start, 0)) + Math.floor(finite(delta, 0)), 0), last);
 }
 
 /**

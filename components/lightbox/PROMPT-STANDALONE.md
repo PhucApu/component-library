@@ -67,8 +67,18 @@ Support `loop` and `max-zoom` as attributes. Expose `items`, `open`, `index`, `s
 
 ## Magnifying
 
-Offer **three ways**: the wheel, a pair of buttons, and the `+`, `-` and `0` keys. Scrolling
-alone leaves out anyone on a keyboard and anyone on a touch screen.
+Offer **four ways**: the wheel, a pair of buttons, the `+`, `-` and `0` keys, and a field the
+level can be typed into. Go from life size to **four times it**, in steps of `0.5` on the
+buttons and keys and `0.25` on the wheel — six presses to the ceiling rather than twenty.
+
+Hand focus to a neighbour before turning a zoom control off. Each disables itself as a result
+of being pressed, so the control going away is the one under the finger, and a disabled
+element cannot hold focus: it drops to the body and every key stops working.
+
+Put shrink, the level, and grow in **one bordered, rounded group**; reset stands outside it.
+**The field must not clamp while it is being typed into** — committing every keystroke turns
+the `1` of `150` into `100`. Settle on Enter or on leaving the field, and stop key events
+escaping it.
 
 Register the wheel listener **non-passive** — but know why. Browsers make `wheel` passive by
 default only on `window`, `document` and `body`; on an ordinary element it already is not,
@@ -88,16 +98,66 @@ frame does not move sideways.
 
 Arrow keys change picture at rest and drag once magnified.
 
+## The picture keeps the whole width
+
+Put the arrows **on** the picture, faded at rest and full on hover and focus. Faded rather
+than hidden, because hover does not exist on a touch screen. Give each a dark scrim so the
+icon holds against a white photograph, and measure that worst case at resting strength.
+
 ## The thumbnail strip
 
-Pressing a thumbnail changes the picture. The **arrows at each end scroll the strip** and
-never change the picture. Turn each off at its own end, and both off while everything fits.
+Show a **window of six** and put the rest away with `hidden`, which takes them out of the
+tab order too. Pressing a thumbnail changes the picture, and so do the **arrows at each end,
+one picture at a time**; the window slides along to keep up. Slide it **one place before**
+the current picture reaches the edge, not after — what is coming next has to be on the strip
+already, or asking for it is a leap in the dark.
 
-When the picture changes another way and the matching thumbnail has scrolled out of sight,
-slide the strip just far enough to bring it back, and only then.
+Grow a thumbnail under the pointer and push its neighbours along, with width rather than a
+transform. Give the strip a **fixed height, sized for the largest a thumbnail ever gets** — a
+minimum height is not enough, and a strip that grows shoves the picture upwards every time
+the pointer crosses it.
 
-Measure the strip **after** the dialog is showing. A panel still `display: none` reports
-every width as zero, so both arrows would stay off forever.
+## Folding the bottom away
+
+Put the toggle **on the strip, as a notch rising from the middle of its top edge**, not in
+the toolbar: a control that hides something should stand on the thing it hides. Overlap the
+strip's border by a pixel and drop the tab's bottom border so the two read as one surface.
+If one rule styles the icons by listing the control classes, add this one to it. A path left
+out falls back to `fill: black`, `stroke: none` — on a dark panel a smudge, reported nowhere.
+
+Give it `aria-expanded` and a name for what it will do next, keep the decision across a
+change of picture, and reset it when the viewer is reopened. It only works because the
+arrows are on the picture.
+
+**Fold by animating the height**, not with `hidden`: nothing that has been removed can be
+animated. Use `inert` for the tab order and delay `visibility` to the end of the transition.
+
+Folded, give up **every** pixel — the strip's border width as well as its height, and the tab
+too, pulled out of the flow by a negative margin of its own height so it is drawn over the
+picture while taking no room. It must then be invisible, and an invisible control needs
+several ways back: the pointer near the foot of the picture, `:focus-visible` for the
+keyboard, and a press for touch. Keep it `pointer-events: none` while hidden, and honour
+`pointerleave` only for a mouse — a touch "leaves" the instant it lifts.
+Set the state while the panel is still `display: none` when the viewer opens, where no
+transition can run — unfolding in front of the picture also means measuring the frame while
+it is still moving.
+
+## Changing picture
+
+Slide the new picture in from the side it came from. A **second element** is needed: the
+slide and the magnification both want to move the picture, and one transform cannot hold two
+unrelated jobs. Two steps, because a transition needs a rendered starting point — place it,
+flush the layout, then send it home. Clear the inline transition rather than naming one, so
+`prefers-reduced-motion` in the stylesheet is what decides whether it travels at all.
+
+A step knows its own direction even when looping carries the index the other way; a
+thumbnail has only the two positions to compare.
+
+## Nothing in the chrome is selectable
+
+A fast second press on a control is a double-click, and a double-click on unprotected chrome
+runs a selection out across the whole panel — it looks as though the viewer has been
+highlighted. `user-select: none` on the panel, `text` on the caption and the zoom field.
 
 ## Layout: three traps of the same shape
 
@@ -117,8 +177,9 @@ every width as zero, so both arrows would stay off forever.
   and empty beforehand.
 - Support a caption separately from the alternative text.
 - With one picture, remove the arrows and the strip rather than disabling them.
-- Fade in over `180ms`, ease magnification over `120ms`, never while dragging.
-  `prefers-reduced-motion: reduce` removes all of it.
+- Fade in over `180ms`, ease magnification over `120ms`, slide a new picture over `260ms`,
+  fold over `280ms`, never ease while dragging. `prefers-reduced-motion: reduce` removes all
+  of it, including the collapsed state's own timing.
 
 ## Verify before delivering
 
@@ -129,5 +190,10 @@ Serve the folder over HTTP and check each item by hand.
 - Magnify with the wheel over a corner: that corner stays under the pointer.
 - Press `Tab` a dozen times: focus never leaves the viewer. Press Escape: the focus ring is
   back on the picture you opened.
-- Press the arrows at the ends of the strip: the strip moves and the picture does not.
+- Press reset, then press `+`: the picture magnifies. If nothing happens, focus fell to the
+  body when reset turned itself off.
+- Press the arrows at the ends of the strip: the picture changes one at a time and the run
+  on show slides along with it, a place ahead of where you are.
+- Hover a thumbnail: it grows, its neighbours move, and nothing above the strip moves at all.
+- Press a control four times quickly: no part of the viewer is highlighted.
 - Open a gallery holding one picture: no arrows, no strip, magnifying still works.

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Three ways to magnify, and dragging once magnified." />
+    <meta name="description" content="Four ways to magnify up to 400%, and dragging once magnified." />
     <title>Lightbox - Zoom</title>
     <link rel="stylesheet" href="../../shared.css" />
     <script type="module" src="../../shared.js"></script>
@@ -12,11 +12,15 @@
     <main class="lightbox-demo">
       <div class="lightbox-demo__shell">
         <section class="lightbox-demo__card">
-          <p class="lightbox-demo__label">Three ways in, because a wheel is not universal</p>
+          <p class="lightbox-demo__label">Four ways in, because a wheel is not universal</p>
           <p class="lightbox-demo__note">
-            Scroll the wheel, press the plus and minus buttons, or use the
-            <code>+</code>, <code>-</code> and <code>0</code> keys. Scrolling alone would
-            leave out anyone on a keyboard or a touch screen.
+            Scroll the wheel, press the plus and minus buttons, use the <code>+</code>,
+            <code>-</code> and <code>0</code> keys, or type a level straight into the field.
+            Scrolling alone would leave out anyone on a keyboard or a touch screen.
+          </p>
+          <p class="lightbox-demo__note">
+            The range is <strong>100% to 400%</strong>. The buttons and keys move 50% a
+            press, the wheel 25% a notch; anything further is quicker typed.
           </p>
           <p class="lightbox-demo__note">
             The wheel magnifies <strong>towards the pointer</strong>, so the detail you are
@@ -24,7 +28,7 @@
             arrow keys to move around; at rest the arrow keys change picture instead.
           </p>
 
-          <ui-lightbox max-zoom="6">
+          <ui-lightbox>
             <ul class="lightbox__gallery">
               <li>
                 <a class="lightbox__item" href="../../assets/night-city.svg">

@@ -2,26 +2,43 @@ import {
   DEFAULT_LABELS,
   MAX_ZOOM,
   MIN_ZOOM,
+  STRIP_WINDOW,
   ZOOM_STEP,
   clampOffset,
   clampZoom,
   fillLabel,
+  formatZoomPercent,
   imageAnnouncement,
   nextIndex,
+  parseZoomPercent,
   pressedBeside,
+  shiftWindow,
+  stripWindow,
   zoomAt,
 } from './lightbox-core.js';
 
 /** Matches the fade in the stylesheet. */
 const EXIT_MS = 180;
 
+/** How far, as a share of the frame, a new picture travels in from. */
+const SLIDE_TRAVEL = 8;
+
+/**
+ * How close to the bottom of the picture the pointer comes before the folded tab appears.
+ *
+ * Generous, because it is a target nobody can see. Roughly the height of the strip it
+ * brings back, so the band is about as big as the thing being asked for.
+ */
+const DOCK_REVEAL = 96;
+
 const ICONS = Object.freeze({
   previous: 'M15 5l-7 7 7 7',
   next: 'M9 5l7 7-7 7',
   close: 'm6 6 12 12M18 6 6 18',
-  zoomIn: 'M11 5v12M5 11h12M20 20l-4.5-4.5',
-  zoomOut: 'M5 11h12M20 20l-4.5-4.5',
+  zoomIn: 'M12 6v12M6 12h12',
+  zoomOut: 'M6 12h12',
   zoomReset: 'M4 9a8 8 0 1 1 .6 5M4 4v5h5',
+  stripToggle: 'm7 10 5 5 5-5',
 });
 
 /**
@@ -46,6 +63,9 @@ export class UiLightbox extends HTMLElement {
     this._offset = { x: 0, y: 0 };
     this._base = { width: 0, height: 0 };
     this._source = null;
+    this._windowStart = 0;
+    this._stripOpen = true;
+    this._stepDirection = 0;
 
     this._handleGalleryClick = this._handleGalleryClick.bind(this);
     this._handlePanelClick = this._handlePanelClick.bind(this);
@@ -55,6 +75,7 @@ export class UiLightbox extends HTMLElement {
     this._handlePointerDown = this._handlePointerDown.bind(this);
     this._handlePointerMove = this._handlePointerMove.bind(this);
     this._handlePointerUp = this._handlePointerUp.bind(this);
+    this._handleDockProximity = this._handleDockProximity.bind(this);
   }
 
   connectedCallback() {
@@ -121,8 +142,8 @@ export class UiLightbox extends HTMLElement {
 
   /**
    * The drawing and the name are chosen separately: the strip arrows borrow the same
-   * chevrons as the picture arrows but say something quite different, because they move
-   * the strip rather than the picture.
+   * chevrons as the picture arrows, and are named for the thumbnails they step through
+   * rather than repeating a name already on the page.
    */
   _control({ action, icon, label, className }) {
     const button = document.createElement('button');
@@ -144,6 +165,9 @@ export class UiLightbox extends HTMLElement {
     this._panel = document.createElement('dialog');
     this._panel.className = 'lightbox__panel';
     this._panel.setAttribute('aria-label', labels.panel);
+    // The folded state is the absence of this attribute, so the panel has to be born with
+    // it or the first open would play the unfolding animation for nothing.
+    this._panel.toggleAttribute('data-strip-open', this._stripOpen);
 
     const bar = document.createElement('div');
     bar.className = 'lightbox__bar';
@@ -154,16 +178,46 @@ export class UiLightbox extends HTMLElement {
     const tool = (action, key, extra = '') =>
       this._control({ action, icon: key, label: key, className: `lightbox__tool ${extra}`.trim() });
 
-    tools.append(
-      tool('zoom-out', 'zoomOut'),
-      tool('zoom-reset', 'zoomReset'),
-      tool('zoom-in', 'zoomIn'),
-      tool('close', 'close', 'lightbox__tool--close'),
+    // Shrink, the level, and grow belong together: they are one adjustment, so they sit in
+    // one bordered group. Reset is a different act and stands apart from it.
+    const zoomGroup = document.createElement('div');
+    zoomGroup.className = 'lightbox__zoom';
+
+    this._zoomField = document.createElement('input');
+    this._zoomField.className = 'lightbox__zoom-field';
+    this._zoomField.type = 'text';
+    this._zoomField.inputMode = 'numeric';
+    this._zoomField.autocomplete = 'off';
+    this._zoomField.setAttribute('aria-label', labels.zoomLevel);
+    this._zoomField.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        this._commitZoomField();
+      }
+      // The panel turns arrows and digits into navigation and magnification; inside the
+      // field they have to stay ordinary typing.
+      event.stopPropagation();
+    });
+    this._zoomField.addEventListener('blur', () => this._commitZoomField());
+
+    const suffix = document.createElement('span');
+    suffix.className = 'lightbox__zoom-suffix';
+    suffix.setAttribute('aria-hidden', 'true');
+    suffix.textContent = '%';
+
+    zoomGroup.append(
+      tool('zoom-out', 'zoomOut', 'lightbox__tool--flush'),
+      this._zoomField,
+      suffix,
+      tool('zoom-in', 'zoomIn', 'lightbox__tool--flush'),
     );
+
+    tools.append(zoomGroup, tool('zoom-reset', 'zoomReset'), tool('close', 'close', 'lightbox__tool--close'));
     bar.append(this._counter, tools);
 
     const stage = document.createElement('div');
     stage.className = 'lightbox__stage';
+    this._stage = stage;
     this._prev = this._control({
       action: 'previous',
       icon: 'previous',
@@ -179,12 +233,21 @@ export class UiLightbox extends HTMLElement {
 
     this._frame = document.createElement('div');
     this._frame.className = 'lightbox__frame';
+    // The slide and the magnification need separate elements: both want to move the
+    // picture, and one transform cannot hold two unrelated jobs.
+    this._slide = document.createElement('div');
+    this._slide.className = 'lightbox__slide';
     this._image = document.createElement('img');
     this._image.className = 'lightbox__image';
     this._image.draggable = false;
-    this._frame.append(this._image);
+    this._slide.append(this._image);
+    this._frame.append(this._slide);
 
-    stage.append(this._prev, this._frame, this._next);
+    // Over the picture rather than beside it, so nothing is given up to bars of empty
+    // black either side.
+    this._prev.classList.add('lightbox__nav--prev');
+    this._next.classList.add('lightbox__nav--next');
+    stage.append(this._frame, this._prev, this._next);
 
     this._caption = document.createElement('p');
     this._caption.className = 'lightbox__caption';
@@ -207,19 +270,38 @@ export class UiLightbox extends HTMLElement {
     this._thumbs.className = 'lightbox__thumbs';
     this._strip.append(this._stripPrev, this._thumbs, this._stripNext);
 
+    // The toggle belongs to the part it folds, not to the toolbar at the far end of the
+    // panel: a control that hides something should stand on the thing it hides. The dock
+    // carries the tab so the two read as one piece of furniture.
+    this._dock = document.createElement('div');
+    this._dock.className = 'lightbox__dock';
+    this._stripToggle = this._control({
+      action: 'strip-toggle',
+      icon: 'stripToggle',
+      label: 'hideStrip',
+      className: 'lightbox__dock-tab',
+    });
+    this._dock.append(this._stripToggle, this._strip);
+
     // Present and empty before there is anything to say. Swapping the source of an image
     // already on the page announces nothing on its own.
     this._status = document.createElement('span');
     this._status.className = 'lightbox__sr-only';
     this._status.setAttribute('role', 'status');
 
-    this._panel.append(bar, stage, this._caption, this._strip, this._status);
+    this._panel.append(bar, stage, this._caption, this._dock, this._status);
+
+    // Folded away, the tab is invisible and out of the flow, so something has to say when
+    // it is wanted. Pointer movement near the bottom of the picture is the signal; a press
+    // counts too, because a touch screen has no hovering to do.
+    stage.addEventListener('pointermove', this._handleDockProximity);
+    stage.addEventListener('pointerdown', this._handleDockProximity);
+    stage.addEventListener('pointerleave', this._handleDockProximity);
     this.append(this._panel);
 
     this._panel.addEventListener('click', this._handlePanelClick);
     this._panel.addEventListener('keydown', this._handleKeyDown);
     this._panel.addEventListener('cancel', this._handleCancel);
-    this._thumbs.addEventListener('scroll', () => this._syncStripArrows());
     // Stated rather than assumed. Browsers make `wheel` passive by default only on
     // `window`, `document` and `body`; on an ordinary element it already is not. Measured:
     // dropping this flag changes nothing here. It is written down so the handler survives
@@ -259,6 +341,11 @@ export class UiLightbox extends HTMLElement {
     this._source = items[this._index];
 
     this._renderStrip();
+    // Reopening starts from the default rather than from however it was left, because a
+    // strip that is missing when the viewer opens is a strip nobody knows about. Set while
+    // the panel is still `display: none`, where no transition can run: unfolding it in
+    // front of the picture would also mean measuring the frame while it was still moving.
+    this.toggleStrip(true);
     // Shown first, then measured. A panel still `display: none` reports every width as
     // zero, so the strip would decide it never overflows and turn both arrows off.
     this._panel.showModal?.();
@@ -273,11 +360,6 @@ export class UiLightbox extends HTMLElement {
 
     void this._panel.offsetWidth;
     this._panel.setAttribute('data-shown', '');
-
-    if (typeof ResizeObserver === 'function' && !this._observer) {
-      this._observer = new ResizeObserver(() => this._syncStripArrows());
-      this._observer.observe(this._thumbs);
-    }
 
     this.dispatchEvent(
       new CustomEvent('lightbox-open', {
@@ -325,9 +407,14 @@ export class UiLightbox extends HTMLElement {
       return false;
     }
 
+    // Which way the new picture comes in from. A step knows its own direction even when
+    // looping carries the index the other way; a thumbnail has only the two positions.
+    const towards = this._stepDirection || Math.sign(target - this._index);
+
     this._index = target;
     this._source = this.items[target];
     this._renderImage();
+    this._slideIn(towards);
 
     this.dispatchEvent(
       new CustomEvent('lightbox-change', {
@@ -341,7 +428,38 @@ export class UiLightbox extends HTMLElement {
   }
 
   step(delta) {
-    return this.goTo(nextIndex(this._index, this.items.length, delta, { loop: this.loop }));
+    this._stepDirection = Math.sign(delta);
+
+    try {
+      return this.goTo(nextIndex(this._index, this.items.length, delta, { loop: this.loop }));
+    } finally {
+      this._stepDirection = 0;
+    }
+  }
+
+  /**
+   * Brings the new picture in from the side it came from.
+   *
+   * Two steps, because a transition needs a starting point that has already been rendered:
+   * put the picture where it comes from with the transition off, let the layout settle, then
+   * turn the transition back on and send it home. Clearing the inline transition hands the
+   * timing back to the stylesheet, which is also where `prefers-reduced-motion` removes it —
+   * the same two steps then simply arrive at once.
+   */
+  _slideIn(direction) {
+    const towards = Math.sign(direction) || 0;
+
+    if (!towards) {
+      return;
+    }
+
+    this._slide.style.transition = 'none';
+    this._slide.style.translate = `${towards * SLIDE_TRAVEL}% 0`;
+    this._slide.style.opacity = '0';
+    void this._slide.offsetWidth;
+    this._slide.style.transition = '';
+    this._slide.style.translate = '0 0';
+    this._slide.style.opacity = '1';
   }
 
   /** Sets the magnification, keeping `pointer` (measured from the frame centre) still. */
@@ -382,10 +500,41 @@ export class UiLightbox extends HTMLElement {
     this._image.style.translate = `${this._offset.x}px ${this._offset.y}px`;
     this._image.style.scale = String(this._scale);
     this._panel.toggleAttribute('data-zoomed', this._scale > MIN_ZOOM);
+    this._syncZoomField();
 
-    this._panel.querySelector('[data-action="zoom-in"]').disabled = this._scale >= this.maxZoom;
-    this._panel.querySelector('[data-action="zoom-out"]').disabled = this._scale <= MIN_ZOOM;
-    this._panel.querySelector('[data-action="zoom-reset"]').disabled = this._scale === MIN_ZOOM;
+    this._syncZoomControls();
+  }
+
+  /**
+   * Turns the zoom controls off where they can do nothing, without taking the keyboard with
+   * them.
+   *
+   * A disabled element cannot hold focus. Every one of these turns itself off as a direct
+   * result of being pressed — reset and shrink at life size, grow at the ceiling — so the
+   * control being disabled is very often the one under the finger. Measured: pressing reset
+   * dropped focus to the body, and from there `+` and the arrow keys did nothing at all,
+   * because the panel never saw the events.
+   *
+   * Each hands focus to the neighbour that is still worth pressing, and to close as a last
+   * resort, which is the one control that is always available.
+   */
+  _syncZoomControls() {
+    const grow = this._panel.querySelector('[data-action="zoom-in"]');
+    const shrink = this._panel.querySelector('[data-action="zoom-out"]');
+    const reset = this._panel.querySelector('[data-action="zoom-reset"]');
+
+    for (const [control, off, heir] of [
+      [grow, this._scale >= this.maxZoom, shrink],
+      [shrink, this._scale <= MIN_ZOOM, grow],
+      [reset, this._scale === MIN_ZOOM, grow],
+    ]) {
+      if (off && control === document.activeElement) {
+        const target = heir?.disabled ? this._panel.querySelector('.lightbox__tool--close') : heir;
+        target?.focus();
+      }
+
+      control.disabled = off;
+    }
   }
 
   _renderImage() {
@@ -441,7 +590,7 @@ export class UiLightbox extends HTMLElement {
     const single = items.length < 2;
     this._prev.hidden = single;
     this._next.hidden = single;
-    this._strip.hidden = single;
+    this._dock.hidden = single;
     this._prev.disabled = !single && !this.loop && this._index === 0;
     this._next.disabled = !single && !this.loop && this._index === items.length - 1;
 
@@ -456,8 +605,8 @@ export class UiLightbox extends HTMLElement {
       }
     });
 
-    this._scrollThumbIntoView();
-    this._syncStripArrows();
+    this._followIndex();
+    this._syncZoomField();
     this._status.textContent = imageAnnouncement({
       index: this._index,
       total: items.length,
@@ -497,39 +646,120 @@ export class UiLightbox extends HTMLElement {
   }
 
   /**
-   * Brings the current thumbnail back into view, and only when it has left.
+   * Shows one run of thumbnails and puts the rest away.
    *
-   * The strip marks where you are, and a mark nobody can see says nothing. Scrolling on
-   * every change instead would move the strip out from under a pointer that is using it.
+   * The ones outside are `hidden` rather than merely scrolled past, so they leave the tab
+   * order with them.
    */
-  _scrollThumbIntoView() {
-    const active = this._thumbs.querySelector('[data-active]');
+  _syncStrip() {
+    const total = this.items.length;
 
-    if (!active) {
-      return;
-    }
-
-    const strip = this._thumbs.getBoundingClientRect();
-    const thumb = active.getBoundingClientRect();
-
-    if (thumb.left >= strip.left && thumb.right <= strip.right) {
-      return;
-    }
-
-    this._thumbs.scrollBy({
-      left:
-        thumb.left < strip.left ? thumb.left - strip.left - 12 : thumb.right - strip.right + 12,
-      behavior: 'auto',
+    this._windowStart = shiftWindow({
+      start: this._windowStart,
+      delta: 0,
+      total,
+      size: STRIP_WINDOW,
     });
+
+    const view = { start: this._windowStart, end: Math.min(this._windowStart + STRIP_WINDOW, total) };
+
+    [...this._thumbs.children].forEach((entry, position) => {
+      entry.toggleAttribute('hidden', position < view.start || position >= view.end);
+    });
+
+    // The arrows step the picture, so they run out where the picture does — at the ends of
+    // the set, not at the ends of the window.
+    const windowed = total > STRIP_WINDOW;
+    this._stripPrev.hidden = !windowed;
+    this._stripNext.hidden = !windowed;
+    this._stripPrev.disabled = !this.loop && this._index === 0;
+    this._stripNext.disabled = !this.loop && this._index === total - 1;
   }
 
-  _syncStripArrows() {
-    const room = this._thumbs.scrollWidth - this._thumbs.clientWidth;
-    const at = this._thumbs.scrollLeft;
+  /**
+   * Slides the window along to keep up with the picture being viewed.
+   *
+   * It moves before the current picture reaches the edge rather than after, so what is
+   * coming next is already on the strip when you ask for it.
+   */
+  _followIndex() {
+    this._windowStart = stripWindow({
+      index: this._index,
+      total: this.items.length,
+      size: STRIP_WINDOW,
+      start: this._windowStart,
+    }).start;
+    this._syncStrip();
+  }
 
-    this._strip.toggleAttribute('data-scrollable', room > 1);
-    this._stripPrev.disabled = at <= 1;
-    this._stripNext.disabled = at >= room - 1;
+  /** Writes the level into the field, unless somebody is in the middle of typing one. */
+  _syncZoomField() {
+    if (document.activeElement === this._zoomField) {
+      return;
+    }
+
+    this._zoomField.value = String(formatZoomPercent(this._scale));
+  }
+
+  _commitZoomField() {
+    const parsed = parseZoomPercent(this._zoomField.value, { min: MIN_ZOOM, max: this.maxZoom });
+
+    // Anything unusable leaves the picture alone and puts the real level back, rather than
+    // guessing at what was meant.
+    if (parsed !== null) {
+      this.setZoom(parsed);
+    }
+
+    this._zoomField.value = String(formatZoomPercent(this._scale));
+  }
+
+  toggleStrip(force) {
+    this._stripOpen = force === undefined ? !this._stripOpen : Boolean(force);
+    const labels = this.labels;
+
+    this._panel.toggleAttribute('data-strip-open', this._stripOpen);
+    // Unfolding satisfies whatever the reveal was for, and an unfolded tab is visible
+    // anyway. Left set, it would keep the reveal alive under the next fold.
+    this._panel.removeAttribute('data-dock-near');
+    // `hidden` would remove the strip between one frame and the next, and nothing that is
+    // gone can be animated away. It folds in CSS instead, and `inert` does the part `hidden`
+    // was there for: taking the thumbnails out of the tab order while they are not in use.
+    this._strip.inert = !this._stripOpen;
+    this._stripToggle.setAttribute('aria-expanded', String(this._stripOpen));
+    this._stripToggle.setAttribute(
+      'aria-label',
+      this._stripOpen ? labels.hideStrip : labels.showStrip,
+    );
+  }
+
+  /**
+   * Shows the folded tab when the pointer comes near the bottom of the picture.
+   *
+   * Only while folded: unfolded, the tab is a visible notch on the strip and has nothing to
+   * wait for. Leaving the picture puts it away again.
+   */
+  _handleDockProximity(event) {
+    if (this._stripOpen) {
+      this._panel.removeAttribute('data-dock-near');
+      return;
+    }
+
+    // Only a mouse leaves. A touch always "leaves" the instant it is lifted — the browser
+    // sends `pointerleave` straight after `pointerup` — so honouring it here would undo the
+    // reveal in the same breath as the tap that asked for it. Measured: tapping near the
+    // foot turned the tab on and back off before it could be pressed. For touch, the next
+    // press somewhere else is what puts it away, which happens on its own.
+    if (event.type === 'pointerleave') {
+      if (event.pointerType === 'mouse') {
+        this._panel.removeAttribute('data-dock-near');
+      }
+
+      return;
+    }
+
+    const rect = this._stage.getBoundingClientRect();
+
+    this._panel.toggleAttribute('data-dock-near', rect.bottom - event.clientY <= DOCK_REVEAL);
   }
 
   _pointerIn(event) {
@@ -563,8 +793,9 @@ export class UiLightbox extends HTMLElement {
         'zoom-in': () => this.setZoom(this._scale + ZOOM_STEP * 2),
         'zoom-out': () => this.setZoom(this._scale - ZOOM_STEP * 2),
         'zoom-reset': () => this.resetZoom(),
-        'strip-prev': () => this._scrollStrip(-1),
-        'strip-next': () => this._scrollStrip(1),
+        'strip-prev': () => this.step(-1),
+        'strip-next': () => this.step(1),
+        'strip-toggle': () => this.toggleStrip(),
       };
 
       moves[action]?.();
@@ -598,13 +829,6 @@ export class UiLightbox extends HTMLElement {
     if (beside || surround.includes(event.target)) {
       this.close('backdrop');
     }
-  }
-
-  _scrollStrip(direction) {
-    this._thumbs.scrollBy({
-      left: direction * Math.max(120, this._thumbs.clientWidth * 0.8),
-      behavior: 'smooth',
-    });
   }
 
   _handleKeyDown(event) {

@@ -29,6 +29,8 @@ ui-lightbox {
   --lightbox-focus: #86a0ff;
   --lightbox-backdrop: rgb(6 8 12 / 0.82);
   --lightbox-radius: 12px;
+  /* Tall enough for the largest a thumbnail ever gets, so growing one changes nothing. */
+  --lightbox-strip-size: 5.75rem;
 
   display: block;
   min-inline-size: 0;
@@ -98,8 +100,18 @@ dialog.lightbox__panel:not([open]) {
   padding: 0;
   color: var(--lightbox-text);
   font: inherit;
+  /* Pressing a control repeatedly is an ordinary way to use one, and a fast second press is
+     a double-click: the selection runs out across the panel and the whole thing looks
+     highlighted. Nothing in the chrome is text worth selecting, so none of it is
+     selectable. The caption is, because that is the one part somebody might want to copy. */
+  user-select: none;
   opacity: 0;
   transition: opacity 180ms ease;
+}
+
+.lightbox__caption,
+.lightbox__zoom-field {
+  user-select: text;
 }
 
 .lightbox__panel[data-shown] {
@@ -174,14 +186,55 @@ dialog.lightbox__panel:not([open]) {
   border-color: var(--lightbox-border);
 }
 
+/* Shrink, the level, and grow are one adjustment, so they read as one control. Reset is a
+   different act and stays outside the group. */
+.lightbox__zoom {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid var(--lightbox-border);
+  border-radius: 9px;
+}
+
+.lightbox__tool--flush {
+  border: 0;
+  border-radius: 0;
+}
+
+.lightbox__zoom-field {
+  inline-size: 3ch;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--lightbox-text);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.lightbox__zoom-field:focus-visible {
+  outline-offset: -2px;
+}
+
+.lightbox__zoom-suffix {
+  padding-inline: 0.1rem 0.4rem;
+  color: var(--lightbox-muted);
+  font-size: 0.8125rem;
+}
+
 .lightbox__panel :focus-visible {
   outline: 3px solid color-mix(in srgb, var(--lightbox-focus) 60%, transparent);
   outline-offset: 2px;
 }
 
+/* Every icon in the viewer is a stroked outline. A path left out of this list is not merely
+   unstyled — it falls back to `fill: black`, which on a dark panel reads as a smudge rather
+   than as a missing style. */
 .lightbox__tool svg,
 .lightbox__nav svg,
-.lightbox__strip-arrow svg {
+.lightbox__strip-arrow svg,
+.lightbox__dock-tab svg {
   inline-size: 1.15rem;
   block-size: 1.15rem;
   fill: none;
@@ -191,26 +244,45 @@ dialog.lightbox__panel:not([open]) {
   stroke-width: 2;
 }
 
-/* The items stretch on purpose. Centring them here would leave the frame sized by its own
-   content, and a percentage height inside it would then have nothing to resolve against —
-   so the picture keeps its natural size and is clipped instead of fitted. */
+/* One column, no padding: the picture gets the whole width rather than giving strips of it
+   to controls. An automatic row would be sized by the picture, leaving its own percentage
+   height nothing to resolve against. */
 .lightbox__stage {
+  position: relative;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  /* An automatic row would be sized by the picture inside it, and the picture's own
-     percentage height would then have nothing to resolve against. */
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
   min-block-size: 0;
-  gap: 0.5rem;
-  padding: 0.75rem;
 }
 
+/* Over the picture, faded until wanted. Faded, not hidden: something nobody can find is
+   not a control. */
 .lightbox__nav {
-  align-self: center;
+  position: absolute;
+  inset-block-start: 50%;
   inline-size: 2.75rem;
   block-size: 2.75rem;
-  border-color: var(--lightbox-border);
-  background: color-mix(in srgb, var(--lightbox-bar) 80%, transparent);
+  border-color: transparent;
+  /* Dark enough that the icon holds its contrast over a white photograph. */
+  background: rgb(10 12 18 / 0.78);
+  color: #ffffff;
+  translate: 0 -50%;
+  opacity: 0.6;
+  transition: opacity 140ms ease;
+}
+
+.lightbox__nav--prev {
+  inset-inline-start: 0.75rem;
+}
+
+.lightbox__nav--next {
+  inset-inline-end: 0.75rem;
+}
+
+.lightbox__nav:hover:not(:disabled),
+.lightbox__nav:focus-visible {
+  background: rgb(10 12 18 / 0.9);
+  opacity: 1;
 }
 
 .lightbox__frame {
@@ -219,6 +291,18 @@ dialog.lightbox__panel:not([open]) {
   block-size: 100%;
   overflow: hidden;
   touch-action: none;
+}
+
+/* The slide and the magnification cannot share one element: both want to move the picture,
+   and the second would keep overwriting the first mid-animation. */
+.lightbox__slide {
+  position: absolute;
+  inset: 0;
+  translate: 0 0;
+  opacity: 1;
+  transition:
+    translate 260ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 200ms ease-out;
 }
 
 /* The box fills the frame and `contain` letterboxes the picture inside it. Sizing the
@@ -264,19 +348,129 @@ dialog.lightbox__panel:not([open]) {
   display: none;
 }
 
-/* Centred under the picture, with a way through it at either end. */
+/* The strip and the control that folds it are one piece of furniture, so they are one
+   element with a notch rising out of the middle of its top edge. */
+.lightbox__dock {
+  display: grid;
+  justify-items: center;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.lightbox__dock[hidden] {
+  display: none;
+}
+
+/* Overlapping the strip's border by a pixel is what makes the two read as one surface
+   rather than a button parked above a panel. */
+.lightbox__dock-tab {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  inline-size: 3.5rem;
+  block-size: 1.375rem;
+  margin-block-start: 0;
+  margin-block-end: -1px;
+  border: 1px solid var(--lightbox-border);
+  border-block-end: 0;
+  border-radius: 10px 10px 0 0;
+  background: var(--lightbox-bar);
+  padding: 0;
+  color: var(--lightbox-text);
+  cursor: pointer;
+  opacity: 1;
+  transition:
+    margin-block-start 280ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 200ms ease;
+}
+
+/* Folded, the picture is entitled to the whole frame, so the tab stops taking room: a
+   negative margin of exactly its own height leaves it drawn over the picture while
+   contributing nothing to the dock. A margin transitions, where switching to absolute
+   positioning would jump. */
+.lightbox__panel:not([data-strip-open]) .lightbox__dock-tab {
+  margin-block-start: -1.375rem;
+  margin-block-end: 0;
+  opacity: 0;
+  /* Invisible controls must not swallow presses meant for the picture — dragging a
+     magnified picture reaches the bottom edge too. */
+  pointer-events: none;
+}
+
+/* Three ways back to it. Hover is the one that was asked for; focus is what keeps it
+   reachable from the keyboard, where an invisible control is otherwise a dead end; and the
+   proximity flag is set by a press as well as by movement, because a touch screen never
+   hovers.
+
+   `:focus-visible` rather than `:focus`, so that pressing the tab to fold the strip does not
+   leave it showing afterwards: a button keeps focus after a click, and the whole point is
+   that it goes away. Tabbing to it still matches. */
+.lightbox__panel:not([data-strip-open])[data-dock-near] .lightbox__dock-tab,
+.lightbox__panel:not([data-strip-open]) .lightbox__dock-tab:hover,
+.lightbox__panel:not([data-strip-open]) .lightbox__dock-tab:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Opaque rather than a translucent wash: the tab has to cover the strip's top border for
+   the join to disappear. */
+.lightbox__dock-tab:hover {
+  background: color-mix(in srgb, var(--lightbox-text) 10%, var(--lightbox-bar));
+}
+
+.lightbox__dock-tab svg {
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+  rotate: 180deg;
+  transition: rotate 260ms ease;
+}
+
+/* The chevron points the way the strip will go. */
+.lightbox__panel[data-strip-open] .lightbox__dock-tab svg {
+  rotate: 0deg;
+}
+
+/* Centred under the picture, with a way through it at either end. The height is fixed
+   rather than a minimum: a growing thumbnail must not be able to add to it, or the picture
+   above is shoved upwards every time the pointer crosses the strip. */
 .lightbox__strip {
   display: flex;
+  block-size: var(--lightbox-strip-size);
+  inline-size: 100%;
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
   border-block-start: 1px solid var(--lightbox-border);
   background: var(--lightbox-bar);
   padding: 0.55rem 0.75rem;
+  /* Folding away is a height animation, so `hidden` is no use: nothing that has been
+     removed can be transitioned. Visibility is what finally takes it out of the picture,
+     delayed to the end so it does not blank the strip on the first frame. */
+  overflow: hidden;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    block-size 280ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    border-block-start-width 280ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    padding-block 280ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 200ms ease-out 60ms,
+    visibility 0s;
 }
 
-.lightbox__strip[hidden] {
-  display: none;
+/* Nothing left at all, not even the border: a stray pixel here is a stray pixel taken off
+   the picture, which is the whole point of folding. */
+.lightbox__panel:not([data-strip-open]) .lightbox__strip {
+  block-size: 0;
+  border-block-start-width: 0;
+  padding-block: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    block-size 280ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    border-block-start-width 280ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    padding-block 280ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 180ms ease-in,
+    visibility 0s linear 280ms;
 }
 
 .lightbox__strip-arrow {
@@ -285,18 +479,19 @@ dialog.lightbox__panel:not([open]) {
   border-color: var(--lightbox-border);
 }
 
+/* Six at a time, so nothing has to scroll: the run on show slides along as you go. */
 .lightbox__thumbs {
   display: flex;
-  /* A flex item refuses by default to shrink below its content, so without this the strip
-     grows past the panel instead of scrolling inside it and the end arrows never wake up. */
   min-inline-size: 0;
+  align-items: center;
   gap: 0.35rem;
   margin: 0;
   padding: 0.15rem;
-  overflow-x: auto;
-  scrollbar-width: thin;
   list-style: none;
-  scroll-behavior: smooth;
+}
+
+.lightbox__thumbs li[hidden] {
+  display: none;
 }
 
 .lightbox__thumb {
@@ -311,6 +506,17 @@ dialog.lightbox__panel:not([open]) {
   padding: 0;
   cursor: pointer;
   opacity: 0.55;
+  /* Width rather than a transform, because only real width pushes the neighbours along. */
+  transition:
+    inline-size 160ms ease,
+    block-size 160ms ease,
+    opacity 160ms ease;
+}
+
+.lightbox__thumb:hover,
+.lightbox__thumb:focus-visible {
+  inline-size: 6rem;
+  block-size: 4.25rem;
 }
 
 .lightbox__thumb img {
@@ -408,13 +614,19 @@ dialog.lightbox__panel:not([open]) {
   white-space: pre-wrap;
 }
 
+/* The slide and the fold are written here as well as in the base rules, because both are
+   driven by clearing an inline transition: whatever the stylesheet says at that moment is
+   what the element gets. Saying `none` here is what makes the two-step arrive at once. */
 @media (prefers-reduced-motion: reduce) {
   .lightbox__panel,
-  .lightbox__image {
+  .lightbox__slide,
+  .lightbox__image,
+  .lightbox__nav,
+  .lightbox__thumb,
+  .lightbox__strip,
+  .lightbox__panel:not([data-strip-open]) .lightbox__strip,
+  .lightbox__dock-tab,
+  .lightbox__dock-tab svg {
     transition: none;
-  }
-
-  .lightbox__thumbs {
-    scroll-behavior: auto;
   }
 }
