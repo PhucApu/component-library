@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" class="carousel-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A scrolling track with arrows, dots, swiping and dragging." />
+    <title>Carousel - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="carousel-demo">
+      <div class="carousel-demo__shell">
+        <section class="carousel-demo__card">
+          <p class="carousel-demo__label">A track that scrolls, with everything else added on top</p>
+          <p class="carousel-demo__note">
+            The track is an ordinary scroll container with snap points. Swiping, momentum and
+            keyboard scrolling all come from the browser; turn scripting off and it is still
+            a usable strip of pictures. The arrows, the dots and the pointer dragging are
+            what the component adds.
+          </p>
+
+          <ui-carousel label="Landscape photographs">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/dawn-ridge.svg" alt="A ridge line at dawn under a red sky" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/still-lake.svg" alt="Mountains reflected in a still lake" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/pine-slope.svg" alt="A pine slope above a green valley" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/salt-flat.svg" alt="A cracked salt flat with a single post" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/night-harbour.svg" alt="A harbour town at night with lit windows" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/wheat-field.svg" alt="A wheat field under a low afternoon sun" />
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <p class="carousel-demo__note">
+            Tab to the strip and use <code>←</code> and <code>→</code>, or drag it with the
+            pointer. A drag that travels far enough, or moves fast enough, changes picture;
+            anything less falls back to where it was.
+          </p>
+
+          <output class="carousel-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCarouselDemo } from '../../demo.js';
+
+      initializeCarouselDemo();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" class="carousel-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Advancing on its own, with a pause control and every reason it stops." />
+    <title>Carousel - Autoplay</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="carousel-demo">
+      <div class="carousel-demo__shell">
+        <section class="carousel-demo__card">
+          <p class="carousel-demo__label">Moving on its own, and stoppable</p>
+          <p class="carousel-demo__note">
+            Content that starts moving by itself has to be stoppable, so the pause control is
+            part of the component rather than an option. It also stops on its own whenever the
+            pointer is over it, whenever anything inside it has focus, and whenever the tab is
+            in the background.
+          </p>
+          <p class="carousel-demo__note">
+            Under a reduced-motion setting it never starts at all. Slowing it down would be
+            answering the wrong request.
+          </p>
+
+          <ui-carousel autoplay="3000" loop label="Photographs, playing">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/wheat-field.svg" alt="A wheat field under a low afternoon sun" />
+                <p class="carousel__caption">Hover to hold it still</p>
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/dawn-ridge.svg" alt="A ridge line at dawn under a red sky" />
+                <p class="carousel__caption">Tab into it and it waits</p>
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/night-harbour.svg" alt="A harbour town at night with lit windows" />
+                <p class="carousel__caption">Switch tabs and it stops</p>
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/still-lake.svg" alt="Mountains reflected in a still lake" />
+                <p class="carousel__caption">Press pause and it stays stopped</p>
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <div class="carousel-demo__controls">
+            <button type="button" class="carousel-demo__button" data-demo-action="play">Play</button>
+            <button type="button" class="carousel-demo__button" data-demo-action="pause">Pause</button>
+          </div>
+
+          <p class="carousel-demo__label">Without looping it stops at the end</p>
+          <p class="carousel-demo__note">
+            A slideshow that jumps back to the beginning without being asked is a surprise, so
+            it plays to the last picture and stops there.
+          </p>
+
+          <ui-carousel autoplay="2500" label="Photographs, playing once">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/salt-flat.svg" alt="A cracked salt flat with a single post" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/pine-slope.svg" alt="A pine slope above a green valley" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/dawn-ridge.svg" alt="A ridge line at dawn under a red sky" />
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <output class="carousel-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCarouselDemo } from '../../demo.js';
+
+      initializeCarouselDemo();
+    </script>
+  </body>
+</html>

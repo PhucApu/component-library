@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450" role="img" aria-label="">
+  <defs>
+    <linearGradient id="dusk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d1730" />
+      <stop offset="100%" stop-color="#2c3f66" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#dusk)" />
+  <g fill="#f6e8b8">
+    <circle cx="120" cy="70" r="3" /><circle cx="248" cy="46" r="2" /><circle cx="392" cy="88" r="3" />
+    <circle cx="530" cy="52" r="2" /><circle cx="676" cy="96" r="3" /><circle cx="722" cy="40" r="2" />
+  </g>
+  <g fill="#101c34">
+    <rect x="60" y="212" width="72" height="120" /><rect x="150" y="176" width="56" height="156" />
+    <rect x="226" y="232" width="88" height="100" /><rect x="336" y="192" width="64" height="140" />
+    <rect x="420" y="244" width="76" height="88" /><rect x="516" y="204" width="60" height="128" />
+    <rect x="596" y="238" width="94" height="94" />
+  </g>
+  <g fill="#ffd98a">
+    <rect x="76" y="234" width="10" height="12" /><rect x="166" y="204" width="10" height="12" />
+    <rect x="250" y="256" width="10" height="12" /><rect x="352" y="220" width="10" height="12" />
+    <rect x="444" y="266" width="10" height="12" /><rect x="532" y="230" width="10" height="12" />
+    <rect x="620" y="262" width="10" height="12" />
+  </g>
+  <rect y="332" width="800" height="118" fill="#0a1224" />
+  <g fill="#ffd98a" opacity="0.4">
+    <rect x="78" y="342" width="8" height="70" /><rect x="352" y="342" width="8" height="88" />
+    <rect x="620" y="342" width="8" height="60" />
+  </g>
+</svg>

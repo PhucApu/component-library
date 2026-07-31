@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en" class="carousel-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The four ways one picture gives way to the next." />
+    <title>Carousel - Transitions</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="carousel-demo">
+      <div class="carousel-demo__shell">
+        <section class="carousel-demo__card">
+          <p class="carousel-demo__label">Slide — the track itself moving</p>
+          <p class="carousel-demo__note">
+            The default, and the only one that is really scrolling. It keeps the browser's own
+            swiping and momentum, because nothing has been taken over.
+          </p>
+
+          <ui-carousel label="Slide transition">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/dawn-ridge.svg" alt="A ridge line at dawn under a red sky" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/still-lake.svg" alt="Mountains reflected in a still lake" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/pine-slope.svg" alt="A pine slope above a green valley" />
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <p class="carousel-demo__label">Fade — one picture over another</p>
+          <p class="carousel-demo__note">
+            Fading cannot be done by scrolling: the pictures have to sit on top of one another
+            rather than beside one another. The element stacks them once it loads, which is
+            why every effect still falls back to the same scrolling strip without a script.
+          </p>
+
+          <ui-carousel effect="fade" label="Fade transition">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/salt-flat.svg" alt="A cracked salt flat with a single post" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/night-harbour.svg" alt="A harbour town at night with lit windows" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/wheat-field.svg" alt="A wheat field under a low afternoon sun" />
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <p class="carousel-demo__label">Zoom — arriving from slightly too close</p>
+
+          <ui-carousel effect="zoom" label="Zoom transition">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/pine-slope.svg" alt="A pine slope above a green valley" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/dawn-ridge.svg" alt="A ridge line at dawn under a red sky" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/still-lake.svg" alt="Mountains reflected in a still lake" />
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <p class="carousel-demo__label">Cover — travelling over the one it replaces</p>
+          <p class="carousel-demo__note">
+            The picture on its way out stays put and in view while the new one crosses over it.
+            That needs the two to be told apart, which is the one thing a single CSS rule
+            cannot do on its own.
+          </p>
+
+          <ui-carousel effect="cover" label="Cover transition">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/night-harbour.svg" alt="A harbour town at night with lit windows" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/wheat-field.svg" alt="A wheat field under a low afternoon sun" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/salt-flat.svg" alt="A cracked salt flat with a single post" />
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <output class="carousel-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCarouselDemo } from '../../demo.js';
+
+      initializeCarouselDemo();
+    </script>
+  </body>
+</html>

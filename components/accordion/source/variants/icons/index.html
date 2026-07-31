@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" class="accordion-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The marker at either end, a supplied icon, and secondary text." />
+    <title>Accordion - Icons</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="accordion-demo">
+      <div class="accordion-demo__shell">
+        <section class="accordion-demo__card">
+          <p class="accordion-demo__label">The marker at the end</p>
+          <p class="accordion-demo__note">
+            The default. A chevron is supplied where the summary has none, and it turns as
+            the panel opens. The native disclosure triangle is replaced rather than styled,
+            because it cannot be moved, sized or turned.
+          </p>
+
+          <ui-accordion>
+            <details open>
+              <summary>
+                Invoice 4021
+                <span class="accordion__meta">Paid 14 March</span>
+              </summary>
+              <p>Two licences, billed annually. Settled by card ending 6411.</p>
+            </details>
+            <details>
+              <summary>
+                Invoice 4022
+                <span class="accordion__meta">Due 30 April</span>
+              </summary>
+              <p>One licence, billed annually. Payment has not been taken yet.</p>
+            </details>
+          </ui-accordion>
+
+          <p class="accordion-demo__label">The marker at the start</p>
+          <p class="accordion-demo__note">
+            Reordered rather than moved, so the title stays first in the markup and is still
+            what a screen reader reaches first.
+          </p>
+
+          <ui-accordion icon-placement="start">
+            <details>
+              <summary>Terms of the licence</summary>
+              <p>Per seat, transferable once, renewed on the anniversary of purchase.</p>
+            </details>
+            <details>
+              <summary>Cancelling</summary>
+              <p>Any time before the renewal date. The remainder of the term is served out.</p>
+            </details>
+          </ui-accordion>
+
+          <p class="accordion-demo__label">A marker of your own</p>
+          <p class="accordion-demo__note">
+            A <code>span</code> carrying the class is left exactly as written. The turning is
+            a style, so a supplied icon turns too unless the style is overridden.
+          </p>
+
+          <ui-accordion>
+            <details>
+              <summary>
+                Advanced settings
+                <span class="accordion__marker" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                </span>
+              </summary>
+              <p>Nothing here needs changing for the component to work.</p>
+            </details>
+          </ui-accordion>
+
+          <output class="accordion-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeAccordionDemo } from '../../demo.js';
+
+      initializeAccordionDemo();
+    </script>
+  </body>
+</html>

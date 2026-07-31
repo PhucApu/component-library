@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" class="accordion-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A disabled panel, one open by default, and one long enough to scroll." />
+    <title>Accordion - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="accordion-demo">
+      <div class="accordion-demo__shell">
+        <section class="accordion-demo__card">
+          <p class="accordion-demo__label">Off, open, and too long for the frame</p>
+          <p class="accordion-demo__note">
+            The unavailable panel still takes focus and still says it is unavailable. Taking
+            it out of the tab order would hide the fact, and a disabled element cannot hold
+            focus at all — turn one off under somebody's finger and the keyboard goes with
+            it.
+          </p>
+
+          <ui-accordion>
+            <details open>
+              <summary>Open to begin with</summary>
+              <p>
+                The panel carries <code>open</code> in the markup. The component reads that
+                state rather than setting it, so the panel is already open before the script
+                runs and does not animate on arrival.
+              </p>
+            </details>
+            <details data-disabled>
+              <summary>Not available on this plan</summary>
+              <p>This panel cannot be opened, so nothing here is reachable.</p>
+            </details>
+            <details>
+              <summary>More than fits</summary>
+              <div class="accordion__content accordion__content--scroll">
+                <p>
+                  A panel taller than the space it has scrolls inside itself rather than
+                  pushing the group past the frame it sits in.
+                </p>
+                <p>
+                  The scrolling is a class on the content, not a rule of the component: only
+                  the author knows whether a long panel should scroll or make the page
+                  longer.
+                </p>
+                <p>
+                  The height the panel opens to is measured from the content, so a scrolling
+                  panel stops at its own limit instead of trying to reach the full height of
+                  what is inside it.
+                </p>
+                <p>
+                  Nothing about the movement changes. The duration follows the distance
+                  travelled, floored and capped so a short panel is not sluggish and a long
+                  one does not feel broken.
+                </p>
+                <p>
+                  This last paragraph exists to make sure there is something below the fold
+                  to scroll to.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>Ordinary</summary>
+              <p>Nothing special about this one; it is here so the group has a fourth.</p>
+            </details>
+          </ui-accordion>
+
+          <output class="accordion-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeAccordionDemo } from '../../demo.js';
+
+      initializeAccordionDemo();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" class="accordion-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Opening and closing from outside, with every change reported." />
+    <title>Accordion - Controlled</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="accordion-demo">
+      <div class="accordion-demo__shell">
+        <section class="accordion-demo__card">
+          <p class="accordion-demo__label">Driven from outside the group</p>
+          <p class="accordion-demo__note">
+            <code>expandAll()</code>, <code>collapseAll()</code>, <code>expand()</code> and
+            the <code>expanded</code> property, all reported back through
+            <code>accordion-toggle</code> and <code>accordion-change</code>. The events say
+            what caused the change, so a demo can tell a press apart from a call.
+          </p>
+
+          <div class="accordion-demo__controls">
+            <button
+              type="button"
+              class="accordion-demo__button"
+              data-demo-action="expand-all"
+              data-demo-target="#faq"
+            >
+              Open all
+            </button>
+            <button
+              type="button"
+              class="accordion-demo__button"
+              data-demo-action="collapse-all"
+              data-demo-target="#faq"
+            >
+              Close all
+            </button>
+            <button
+              type="button"
+              class="accordion-demo__button"
+              data-demo-action="first"
+              data-demo-target="#faq"
+            >
+              Open the first
+            </button>
+            <button
+              type="button"
+              class="accordion-demo__button"
+              data-demo-action="last"
+              data-demo-target="#faq"
+            >
+              Open the last
+            </button>
+          </div>
+
+          <ui-accordion id="faq" heading-level="4">
+            <details>
+              <summary>Can a panel be opened from elsewhere on the page?</summary>
+              <p>
+                Yes. The buttons above are ordinary buttons calling ordinary methods; nothing
+                about them is part of the component.
+              </p>
+            </details>
+            <details>
+              <summary>What happens to open-all in exclusive mode?</summary>
+              <p>
+                It opens the first and no more. A group whose rule is one at a time cannot be
+                left in a state that rule forbids, or the next press appears to do nothing.
+              </p>
+            </details>
+            <details>
+              <summary>What level are these headings?</summary>
+              <p>
+                <code>h4</code>, set with <code>heading-level</code>. The right level depends
+                on what is above the group on the page, which the component cannot know.
+              </p>
+            </details>
+          </ui-accordion>
+
+          <output class="accordion-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeAccordionDemo } from '../../demo.js';
+
+      initializeAccordionDemo();
+    </script>
+  </body>
+</html>

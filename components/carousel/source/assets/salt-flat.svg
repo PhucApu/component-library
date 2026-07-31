@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450" role="img" aria-label="">
+  <defs>
+    <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8fb6d8" />
+      <stop offset="100%" stop-color="#efe2cf" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#haze)" />
+  <rect y="272" width="800" height="178" fill="#f3ece1" />
+  <path d="M0 272h800v10H0z" fill="#c9b9a4" />
+  <g stroke="#d9cbb6" stroke-width="3" fill="none">
+    <path d="M40 316h300M420 316h340M120 352h240M440 352h220M60 392h300M420 392h280" />
+  </g>
+  <rect x="352" y="214" width="10" height="58" fill="#6f6152" />
+  <rect x="330" y="206" width="54" height="10" fill="#6f6152" />
+</svg>

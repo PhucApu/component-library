@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" class="carousel-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="More than one picture in the frame at a time." />
+    <title>Carousel - Peek</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="carousel-demo">
+      <div class="carousel-demo__shell">
+        <section class="carousel-demo__card">
+          <p class="carousel-demo__label">Two at a time</p>
+          <p class="carousel-demo__note">
+            <code>per-view</code> sets how many stand in the frame. The track then runs out
+            before the pictures do: showing two of six, the sixth is already on screen when
+            the fifth reaches the edge, so there are five positions rather than six — and
+            five dots.
+          </p>
+
+          <ui-carousel per-view="2" label="Two photographs at a time">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/dawn-ridge.svg" alt="A ridge line at dawn under a red sky" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/still-lake.svg" alt="Mountains reflected in a still lake" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/pine-slope.svg" alt="A pine slope above a green valley" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/salt-flat.svg" alt="A cracked salt flat with a single post" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/night-harbour.svg" alt="A harbour town at night with lit windows" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/wheat-field.svg" alt="A wheat field under a low afternoon sun" />
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <p class="carousel-demo__label">Three at a time</p>
+          <p class="carousel-demo__note">
+            Asking for more pictures than there are is answered with all of them rather than
+            an empty gap at the end.
+          </p>
+
+          <ui-carousel per-view="3" label="Three photographs at a time">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/wheat-field.svg" alt="A wheat field under a low afternoon sun" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/night-harbour.svg" alt="A harbour town at night with lit windows" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/salt-flat.svg" alt="A cracked salt flat with a single post" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/pine-slope.svg" alt="A pine slope above a green valley" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/still-lake.svg" alt="Mountains reflected in a still lake" />
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <output class="carousel-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCarouselDemo } from '../../demo.js';
+
+      initializeCarouselDemo();
+    </script>
+  </body>
+</html>

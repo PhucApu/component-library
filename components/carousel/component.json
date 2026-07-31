@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "carousel",
+  "version": "0.1.0",
+  "name": "Carousel",
+  "description": "A framework-free Web Component built on a scroll-snapping track: native swiping, pointer dragging, four transitions, and a strip of pictures that still scrolls with no script at all.",
+  "group": "data-display",
+  "categories": ["data-display", "media"],
+  "tags": ["carousel", "slider", "gallery", "scroll-snap", "drag", "web-component", "accessible", "progressive-enhancement"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "The scrolling track with arrows, position dots, swiping and dragging.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "transitions",
+      "name": "Transitions",
+      "description": "The four ways one picture gives way to the next, side by side.",
+      "entry": "source/variants/transitions/index.html"
+    },
+    {
+      "id": "drag",
+      "name": "Drag",
+      "description": "Dragging with the pointer: how far commits, how fast commits, and what happens at the ends.",
+      "entry": "source/variants/drag/index.html"
+    },
+    {
+      "id": "peek",
+      "name": "Peek",
+      "description": "More than one picture in the frame, with the next one showing at the edge.",
+      "entry": "source/variants/peek/index.html"
+    },
+    {
+      "id": "autoplay",
+      "name": "Autoplay",
+      "description": "Advancing on its own, with a pause control and every reason it stops.",
+      "entry": "source/variants/autoplay/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "One picture with no controls at all, ends that are real ends, and captions.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

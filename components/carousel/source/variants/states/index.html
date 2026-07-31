@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" class="carousel-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="One picture, real ends, looping ends, and captions." />
+    <title>Carousel - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="carousel-demo">
+      <div class="carousel-demo__shell">
+        <section class="carousel-demo__card">
+          <p class="carousel-demo__label">One picture is not a carousel</p>
+          <p class="carousel-demo__note">
+            The arrows and the dots are removed rather than turned off. Controls that could
+            never do anything are furniture, and they take tab stops with them.
+          </p>
+
+          <ui-carousel label="A single photograph">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/still-lake.svg" alt="Mountains reflected in a still lake" />
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <p class="carousel-demo__label">Ends that are real ends</p>
+          <p class="carousel-demo__note">
+            Without <code>loop</code> the arrow at each end turns off. It hands focus to the
+            other arrow first — a disabled element cannot hold focus, and the control turning
+            itself off is usually the one under the finger.
+          </p>
+
+          <ui-carousel label="Photographs with real ends">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/dawn-ridge.svg" alt="A ridge line at dawn under a red sky" />
+                <p class="carousel__caption">First — the previous arrow is off</p>
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/pine-slope.svg" alt="A pine slope above a green valley" />
+                <p class="carousel__caption">Middle — both arrows work</p>
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/salt-flat.svg" alt="A cracked salt flat with a single post" />
+                <p class="carousel__caption">Last — the next arrow is off</p>
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <div class="carousel-demo__controls">
+            <button type="button" class="carousel-demo__button" data-demo-action="first">
+              Go to the first
+            </button>
+            <button type="button" class="carousel-demo__button" data-demo-action="last">
+              Go to the last
+            </button>
+          </div>
+
+          <p class="carousel-demo__label">Ends that join up</p>
+          <p class="carousel-demo__note">
+            With <code>loop</code> neither arrow ever turns off, and the last picture leads
+            back to the first.
+          </p>
+
+          <ui-carousel loop label="Photographs that loop">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/night-harbour.svg" alt="A harbour town at night with lit windows" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/wheat-field.svg" alt="A wheat field under a low afternoon sun" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/still-lake.svg" alt="Mountains reflected in a still lake" />
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <output class="carousel-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCarouselDemo } from '../../demo.js';
+
+      initializeCarouselDemo();
+    </script>
+  </body>
+</html>

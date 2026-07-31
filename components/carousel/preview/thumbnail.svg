@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="A carousel showing one picture with arrows over it and position dots below">
+  <defs>
+    <radialGradient id="glow" cx="12%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#4968e8" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#4968e8" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2b2350" />
+      <stop offset="60%" stop-color="#b4566a" />
+      <stop offset="100%" stop-color="#f0a06a" />
+    </linearGradient>
+    <clipPath id="frame">
+      <rect x="76" y="86" width="488" height="176" rx="12" />
+    </clipPath>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect width="640" height="360" fill="url(#glow)" />
+
+  <rect x="48" y="34" width="544" height="292" rx="18" fill="#171a20" stroke="#292d36" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="76" y="68" fill="#a8afbc" font-size="13" font-weight="650">A track that scrolls, with everything else on top</text>
+
+    <g clip-path="url(#frame)">
+      <rect x="76" y="86" width="488" height="176" rx="12" fill="url(#sky)" />
+      <circle cx="404" cy="196" r="30" fill="#ffe1a8" />
+      <path d="M76 212l92-56 72 44 80-60 96 68 76-42 72 38v58H76z" fill="#3d2a4a" />
+      <path d="M76 244l114-34 90 24 92-30 108 34 84-20v44H76z" fill="#241a30" />
+    </g>
+    <rect x="76" y="86" width="488" height="176" rx="12" fill="none" stroke="#2e3440" />
+
+    <circle cx="116" cy="174" r="20" fill="#0a0c12" opacity="0.75" />
+    <path d="M121 166l-7 8 7 8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="524" cy="174" r="20" fill="#0a0c12" opacity="0.75" />
+    <path d="M519 166l7 8-7 8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+
+    <rect x="286" y="286" width="22" height="8" rx="4" fill="#86a0ff" />
+    <circle cx="320" cy="290" r="4" fill="#2e3440" />
+    <circle cx="336" cy="290" r="4" fill="#2e3440" />
+    <circle cx="352" cy="290" r="4" fill="#2e3440" />
+  </g>
+</svg>

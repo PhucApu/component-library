@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "accordion",
+  "version": "0.1.0",
+  "name": "Accordion",
+  "description": "A framework-free Web Component that animates the native disclosure element, keeps one panel open at a time without a script, and gives every panel a heading and a region.",
+  "group": "surface",
+  "categories": ["surface", "disclosure"],
+  "tags": ["accordion", "details", "disclosure", "collapse", "web-component", "accessible", "progressive-enhancement"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A group of panels that open and close independently, with one open to begin with.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "exclusive",
+      "name": "Exclusive",
+      "description": "One panel open at a time, enforced by the browser before the script arrives and by the component after it.",
+      "entry": "source/variants/exclusive/index.html"
+    },
+    {
+      "id": "icons",
+      "name": "Icons",
+      "description": "The marker at the start or the end, a supplied icon, and a summary carrying secondary text.",
+      "entry": "source/variants/icons/index.html"
+    },
+    {
+      "id": "actions",
+      "name": "Actions",
+      "description": "Panels holding real content and a row of buttons along the foot.",
+      "entry": "source/variants/actions/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "A disabled panel that still takes focus, one open by default, and a panel long enough to scroll.",
+      "entry": "source/variants/states/index.html"
+    },
+    {
+      "id": "controlled",
+      "name": "Controlled",
+      "description": "Opening and closing from outside the component, with every change reported back.",
+      "entry": "source/variants/controlled/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

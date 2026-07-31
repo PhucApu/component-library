@@ -1,0 +1,369 @@
+:root {
+  color-scheme: light;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.accordion-demo-page,
+.accordion-demo-page body {
+  background: #0f1115;
+  color-scheme: dark;
+}
+
+ui-accordion {
+  --accordion-surface: #171a20;
+  --accordion-summary: #1a1e26;
+  --accordion-summary-hover: #20252f;
+  --accordion-text: #f4f6fa;
+  --accordion-muted: #a8afbc;
+  --accordion-border: #2e3440;
+  --accordion-accent: #86a0ff;
+  --accordion-focus: #86a0ff;
+  --accordion-radius: 12px;
+
+  display: block;
+  min-inline-size: 0;
+  border: 1px solid var(--accordion-border);
+  border-radius: var(--accordion-radius);
+  background: var(--accordion-surface);
+  color: var(--accordion-text);
+  font: 400 0.9375rem/1.5
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  /* The panels are square-cornered; the group rounds them by clipping, so the first and last
+     do not have to know where they sit. */
+  overflow: hidden;
+}
+
+.accordion__item + .accordion__item {
+  border-block-start: 1px solid var(--accordion-border);
+}
+
+/* The disclosure triangle is the one part of the native widget worth replacing: it cannot be
+   moved, sized, or turned, and it is drawn differently by every browser. */
+.accordion__summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--accordion-summary);
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  list-style: none;
+  transition: background 140ms ease;
+}
+
+.accordion__summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion__summary:hover {
+  background: var(--accordion-summary-hover);
+}
+
+.accordion__summary:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accordion-focus) 60%, transparent);
+  outline-offset: -3px;
+}
+
+.accordion__title {
+  margin: 0;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  color: var(--accordion-text);
+  font-size: 0.9375rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+/* Anything the author puts beside the title. It gives way first, because the title is the
+   part that says which panel this is. */
+.accordion__meta {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  color: var(--accordion-muted);
+  font-size: 0.8125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.accordion__marker {
+  display: grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  flex: none;
+  color: var(--accordion-muted);
+  rotate: 0deg;
+  transition: rotate 200ms ease;
+}
+
+/* Reordered rather than moved, so the title stays first in the markup and therefore first in
+   the reading order whichever side the marker is drawn on. */
+ui-accordion[data-icon-placement='start'] .accordion__marker {
+  order: -1;
+}
+
+.accordion__item[open] .accordion__marker {
+  rotate: 180deg;
+}
+
+.accordion__marker svg {
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+/* Off, but still reachable: somebody has to be able to land on it and be told it is
+   unavailable. Not colour alone — the marker goes as well, so there is nothing to suggest
+   the panel would open. */
+.accordion__summary[aria-disabled='true'] {
+  cursor: not-allowed;
+  color: var(--accordion-muted);
+}
+
+.accordion__summary[aria-disabled='true'] .accordion__title {
+  color: var(--accordion-muted);
+}
+
+.accordion__summary[aria-disabled='true']:hover {
+  background: var(--accordion-summary);
+}
+
+.accordion__summary[aria-disabled='true'] .accordion__marker {
+  visibility: hidden;
+}
+
+/* The outer box is what the height animation moves; it must clip, or the content spills out
+   of a panel that is halfway shut. */
+.accordion__panel {
+  overflow: hidden;
+  transition-property: block-size;
+  transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* The element writes the duration, because it depends on how far the panel has to travel.
+     Zero here means an unstyled panel never sticks at an inline height. */
+  transition-duration: 0ms;
+}
+
+/* The inner box keeps its natural height, which is the height the outer one is sent to. */
+.accordion__content {
+  padding: 0.25rem 1rem 1.1rem;
+  color: var(--accordion-muted);
+  font-size: 0.875rem;
+}
+
+.accordion__content > :first-child {
+  margin-block-start: 0;
+}
+
+.accordion__content > :last-child {
+  margin-block-end: 0;
+}
+
+.accordion__content p {
+  margin-block: 0.6rem;
+  line-height: 1.6;
+}
+
+.accordion__content a {
+  color: var(--accordion-accent);
+}
+
+.accordion__content code,
+.accordion__content kbd {
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--accordion-text) 12%, transparent);
+  padding: 0.1em 0.35em;
+  color: var(--accordion-text);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.accordion__content kbd {
+  border: 1px solid var(--accordion-border);
+}
+
+.accordion__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  border-block-start: 1px solid var(--accordion-border);
+  margin-block-start: 0.9rem;
+  padding-block-start: 0.9rem;
+}
+
+.accordion__button {
+  border: 1px solid var(--accordion-border);
+  border-radius: 9px;
+  background: transparent;
+  padding: 0.45rem 0.85rem;
+  color: var(--accordion-text);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.accordion__button:hover {
+  background: color-mix(in srgb, var(--accordion-text) 10%, transparent);
+}
+
+.accordion__button--primary {
+  border-color: transparent;
+  background: var(--accordion-accent);
+  color: #10131a;
+}
+
+.accordion__button--primary:hover {
+  background: color-mix(in srgb, var(--accordion-accent) 88%, #fff);
+}
+
+.accordion__button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accordion-focus) 60%, transparent);
+  outline-offset: 2px;
+}
+
+/* A panel long enough to need its own scrolling gets it here rather than pushing the group
+   past the frame. */
+.accordion__content--scroll {
+  max-block-size: 12rem;
+  overflow-y: auto;
+  scrollbar-color: var(--accordion-border) transparent;
+}
+
+.accordion__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 34rem) {
+  .accordion__summary {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .accordion__content {
+    padding-inline: 0.85rem;
+  }
+
+  /* Two lines rather than a title squeezed to nothing by the text beside it. */
+  .accordion__meta {
+    display: none;
+  }
+}
+
+/* The panel height is written inline by the element, so `transition: none` here is what
+   turns it into a jump rather than a slide; the element also skips its own two steps. */
+@media (prefers-reduced-motion: reduce) {
+  .accordion__summary,
+  .accordion__marker,
+  .accordion__panel {
+    transition: none;
+  }
+}
+
+/* The catalog stage gives the frame a fixed height, so the demo has to fill it or the
+   background stops short of the frame and leaves a visible seam. */
+.accordion-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background:
+    radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
+    #0f1115;
+  color: #f4f6fa;
+}
+
+.accordion-demo__shell {
+  min-inline-size: 0;
+  inline-size: min(100%, 44rem);
+}
+
+.accordion-demo__card {
+  display: grid;
+  gap: 1.1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid #292d36;
+  border-radius: 18px;
+  background: #171a20;
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+}
+
+.accordion-demo__label {
+  margin: 0;
+  color: #a8afbc;
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.accordion-demo__note {
+  margin: 0;
+  color: #a8afbc;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.accordion-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* The demo page is outside `ui-accordion`, where none of the component's custom properties
+   are declared, so its controls carry their own colours rather than reaching for tokens that
+   would resolve to nothing. */
+.accordion-demo__button {
+  border: 1px solid #292d36;
+  border-radius: 9px;
+  background: #10131a;
+  padding: 0.45rem 0.85rem;
+  color: #f4f6fa;
+  font: 600 0.8125rem/1.45 inherit;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  cursor: pointer;
+}
+
+.accordion-demo__button:hover {
+  background: #171a20;
+}
+
+.accordion-demo__button:focus-visible {
+  outline: 3px solid rgb(134 160 255 / 0.6);
+  outline-offset: 2px;
+}
+
+.accordion-demo__output {
+  display: block;
+  min-block-size: 2.5rem;
+  padding: 0.75rem;
+  border: 1px solid #292d36;
+  border-radius: 10px;
+  background: #0b0c0e;
+  color: #f4f6fa;
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

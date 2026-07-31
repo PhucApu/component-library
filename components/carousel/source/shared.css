@@ -1,0 +1,475 @@
+:root {
+  color-scheme: light;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.carousel-demo-page,
+.carousel-demo-page body {
+  background: #0f1115;
+  color-scheme: dark;
+}
+
+ui-carousel {
+  --carousel-surface: #171a20;
+  --carousel-slide: #10131a;
+  --carousel-text: #f4f6fa;
+  --carousel-muted: #a8afbc;
+  --carousel-border: #2e3440;
+  --carousel-accent: #86a0ff;
+  --carousel-focus: #86a0ff;
+  --carousel-scrim: rgb(10 12 18 / 0.72);
+  --carousel-radius: 14px;
+  --carousel-gap: 0.75rem;
+  --carousel-per-view: 1;
+  --carousel-ratio: 16 / 9;
+  --carousel-move: 320ms;
+  /* Written by the element while a drag is in progress. Declared here so it has a value of
+     its own rather than living only in a fallback. */
+  --carousel-drag: 0px;
+
+  display: block;
+  min-inline-size: 0;
+  color: var(--carousel-text);
+  font: 400 0.9375rem/1.5
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.carousel__frame {
+  position: relative;
+  min-inline-size: 0;
+  overflow: hidden;
+  border: 1px solid var(--carousel-border);
+  border-radius: var(--carousel-radius);
+  background: var(--carousel-surface);
+}
+
+/* An ordinary scroll container with snap points. This is where the swiping, the momentum,
+   the keyboard scrolling and the whole of the no-script behaviour come from. */
+.carousel__track {
+  display: flex;
+  gap: var(--carousel-gap);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  list-style: none;
+  /* Dots, arrows, the keyboard and dragging all say where this is, so the bar is noise
+     across the bottom of a picture. */
+  scrollbar-width: none;
+  touch-action: pan-y;
+}
+
+.carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel__track:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--carousel-focus) 60%, transparent);
+  outline-offset: -3px;
+}
+
+.carousel__slide {
+  position: relative;
+  flex: 0 0
+    calc(
+      (100% - (var(--carousel-per-view) - 1) * var(--carousel-gap)) / var(--carousel-per-view)
+    );
+  min-inline-size: 0;
+  overflow: hidden;
+  border-radius: calc(var(--carousel-radius) - 4px);
+  background: var(--carousel-slide);
+  scroll-snap-align: start;
+}
+
+.carousel__slide img {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: var(--carousel-ratio);
+  object-fit: cover;
+  /* A picture is the obvious thing to drag, and the browser's own image dragging would take
+     the gesture away before the carousel ever saw it. */
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.carousel__caption {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  margin: 0;
+  background: linear-gradient(transparent, var(--carousel-scrim) 55%);
+  padding: 2rem 0.9rem 0.75rem;
+  color: #fff;
+  font-size: 0.8125rem;
+}
+
+/* Dragging must not select the text of a caption, and a caption is exactly the sort of thing
+   a drag passes over. */
+ui-carousel[data-dragging] {
+  user-select: none;
+  cursor: grabbing;
+}
+
+ui-carousel[data-dragging] .carousel__track {
+  scroll-behavior: auto;
+}
+
+/* Stacked rather than laid along the track. Written by the element, so with no script every
+   effect falls back to the same scrolling strip. */
+ui-carousel[data-layered] .carousel__track {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+  scroll-snap-type: none;
+  touch-action: pan-y;
+}
+
+ui-carousel[data-layered] .carousel__slide {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition:
+    opacity var(--carousel-move) ease,
+    translate var(--carousel-move) cubic-bezier(0.22, 0.61, 0.36, 1),
+    scale var(--carousel-move) ease;
+}
+
+ui-carousel[data-layered] .carousel__slide[data-current] {
+  opacity: 1;
+  z-index: 1;
+}
+
+/* The one on its way out. Without it there is no way to tell an arriving slide from a
+   departing one, and every effect that moves them in opposite directions is impossible. */
+ui-carousel[data-layered] .carousel__slide[data-leaving] {
+  opacity: 0;
+  z-index: 0;
+}
+
+ui-carousel[data-effect='zoom'] .carousel__slide {
+  scale: 1.06;
+}
+
+ui-carousel[data-effect='zoom'] .carousel__slide[data-current] {
+  scale: 1;
+}
+
+ui-carousel[data-effect='zoom'] .carousel__slide[data-leaving] {
+  scale: 0.97;
+}
+
+/* The arriving picture travels over the one it replaces, which stays put and in view for as
+   long as it takes. */
+ui-carousel[data-effect='cover'] .carousel__slide[data-leaving] {
+  opacity: 1;
+  translate: 0;
+}
+
+ui-carousel[data-effect='cover'] .carousel__slide:not([data-current]):not([data-leaving]) {
+  transition: none;
+}
+
+ui-carousel[data-effect='cover'][data-direction='forward'] .carousel__slide:not([data-current]) {
+  translate: 100% 0;
+}
+
+ui-carousel[data-effect='cover'][data-direction='back'] .carousel__slide:not([data-current]) {
+  translate: -100% 0;
+}
+
+ui-carousel[data-effect='cover'] .carousel__slide[data-current] {
+  translate: 0 0;
+}
+
+ui-carousel[data-effect='cover'] .carousel__slide[data-leaving] {
+  translate: 0 0;
+}
+
+/* The drag is shown rather than done where nothing scrolls. */
+ui-carousel[data-layered][data-dragging] .carousel__slide[data-current] {
+  translate: calc(var(--carousel-drag, 0px) * 0.35) 0;
+  transition: none;
+}
+
+.carousel__arrow {
+  position: absolute;
+  inset-block-start: 50%;
+  display: grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  z-index: 2;
+  border: 0;
+  border-radius: 50%;
+  background: var(--carousel-scrim);
+  padding: 0;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0.75;
+  translate: 0 -50%;
+  transition: opacity 140ms ease;
+}
+
+.carousel__arrow--previous {
+  inset-inline-start: 0.6rem;
+}
+
+.carousel__arrow--next {
+  inset-inline-end: 0.6rem;
+}
+
+/* Faded rather than hidden: hovering does not exist on a touch screen, and a control nobody
+   can find is not a control. */
+.carousel__arrow:hover:not(:disabled),
+.carousel__arrow:focus-visible {
+  opacity: 1;
+}
+
+.carousel__arrow:disabled {
+  cursor: not-allowed;
+  opacity: 0.28;
+}
+
+.carousel__arrow:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--carousel-focus) 70%, transparent);
+  outline-offset: 2px;
+}
+
+.carousel__arrow svg,
+.carousel__toggle svg {
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+/* A filled triangle rather than an outlined one; the same rule would draw it as a hairline
+   arrowhead. */
+.carousel__toggle svg[data-fill='currentColor'] {
+  fill: currentColor;
+  stroke: none;
+}
+
+.carousel__bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding-block-start: 0.7rem;
+}
+
+.carousel__dots {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.carousel__dot {
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border: 0;
+  border-radius: 50%;
+  background: var(--carousel-border);
+  padding: 0;
+  cursor: pointer;
+  transition:
+    inline-size 160ms ease,
+    background 160ms ease;
+}
+
+/* Where you are, by width as well as by colour, so the position does not rest on colour
+   alone. */
+.carousel__dot[data-current] {
+  inline-size: 1.4rem;
+  border-radius: 999px;
+  background: var(--carousel-accent);
+}
+
+.carousel__dot:hover {
+  background: var(--carousel-muted);
+}
+
+.carousel__dot:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--carousel-focus) 70%, transparent);
+  outline-offset: 3px;
+}
+
+.carousel__toggle {
+  display: grid;
+  place-items: center;
+  inline-size: 1.85rem;
+  block-size: 1.85rem;
+  border: 1px solid var(--carousel-border);
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  color: var(--carousel-text);
+  cursor: pointer;
+}
+
+.carousel__toggle:hover {
+  background: color-mix(in srgb, var(--carousel-text) 12%, transparent);
+}
+
+.carousel__toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--carousel-focus) 70%, transparent);
+  outline-offset: 2px;
+}
+
+/* The author declaration above beats the user-agent rule for `[hidden]`, so without this a
+   control asked to disappear simply stays. */
+.carousel__toggle[hidden],
+.carousel__arrow[hidden] {
+  display: none;
+}
+
+/* One picture is not a carousel. Controls that could never do anything are furniture, and
+   they take tab stops with them. */
+ui-carousel[data-single] .carousel__arrow,
+ui-carousel[data-single] .carousel__bar {
+  display: none;
+}
+
+.carousel__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 34rem) {
+  .carousel__arrow {
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel__track {
+    scroll-behavior: auto;
+  }
+
+  ui-carousel[data-layered] .carousel__slide,
+  .carousel__arrow,
+  .carousel__dot {
+    transition: none;
+  }
+}
+
+/* The catalog stage gives the frame a fixed height, so the demo has to fill it or the
+   background stops short of the frame and leaves a visible seam. */
+.carousel-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background:
+    radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
+    #0f1115;
+  color: #f4f6fa;
+}
+
+.carousel-demo__shell {
+  min-inline-size: 0;
+  inline-size: min(100%, 44rem);
+}
+
+.carousel-demo__card {
+  display: grid;
+  gap: 1.1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid #292d36;
+  border-radius: 18px;
+  background: #171a20;
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+}
+
+.carousel-demo__label {
+  margin: 0;
+  color: #a8afbc;
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.carousel-demo__note {
+  margin: 0;
+  color: #a8afbc;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.carousel-demo__note code {
+  border-radius: 5px;
+  background: rgb(244 246 250 / 0.12);
+  padding: 0.1em 0.35em;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.carousel-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* The demo page is outside `ui-carousel`, where none of the component's custom properties are
+   declared, so its controls carry their own colours. */
+.carousel-demo__button {
+  border: 1px solid #292d36;
+  border-radius: 9px;
+  background: #10131a;
+  padding: 0.45rem 0.85rem;
+  color: #f4f6fa;
+  font:
+    600 0.8125rem/1.45 Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.carousel-demo__button:hover {
+  background: #171a20;
+}
+
+.carousel-demo__button:focus-visible {
+  outline: 3px solid rgb(134 160 255 / 0.6);
+  outline-offset: 2px;
+}
+
+.carousel-demo__output {
+  display: block;
+  min-block-size: 2.5rem;
+  padding: 0.75rem;
+  border: 1px solid #292d36;
+  border-radius: 10px;
+  background: #0b0c0e;
+  color: #f4f6fa;
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

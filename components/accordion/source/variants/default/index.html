@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" class="accordion-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Disclosure panels that open and close independently." />
+    <title>Accordion - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="accordion-demo">
+      <div class="accordion-demo__shell">
+        <section class="accordion-demo__card">
+          <p class="accordion-demo__label">Panels that open and close on their own</p>
+          <p class="accordion-demo__note">
+            The widget is <code>details</code> and <code>summary</code>. Turn scripting off
+            and every panel still opens; the component adds the movement, the heading, the
+            region, and the arrow keys between the headers.
+          </p>
+
+          <ui-accordion>
+            <details open>
+              <summary>What the component adds</summary>
+              <p>
+                A height that moves instead of jumping, a heading for every summary so the
+                panels can be jumped between, a region so each panel can be reached, and
+                <kbd>ArrowUp</kbd> and <kbd>ArrowDown</kbd> to move between the headers.
+              </p>
+            </details>
+            <details>
+              <summary>What the browser was already doing</summary>
+              <p>
+                Reporting the open state, answering <kbd>Enter</kbd> and <kbd>Space</kbd>,
+                and keeping the closed content in the document where find-in-page can still
+                reach it.
+              </p>
+            </details>
+            <details>
+              <summary>Why the press is intercepted</summary>
+              <p>
+                The <code>toggle</code> event cannot be cancelled and arrives after the panel
+                has already changed, and <code>details</code> has no
+                <code>beforetoggle</code>. The press is the only thing left that can be
+                refused, so that is where the movement hangs.
+              </p>
+            </details>
+            <details>
+              <summary>Writing the markup</summary>
+              <p>
+                A <code>summary</code> and whatever should be inside. A heading, a panel
+                wrapper and a marker are supplied where they are missing, and anything you
+                write yourself is left alone.
+              </p>
+            </details>
+          </ui-accordion>
+
+          <output class="accordion-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeAccordionDemo } from '../../demo.js';
+
+      initializeAccordionDemo();
+    </script>
+  </body>
+</html>

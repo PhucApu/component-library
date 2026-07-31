@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en" class="carousel-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Dragging with the pointer: how far commits, and how fast." />
+    <title>Carousel - Drag</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="carousel-demo">
+      <div class="carousel-demo__shell">
+        <section class="carousel-demo__card">
+          <p class="carousel-demo__label">Take hold of it and pull</p>
+          <p class="carousel-demo__note">
+            A touch screen swipes on its own; a mouse cannot, so the pointer drag is built.
+            Snapping is switched off for as long as the drag lasts — with it on, every pixel
+            is pulled straight back to the nearest snap point and the strip refuses to move.
+          </p>
+          <p class="carousel-demo__note">
+            Two things commit a drag, and either is enough: travelling a fifth of a picture,
+            or still moving quickly when you let go. Distance alone would throw away the short
+            flick that is how most people move a carousel.
+          </p>
+
+          <ui-carousel label="Draggable photographs">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/still-lake.svg" alt="Mountains reflected in a still lake" />
+                <p class="carousel__caption">Drag me, or flick me</p>
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/salt-flat.svg" alt="A cracked salt flat with a single post" />
+                <p class="carousel__caption">A short quick flick is enough</p>
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/dawn-ridge.svg" alt="A ridge line at dawn under a red sky" />
+                <p class="carousel__caption">A slow drag has to go further</p>
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/wheat-field.svg" alt="A wheat field under a low afternoon sun" />
+                <p class="carousel__caption">Let go short and it falls back</p>
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <p class="carousel-demo__label">A picture that is also a link</p>
+          <p class="carousel-demo__note">
+            Dragging across a link must not follow it when you let go. The press is watched,
+            and once it has travelled far enough to be a drag the click that follows is
+            stopped before it reaches the link.
+          </p>
+
+          <ui-carousel label="Linked photographs">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <a href="#ridge"><img src="../../assets/dawn-ridge.svg" alt="A ridge line at dawn under a red sky" /></a>
+              </li>
+              <li class="carousel__slide">
+                <a href="#harbour"><img src="../../assets/night-harbour.svg" alt="A harbour town at night with lit windows" /></a>
+              </li>
+              <li class="carousel__slide">
+                <a href="#pines"><img src="../../assets/pine-slope.svg" alt="A pine slope above a green valley" /></a>
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <p class="carousel-demo__label">Dragging turned off</p>
+          <p class="carousel-demo__note">
+            <code>no-drag</code> leaves the arrows, the dots, the keyboard and the browser's
+            own swiping alone. Only the pointer drag goes.
+          </p>
+
+          <ui-carousel no-drag label="Photographs without dragging">
+            <ul class="carousel__track">
+              <li class="carousel__slide">
+                <img src="../../assets/pine-slope.svg" alt="A pine slope above a green valley" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/still-lake.svg" alt="Mountains reflected in a still lake" />
+              </li>
+              <li class="carousel__slide">
+                <img src="../../assets/night-harbour.svg" alt="A harbour town at night with lit windows" />
+              </li>
+            </ul>
+          </ui-carousel>
+
+          <output class="carousel-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCarouselDemo } from '../../demo.js';
+
+      initializeCarouselDemo();
+    </script>
+  </body>
+</html>

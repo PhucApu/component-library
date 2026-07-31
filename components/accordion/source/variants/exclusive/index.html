@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" class="accordion-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="One panel open at a time, with and without a script." />
+    <title>Accordion - Exclusive</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="accordion-demo">
+      <div class="accordion-demo__shell">
+        <section class="accordion-demo__card">
+          <p class="accordion-demo__label">One at a time, before the script and after it</p>
+          <p class="accordion-demo__note">
+            The panels share a <code>name</code>, which is all the browser needs to keep one
+            open. The component takes the name away when it loads so it can close the other
+            panel with the same movement it opens this one — the behaviour you see does not
+            change, only who is doing it.
+          </p>
+
+          <ui-accordion exclusive>
+            <details name="shipping" open>
+              <summary>Standard delivery</summary>
+              <p>
+                Three to five working days. Tracked from the moment it leaves the warehouse,
+                with a signature only for orders over a hundred.
+              </p>
+            </details>
+            <details name="shipping">
+              <summary>Next day</summary>
+              <p>
+                Ordered before four in the afternoon, delivered the following working day.
+                Not available to every postcode.
+              </p>
+            </details>
+            <details name="shipping">
+              <summary>Collect in person</summary>
+              <p>
+                Ready within two hours at any branch. Held for seven days, then returned to
+                stock and refunded.
+              </p>
+            </details>
+          </ui-accordion>
+
+          <p class="accordion-demo__note">
+            Opening a panel closes whichever one was open. That second change is announced
+            politely, because it is a thing that happened without being asked for and it may
+            be somewhere nobody is looking.
+          </p>
+
+          <output class="accordion-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeAccordionDemo } from '../../demo.js';
+
+      initializeAccordionDemo();
+    </script>
+  </body>
+</html>

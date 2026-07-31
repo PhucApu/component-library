@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" class="accordion-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Panels holding real content and a row of buttons along the foot." />
+    <title>Accordion - Actions</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="accordion-demo">
+      <div class="accordion-demo__shell">
+        <section class="accordion-demo__card">
+          <p class="accordion-demo__label">A panel that does something</p>
+          <p class="accordion-demo__note">
+            The panel is ordinary markup, so anything can go in it. The buttons sit in a row
+            along the foot and take a tab stop each, which is one reason the panels are kept
+            closed until they are wanted.
+          </p>
+
+          <ui-accordion>
+            <details open>
+              <summary>
+                Delivery address
+                <span class="accordion__meta">Not confirmed</span>
+              </summary>
+              <p>
+                Flat 4, 18 Wharf Road, Bristol BS1 4RN. Deliveries here are left with the
+                building manager if nobody answers.
+              </p>
+              <div class="accordion__actions">
+                <button type="button" class="accordion__button">Edit</button>
+                <button type="button" class="accordion__button accordion__button--primary">
+                  Confirm
+                </button>
+              </div>
+            </details>
+            <details>
+              <summary>
+                Payment
+                <span class="accordion__meta">Visa ending 6411</span>
+              </summary>
+              <p>Charged when the order is dispatched, not when it is placed.</p>
+              <div class="accordion__actions">
+                <button type="button" class="accordion__button">Use another card</button>
+              </div>
+            </details>
+            <details>
+              <summary>
+                Gift options
+                <span class="accordion__meta">None</span>
+              </summary>
+              <p>
+                A message can be printed on the delivery note, and the prices left off it.
+              </p>
+              <div class="accordion__actions">
+                <button type="button" class="accordion__button">Add a message</button>
+                <button type="button" class="accordion__button">Hide prices</button>
+              </div>
+            </details>
+          </ui-accordion>
+
+          <output class="accordion-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeAccordionDemo } from '../../demo.js';
+
+      initializeAccordionDemo();
+    </script>
+  </body>
+</html>
