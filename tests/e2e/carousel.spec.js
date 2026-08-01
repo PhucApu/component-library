@@ -23,7 +23,7 @@ async function ready(page, variant) {
 const indexOf = (page, nth = 0) =>
   page.evaluate((position) => document.querySelectorAll('ui-carousel')[position].index, nth);
 
-async function dragBy(page, distance, { steps = 10, selector = '.carousel__track' } = {}) {
+async function dragBy(page, distance, { steps = 10, pause = 0, selector = '.carousel__track' } = {}) {
   const box = await page.locator(selector).first().boundingBox();
   const y = box.y + box.height / 2;
   const startX = distance > 0 ? box.x + box.width * 0.25 : box.x + box.width * 0.75;
@@ -33,24 +33,46 @@ async function dragBy(page, distance, { steps = 10, selector = '.carousel__track
 
   for (let step = 1; step <= steps; step += 1) {
     await page.mouse.move(startX + (distance * step) / steps, y);
+
+    // Synthetic moves arrive with almost no time between them, which makes even a tiny drag
+    // look like a flick at tens of pixels per millisecond. Anything testing distance rather
+    // than speed has to slow down or it is testing the wrong one of the two.
+    if (pause > 0) {
+      await page.waitForTimeout(pause);
+    }
   }
 
   await page.mouse.up();
 
-  // The real signal rather than a guessed delay. A smooth scroll is still running when the
-  // pointer is released, and the position is read off the scroller as it goes, so a fixed
-  // wait reads whichever slide it happened to be passing.
+  // Waits for the scroller to stop moving. Neither a fixed delay nor a single `scrollend`
+  // will do: the position is read off the scroller as it goes, so `index` is an intermediate
+  // value for the whole of the landing, and the drag's own scrolling ends before the
+  // programmatic one begins.
   await page.evaluate(
     (target) =>
       new Promise((resolve) => {
         const track = document.querySelector(target);
-        const done = () => resolve();
-        track.addEventListener('scrollend', done, { once: true });
-        setTimeout(done, 1500);
+        let last = track.scrollLeft;
+        let steady = 0;
+        const started = performance.now();
+
+        const tick = () => {
+          const now = track.scrollLeft;
+          steady = Math.abs(now - last) < 0.5 ? steady + 1 : 0;
+          last = now;
+
+          if (steady >= 6 || performance.now() - started > 3000) {
+            resolve();
+            return;
+          }
+
+          requestAnimationFrame(tick);
+        };
+
+        requestAnimationFrame(tick);
       }),
     selector,
   );
-  await page.waitForTimeout(120);
 }
 
 test('all six variants run independently without external requests or overflow', async ({
@@ -262,20 +284,32 @@ test('a long slow drag commits and a short one falls back', async ({ page }) => 
   await page.setViewportSize({ width: 960, height: 720 });
   await ready(page, 'default');
 
+  // Polled rather than read once. The position is taken off the scroller as it moves, so
+  // `index` is an intermediate value for the whole of the landing; what is being claimed
+  // here is where it comes to rest, not what it reads at some particular millisecond.
+  const settlesOn = (value) => expect.poll(() => indexOf(page), { timeout: 5000 }).toBe(value);
+
   await page.locator('.carousel__dot').nth(2).click();
-  await page.waitForTimeout(700);
-  expect(await indexOf(page)).toBe(2);
+  await settlesOn(2);
 
   await dragBy(page, -320);
-  expect(await indexOf(page)).toBe(3);
+  await settlesOn(3);
 
   await dragBy(page, 320);
-  expect(await indexOf(page)).toBe(2);
+  await settlesOn(2);
 
-  // Short of the threshold, so it goes back where it was.
-  await dragBy(page, -40, { steps: 4 });
-  expect(await indexOf(page)).toBe(2);
+  // Short of the threshold *and* slow, so it goes back where it was. A short quick one is a
+  // flick and is meant to commit; that is the other half of the rule, and it is checked
+  // below.
+  await dragBy(page, -40, { steps: 4, pause: 60 });
+  await settlesOn(2);
 });
+
+// The other half of the rule — that a short *quick* drag commits — is checked in the unit
+// tests for `commitDrag`, where the velocity is an input. It cannot be checked honestly from
+// here: a synthetic pointer's timing is whatever the machine gives it, so the same gesture is
+// a flick on an idle machine and a slow drag on a busy one, and a test that changes its mind
+// with the load is worse than no test.
 
 test('an arrival is reported once, however it was reached', async ({ page }) => {
   await page.setViewportSize({ width: 960, height: 720 });

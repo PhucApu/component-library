@@ -1,0 +1,664 @@
+:root {
+  color-scheme: light;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.locator-map-demo-page,
+.locator-map-demo-page body {
+  background: #0f1115;
+  color-scheme: dark;
+}
+
+ui-locator-map {
+  --locator-surface: #171a20;
+  --locator-sea: #101822;
+  --locator-land: #26333f;
+  --locator-coast: #3d5468;
+  --locator-text: #f4f6fa;
+  --locator-muted: #a8afbc;
+  --locator-border: #2e3440;
+  --locator-accent: #86a0ff;
+  --locator-focus: #86a0ff;
+  --locator-marker: #ff8a5b;
+  --locator-radius: 12px;
+  /* The drawing's own proportions. The frame matches them, so the projection's coordinates
+     and the frame's percentages are the same thing and a marker never drifts. */
+  --locator-ratio: 400 / 720;
+  /* Written by the element. Declared here so they have values of their own rather than
+     living only in a fallback. */
+  --map-x: 0;
+  --map-y: 0;
+  --map-k: 1;
+  --map-flight: 0ms;
+
+  display: grid;
+  gap: 0.85rem;
+  min-inline-size: 0;
+  color: var(--locator-text);
+  font: 400 0.9375rem/1.5
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* ---- The search ---------------------------------------------------------------------- */
+
+.locator-map__search {
+  position: relative;
+  z-index: 2;
+}
+
+.locator-map__search[hidden] {
+  display: none;
+}
+
+.locator-map__input {
+  inline-size: 100%;
+  border: 1px solid var(--locator-border);
+  border-radius: 10px;
+  background: var(--locator-surface);
+  padding: 0.6rem 2.4rem 0.6rem 0.85rem;
+  color: var(--locator-text);
+  font: inherit;
+  font-size: 0.9375rem;
+}
+
+.locator-map__input::placeholder {
+  color: var(--locator-muted);
+}
+
+.locator-map__input:focus-visible,
+.locator-map__frame:focus-visible,
+.locator-map__tool:focus-visible,
+.locator-map__marker:focus-visible,
+.locator-map__entry:focus-visible,
+.locator-map__clear:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--locator-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+.locator-map__clear {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: 0.4rem;
+  display: grid;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  color: var(--locator-muted);
+  cursor: pointer;
+  translate: 0 -50%;
+}
+
+.locator-map__clear:hover {
+  background: color-mix(in srgb, var(--locator-text) 12%, transparent);
+  color: var(--locator-text);
+}
+
+.locator-map__clear[hidden] {
+  display: none;
+}
+
+.locator-map__results {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc(100% + 0.35rem);
+  z-index: 3;
+  max-block-size: 15rem;
+  margin: 0;
+  border: 1px solid var(--locator-border);
+  border-radius: 10px;
+  background: var(--locator-surface);
+  padding: 0.25rem;
+  overflow-y: auto;
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.45);
+  list-style: none;
+}
+
+.locator-map__results[hidden] {
+  display: none;
+}
+
+.locator-map__result {
+  display: grid;
+  gap: 0.1rem;
+  border-radius: 7px;
+  padding: 0.45rem 0.6rem;
+  cursor: pointer;
+}
+
+.locator-map__result[data-active] {
+  background: color-mix(in srgb, var(--locator-accent) 22%, transparent);
+}
+
+.locator-map__result-name {
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.locator-map__result-name mark {
+  background: transparent;
+  color: var(--locator-accent);
+  font-weight: 750;
+}
+
+.locator-map__result-address {
+  color: var(--locator-muted);
+  font-size: 0.8125rem;
+}
+
+.locator-map__result--empty {
+  color: var(--locator-muted);
+  font-size: 0.8125rem;
+  cursor: default;
+}
+
+/* ---- The map ------------------------------------------------------------------------- */
+
+/* Sized by its height, with the width following the drawing's proportions. Setting the width
+   instead and capping the height makes the two fight: the width wins, the cap crops, and the
+   silhouette is stretched sideways into something that is not the country. */
+.locator-map__frame {
+  position: relative;
+  aspect-ratio: var(--locator-ratio);
+  block-size: min(30rem, 62vh);
+  inline-size: auto;
+  max-inline-size: 100%;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid var(--locator-border);
+  border-radius: var(--locator-radius);
+  background: var(--locator-sea);
+  cursor: grab;
+  touch-action: none;
+  /* A stacking context, or a provider's own numbers escape into this one. Leaflet stacks its
+     controls at `z-index: 1000`, and with the frame merely positioned those compete directly
+     with the search above it — which is how the results list ended up behind the map's zoom
+     buttons. Isolating says what is meant: whatever the surface does inside the frame, it
+     does inside the frame. */
+  isolation: isolate;
+}
+
+/* On the frame rather than the host: the frame is what the adapter is given, and the adapter
+   is the only thing that knows a drag is happening. */
+.locator-map__frame[data-dragging] {
+  cursor: grabbing;
+}
+
+/* The whole map moves as one box. Animating the `viewBox` instead would mean driving every
+   frame from a script; this is the same movement for nothing. */
+.locator-map__world {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+  transform: translate(calc(var(--map-x) * 100%), calc(var(--map-y) * 100%)) scale(var(--map-k));
+  transition: transform var(--map-flight) cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.locator-map__frame[data-dragging] .locator-map__world {
+  transition: none;
+}
+
+.locator-map__drawing {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.locator-map__land {
+  fill: var(--locator-land);
+  stroke: var(--locator-coast);
+  stroke-width: 1.5;
+  /* Or the coastline thickens as the map is zoomed, until the country is a blot. */
+  vector-effect: non-scaling-stroke;
+}
+
+.locator-map__markers {
+  position: absolute;
+  inset: 0;
+}
+
+/* What a real provider fills. It owns everything inside the frame; the frame is still the
+   element's, and still carries the tab stop, the size and the clipping. */
+.locator-map__surface {
+  position: absolute;
+  inset: 0;
+}
+
+/* A country drawn tall and narrow wants a tall narrow frame; a street map does not. The
+   surface that is actually mounted decides, rather than a guess baked into the token. */
+ui-locator-map:has(.locator-map__surface) {
+  --locator-ratio: 4 / 3;
+}
+
+/* ---- Somebody else's map, wearing this component's clothes --------------------------- */
+
+/* Every rule below is scoped to the frame, for two reasons. It stops this component styling
+   a map that belongs to some other part of the page; and it outranks the provider's own
+   stylesheet without `!important`, which matters because that stylesheet is appended at run
+   time and therefore always comes last in the cascade. */
+
+.locator-map__frame .leaflet-container {
+  background: var(--locator-sea);
+  font: inherit;
+}
+
+/* A bright street map dropped into a dark page reads as a hole punched in it. Inverting the
+   tiles and turning the hue back through half a circle is the one transform that darkens a
+   map without making its labels illegible: land goes dark, water stays recognisably water,
+   and the type comes out light. Applied to the pane rather than to each tile, or every seam
+   between two tiles shows as a line where the filter is composited twice. */
+.locator-map__frame .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) saturate(0.68);
+}
+
+/* The provider's own pin, which is this component's pin. A `divIcon` rather than the default
+   image: it matches the drawing exactly, it marks the chosen office the same way, and it
+   fetches neither an icon nor a shadow. */
+.locator-map__frame .locator-map__provider-pin {
+  display: grid;
+  place-items: center;
+  background: none;
+}
+
+.locator-map__frame .locator-map__provider-pin:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--locator-focus) 65%, transparent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* The zoom control, made to match the three the drawing puts in the same corner. */
+.locator-map__frame .leaflet-bar {
+  border: 0;
+  box-shadow: none;
+}
+
+.locator-map__frame .leaflet-bar a,
+.locator-map__frame .leaflet-bar a:hover {
+  display: grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border: 1px solid var(--locator-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--locator-surface) 88%, transparent);
+  color: var(--locator-text);
+  font-size: 1.05rem;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.locator-map__frame .leaflet-bar a:hover {
+  background: var(--locator-surface);
+}
+
+.locator-map__frame .leaflet-bar a:first-child {
+  margin-block-end: 0.3rem;
+}
+
+.locator-map__frame .leaflet-bar a.leaflet-disabled {
+  color: var(--locator-muted);
+  background: color-mix(in srgb, var(--locator-surface) 60%, transparent);
+}
+
+.locator-map__frame .leaflet-bar a:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--locator-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+/* Attribution is a licence condition, not decoration, so it is restyled rather than hidden. */
+.locator-map__frame .leaflet-control-attribution {
+  border-start-start-radius: 6px;
+  background: color-mix(in srgb, var(--locator-surface) 82%, transparent);
+  padding: 0.15rem 0.45rem;
+  color: var(--locator-muted);
+  font-size: 0.6875rem;
+}
+
+.locator-map__frame .leaflet-control-attribution a {
+  color: var(--locator-accent);
+}
+
+/* The second surface, for the Adapter variant. Deliberately plain: what is on show there is
+   the seam, not the artwork. */
+.grid-map__paper {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(var(--locator-coast) 1px, transparent 1px) 0 0 / 100% 8%,
+    linear-gradient(90deg, var(--locator-coast) 1px, transparent 1px) 0 0 / 12.5% 100%,
+    var(--locator-land);
+  opacity: 0.5;
+}
+
+.locator-map__marker {
+  /* Written per marker by the element, from the projection. Declared here so they have
+     values of their own rather than living only in a fallback. */
+  --marker-x: 50%;
+  --marker-y: 50%;
+
+  position: absolute;
+  inset-block-start: var(--marker-y);
+  inset-inline-start: var(--marker-x);
+  display: grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  /* Centred on its point, then shrunk by exactly as much as the map was grown. A marker that
+     scales with the map is a marker that swallows the country at close range; every real map
+     keeps its pins the same size on the screen. */
+  translate: -50% -50%;
+  scale: calc(1 / var(--map-k));
+}
+
+.locator-map__pin {
+  display: block;
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
+  border: 2px solid #10131a;
+  border-radius: 50% 50% 50% 0;
+  background: var(--locator-marker);
+  rotate: -45deg;
+  transition:
+    background 160ms ease,
+    scale 160ms ease;
+}
+
+.locator-map__marker:hover .locator-map__pin,
+.locator-map__provider-pin:hover .locator-map__pin {
+  scale: 1.2;
+}
+
+/* Where you chose, by shape and by a ring as well as by colour. Two selectors because two
+   surfaces carry the same pin: the drawing wraps it in a button of its own, and a provider
+   hands the pin straight to its own marker layer with nothing in between. */
+.locator-map__marker[data-selected] .locator-map__pin,
+.locator-map__pin[data-selected] {
+  background: var(--locator-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--locator-accent) 35%, transparent);
+  scale: 1.25;
+}
+
+.locator-map__zoom {
+  position: absolute;
+  inset-block-start: 0.5rem;
+  inset-inline-end: 0.5rem;
+  z-index: 2;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.locator-map__tool {
+  display: grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border: 1px solid var(--locator-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--locator-surface) 88%, transparent);
+  padding: 0;
+  color: var(--locator-text);
+  cursor: pointer;
+}
+
+.locator-map__tool:hover {
+  background: var(--locator-surface);
+}
+
+.locator-map__tool svg,
+.locator-map__clear svg {
+  inline-size: 1.05rem;
+  block-size: 1.05rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+/* ---- The directory ------------------------------------------------------------------- */
+
+/* The markup the author writes, and the whole of what anyone gets with no script. It is
+   never hidden or rewritten — only each name becomes a button. */
+.locator-map__places {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.locator-map__places > li {
+  border: 1px solid var(--locator-border);
+  border-radius: 10px;
+  background: var(--locator-surface);
+  padding: 0.6rem 0.8rem;
+}
+
+.locator-map__places > li[hidden] {
+  display: none;
+}
+
+.locator-map__places h1,
+.locator-map__places h2,
+.locator-map__places h3,
+.locator-map__places h4,
+.locator-map__places h5,
+.locator-map__places h6 {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 650;
+}
+
+.locator-map__places p {
+  margin: 0.15rem 0 0;
+  color: var(--locator-muted);
+  font-size: 0.8125rem;
+}
+
+.locator-map__entry {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: start;
+}
+
+.locator-map__entry:hover {
+  color: var(--locator-accent);
+}
+
+.locator-map__entry[data-selected] {
+  color: var(--locator-accent);
+}
+
+.locator-map__entry[data-selected]::before {
+  content: "\25B8";
+  padding-inline-end: 0.4rem;
+}
+
+.locator-map__directions {
+  display: inline-block;
+  margin-block-start: 0.35rem;
+  color: var(--locator-accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.locator-map__directions:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--locator-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+/* A run of offices in one region. Not a card like the offices are — it is a label over them,
+   so it has to look like one. */
+.locator-map__group {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  /* The offices are cards; this is a label over them, so the card styling has to come off. */
+  border: 0;
+  background: none;
+  margin-block-start: 0.4rem;
+  padding: 0.1rem 0.2rem;
+}
+
+.locator-map__group:first-child {
+  margin-block-start: 0;
+}
+
+.locator-map__group-name {
+  margin: 0;
+  color: var(--locator-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.locator-map__group-count {
+  color: var(--locator-muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+ui-locator-map[data-empty] .locator-map__places {
+  display: none;
+}
+
+.locator-map__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .locator-map__world,
+  .locator-map__pin {
+    transition: none;
+  }
+}
+
+/* The catalog stage gives the frame a fixed height, so the demo has to fill it or the
+   background stops short of the frame and leaves a visible seam. */
+.locator-map-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background:
+    radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
+    #0f1115;
+  color: #f4f6fa;
+}
+
+.locator-map-demo__shell {
+  min-inline-size: 0;
+  inline-size: min(100%, 44rem);
+}
+
+.locator-map-demo__card {
+  display: grid;
+  gap: 1.1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid #292d36;
+  border-radius: 18px;
+  background: #171a20;
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+}
+
+.locator-map-demo__label {
+  margin: 0;
+  color: #a8afbc;
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.locator-map-demo__note {
+  margin: 0;
+  color: #a8afbc;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.locator-map-demo__note code {
+  border-radius: 5px;
+  background: rgb(244 246 250 / 0.12);
+  padding: 0.1em 0.35em;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.locator-map-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.locator-map-demo__button {
+  border: 1px solid #292d36;
+  border-radius: 9px;
+  background: #10131a;
+  padding: 0.45rem 0.85rem;
+  color: #f4f6fa;
+  font:
+    600 0.8125rem/1.45 Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.locator-map-demo__button:hover {
+  background: #171a20;
+}
+
+/* The same control, sometimes a link out to a worked example rather than a button. */
+a.locator-map-demo__button {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.locator-map-demo__button:focus-visible {
+  outline: 3px solid rgb(134 160 255 / 0.6);
+  outline-offset: 2px;
+}
+
+.locator-map-demo__output {
+  display: block;
+  min-block-size: 2.5rem;
+  padding: 0.75rem;
+  border: 1px solid #292d36;
+  border-radius: 10px;
+  background: #0b0c0e;
+  color: #f4f6fa;
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

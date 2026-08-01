@@ -19,18 +19,30 @@ which build their controls because HTML offers no equivalent.
 
 Every token is defined by the component. Nothing is inherited from the catalog.
 
-| Token | Light | Role |
-|---|---|---|
-| `--text-field-surface` | `#ffffff` | Outlined frame background |
-| `--text-field-surface-filled` | `#f1f4f9` | Filled and read-only background |
-| `--text-field-text` | `#111827` | Label and value |
-| `--text-field-muted` | `#5f6878` | Hint, placeholder, adornments |
-| `--text-field-border` | `#cbd5e1` | Frame at rest |
-| `--text-field-border-strong` | `#94a3b8` | Frame on hover |
-| `--text-field-accent` | `#4f46e5` | Frame on focus |
-| `--text-field-focus` | `#6366f1` | Focus ring |
-| `--text-field-danger` | `#b42318` | Invalid frame and message |
-| `--text-field-radius` | `10px` | Frame radius |
+Each colour token is a `light-dark()` pair, so which half a browser uses follows the
+page's `color-scheme` rather than a class the author has to remember to set.
+
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--text-field-surface` | `#ffffff` | `#171a20` | Outlined frame background |
+| `--text-field-surface-filled` | `#f1f4f9` | `#1d2128` | Filled and read-only background |
+| `--text-field-text` | `#111827` | `#f4f6fa` | Label and value |
+| `--text-field-muted` | `#5f6878` | `#a8afbc` | Hint, placeholder, adornments |
+| `--text-field-border` | `#cbd5e1` | `#3b414c` | Frame at rest |
+| `--text-field-border-strong` | `#94a3b8` | `#5a6272` | Frame on hover |
+| `--text-field-accent` | `#4f46e5` | `#4968e8` | Frame on focus |
+| `--text-field-focus` | `#6366f1` | `#86a0ff` | Focus ring |
+| `--text-field-danger` | `#b42318` | `#ff8e87` | Invalid frame and message |
+| `--text-field-radius` | `10px` | | Frame radius |
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
 
 ## 4. Anatomy
 

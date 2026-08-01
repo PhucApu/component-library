@@ -31,19 +31,31 @@ offers no equivalent.
 
 Every token is defined by the component. Nothing is inherited from the catalog.
 
-| Token | Light | Role |
-|---|---|---|
-| `--radio-group-surface` | `#ffffff` | Control and card background |
-| `--radio-group-surface-subtle` | `#f8fafc` | Disabled surface |
-| `--radio-group-text` | `#111827` | Label and legend |
-| `--radio-group-muted` | `#5f6878` | Supporting text |
-| `--radio-group-border` | `#cbd5e1` | Card border |
-| `--radio-group-border-strong` | `#94a3b8` | Control ring at rest |
-| `--radio-group-accent` | `#4f46e5` | Chosen control and card border |
-| `--radio-group-accent-soft` | `#eef2ff` | Chosen card background |
-| `--radio-group-focus` | `#6366f1` | Focus ring |
-| `--radio-group-danger` | `#b42318` | Error border and message |
-| `--radio-group-radius` | `12px` | Card radius |
+Each colour token is a `light-dark()` pair, so which half a browser uses follows the
+page's `color-scheme` rather than a class the author has to remember to set.
+
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--radio-group-surface` | `#ffffff` | `#171a20` | Control and card background |
+| `--radio-group-surface-subtle` | `#f8fafc` | `#1d2128` | Disabled surface |
+| `--radio-group-text` | `#111827` | `#f4f6fa` | Label and legend |
+| `--radio-group-muted` | `#5f6878` | `#a8afbc` | Supporting text |
+| `--radio-group-border` | `#cbd5e1` | `#3b414c` | Card border |
+| `--radio-group-border-strong` | `#94a3b8` | `#5a6272` | Control ring at rest |
+| `--radio-group-accent` | `#4f46e5` | `#4968e8` | Chosen control and card border |
+| `--radio-group-accent-soft` | `#eef2ff` | `#1b2338` | Chosen card background |
+| `--radio-group-focus` | `#6366f1` | `#86a0ff` | Focus ring |
+| `--radio-group-danger` | `#b42318` | `#ff8e87` | Error border and message |
+| `--radio-group-radius` | `12px` | | Card radius |
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
 
 ## 4. Anatomy
 

@@ -27,20 +27,6 @@
   --brand-primary: #4968e8;
   --brand-primary-hover: #4d6be3;
   --brand-primary-active: #3857d6;
-  --brand-primary-subtle: rgb(73 104 232 / 0.12);
-  --interaction-accent: #91a8ff;
-  --focus-ring: #86a0ff;
-  --surface-base: #0b0c0e;
-  --surface-subtle: #111318;
-  --surface-raised: #171a20;
-  --surface-overlay: #1d2128;
-  --surface-inset: #0f1115;
-  --text-primary: #f4f6fa;
-  --text-secondary: #a8afbc;
-  --text-tertiary: #777f8e;
-  --border-subtle: rgb(255 255 255 / 0.06);
-  --border-default: #292d36;
-  --border-strong: #3b414c;
   --content-max-width: 68rem;
   --detail-content-max-width: 76rem;
   --header-min-height: 3.5rem;
@@ -52,12 +38,70 @@
   --radius-xl: 0.875rem;
   --radius-2xl: 1rem;
   --radius-full: 999px;
-  --shadow-card: 0 12px 32px rgb(0 0 0 / 0.24);
-  --shadow-raised: 0 24px 64px rgb(0 0 0 / 0.34);
   --duration-fast: 120ms;
   --duration-normal: 180ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --z-header: 100;
+}
+
+/* Dark also carries the unqualified declarations. The catalog renders its grid from
+   JavaScript, so a document that never receives `data-theme` never had a catalog to
+   theme, and the authored dark surface stays the safe resting state. */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --brand-primary-subtle: rgb(73 104 232 / 0.12);
+  --interaction-accent: #91a8ff;
+  --focus-ring: #86a0ff;
+  --focus-ring-soft: rgb(134 160 255 / 0.12);
+  --surface-base: #0b0c0e;
+  --surface-subtle: #111318;
+  --surface-raised: #171a20;
+  --surface-overlay: #1d2128;
+  --surface-inset: #0f1115;
+  --surface-header: rgb(11 12 14 / 0.84);
+  --surface-translucent: rgb(255 255 255 / 0.025);
+  --surface-code: rgb(255 255 255 / 0.04);
+  --surface-dot: rgb(255 255 255 / 0.07);
+  --text-primary: #f4f6fa;
+  --text-secondary: #a8afbc;
+  --text-tertiary: #777f8e;
+  --border-subtle: rgb(255 255 255 / 0.06);
+  --border-default: #292d36;
+  --border-strong: #3b414c;
+  --border-interactive: rgb(134 160 255 / 0.5);
+  --border-accent-soft: rgb(134 160 255 / 0.35);
+  --shadow-card: 0 12px 32px rgb(0 0 0 / 0.24);
+  --shadow-raised: 0 24px 64px rgb(0 0 0 / 0.34);
+}
+
+/* The brand stays fixed across themes, so the accent and focus roles move to the darker
+   cobalt instead: the light link colour has to carry text contrast on white. */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --brand-primary-subtle: rgb(73 104 232 / 0.1);
+  --interaction-accent: #3857d6;
+  --focus-ring: #3857d6;
+  --focus-ring-soft: rgb(56 87 214 / 0.14);
+  --surface-base: #ffffff;
+  --surface-subtle: #f7f8fa;
+  --surface-raised: #ffffff;
+  --surface-overlay: #ffffff;
+  --surface-inset: #eff2f6;
+  --surface-header: rgb(255 255 255 / 0.84);
+  --surface-translucent: rgb(15 23 42 / 0.03);
+  --surface-code: rgb(15 23 42 / 0.04);
+  --surface-dot: rgb(15 23 42 / 0.08);
+  --text-primary: #15181d;
+  --text-secondary: #4b525e;
+  --text-tertiary: #626a77;
+  --border-subtle: rgb(15 23 42 / 0.08);
+  --border-default: #d0d5dd;
+  --border-strong: #b4bcc7;
+  --border-interactive: rgb(56 87 214 / 0.45);
+  --border-accent-soft: rgb(56 87 214 / 0.32);
+  --shadow-card: 0 12px 32px rgb(15 23 42 / 0.08);
+  --shadow-raised: 0 24px 64px rgb(15 23 42 / 0.12);
 }
 
 @theme inline {
@@ -80,7 +124,6 @@
   }
 
   html {
-    color-scheme: dark;
     font-family: var(--font-body);
     font-synthesis: none;
     scroll-behavior: smooth;
@@ -138,7 +181,7 @@
   code {
     border: 1px solid var(--border-default);
     border-radius: var(--radius-sm);
-    background: rgb(255 255 255 / 0.04);
+    background: var(--surface-code);
     padding: 0.1rem 0.35rem;
     font-size: 0.85em;
   }
@@ -151,7 +194,7 @@
     top: 0;
     min-height: var(--header-min-height);
     border-bottom: 1px solid var(--border-subtle);
-    background: rgb(11 12 14 / 0.84);
+    background: var(--surface-header);
     backdrop-filter: blur(16px);
   }
 
@@ -195,6 +238,32 @@
     font-size: 0.875rem;
     font-weight: 650;
     letter-spacing: -0.02em;
+  }
+
+  .site-header__actions {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .theme-toggle {
+    width: 2.5rem;
+    flex: none;
+    padding-inline: 0;
+  }
+
+  /* One control, two icons. The visible icon names the theme the click applies rather
+     than the theme already on screen, so the button reads as an action.
+     Qualified by the button because `.ui-icon` sets `display: block` at the same
+     specificity and is declared later in this layer. */
+  .theme-toggle .theme-toggle__icon {
+    display: none;
+  }
+
+  :root[data-theme="light"] .theme-toggle__icon--moon,
+  :root:not([data-theme="light"]) .theme-toggle__icon--sun {
+    display: block;
   }
 
   .site-header__count,
@@ -275,7 +344,7 @@
   .search-shell:focus-within {
     border-color: var(--focus-ring);
     background: var(--surface-raised);
-    box-shadow: 0 0 0 4px rgb(134 160 255 / 0.12);
+    box-shadow: 0 0 0 4px var(--focus-ring-soft);
   }
 
   .ui-icon {
@@ -406,7 +475,7 @@
   .component-card__link:hover,
   .component-card__link:focus-visible {
     transform: translateY(-2px);
-    border-color: rgb(134 160 255 / 0.5);
+    border-color: var(--border-interactive);
     box-shadow: var(--shadow-card);
   }
 
@@ -439,14 +508,14 @@
     display: grid;
     place-items: center;
     background-color: var(--surface-inset);
-    background-image: radial-gradient(circle, rgb(255 255 255 / 0.07) 1px, transparent 1px);
+    background-image: radial-gradient(circle, var(--surface-dot) 1px, transparent 1px);
     background-size: 16px 16px;
   }
 
   .preview-fallback span {
     width: 3.75rem;
     height: 1.75rem;
-    border: 1px solid rgb(134 160 255 / 0.35);
+    border: 1px solid var(--border-accent-soft);
     border-radius: var(--radius-full);
     background: var(--brand-primary-subtle);
   }
@@ -581,14 +650,14 @@
   .secondary-button,
   .variant-button {
     border: 1px solid var(--border-default);
-    background: rgb(255 255 255 / 0.025);
+    background: var(--surface-translucent);
     color: var(--text-secondary);
   }
 
   .secondary-button:hover,
   .variant-button:hover,
   .variant-button[aria-pressed="true"] {
-    border-color: rgb(134 160 255 / 0.48);
+    border-color: var(--border-interactive);
     color: var(--text-primary);
   }
 
@@ -658,7 +727,7 @@
   .tag {
     border: 1px solid var(--border-default);
     border-radius: var(--radius-full);
-    background: rgb(255 255 255 / 0.025);
+    background: var(--surface-translucent);
     padding: 0.32rem 0.65rem;
     color: var(--text-secondary);
     font-family: var(--font-code);
@@ -1048,6 +1117,11 @@
   .site-header .secondary-button {
     min-height: 2.25rem;
     padding-inline: 0.7rem;
+  }
+
+  .site-header .theme-toggle {
+    width: 2.25rem;
+    padding-inline: 0;
   }
 
   .component-detail {

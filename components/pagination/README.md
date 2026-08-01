@@ -102,9 +102,30 @@ Nothing. HTML has no pagination primitive, so unlike the form controls in this c
 there is nothing to fall back to. If a no-script path matters, server-render links inside
 the `nav`; the component replaces them when it runs.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the control follows the operating system. To pin it, narrow the
+`color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+`--pagination-on-accent` is the one colour that does not pair: the accent stays a
+saturated indigo in both themes, so white keeps its contrast on it either way.
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
-Current Chrome, Edge, Firefox, and Safari. Uses custom elements and `color-mix()`.
+Current Chrome, Edge, Firefox, and Safari. Uses custom elements, `color-mix()`, and
+`light-dark()`.
 
 ## Running the files
 

@@ -1,5 +1,8 @@
 :root {
-  color-scheme: light;
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -15,18 +18,17 @@ body {
 
 .pagination-demo-page,
 .pagination-demo-page body {
-  background: #0f1115;
-  color-scheme: dark;
+  background: light-dark(#f4f6fa, #0f1115);
 }
 
 ui-pagination {
-  --pagination-text: #3b4657;
-  --pagination-muted: #5f6878;
-  --pagination-border: #cbd5e1;
-  --pagination-hover: #eef1f6;
-  --pagination-accent: #4f46e5;
+  --pagination-text: light-dark(#3b4657, #c2cad8);
+  --pagination-muted: light-dark(#5f6878, #7d869a);
+  --pagination-border: light-dark(#cbd5e1, #3b414c);
+  --pagination-hover: light-dark(#eef1f6, #232833);
+  --pagination-accent: light-dark(#4f46e5, #4968e8);
   --pagination-on-accent: #ffffff;
-  --pagination-focus: #6366f1;
+  --pagination-focus: light-dark(#6366f1, #86a0ff);
   --pagination-size: 2.25rem;
   --pagination-radius: 9px;
 
@@ -146,8 +148,8 @@ ui-pagination[data-size='sm'] {
   padding: clamp(1.25rem, 4vw, 3rem);
   background:
     radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
-    #0f1115;
-  color: #f4f6fa;
+    light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
 }
 
 .pagination-demo__shell {
@@ -159,22 +161,22 @@ ui-pagination[data-size='sm'] {
   display: grid;
   gap: 1.1rem;
   padding: clamp(1rem, 2vw, 1.5rem);
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 18px;
-  background: #171a20;
-  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
 }
 
 .pagination-demo__label {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-weight: 650;
 }
 
 .pagination-demo__note {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   line-height: 1.5;
 }
@@ -186,9 +188,9 @@ ui-pagination[data-size='sm'] {
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.9rem 1rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 12px;
-  background: #10131a;
+  background: light-dark(#f7f8fa, #10131a);
 }
 
 .pagination-demo__frame--narrow {
@@ -200,22 +202,22 @@ ui-pagination[data-size='sm'] {
    download, and the page would arrive broken. */
 .pagination-demo__table-wrap {
   overflow-x: auto;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 12px;
-  background: #10131a;
+  background: light-dark(#f7f8fa, #10131a);
 }
 
 .pagination-demo__table {
   inline-size: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  color: #f4f6fa;
+  color: light-dark(#15181d, #f4f6fa);
   font-size: 0.875rem;
 }
 
 .pagination-demo__table caption {
   padding: 0.8rem 1rem;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-weight: 650;
   text-align: start;
@@ -223,15 +225,15 @@ ui-pagination[data-size='sm'] {
 
 .pagination-demo__table th,
 .pagination-demo__table td {
-  border-block-end: 1px solid #292d36;
+  border-block-end: 1px solid light-dark(#e6e9ef, #292d36);
   padding: 0.55rem 1rem;
   text-align: start;
   white-space: nowrap;
 }
 
 .pagination-demo__table thead th {
-  background: #1a1e26;
-  color: #a8afbc;
+  background: light-dark(#eef1f5, #1a1e26);
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-weight: 650;
 }
@@ -258,50 +260,38 @@ ui-pagination[data-size='sm'] {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
 }
 
 .pagination-demo__perpage select {
-  border: 1px solid #3b414c;
+  border: 1px solid light-dark(#cfd5de, #3b414c);
   border-radius: 8px;
-  background: #1d2128;
+  background: light-dark(#ffffff, #1d2128);
   padding: 0.3rem 0.5rem;
-  color: #f4f6fa;
+  color: light-dark(#15181d, #f4f6fa);
   font: inherit;
 }
 
 .pagination-demo__perpage select:focus-visible {
-  outline: 3px solid rgb(134 160 255 / 0.6);
+  outline: 3px solid light-dark(rgb(79 70 229 / 0.55), rgb(134 160 255 / 0.6));
   outline-offset: 2px;
 }
 
 .pagination-demo__range {
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
-}
-
-.pagination-demo-page ui-pagination {
-  --pagination-text: #c2cad8;
-  --pagination-muted: #7d869a;
-  --pagination-border: #3b414c;
-  --pagination-hover: #232833;
-  --pagination-accent: #4968e8;
-  --pagination-on-accent: #ffffff;
-  --pagination-focus: #86a0ff;
-
-  color-scheme: dark;
 }
 
 .pagination-demo__output {
   display: block;
   min-block-size: 2.5rem;
   padding: 0.75rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 10px;
-  background: #0b0c0e;
-  color: #f4f6fa;
+  background: light-dark(#f7f8fa, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
   font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
   overflow-wrap: anywhere;
   white-space: pre-wrap;

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="Two article cards side by side, one of them lifted under the pointer">
+  <defs>
+    <radialGradient id="glow" cx="12%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#4968e8" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#4968e8" stop-opacity="0" />
+    </radialGradient>
+    <clipPath id="left">
+      <rect x="60" y="66" width="230" height="106" rx="10" />
+    </clipPath>
+    <clipPath id="right">
+      <rect x="330" y="58" width="230" height="106" rx="10" />
+    </clipPath>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect width="640" height="360" fill="url(#glow)" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <rect x="60" y="66" width="230" height="238" rx="14" fill="#171a20" stroke="#2e3440" />
+    <g clip-path="url(#left)">
+      <rect x="60" y="66" width="230" height="106" fill="#2a2f3d" />
+      <rect x="86" y="86" width="70" height="86" rx="4" fill="#3d4557" />
+      <rect x="168" y="104" width="96" height="52" rx="4" fill="#4c5568" />
+    </g>
+    <text x="80" y="200" fill="#86a0ff" font-size="10" font-weight="700" letter-spacing="0.6">HARBOUR</text>
+    <text x="80" y="222" fill="#f4f6fa" font-size="14" font-weight="650">A quiet week in</text>
+    <text x="80" y="240" fill="#f4f6fa" font-size="14" font-weight="650">the harbour</text>
+    <text x="80" y="262" fill="#a8afbc" font-size="11">Boats came and went, and</text>
+    <text x="80" y="277" fill="#a8afbc" font-size="11">nobody wrote it down.</text>
+    <rect x="60" y="288" width="230" height="1" fill="#2e3440" />
+    <text x="80" y="300" fill="#a8afbc" font-size="10">14 March</text>
+
+    <rect x="326" y="54" width="238" height="246" rx="14" fill="#1c2029" stroke="#4f5f9e" />
+    <g clip-path="url(#right)">
+      <rect x="330" y="58" width="230" height="106" fill="#6b5f4e" />
+      <rect x="352" y="74" width="86" height="94" rx="4" fill="#f2ede2" />
+      <rect x="424" y="82" width="96" height="86" rx="4" fill="#fbf7ef" />
+    </g>
+    <text x="350" y="192" fill="#86a0ff" font-size="10" font-weight="700" letter-spacing="0.6">NOTEBOOKS</text>
+    <text x="350" y="214" fill="#f4f6fa" font-size="14" font-weight="650">What the field</text>
+    <text x="350" y="232" fill="#f4f6fa" font-size="14" font-weight="650">notes left out</text>
+    <text x="350" y="254" fill="#a8afbc" font-size="11">Every survey has a margin.</text>
+    <rect x="326" y="278" width="238" height="1" fill="#2e3440" />
+    <text x="350" y="294" fill="#a8afbc" font-size="10">2 April</text>
+
+    <path d="M470 214l0 30 8-8 6 12 6-3-6-12 11-1z" fill="#f4f6fa" stroke="#0f1115" stroke-width="2" stroke-linejoin="round" />
+  </g>
+</svg>

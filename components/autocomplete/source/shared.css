@@ -1,5 +1,8 @@
 :root {
-  color-scheme: light;
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -15,28 +18,31 @@ body {
 
 .autocomplete-demo-page,
 .autocomplete-demo-page body {
-  background: #0f1115;
-  color-scheme: dark;
+  background: light-dark(#f4f6fa, #0f1115);
 }
 
 ui-autocomplete {
-  --autocomplete-surface: #ffffff;
-  --autocomplete-surface-subtle: #f8fafc;
-  --autocomplete-text: #111827;
-  --autocomplete-muted: #5f6878;
-  --autocomplete-border: #cbd5e1;
-  --autocomplete-border-strong: #94a3b8;
-  --autocomplete-accent: #4f46e5;
-  --autocomplete-focus: #6366f1;
-  --autocomplete-danger: #b42318;
-  --autocomplete-chip: #eef2ff;
-  --autocomplete-mark: #fde68a;
-  --autocomplete-scrollbar-track: #eef2f7;
-  --autocomplete-scrollbar-thumb: #94a3b8;
+  --autocomplete-surface: light-dark(#ffffff, #171a20);
+  --autocomplete-surface-subtle: light-dark(#f8fafc, #1d2128);
+  --autocomplete-text: light-dark(#111827, #f4f6fa);
+  --autocomplete-muted: light-dark(#5f6878, #a8afbc);
+  --autocomplete-border: light-dark(#cbd5e1, #3b414c);
+  --autocomplete-border-strong: light-dark(#94a3b8, #5a6272);
+  --autocomplete-accent: light-dark(#4f46e5, #4968e8);
+  --autocomplete-focus: light-dark(#6366f1, #86a0ff);
+  --autocomplete-danger: light-dark(#b42318, #ff8e87);
+  --autocomplete-chip: light-dark(#eef2ff, #232a3d);
+  --autocomplete-mark: light-dark(#fde68a, #4b3f12);
+  /* The highlight is a pale wash in one theme and a deep one in the other, so what is
+     written on it cannot simply inherit the field's text colour. */
+  --autocomplete-mark-text: light-dark(#111827, #ffe9a8);
+  --autocomplete-scrollbar-track: light-dark(#eef2f7, #111318);
+  --autocomplete-scrollbar-thumb: light-dark(#94a3b8, #4a5260);
   --autocomplete-radius: 12px;
-  --autocomplete-shadow: 0 18px 48px rgb(15 23 42 / 0.18);
+  /* `light-dark()` resolves colours, not whole values, so the offset and blur are shared
+     and only the shadow's colour changes with the theme. */
+  --autocomplete-shadow: 0 20px 52px light-dark(rgb(15 23 42 / 0.18), rgb(0 0 0 / 0.42));
 
-  color-scheme: light;
   display: block;
   max-inline-size: 100%;
   color: var(--autocomplete-text);
@@ -303,7 +309,7 @@ ui-autocomplete {
 
 .autocomplete__mark {
   background: var(--autocomplete-mark);
-  color: inherit;
+  color: var(--autocomplete-mark-text);
   font-weight: 700;
 }
 
@@ -359,8 +365,8 @@ ui-autocomplete {
   padding: clamp(1.25rem, 4vw, 3rem);
   background:
     radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
-    #0f1115;
-  color: #f4f6fa;
+    light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
 }
 
 .autocomplete-demo__shell {
@@ -371,50 +377,27 @@ ui-autocomplete {
   display: grid;
   gap: 1rem;
   padding: clamp(1rem, 2vw, 1.5rem);
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 18px;
-  background: rgb(23 26 32 / 0.88);
-  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+  background: light-dark(rgb(255 255 255 / 0.92), rgb(23 26 32 / 0.88));
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
 }
 
 .autocomplete-demo__label {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-weight: 650;
-}
-
-.autocomplete-demo ui-autocomplete {
-  --autocomplete-surface: #171a20;
-  --autocomplete-surface-subtle: #1d2128;
-  --autocomplete-text: #f4f6fa;
-  --autocomplete-muted: #a8afbc;
-  --autocomplete-border: #3b414c;
-  --autocomplete-border-strong: #5a6272;
-  --autocomplete-accent: #4968e8;
-  --autocomplete-focus: #86a0ff;
-  --autocomplete-danger: #ff8e87;
-  --autocomplete-chip: #232a3d;
-  --autocomplete-mark: #4b3f12;
-  --autocomplete-scrollbar-track: #111318;
-  --autocomplete-scrollbar-thumb: #4a5260;
-  --autocomplete-shadow: 0 22px 56px rgb(0 0 0 / 0.42);
-
-  color-scheme: dark;
-}
-
-.autocomplete-demo ui-autocomplete .autocomplete__mark {
-  color: #ffe9a8;
 }
 
 .autocomplete-demo__output {
   display: block;
   min-block-size: 2.75rem;
   padding: 0.75rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 10px;
-  background: #0b0c0e;
-  color: #f4f6fa;
+  background: light-dark(#f7f8fa, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
   font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
   overflow-wrap: anywhere;
 }

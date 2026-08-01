@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en" class="locator-map-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Locator Map - Google Maps example</title>
+    <link rel="stylesheet" href="source/shared.css" />
+    <style>
+      /* Google owns the inside of the frame, so its own container has to fill it. The frame
+         itself still belongs to the component: it carries the tab stop, the size and the
+         clipping. */
+      .google-surface {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* The frame's proportions are a token precisely so a different surface can change them.
+         The drawing is a tall narrow country; a street map wants to be wider than it is high. */
+      ui-locator-map {
+        --locator-ratio: 4 / 3;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      NOT part of the catalog, and deliberately so.
+
+      Every component in this collection is checked for making no external request, must carry
+      no API key, and must work as static files with no network. Google Maps fails all three,
+      so it cannot ship inside a component. This page is the other half of that arrangement:
+      the component's map surface is pluggable, and here a real Google map is plugged into it.
+
+      TO RUN THIS:
+
+      1. In the Google Cloud Console, create a project and enable "Maps JavaScript API".
+      2. Create an API key. Google requires a billing account even for the free tier.
+      3. Restrict the key by HTTP referrer to the sites that may use it.
+      4. Replace PASTE_YOUR_API_KEY_HERE below with the key.
+      5. Serve this folder over HTTP and open this file. ES modules do not load from file://.
+
+      Until step 4 is done, Google draws its own "this page can't load Google Maps correctly"
+      watermark. Everything else on the page — the search, the ranking, the directory, the
+      announcements — works regardless, because none of it is Google's.
+    -->
+    <main class="locator-map-demo">
+      <div class="locator-map-demo__shell">
+        <section class="locator-map-demo__card">
+          <p class="locator-map-demo__label">The same component, over a real Google map</p>
+          <p class="locator-map-demo__note">
+            Nothing about the component changed. It was handed an adapter that drives
+            <code>google.maps.Map</code> instead of the drawing, and it does not know or care
+            which it has. Search for an office and Google's own map flies to it.
+          </p>
+          <p class="locator-map-demo__note" id="key-warning" hidden>
+            No API key has been set yet, so Google will refuse to draw the map. Open this
+            file and replace <code>PASTE_YOUR_API_KEY_HERE</code> with your own key.
+          </p>
+
+          <ui-locator-map id="offices" focus-zoom="16">
+            <ul class="locator-map__places">
+              <li data-lat="21.0235" data-lon="105.8573" data-region="north">
+                <h3>Ha Noi head office</h3>
+                <p>72 Le Thanh Tong, Cua Nam</p>
+              </li>
+              <li data-lat="20.8615" data-lon="106.6906" data-region="north">
+                <h3>Hai Phong depot</h3>
+                <p>18 Dien Bien Phu, Gia Vien</p>
+              </li>
+              <li data-lat="16.4629" data-lon="107.5855" data-region="central">
+                <h3>Hue studio</h3>
+                <p>3 Le Loi, Vinh Ninh</p>
+              </li>
+              <li data-lat="16.0739" data-lon="108.2246" data-region="central">
+                <h3>Da Nang office</h3>
+                <p>210 Bach Dang, Hai Chau</p>
+              </li>
+              <li data-lat="12.2226" data-lon="109.2024" data-region="central">
+                <h3>Nha Trang office</h3>
+                <p>40 Tran Phu, Phuoc Hoa</p>
+              </li>
+              <li data-lat="10.7758" data-lon="106.7027" data-region="south">
+                <h3>Ho Chi Minh City office</h3>
+                <p>65 Le Loi, Sai Gon</p>
+              </li>
+              <li data-lat="10.0336" data-lon="105.7844" data-region="south">
+                <h3>Can Tho branch</h3>
+                <p>12 Hoa Binh, Ninh Kieu</p>
+              </li>
+            </ul>
+          </ui-locator-map>
+
+          <p class="locator-map-demo__note">
+            <code>focus-zoom</code> is <code>14</code> here rather than the drawing's
+            <code>4.5</code>: Google's zoom levels are its own scale, where roughly
+            <code>14</code> is a street and <code>11</code> a city.
+          </p>
+
+          <output class="locator-map-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import './source/shared.js';
+      import { initializeLocatorMapDemo } from './source/demo.js';
+
+      const API_KEY = 'PASTE_YOUR_API_KEY_HERE';
+
+      /**
+       * The whole of what it takes to put Google Maps behind this component.
+       *
+       * Seven members. Only `flyTo` is interesting, and it is two lines — the rest is
+       * bookkeeping that any provider needs.
+       */
+      class GoogleMap {
+        constructor() {
+          this.markers = [];
+        }
+
+        mount(frame, { onSelect }) {
+          this.onSelect = onSelect;
+
+          this.surface = document.createElement('div');
+          this.surface.className = 'google-surface';
+          frame.append(this.surface);
+
+          this.map = new google.maps.Map(this.surface, {
+            center: { lat: 16.0, lng: 106.0 },
+            zoom: 5,
+            disableDefaultUI: false,
+          });
+        }
+
+        update({ places, selected }) {
+          this.markers.forEach((marker) => marker.setMap(null));
+
+          this.markers = places.map((place) => {
+            const marker = new google.maps.Marker({
+              map: this.map,
+              position: { lat: place.lat, lng: place.lon },
+              title: place.name,
+              zIndex: place.index === selected ? 2 : 1,
+            });
+
+            marker.addListener('click', () => this.onSelect(place.index));
+            return marker;
+          });
+        }
+
+        flyTo(place, { zoom }) {
+          this.map.panTo({ lat: place.lat, lng: place.lon });
+          this.map.setZoom(zoom);
+        }
+
+        reset() {
+          if (this.markers.length === 0) {
+            return;
+          }
+
+          const bounds = new google.maps.LatLngBounds();
+          this.markers.forEach((marker) => bounds.extend(marker.getPosition()));
+          this.map.fitBounds(bounds);
+        }
+
+        zoomBy(factor) {
+          this.map.setZoom(this.map.getZoom() + (factor > 1 ? 1 : -1));
+        }
+
+        get view() {
+          return { center: this.map.getCenter()?.toJSON(), zoom: this.map.getZoom() };
+        }
+
+        destroy() {
+          this.markers.forEach((marker) => marker.setMap(null));
+          this.surface?.remove();
+        }
+      }
+
+      /** Loads Google's script. The only place in this repository that reaches the network. */
+      function loadGoogleMaps(key) {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}`;
+          script.async = true;
+          script.onload = resolve;
+          script.onerror = () => reject(new Error('Google Maps did not load'));
+          document.head.append(script);
+        });
+      }
+
+      initializeLocatorMapDemo();
+
+      if (API_KEY === 'PASTE_YOUR_API_KEY_HERE') {
+        document.getElementById('key-warning').hidden = false;
+      }
+
+      // The page starts on the drawing and hands over once Google has arrived, which is what
+      // the component's swappable adapter is for: the search never loses its place.
+      try {
+        await loadGoogleMaps(API_KEY);
+        document.getElementById('offices').adapter = new GoogleMap();
+      } catch (error) {
+        document.getElementById('key-warning').hidden = false;
+        document.getElementById('key-warning').textContent = `${error.message}. The drawing is still here, and the search still works.`;
+      }
+    </script>
+  </body>
+</html>

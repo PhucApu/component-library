@@ -1,5 +1,8 @@
 :root {
-  color-scheme: light;
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -15,19 +18,21 @@ body {
 
 .breadcrumbs-demo-page,
 .breadcrumbs-demo-page body {
-  background: #0f1115;
-  color-scheme: dark;
+  background: light-dark(#f4f6fa, #0f1115);
 }
 
 ui-breadcrumbs {
   --breadcrumbs-separator: "/";
-  --breadcrumbs-text: #5f6878;
-  --breadcrumbs-current: #111827;
-  --breadcrumbs-link: #3b4657;
-  --breadcrumbs-link-hover: #111827;
-  --breadcrumbs-divider: #98a2b3;
-  --breadcrumbs-focus: #6366f1;
-  --breadcrumbs-hover-surface: #eef1f6;
+  --breadcrumbs-text: light-dark(#5f6878, #a8afbc);
+  --breadcrumbs-current: light-dark(#111827, #f4f6fa);
+  --breadcrumbs-link: light-dark(#3b4657, #c2cad8);
+  --breadcrumbs-link-hover: light-dark(#111827, #ffffff);
+  /* The light half is darker than the rest of this scale on purpose: the divider also
+     draws the expand button's edge, which is a user interface boundary and has to hold
+     3:1 rather than the 1.5:1 a hairline separator would get away with. */
+  --breadcrumbs-divider: light-dark(#7c8699, #6f7889);
+  --breadcrumbs-focus: light-dark(#6366f1, #86a0ff);
+  --breadcrumbs-hover-surface: light-dark(#eef1f6, #232833);
 
   display: block;
   color: var(--breadcrumbs-text);
@@ -154,8 +159,8 @@ ui-breadcrumbs[data-truncate] .breadcrumbs__list li:last-child a {
   padding: clamp(1.25rem, 4vw, 3rem);
   background:
     radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
-    #0f1115;
-  color: #f4f6fa;
+    light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
 }
 
 .breadcrumbs-demo__shell {
@@ -166,57 +171,45 @@ ui-breadcrumbs[data-truncate] .breadcrumbs__list li:last-child a {
   display: grid;
   gap: 1.25rem;
   padding: clamp(1rem, 2vw, 1.5rem);
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 18px;
-  background: #171a20;
-  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
 }
 
 .breadcrumbs-demo__label {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-weight: 650;
 }
 
 .breadcrumbs-demo__note {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   line-height: 1.5;
 }
 
 .breadcrumbs-demo__frame {
   padding: 0.9rem 1rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 12px;
-  background: #10131a;
+  background: light-dark(#f7f8fa, #10131a);
 }
 
 .breadcrumbs-demo__frame--narrow {
   inline-size: min(100%, 20rem);
 }
 
-.breadcrumbs-demo ui-breadcrumbs {
-  --breadcrumbs-text: #a8afbc;
-  --breadcrumbs-current: #f4f6fa;
-  --breadcrumbs-link: #c2cad8;
-  --breadcrumbs-link-hover: #ffffff;
-  --breadcrumbs-divider: #6f7889;
-  --breadcrumbs-focus: #86a0ff;
-  --breadcrumbs-hover-surface: #232833;
-
-  color-scheme: dark;
-}
-
 .breadcrumbs-demo__output {
   display: block;
   min-block-size: 2.5rem;
   padding: 0.75rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 10px;
-  background: #0b0c0e;
-  color: #f4f6fa;
+  background: light-dark(#f7f8fa, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
   font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
   overflow-wrap: anywhere;
 }

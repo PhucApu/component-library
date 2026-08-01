@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" class="locator-map-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="One office, no offices at all, and a map with the search taken off." />
+    <title>Locator Map - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="locator-map-demo">
+      <div class="locator-map-demo__shell">
+        <section class="locator-map-demo__card">
+          <p class="locator-map-demo__label">One office</p>
+          <p class="locator-map-demo__note">
+            Nothing about the map changes; there is simply one marker. The search stays,
+            because a search that disappears below some number of results is a search nobody
+            can rely on.
+          </p>
+
+          <ui-locator-map focus-zoom="16">
+            <ul class="locator-map__places">
+              <li data-lat="16.0739" data-lon="108.2246" data-region="central">
+                <h3>Da Nang office</h3>
+                <p>210 Bach Dang, Hai Chau</p>
+              </li>
+            </ul>
+          </ui-locator-map>
+
+          <p class="locator-map-demo__label">No offices at all</p>
+          <p class="locator-map-demo__note">
+            The map still loads and still shows the country, but there is nothing to find, so
+            the directory goes rather than sitting there empty.
+          </p>
+
+          <ui-locator-map no-search focus-zoom="16">
+            <ul class="locator-map__places"></ul>
+          </ui-locator-map>
+
+          <p class="locator-map-demo__label">Without the search</p>
+          <p class="locator-map-demo__note">
+            <code>no-search</code> leaves the map, the markers, the directory and the keyboard
+            alone. It is for a page that already has a search of its own.
+          </p>
+
+          <ui-locator-map no-search focus-zoom="16">
+            <ul class="locator-map__places">
+              <li data-lat="21.0235" data-lon="105.8573" data-region="north">
+                <h3>Ha Noi head office</h3>
+                <p>72 Le Thanh Tong, Cua Nam</p>
+              </li>
+              <li data-lat="10.7758" data-lon="106.7027" data-region="south">
+                <h3>Ho Chi Minh City office</h3>
+                <p>65 Le Loi, Sai Gon</p>
+              </li>
+            </ul>
+          </ui-locator-map>
+
+          <p class="locator-map-demo__label">Holding still</p>
+          <p class="locator-map-demo__note">
+            Under <code>prefers-reduced-motion: reduce</code> the flight is not slowed down,
+            it is removed: the map arrives at the office rather than travelling there.
+            Slowing a movement down is answering a different request from the one that was
+            made.
+          </p>
+
+          <output class="locator-map-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeLocatorMapDemo } from '../../demo.js';
+      import { attachRealMap } from '../../real-map.js';
+
+      initializeLocatorMapDemo();
+      document.querySelectorAll('ui-locator-map').forEach((map) => attachRealMap(map));
+    </script>
+  </body>
+</html>

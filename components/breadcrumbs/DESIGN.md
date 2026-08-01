@@ -16,15 +16,32 @@ This is the same decision as Radio Group, Text Field, and Switch.
 
 Every token is defined by the component. Nothing is inherited from the catalog.
 
-| Token | Light | Role |
-|---|---|---|
-| `--breadcrumbs-separator` | `"/"` | The divider glyph |
-| `--breadcrumbs-link` | `#3b4657` | Levels above the current one |
-| `--breadcrumbs-link-hover` | `#111827` | Hovered level |
-| `--breadcrumbs-current` | `#111827` | The current page |
-| `--breadcrumbs-divider` | `#98a2b3` | The divider colour |
-| `--breadcrumbs-hover-surface` | `#eef1f6` | Hover background |
-| `--breadcrumbs-focus` | `#6366f1` | Focus ring |
+Each colour token is a `light-dark()` pair, so which half a browser uses follows the
+page's `color-scheme` rather than a class the author has to remember to set.
+
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--breadcrumbs-separator` | `"/"` | | The divider glyph |
+| `--breadcrumbs-link` | `#3b4657` | `#c2cad8` | Levels above the current one |
+| `--breadcrumbs-link-hover` | `#111827` | `#ffffff` | Hovered level |
+| `--breadcrumbs-current` | `#111827` | `#f4f6fa` | The current page |
+| `--breadcrumbs-divider` | `#7c8699` | `#6f7889` | The divider colour |
+| `--breadcrumbs-hover-surface` | `#eef1f6` | `#232833` | Hover background |
+| `--breadcrumbs-focus` | `#6366f1` | `#86a0ff` | Focus ring |
+
+The divider carries two jobs at once. As the glyph between levels it is decorative, but it
+also draws the expand button's edge, which is a user interface boundary and owes `3:1`.
+The light half is therefore darker than a hairline separator would need: `#7c8699` reaches
+`3.45:1` where the earlier `#98a2b3` reached `2.43:1`.
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
 
 ## 4. The divider is never read aloud
 

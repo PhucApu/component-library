@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "card",
+  "version": "0.1.0",
+  "name": "Card",
+  "description": "A framework-free Web Component for article and product cards: a whole-card link that keeps its name, secondary actions that stay reachable, and hover treatments that answer the keyboard too.",
+  "group": "data-display",
+  "categories": ["data-display", "layout"],
+  "tags": ["card", "article", "product", "hover", "stretched-link", "web-component", "accessible"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "An article card, and the whole-card link that keeps the title as its name.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "effects",
+      "name": "Effects",
+      "description": "The five hover treatments, each of which answers focus as well as the pointer.",
+      "entry": "source/variants/effects/index.html"
+    },
+    {
+      "id": "product",
+      "name": "Product",
+      "description": "Price, badge and rating, with actions that have to sit above the whole-card link.",
+      "entry": "source/variants/product/index.html"
+    },
+    {
+      "id": "horizontal",
+      "name": "Horizontal",
+      "description": "The picture beside the words, and a card with no picture at all.",
+      "entry": "source/variants/horizontal/index.html"
+    },
+    {
+      "id": "grid",
+      "name": "Grid",
+      "description": "A row of cards of equal height, with pinned footers and clamped descriptions.",
+      "entry": "source/variants/grid/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "Loading, unavailable and current, each said in more than colour.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

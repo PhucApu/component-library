@@ -233,17 +233,27 @@ test('enabling a link chip again restores its destination', async ({ page }) => 
   await expect(anchor).not.toHaveAttribute('aria-disabled', /.*/);
 });
 
-test('every intent meets the contrast minimum for its label', async ({ page }) => {
-  await page.goto(`${COMPONENT_BASE}/appearance/index.html`);
-  await page.waitForFunction(() => customElements.get('ui-chip'));
+// Both themes, because every colour is a light-dark() pair and the browser picks the half
+// from the colour scheme. Measuring only the default would leave one palette unchecked.
+for (const colorScheme of ['light', 'dark']) {
+  test(`every intent meets the contrast minimum for its label in the ${colorScheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme });
+    await page.goto(`${COMPONENT_BASE}/appearance/index.html`);
+    await page.waitForFunction(() => customElements.get('ui-chip'));
 
-  const measured = await measureContrast(page);
-  expect(measured.length).toBeGreaterThan(9);
+    const measured = await measureContrast(page);
+    expect(measured.length).toBeGreaterThan(9);
 
-  for (const { appearance, intent, ratio } of measured) {
-    expect(ratio, `${appearance} ${intent} contrast`).toBeGreaterThanOrEqual(4.5);
-  }
-});
+    for (const { appearance, intent, ratio } of measured) {
+      expect(
+        ratio,
+        `${appearance} ${intent} contrast in the ${colorScheme} theme`,
+      ).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+}
 
 test('rows of chips wrap on a narrow screen', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });

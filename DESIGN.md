@@ -1,7 +1,7 @@
 # Component UI Collection — Design System
 
 > **Name:** Curated Precision
-> **Version:** 1.4.0
+> **Version:** 1.5.0
 > **Scope:** Catalog homepage and component detail page
 
 ## 1. Purpose and boundary
@@ -20,31 +20,57 @@ component owns its design tokens and must remain usable without catalog CSS or J
 
 ## 3. Visual direction
 
-The direction is **quiet technical catalog**: near-black canvas, stepped neutral surfaces,
-fine borders, cobalt actions, and cool blue focus or link accents. Do not use page glows,
-gradient text, decorative autoplay, or a competing visual identity.
+The direction is **quiet technical catalog**: stepped neutral surfaces, fine borders, cobalt
+actions, and cool blue focus or link accents. Do not use page glows, gradient text,
+decorative autoplay, or a competing visual identity. The catalog ships both a dark and a
+light theme and reads the same in each; the light theme is the same catalog on a white
+canvas, not a second visual identity.
 
 ### Core colors
 
-| Role | Value |
-|---|---|
-| Base surface | `#0B0C0E` |
-| Subtle surface | `#111318` |
-| Raised surface | `#171A20` |
-| Overlay surface | `#1D2128` |
-| Default border | `#292D36` |
-| Strong border | `#3B414C` |
-| Primary text | `#F4F6FA` |
-| Secondary text | `#A8AFBC` |
-| Tertiary text | `#777F8E` |
-| Brand | `#4968E8` |
-| Brand hover | `#4D6BE3` |
-| Brand active | `#3857D6` |
-| Link | `#91A8FF` |
-| Focus | `#86A0FF` |
+| Role | Dark | Light |
+|---|---|---|
+| Base surface | `#0B0C0E` | `#FFFFFF` |
+| Subtle surface | `#111318` | `#F7F8FA` |
+| Raised surface | `#171A20` | `#FFFFFF` |
+| Overlay surface | `#1D2128` | `#FFFFFF` |
+| Inset surface | `#0F1115` | `#EFF2F6` |
+| Default border | `#292D36` | `#D0D5DD` |
+| Strong border | `#3B414C` | `#B4BCC7` |
+| Primary text | `#F4F6FA` | `#15181D` |
+| Secondary text | `#A8AFBC` | `#4B525E` |
+| Tertiary text | `#777F8E` | `#626A77` |
+| Brand | `#4968E8` | `#4968E8` |
+| Brand hover | `#4D6BE3` | `#4D6BE3` |
+| Brand active | `#3857D6` | `#3857D6` |
+| Link | `#91A8FF` | `#3857D6` |
+| Focus | `#86A0FF` | `#3857D6` |
 
-Primary, secondary, and tertiary text meet WCAG AA on the base surface. White on brand remains
-at least `4.5:1`.
+Primary, secondary, and tertiary text meet WCAG AA on their own base surface. White on
+brand remains at least `4.5:1`, which is why brand does not move between themes. The link
+and focus roles do move: the pale blue that carries a dark canvas reaches only `1.9:1` on
+white, so the light theme takes those roles down to the brand-active cobalt at `5.99:1`.
+
+Measured on the light canvas: secondary text `7.87:1`, tertiary text `5.46:1`, link and
+eyebrow `5.99:1`.
+
+### Themes
+
+- Every catalog colour is a semantic token declared once per theme. A rule names a token;
+  it never names a hex value, an `rgb()` literal, or a translucent white.
+- `:root[data-theme="light"]` and `:root[data-theme="dark"]` carry the two sets, and dark
+  also carries the unqualified declarations. The catalog builds its grid from JavaScript,
+  so a document that never receives `data-theme` never had a catalog to theme, and the
+  authored dark surface is the safe resting state.
+- An inline bootstrap in each page head resolves the theme before first paint: a stored
+  choice if there is one, otherwise `prefers-color-scheme`. Resolving it from a module
+  would repaint a page the browser has already drawn.
+- The header carries one two-state toggle. It stores the choice under
+  `component-ui-theme`, and its icon and accessible name state the theme the click
+  applies rather than the theme already on screen.
+- An explicit choice outranks the operating system until it is cleared. The catalog only
+  keeps following the system while nothing is stored.
+- Both themes ship the same states, the same borders, and the same focus treatment.
 
 ## 4. Typography and icons
 
@@ -99,6 +125,25 @@ A component panel opens inside the iframe and cannot escape it, so a height that
 would reflow the whole page around the stage. The stage never injects catalog tokens into
 component source.
 
+### Telling a preview which theme is showing
+
+A preview owns its own palette, so the catalog cannot restyle it and must ask instead. On
+load and on every theme change the stage sets `color-scheme` on the frame element and
+posts `{ type: 'ui-theme', theme: 'light' | 'dark' }` to the frame's own origin.
+
+The message is the whole contract. It carries a theme keyword and no catalog identity, no
+token, and no stylesheet, so a component that answers it gains no dependency on the
+catalog: the same listener serves any host that embeds it, and a component opened on its
+own never receives the message and keeps following `prefers-color-scheme`. A component
+that ignores the message keeps its own colours, and the stage stays correct either way.
+
+Answering it is therefore optional per component and is recorded in that component's
+`DESIGN.md`. Components that answer it today: `breadcrumbs`, `card`, `chip`, `pagination`,
+`radio-group`, `switch`, `table`, `text-field`.
+
+Still to convert: `accordion`, `autocomplete`, `carousel`, `drawer`, `lightbox`,
+`locator-map`, `snackbar`, `temporal-picker`.
+
 ## 8. Source Package
 
 Use native `<details>/<summary>` controls. Only one panel may remain open. Source Code starts
@@ -137,5 +182,10 @@ add Markdown rendering or syntax highlighting dependencies.
 Hover movement is limited to `translateY(-2px)`. Prefer transform and opacity transitions from
 `120–180ms`. Respect `prefers-reduced-motion` globally. Static thumbnails never animate.
 
+Switching theme crosses the existing `120–180ms` colour transitions rather than adding a
+transition of its own, and `prefers-reduced-motion` already drops those to nothing.
+
 Update this document with any shared palette, typography, information architecture, or spacing
-change. Component-level decisions belong in `components/<id>/DESIGN.md`.
+change. A new theme token is a shared palette change and belongs here. Component-level
+decisions, including whether a component answers the preview theme message, belong in
+`components/<id>/DESIGN.md`.

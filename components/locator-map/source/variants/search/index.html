@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en" class="locator-map-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Ranking, marking, the keyboard, and what happens when nothing matches." />
+    <title>Locator Map - Search</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="locator-map-demo">
+      <div class="locator-map-demo__shell">
+        <section class="locator-map-demo__card">
+          <p class="locator-map-demo__label">What comes first, and why</p>
+          <p class="locator-map-demo__note">
+            Type <code>ha</code>. A name that <em>starts</em> with what you typed comes before
+            one that merely contains it, and both come before a match found only in the
+            street: somebody typing two letters means the city, not an address that happens to
+            hold them.
+          </p>
+          <p class="locator-map-demo__note">
+            Type <code>loi</code> to see the third kind — no office is called that, but two
+            are on a street that is.
+          </p>
+
+          <ui-locator-map focus-zoom="16">
+            <ul class="locator-map__places">
+              <li data-lat="21.0235" data-lon="105.8573" data-region="north">
+                <h3>Ha Noi head office</h3>
+                <p>72 Le Thanh Tong, Cua Nam</p>
+              </li>
+              <li data-lat="20.8615" data-lon="106.6906" data-region="north">
+                <h3>Hai Phong depot</h3>
+                <p>18 Dien Bien Phu, Gia Vien</p>
+              </li>
+              <li data-lat="20.9517" data-lon="107.0429" data-region="north">
+                <h3>Ha Long site</h3>
+                <p>28 Ha Long, Bai Chay</p>
+              </li>
+              <li data-lat="18.6791" data-lon="105.6854" data-region="central">
+                <h3>Vinh branch</h3>
+                <p>145 Nguyen Van Cu, Thanh Vinh</p>
+              </li>
+              <li data-lat="16.4629" data-lon="107.5855" data-region="central">
+                <h3>Hue studio</h3>
+                <p>3 Le Loi, Vinh Ninh</p>
+              </li>
+              <li data-lat="16.0739" data-lon="108.2246" data-region="central">
+                <h3>Da Nang office</h3>
+                <p>210 Bach Dang, Hai Chau</p>
+              </li>
+              <li data-lat="13.7625" data-lon="109.2215" data-region="central">
+                <h3>Quy Nhon office</h3>
+                <p>90 An Duong Vuong, Quy Nhon</p>
+              </li>
+              <li data-lat="10.7758" data-lon="106.7027" data-region="south">
+                <h3>Ho Chi Minh City office</h3>
+                <p>65 Le Loi, Sai Gon</p>
+              </li>
+              <li data-lat="10.0336" data-lon="105.7844" data-region="south">
+                <h3>Can Tho branch</h3>
+                <p>12 Hoa Binh, Ninh Kieu</p>
+              </li>
+            </ul>
+          </ui-locator-map>
+
+          <p class="locator-map-demo__label">The keyboard, and the empty answer</p>
+          <p class="locator-map-demo__note">
+            <kbd>&darr;</kbd> and <kbd>&uarr;</kbd> move through the results,
+            <kbd>Enter</kbd> chooses, <kbd>Escape</kbd> closes the list. Type something that
+            matches nothing — <code>zzz</code> — and the list says so rather than vanishing,
+            which would leave you wondering whether it was still working.
+          </p>
+
+          <p class="locator-map-demo__label">Marks that are not in this page</p>
+          <p class="locator-map-demo__note">
+            The search folds both sides before comparing, so a consumer whose own data carries
+            Vietnamese marks can be searched without typing any: every tone and vowel mark
+            comes off, and <code>d with stroke</code> is mapped by hand because it is one
+            letter rather than a letter with something added, and no amount of normalising
+            takes it apart. The match is then marked on the folded text but cut from the
+            original, so the result is still shown written the way it was written.
+          </p>
+          <p class="locator-map-demo__note">
+            None of that can be shown here: this repository keeps its own text unaccented and
+            a check enforces it. The folding is covered by unit tests instead, which spell the
+            marked letters as escaped code points.
+          </p>
+
+          <output class="locator-map-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeLocatorMapDemo } from '../../demo.js';
+      import { attachRealMap } from '../../real-map.js';
+
+      initializeLocatorMapDemo();
+      document.querySelectorAll('ui-locator-map').forEach((map) => attachRealMap(map));
+    </script>
+  </body>
+</html>

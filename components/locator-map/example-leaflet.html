@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en" class="locator-map-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Locator Map - Leaflet example</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="source/shared.css" />
+    <style>
+      /* Leaflet owns the inside of the frame, so its container has to fill it. The frame
+         itself still belongs to the component: it carries the tab stop, the size and the
+         clipping. */
+      .leaflet-surface {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* The frame's proportions are a token precisely so a different surface can change them.
+         The drawing is a tall narrow country; a street map wants to be wider than it is high. */
+      ui-locator-map {
+        --locator-ratio: 4 / 3;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      NOT part of the catalog, and deliberately so.
+
+      Every component in this collection is checked for making no external request and must
+      work as static files with no network, so no map provider can ship inside one. This page
+      is the other half of that arrangement: the component's map surface is pluggable, and
+      here a real Leaflet map is plugged into it.
+
+      TO RUN THIS: serve this folder over HTTP and open the file. That is all — Leaflet and
+      OpenStreetMap need no API key and no billing account, which is the whole reason this
+      example exists alongside the Google one.
+
+      ON THE TILES: these come from OpenStreetMap's own servers, which are donated and have a
+      usage policy that asks you not to build a product on them. For anything real, take the
+      same adapter and point `L.tileLayer` at a provider you pay — the rest of this file does
+      not change.
+    -->
+    <main class="locator-map-demo">
+      <div class="locator-map-demo__shell">
+        <section class="locator-map-demo__card">
+          <p class="locator-map-demo__label">The same component, over a real Leaflet map</p>
+          <p class="locator-map-demo__note">
+            Nothing about the component changed. It was handed an adapter that drives Leaflet
+            instead of the drawing, and it does not know or care which it has. Search for an
+            office and the map flies to it — Leaflet has a flight of its own, so the movement
+            comes free.
+          </p>
+
+          <ui-locator-map id="offices" focus-zoom="16">
+            <ul class="locator-map__places">
+              <li data-lat="21.0235" data-lon="105.8573" data-region="North">
+                <h3>Ha Noi head office</h3>
+                <p>72 Le Thanh Tong, Cua Nam</p>
+              </li>
+              <li data-lat="20.8615" data-lon="106.6906" data-region="North">
+                <h3>Hai Phong depot</h3>
+                <p>18 Dien Bien Phu, Gia Vien</p>
+              </li>
+              <li data-lat="16.4629" data-lon="107.5855" data-region="Central">
+                <h3>Hue studio</h3>
+                <p>3 Le Loi, Vinh Ninh</p>
+              </li>
+              <li data-lat="16.0739" data-lon="108.2246" data-region="Central">
+                <h3>Da Nang office</h3>
+                <p>210 Bach Dang, Hai Chau</p>
+              </li>
+              <li data-lat="12.2226" data-lon="109.2024" data-region="Central">
+                <h3>Nha Trang office</h3>
+                <p>40 Tran Phu, Phuoc Hoa</p>
+              </li>
+              <li data-lat="10.7758" data-lon="106.7027" data-region="South">
+                <h3>Ho Chi Minh City office</h3>
+                <p>65 Le Loi, Sai Gon</p>
+              </li>
+              <li data-lat="10.0336" data-lon="105.7844" data-region="South">
+                <h3>Can Tho branch</h3>
+                <p>12 Hoa Binh, Ninh Kieu</p>
+              </li>
+            </ul>
+          </ui-locator-map>
+
+          <p class="locator-map-demo__note">
+            <code>focus-zoom</code> is <code>14</code> here rather than the drawing's
+            <code>4.5</code>: Leaflet's zoom levels are the standard tile scale, where roughly
+            <code>14</code> is a street and <code>11</code> a city.
+          </p>
+
+          <output class="locator-map-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module">
+      import './source/shared.js';
+      import { initializeLocatorMapDemo } from './source/demo.js';
+
+      /**
+       * The whole of what it takes to put Leaflet behind this component.
+       *
+       * Seven members. `flyTo` is one line, because Leaflet already knows how to fly; the
+       * rest is bookkeeping any provider needs.
+       */
+      class LeafletMap {
+        mount(frame, { onSelect }) {
+          this.onSelect = onSelect;
+
+          this.surface = document.createElement('div');
+          this.surface.className = 'leaflet-surface';
+          frame.append(this.surface);
+
+          this.map = L.map(this.surface).setView([16, 106], 5);
+
+          L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors',
+          }).addTo(this.map);
+
+          this.pins = L.layerGroup().addTo(this.map);
+        }
+
+        update({ places }) {
+          this.pins.clearLayers();
+          this.bounds = [];
+
+          places.forEach((place) => {
+            const position = [place.lat, place.lon];
+            this.bounds.push(position);
+
+            L.marker(position, { title: place.name })
+              .on('click', () => this.onSelect(place.index))
+              .addTo(this.pins);
+          });
+        }
+
+        flyTo(place, { zoom, reduced }) {
+          const position = [place.lat, place.lon];
+
+          // Reduced motion is not a slower flight, it is no flight.
+          if (reduced) {
+            this.map.setView(position, zoom, { animate: false });
+            return;
+          }
+
+          this.map.flyTo(position, zoom, { duration: 0.9 });
+        }
+
+        reset({ reduced }) {
+          if (this.bounds?.length) {
+            this.map.fitBounds(this.bounds, { padding: [32, 32], animate: !reduced });
+          }
+        }
+
+        zoomBy(factor) {
+          this.map.setZoom(this.map.getZoom() + (factor > 1 ? 1 : -1));
+        }
+
+        get view() {
+          return { center: this.map.getCenter(), zoom: this.map.getZoom() };
+        }
+
+        destroy() {
+          this.map?.remove();
+          this.surface?.remove();
+        }
+      }
+
+      initializeLocatorMapDemo();
+      document.getElementById('offices').adapter = new LeafletMap();
+    </script>
+  </body>
+</html>

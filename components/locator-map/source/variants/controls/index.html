@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" class="locator-map-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Zooming, dragging and panning by key, with markers that never change size." />
+    <title>Locator Map - Controls</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="locator-map-demo">
+      <div class="locator-map-demo__shell">
+        <section class="locator-map-demo__card">
+          <p class="locator-map-demo__label">Three ways to move it</p>
+          <p class="locator-map-demo__note">
+            Drag it with the pointer, press the controls in the corner, or tab to the map and
+            use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> <kbd>&uarr;</kbd> <kbd>&darr;</kbd> to
+            pan, <kbd>+</kbd> and <kbd>-</kbd> to zoom, <kbd>0</kbd> to start again. The
+            keyboard is not an afterthought here: a map that can only be dragged is a map half
+            the room cannot use.
+          </p>
+          <p class="locator-map-demo__note">
+            Panning by key moves less the closer you are, so one press covers roughly the same
+            amount of what you can see whatever the zoom.
+          </p>
+
+          <ui-locator-map max-zoom="10" focus-zoom="16">
+            <ul class="locator-map__places">
+              <li data-lat="21.0235" data-lon="105.8573" data-region="north">
+                <h3>Ha Noi head office</h3>
+                <p>72 Le Thanh Tong, Cua Nam</p>
+              </li>
+              <li data-lat="20.8615" data-lon="106.6906" data-region="north">
+                <h3>Hai Phong depot</h3>
+                <p>18 Dien Bien Phu, Gia Vien</p>
+              </li>
+              <li data-lat="16.0739" data-lon="108.2246" data-region="central">
+                <h3>Da Nang office</h3>
+                <p>210 Bach Dang, Hai Chau</p>
+              </li>
+              <li data-lat="12.2226" data-lon="109.2024" data-region="central">
+                <h3>Nha Trang office</h3>
+                <p>40 Tran Phu, Phuoc Hoa</p>
+              </li>
+              <li data-lat="10.7758" data-lon="106.7027" data-region="south">
+                <h3>Ho Chi Minh City office</h3>
+                <p>65 Le Loi, Sai Gon</p>
+              </li>
+            </ul>
+          </ui-locator-map>
+
+          <p class="locator-map-demo__label">Whose controls are these?</p>
+          <p class="locator-map-demo__note">
+            The provider brings its own zoom control, and the component's three sit in the
+            corner beside it. Both work, because both end up calling the same
+            <code>zoomBy</code> on the same adapter. Nothing here reaches past the seven
+            members into the map itself.
+          </p>
+          <p class="locator-map-demo__note">
+            Panning by key is the component's, and it asks the adapter to move rather than
+            moving anything itself — which is the reason the keys still work when the surface
+            underneath them is swapped for a different one.
+          </p>
+
+          <output class="locator-map-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeLocatorMapDemo } from '../../demo.js';
+      import { attachRealMap } from '../../real-map.js';
+
+      initializeLocatorMapDemo();
+      document.querySelectorAll('ui-locator-map').forEach((map) => attachRealMap(map));
+    </script>
+  </body>
+</html>

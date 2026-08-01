@@ -354,3 +354,114 @@ test('detail not-found states stay English and recover through catalog navigatio
   await page.getByRole('link', { name: 'Back to catalog' }).last().click();
   await expect(page).toHaveURL(/\/index\.html$/);
 });
+
+test('the catalog follows the operating system until a choice is stored', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.goto('/index.html');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/index.html');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(11, 12, 14)');
+
+  // A stored choice outranks the system, including after the system changes again.
+  const toggle = page.getByRole('button', { name: 'Switch to light theme' });
+  await toggle.click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.getByRole('button', { name: 'Switch to dark theme' })).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem('component-ui-theme'))).toBe('light');
+
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+});
+
+test('the theme is resolved before the first paint rather than after it', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' });
+  // Reading during head parsing proves the bootstrap ran ahead of the body, which is the
+  // difference between a themed first paint and a visible flash of the other theme.
+  await page.addInitScript(() => {
+    document.addEventListener(
+      'readystatechange',
+      () => {
+        if (document.readyState === 'interactive') {
+          window.__themeAtParse = document.documentElement.dataset.theme;
+        }
+      },
+      { once: true },
+    );
+  });
+  await page.goto('/index.html');
+  expect(await page.evaluate(() => window.__themeAtParse)).toBe('light');
+});
+
+test('a preview is told which theme the catalog is showing', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.goto('/component.html?id=switch');
+
+  const frame = page.frameLocator('#component-preview');
+  await expect(frame.locator('.switch-demo')).toHaveCSS(
+    'background-color',
+    'rgb(244, 246, 250)',
+  );
+  await expect(page.locator('#component-preview')).toHaveCSS('color-scheme', 'light');
+
+  await page.getByRole('button', { name: 'Switch to dark theme' }).click();
+  // No reload: the running preview answers the message and repaints in place.
+  await expect(frame.locator('.switch-demo')).toHaveCSS(
+    'background-color',
+    'rgb(15, 17, 21)',
+  );
+  await expect(page.locator('#component-preview')).toHaveCSS('color-scheme', 'dark');
+});
+
+// Every converted component resolves its colours through light-dark(), so a page loaded
+// under each colour scheme has to come back with a different surface. This is the guard
+// against a component being converted in the stylesheet but pinned somewhere else.
+const THEMED_PREVIEWS = [
+  { id: 'breadcrumbs', root: '.breadcrumbs-demo' },
+  { id: 'card', root: '.card-demo' },
+  { id: 'chip', root: '.chip-demo' },
+  { id: 'pagination', root: '.pagination-demo' },
+  { id: 'radio-group', root: '.radio-group-demo' },
+  { id: 'switch', root: '.switch-demo' },
+  { id: 'table', root: '.table-demo' },
+  { id: 'text-field', root: '.text-field-demo' },
+];
+
+// One test per component rather than one loop over all of them: two navigations each
+// spread across the workers, instead of sixteen queued behind a single worker while the
+// rest of the suite waits on the same server.
+for (const { id, root } of THEMED_PREVIEWS) {
+  test(`the ${id} preview answers the colour scheme on its own`, async ({ page }) => {
+    const registry = await readRegistry();
+    const component = registry.find((entry) => entry.id === id);
+    expect(component, `${id} is in the registry`).toBeTruthy();
+    const variant =
+      component.variants.find((item) => item.id === component.preview.variant) ??
+      component.variants[0];
+    const url = `/components/${id}/${variant.entry}`;
+
+    const surfaceUnder = async (colorScheme) => {
+      await page.emulateMedia({ colorScheme });
+      await page.goto(url);
+      return page.locator(root).evaluate((node) => {
+        const [r, g, b] = getComputedStyle(node)
+          .backgroundColor.match(/[\d.]+/g)
+          .map(Number);
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      });
+    };
+
+    const light = await surfaceUnder('light');
+    const dark = await surfaceUnder('dark');
+
+    // Named in the message because a bare number tells you nothing about what failed.
+    expect(light, `${id} light surface is lighter than its dark one`).toBeGreaterThan(dark);
+    expect(light, `${id} light surface is actually light`).toBeGreaterThan(180);
+    expect(dark, `${id} dark surface is actually dark`).toBeLessThan(60);
+  });
+}

@@ -133,10 +133,27 @@ still shows a switch and still toggles it. The one thing script adds is `role="s
 so without it the control is announced as a checkbox rather than as on/off. Everything
 else — the label, the value, the form — comes from the markup.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the switch follows the operating system. To pin it, narrow the
+`color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
 Current Chrome, Edge, Firefox, and Safari. Uses custom elements, `:has()`,
-`color-mix()`, and `appearance: none` on a checkbox.
+`color-mix()`, `light-dark()`, and `appearance: none` on a checkbox.
 
 ## Running the files
 

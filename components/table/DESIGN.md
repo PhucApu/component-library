@@ -18,17 +18,31 @@ The same decision as Radio Group, Text Field, and Switch.
 
 Every token is defined by the component. Nothing is inherited from the catalog.
 
-| Token | Light | Role |
-|---|---|---|
-| `--table-surface` | `#ffffff` | Body background |
-| `--table-head` | `#f4f6fa` | Header background |
-| `--table-text` | `#111827` | Cell text |
-| `--table-muted` | `#5f6878` | Caption and headers |
-| `--table-border` | `#dfe4ec` | Row rules |
-| `--table-hover` | `#f6f8fc` | Hovered row |
-| `--table-selected` | `#eef1ff` | Selected row |
-| `--table-accent` | `#4f46e5` | Sort marker and checkboxes |
-| `--table-radius` | `12px` | Frame radius |
+Each colour token is a `light-dark()` pair, so which half a browser uses follows the
+page's `color-scheme` rather than a class the author has to remember to set.
+
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--table-surface` | `#ffffff` | `#10131a` | Body background |
+| `--table-head` | `#f4f6fa` | `#1a1e26` | Header background |
+| `--table-text` | `#111827` | `#f4f6fa` | Cell text |
+| `--table-muted` | `#5f6878` | `#a8afbc` | Caption and headers |
+| `--table-border` | `#dfe4ec` | `#292d36` | Row rules |
+| `--table-border-strong` | `#b9c2d0` | `#4a5260` | Scroll region edge |
+| `--table-hover` | `#f6f8fc` | `#1b1f28` | Hovered row |
+| `--table-selected` | `#eef1ff` | `#1f2740` | Selected row |
+| `--table-accent` | `#4f46e5` | `#86a0ff` | Sort marker and checkboxes |
+| `--table-focus` | `#6366f1` | `#86a0ff` | Focus ring |
+| `--table-radius` | `12px` | | Frame radius |
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
 
 ## 4. The scroll region is a keyboard target, but only when it has to be
 

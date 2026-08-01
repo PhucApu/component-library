@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en" class="card-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Loading, unavailable and current, each said in more than colour." />
+    <title>Card - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="card-demo">
+      <div class="card-demo__shell">
+        <section class="card-demo__card">
+          <p class="card-demo__label">Still loading</p>
+          <p class="card-demo__note">
+            <code>aria-busy</code> is set for anyone listening, and the blocks shimmer for
+            anyone watching. Under a reduced-motion setting the shimmer becomes a plain
+            block: movement that starts on its own and never stops is exactly what that
+            setting is for.
+          </p>
+
+          <ul class="card-demo__grid">
+            <li>
+              <ui-card loading effect="none">
+                <div class="card__media">
+                  <div class="card__skeleton card__skeleton--media"></div>
+                </div>
+                <div class="card__body">
+                  <div class="card__skeleton card__skeleton--title"></div>
+                  <div class="card__skeleton"></div>
+                  <div class="card__skeleton card__skeleton--short"></div>
+                </div>
+                <div class="card__footer">
+                  <div class="card__skeleton card__skeleton--short"></div>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card loading effect="none">
+                <div class="card__media">
+                  <div class="card__skeleton card__skeleton--media"></div>
+                </div>
+                <div class="card__body">
+                  <div class="card__skeleton card__skeleton--title"></div>
+                  <div class="card__skeleton"></div>
+                  <div class="card__skeleton card__skeleton--short"></div>
+                </div>
+                <div class="card__footer">
+                  <div class="card__skeleton card__skeleton--short"></div>
+                </div>
+              </ui-card>
+            </li>
+          </ul>
+
+          <p class="card-demo__label">Not available</p>
+          <p class="card-demo__note">
+            Dimmed <em>and</em> labelled. A state told only by how faint something looks is a
+            state half the room cannot read, so the badge says it in words. The link keeps its
+            tab stop and carries <code>aria-disabled</code>: a control nobody can reach is a
+            control nobody can discover is unavailable, and a disabled element cannot hold
+            focus at all.
+          </p>
+
+          <ul class="card-demo__grid">
+            <li>
+              <ui-card interactive disabled effect="lift">
+                <div class="card__media">
+                  <img src="../../assets/clay-mug.svg" alt="A glazed clay mug on a pale surface" />
+                  <span class="card__badge">Out of stock</span>
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#unavailable">Stoneware mug, 350ml</a></h3>
+                  <p class="card__text">Back in about three weeks.</p>
+                </div>
+                <div class="card__footer">
+                  <span class="card__meta"><span class="card__price">&pound;18</span></span>
+                  <button type="button" class="card__action">Notify me</button>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card interactive effect="lift">
+                <div class="card__media">
+                  <img src="../../assets/linen-chair.svg" alt="A linen armchair on pale wooden legs" />
+                  <span class="card__badge">In stock</span>
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#available">Linen reading chair</a></h3>
+                  <p class="card__text">Delivered within a week.</p>
+                </div>
+                <div class="card__footer">
+                  <span class="card__meta"><span class="card__price">&pound;340</span></span>
+                  <button type="button" class="card__action card__action--primary">Add</button>
+                </div>
+              </ui-card>
+            </li>
+          </ul>
+
+          <p class="card-demo__label">The one you are on</p>
+          <p class="card-demo__note">
+            <code>current</code> puts an accent ring on the card and
+            <code>aria-current</code> on it for anyone listening. Which value is right depends
+            on what the card stands for, so the author picks it.
+          </p>
+
+          <ul class="card-demo__grid">
+            <li>
+              <ui-card interactive current effect="none">
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#current">The chapter you are reading</a></h3>
+                  <p class="card__text">Marked by a ring rather than by colour alone.</p>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card interactive effect="none">
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#next">The next chapter</a></h3>
+                  <p class="card__text">Ordinary, for comparison.</p>
+                </div>
+              </ui-card>
+            </li>
+          </ul>
+
+          <output class="card-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCardDemo } from '../../demo.js';
+
+      initializeCardDemo();
+    </script>
+  </body>
+</html>

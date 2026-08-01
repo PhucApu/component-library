@@ -401,12 +401,29 @@ export class UiCarousel extends HTMLElement {
     }, prefersReducedMotion() ? 0 : ms);
   }
 
+  /**
+   * Sends the track to a slide, and holds the position while it travels.
+   *
+   * Reading the position back off the scroller is what keeps swiping and the trackpad
+   * honest, but during a scroll this element asked for it is the element arguing with
+   * itself: every frame of the journey reports whichever slide it is passing, so the
+   * position is wrong for the whole of the landing and can be left wrong if the scroll is
+   * cut short. While `goTo` is in flight, the commanded position wins.
+   */
   _scrollTo(index, smooth) {
     const slide = this.slides[index];
 
     if (!slide) {
       return;
     }
+
+    clearTimeout(this._landingTimer);
+    this._landing = true;
+    // A timer as well as `scrollend`, because a scroll that never starts — the track is
+    // already there — never ends either, and the position would stay pinned for good.
+    this._landingTimer = setTimeout(() => {
+      this._landing = false;
+    }, 900);
 
     this._track.scrollTo({
       left: slide.offsetLeft - this._track.offsetLeft,
@@ -517,7 +534,7 @@ export class UiCarousel extends HTMLElement {
   }
 
   _handleScroll() {
-    if (this.layered || this._dragging) {
+    if (this.layered || this._dragging || this._landing) {
       return;
     }
 
@@ -539,6 +556,10 @@ export class UiCarousel extends HTMLElement {
     if (this.layered || this._dragging) {
       return;
     }
+
+    // The journey is over, so the scroller is the authority again.
+    clearTimeout(this._landingTimer);
+    this._landing = false;
 
     this._handleScroll();
     this._announce();

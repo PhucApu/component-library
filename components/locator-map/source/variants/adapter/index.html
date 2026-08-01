@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en" class="locator-map-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Putting a different map behind the same search." />
+    <title>Locator Map - Adapter</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="locator-map-demo">
+      <div class="locator-map-demo__shell">
+        <section class="locator-map-demo__card">
+          <p class="locator-map-demo__label">The map is not part of the component</p>
+          <p class="locator-map-demo__note">
+            The component owns the search, the ranking, the directory, the announcements and
+            the decision to go somewhere. The surface that actually moves is an
+            <strong>adapter</strong> it is handed, and the drawing that ships is only one
+            implementation of it.
+          </p>
+          <p class="locator-map-demo__note">
+            The map below starts as a real provider's, like every other variant. The buttons
+            swap it for two others without the search losing its place: a grid written on this
+            page in about thirty lines, and the drawing that ships with the component. All
+            three answer the same seven members.
+          </p>
+
+          <ui-locator-map id="plugged" focus-zoom="16">
+            <ul class="locator-map__places">
+              <li data-lat="21.0235" data-lon="105.8573" data-region="north">
+                <h3>Ha Noi head office</h3>
+                <p>72 Le Thanh Tong, Cua Nam</p>
+              </li>
+              <li data-lat="20.8615" data-lon="106.6906" data-region="north">
+                <h3>Hai Phong depot</h3>
+                <p>18 Dien Bien Phu, Gia Vien</p>
+              </li>
+              <li data-lat="16.0739" data-lon="108.2246" data-region="central">
+                <h3>Da Nang office</h3>
+                <p>210 Bach Dang, Hai Chau</p>
+              </li>
+              <li data-lat="12.2226" data-lon="109.2024" data-region="central">
+                <h3>Nha Trang office</h3>
+                <p>40 Tran Phu, Phuoc Hoa</p>
+              </li>
+              <li data-lat="10.7758" data-lon="106.7027" data-region="south">
+                <h3>Ho Chi Minh City office</h3>
+                <p>65 Le Loi, Sai Gon</p>
+              </li>
+            </ul>
+          </ui-locator-map>
+
+          <p class="locator-map-demo__label">Handing over after the page has loaded</p>
+          <p class="locator-map-demo__note">
+            Setting <code>adapter</code> again tears the old surface down and mounts the new
+            one in the same frame. That is what lets a page start with the drawing and hand
+            over to a provider's map once its script has arrived, without the search losing
+            its place.
+          </p>
+
+          <div class="locator-map-demo__controls">
+            <button type="button" class="locator-map-demo__button" data-demo-swap="real">
+              Use the real map
+            </button>
+            <button type="button" class="locator-map-demo__button" data-demo-swap="grid">
+              Use the grid map
+            </button>
+            <button type="button" class="locator-map-demo__button" data-demo-swap="drawing">
+              Use the drawing
+            </button>
+          </div>
+
+          <p class="locator-map-demo__label">Which provider, and what it costs</p>
+          <p class="locator-map-demo__note">
+            The same seven members drive Google Maps, Leaflet or anything else:
+            <code>mount</code>, <code>update</code>, <code>flyTo</code>, <code>reset</code>,
+            <code>zoomBy</code>, <code>view</code>, <code>destroy</code>. Which one this
+            catalog loads is set in one place, <code>source/real-map.js</code>: Leaflet by
+            default because it needs no key, Google by pasting one in.
+          </p>
+          <p class="locator-map-demo__note">
+            <strong>The price is real.</strong> This is the only component in the collection
+            that reaches the network, so its packaged download needs a connection, and both
+            the tests and the preview build depend on somebody else's servers. Press
+            <em>Use the drawing</em> to see what it looks like with that price not paid.
+          </p>
+
+          <div class="locator-map-demo__controls">
+            <a
+              class="locator-map-demo__button"
+              href="../../../example-leaflet.html"
+              target="_blank"
+              rel="noopener"
+            >
+              Leaflet example &mdash; no API key needed
+            </a>
+            <a
+              class="locator-map-demo__button"
+              href="../../../example-google-maps.html"
+              target="_blank"
+              rel="noopener"
+            >
+              Google Maps example &mdash; needs your own key
+            </a>
+          </div>
+
+          <output class="locator-map-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { DrawingMap } from '../../shared.js';
+      import { initializeLocatorMapDemo } from '../../demo.js';
+      import { attachRealMap } from '../../real-map.js';
+      import { GridMap } from '../../grid-map.js';
+
+      const map = document.getElementById('plugged');
+
+      document.querySelectorAll('[data-demo-swap]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const surfaces = {
+            real: () => attachRealMap(map),
+            grid: () => {
+              map.adapter = new GridMap();
+            },
+            drawing: () => {
+              map.adapter = new DrawingMap();
+            },
+          };
+
+          surfaces[button.dataset.demoSwap]?.();
+        });
+      });
+
+      initializeLocatorMapDemo();
+      attachRealMap(map);
+    </script>
+  </body>
+</html>

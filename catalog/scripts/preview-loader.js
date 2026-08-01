@@ -15,6 +15,38 @@ function getPreviewHeight(component) {
   return Number.isFinite(height) && height > 0 ? height : 720;
 }
 
+/**
+ * The theme message a preview may implement. The name and payload carry no catalog
+ * identity on purpose: a downloaded component keeps the listener, answers whoever embeds
+ * it, and falls back to `prefers-color-scheme` when nobody does. A preview that ignores
+ * the message simply keeps its own colours.
+ */
+export const PREVIEW_THEME_MESSAGE = 'ui-theme';
+
+function previewOrigin(frame) {
+  try {
+    // Addressing the exact origin keeps the message out of any document that replaced
+    // the preview, which a wildcard target would happily deliver to.
+    const origin = new URL(frame.src, document.baseURI).origin;
+    return origin === 'null' ? null : origin;
+  } catch {
+    return null;
+  }
+}
+
+export function sendPreviewTheme(frame, theme) {
+  const origin = frame?.src ? previewOrigin(frame) : null;
+
+  if (!frame?.contentWindow || !origin) {
+    return;
+  }
+
+  // Form controls the preview does not paint itself still come from the browser, so the
+  // frame needs the scheme even when the component answers the message.
+  frame.style.colorScheme = theme;
+  frame.contentWindow.postMessage({ type: PREVIEW_THEME_MESSAGE, theme }, origin);
+}
+
 export function mountPreview(frame, component, variant) {
   if (!frame || !component || !variant) {
     return;

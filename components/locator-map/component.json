@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 2,
+  "id": "locator-map",
+  "version": "0.1.0",
+  "name": "Locator Map",
+  "description": "A framework-free Web Component that searches a list of offices without diacritics and flies a real map to the one chosen. The map surface is an adapter: Leaflet by default, Google with a key, and a drawing that fetches nothing when neither can be reached.",
+  "group": "data-display",
+  "categories": ["data-display", "navigation"],
+  "tags": ["map", "locator", "store-locator", "search", "mercator", "leaflet", "google-maps", "web-component", "accessible", "progressive-enhancement"],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Offices on the map, a search above it, and the flight that follows a choice.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "search",
+      "name": "Search",
+      "description": "Typing without diacritics, the keyboard, and what happens when nothing matches.",
+      "entry": "source/variants/search/index.html"
+    },
+    {
+      "id": "detail",
+      "name": "Detail",
+      "description": "The chosen office written out beside the map, and the way back to the whole country.",
+      "entry": "source/variants/detail/index.html"
+    },
+    {
+      "id": "regions",
+      "name": "Regions",
+      "description": "Narrowing the offices to one part of the country, and what the search then sees.",
+      "entry": "source/variants/regions/index.html"
+    },
+    {
+      "id": "controls",
+      "name": "Controls",
+      "description": "Zooming, dragging and panning by key, with markers that never change size.",
+      "entry": "source/variants/controls/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "One office, no offices at all, and a map that holds still when asked to.",
+      "entry": "source/variants/states/index.html"
+    },
+    {
+      "id": "adapter",
+      "name": "Adapter",
+      "description": "Swapping the real map for a grid and for the built-in drawing, live, without the search losing its place.",
+      "entry": "source/variants/adapter/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

@@ -720,6 +720,10 @@ test('real detail page follows the vertical layout and exposes source and downlo
       contentType: 'application/zip',
     }),
   );
+  // This preview paints itself dark whatever the catalog is showing, so the stage is
+  // asserted against the dark catalog theme, where the two are supposed to meet without
+  // a seam. Nothing is stored, so the catalog follows this preference.
+  await page.emulateMedia({ colorScheme: 'dark' });
   await page.goto('/component.html?id=temporal-picker');
 
   await expect(
@@ -747,6 +751,7 @@ test('real detail page follows the vertical layout and exposes source and downlo
         .evaluate((main) => main.getBoundingClientRect().height - window.innerHeight),
     )
     .toBeGreaterThanOrEqual(0);
+  // The dark inset surface, which is what this preview's own background matches.
   await expect(page.locator('.preview-stage')).toHaveCSS(
     'background-color',
     'rgb(15, 17, 21)',

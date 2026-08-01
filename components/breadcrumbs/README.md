@@ -75,10 +75,27 @@ just do not add separator characters to your markup, because those would be read
 Everything except collapsing. The trail is a landmark, an ordered list, and links; all of
 that is in your markup. A trail with `max-items` set simply shows every level.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the trail follows the operating system. To pin it, narrow the
+`color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
-Current Chrome, Edge, Firefox, and Safari. Uses custom elements, `color-mix()`, and the
-alternative-text form of `content`. Where that form is unsupported the divider is not drawn
+Current Chrome, Edge, Firefox, and Safari. Uses custom elements, `color-mix()`,
+`light-dark()`, and the alternative-text form of `content`. Where that form is unsupported the divider is not drawn
 at all, which is the safe way for it to fail.
 
 ## Running the files

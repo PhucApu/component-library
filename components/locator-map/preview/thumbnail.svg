@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="A dark street map with office markers on it, one of them chosen, a search field above and a list of office addresses beside it">
+  <defs>
+    <radialGradient id="glow" cx="12%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#4968e8" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#4968e8" stop-opacity="0" />
+    </radialGradient>
+    <clipPath id="frame">
+      <rect x="232" y="68" width="360" height="270" rx="12" />
+    </clipPath>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect width="640" height="360" fill="url(#glow)" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <rect x="48" y="22" width="544" height="32" rx="10" fill="#171a20" stroke="#2e3440" />
+    <text x="66" y="43" fill="#a8afbc" font-size="13">Search offices</text>
+
+    <!-- The map frame. What sits inside it is a stylised street map rather than the country
+         this component used to draw: every variant now mounts a real provider, and a preview
+         that still showed the drawing would be advertising something the catalog no longer
+         does. It carries no street names, because an invented road with a real name on it
+         would be a claim about a place. -->
+    <rect x="232" y="68" width="360" height="270" rx="12" fill="#10161e" stroke="#2e3440" />
+
+    <g clip-path="url(#frame)">
+      <!-- City blocks, a shade above the ground they sit on. -->
+      <g fill="#151c25">
+        <rect x="240" y="76" width="60" height="44" rx="2" />
+        <rect x="310" y="76" width="52" height="44" rx="2" />
+        <rect x="240" y="132" width="60" height="56" rx="2" />
+        <rect x="310" y="132" width="52" height="56" rx="2" />
+        <rect x="372" y="132" width="48" height="56" rx="2" />
+        <rect x="240" y="200" width="60" height="60" rx="2" />
+        <rect x="310" y="200" width="52" height="60" rx="2" />
+        <rect x="240" y="272" width="60" height="58" rx="2" />
+        <rect x="310" y="272" width="52" height="58" rx="2" />
+        <rect x="372" y="272" width="30" height="58" rx="2" />
+        <rect x="486" y="76" width="46" height="40" rx="2" />
+        <rect x="542" y="76" width="44" height="40" rx="2" />
+        <rect x="500" y="196" width="42" height="52" rx="2" />
+        <rect x="552" y="196" width="34" height="52" rx="2" />
+        <rect x="500" y="262" width="42" height="68" rx="2" />
+      </g>
+
+      <!-- Green space. -->
+      <path d="M372 200h48v54h-48z" fill="#18261f" />
+      <path d="M544 258h42v72h-42z" fill="#18261f" />
+
+      <!-- Minor streets. -->
+      <g stroke="#232c37" stroke-width="2" fill="none">
+        <path d="M232 126h190M232 194h190M232 266h190M232 330h190" />
+        <path d="M304 68v270M366 68v270" />
+        <path d="M492 68h100M492 124h100M492 190h100M492 256h100" />
+        <path d="M536 68v270M544 68v0" />
+      </g>
+
+      <!-- Main roads, wider and lighter, the way a map draws the ones that carry traffic. -->
+      <g stroke="#333e4c" stroke-width="5" fill="none" stroke-linecap="round">
+        <path d="M232 160h360" />
+        <path d="M270 68v270" />
+        <path d="M232 300 C 320 296, 400 268, 448 214 C 490 166, 530 118, 592 96" />
+      </g>
+
+      <!-- The river, drawn over the roads so it cuts them, then two bridges put back. -->
+      <path
+        d="M528 68 C 512 126, 476 166, 458 212 C 440 258, 434 300, 428 338"
+        stroke="#132433"
+        stroke-width="30"
+        fill="none"
+      />
+      <g stroke="#333e4c" stroke-width="5" fill="none" stroke-linecap="round">
+        <path d="M446 160h40" />
+        <path d="M416 266h40" />
+      </g>
+
+      <!-- The zoom control, in the corner the provider puts it and wearing this component's
+           own tokens rather than arriving white. -->
+      <g>
+        <rect x="244" y="80" width="24" height="24" rx="7" fill="#171a20" stroke="#2e3440" />
+        <path d="M250 92h12M256 86v12" stroke="#f4f6fa" stroke-width="2" stroke-linecap="round" />
+        <rect x="244" y="110" width="24" height="24" rx="7" fill="#171a20" stroke="#2e3440" />
+        <path d="M250 122h12" stroke="#f4f6fa" stroke-width="2" stroke-linecap="round" />
+      </g>
+
+      <!-- Attribution. A licence condition, so it is drawn here too rather than tidied away. -->
+      <rect x="486" y="320" width="106" height="18" fill="#171a20" fill-opacity="0.82" />
+      <text x="494" y="333" fill="#a8afbc" font-size="9">&#169; OpenStreetMap</text>
+
+      <!-- The pins, the same three-quarter circle with one square corner that the component
+           draws: rotated so the square corner points down, which is what makes it a pin. Each
+           is translated by its body centre, so the point falls a little below. -->
+      <g stroke="#10131a" stroke-width="2">
+        <g transform="translate(300 150) rotate(-45)">
+          <path d="M-6 0A6 6 0 0 1 0-6A6 6 0 0 1 6 0A6 6 0 0 1 0 6L-6 6Z" fill="#ff8a5b" />
+        </g>
+        <g transform="translate(392 120) rotate(-45)">
+          <path d="M-6 0A6 6 0 0 1 0-6A6 6 0 0 1 6 0A6 6 0 0 1 0 6L-6 6Z" fill="#ff8a5b" />
+        </g>
+        <g transform="translate(268 246) rotate(-45)">
+          <path d="M-6 0A6 6 0 0 1 0-6A6 6 0 0 1 6 0A6 6 0 0 1 0 6L-6 6Z" fill="#ff8a5b" />
+        </g>
+        <g transform="translate(504 288) rotate(-45)">
+          <path d="M-6 0A6 6 0 0 1 0-6A6 6 0 0 1 6 0A6 6 0 0 1 0 6L-6 6Z" fill="#ff8a5b" />
+        </g>
+        <g transform="translate(556 168) rotate(-45)">
+          <path d="M-6 0A6 6 0 0 1 0-6A6 6 0 0 1 6 0A6 6 0 0 1 0 6L-6 6Z" fill="#ff8a5b" />
+        </g>
+      </g>
+
+      <!-- The chosen one, marked by size and a ring as well as by colour. -->
+      <circle cx="348" cy="226" r="14" fill="#86a0ff" fill-opacity="0.28" />
+      <g transform="translate(348 226) rotate(-45)" stroke="#10131a" stroke-width="2">
+        <path d="M-7.5 0A7.5 7.5 0 0 1 0-7.5A7.5 7.5 0 0 1 7.5 0A7.5 7.5 0 0 1 0 7.5L-7.5 7.5Z" fill="#86a0ff" />
+      </g>
+    </g>
+
+    <!-- The directory, which is the markup the author wrote and the whole of what is left
+         with no script. -->
+    <rect x="48" y="68" width="168" height="54" rx="10" fill="#171a20" stroke="#2e3440" />
+    <text x="62" y="90" fill="#86a0ff" font-size="12.5" font-weight="650">Da Nang office</text>
+    <text x="62" y="108" fill="#a8afbc" font-size="10.5">210 Bach Dang, Hai Chau</text>
+
+    <rect x="48" y="132" width="168" height="54" rx="10" fill="#171a20" stroke="#2e3440" />
+    <text x="62" y="154" fill="#f4f6fa" font-size="12.5" font-weight="650">Ha Noi head office</text>
+    <text x="62" y="172" fill="#a8afbc" font-size="10.5">72 Le Thanh Tong, Cua Nam</text>
+
+    <rect x="48" y="196" width="168" height="54" rx="10" fill="#171a20" stroke="#2e3440" />
+    <text x="62" y="218" fill="#f4f6fa" font-size="12.5" font-weight="650">Can Tho branch</text>
+    <text x="62" y="236" fill="#a8afbc" font-size="10.5">12 Hoa Binh, Ninh Kieu</text>
+
+    <rect x="48" y="260" width="168" height="54" rx="10" fill="#171a20" stroke="#2e3440" />
+    <text x="62" y="282" fill="#f4f6fa" font-size="12.5" font-weight="650">Hue studio</text>
+    <text x="62" y="300" fill="#a8afbc" font-size="10.5">3 Le Loi, Vinh Ninh</text>
+  </g>
+</svg>

@@ -116,10 +116,28 @@ with `aria-describedby`.
 Keyboard behavior is the browser's: arrow keys move between options, and disabled options are
 skipped. The focus ring sits on the input itself, so there is exactly one focus indicator.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the group follows the operating system. To pin it, narrow the
+`color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
 Custom Elements and ES modules are needed for the value API, so serve over HTTP or HTTPS. The
-styling uses `appearance: none` on the input. Repository automation covers Chromium.
+styling uses `appearance: none` on the input and `light-dark()` for colour. Repository
+automation covers Chromium.
 
 Version 0.1 does not include indeterminate states, custom icons, or form-associated custom
 elements.

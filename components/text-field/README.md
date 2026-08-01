@@ -121,10 +121,28 @@ value.
   password" and "Hide password".
 - The frame owns the focus ring, so exactly one indicator appears.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the field follows the operating system. To pin it, narrow the
+`color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
 Custom Elements and ES modules are needed for the value API and the error wiring, so serve over
-HTTP or HTTPS. Styling relies on `:focus-within`. Repository automation covers Chromium.
+HTTP or HTTPS. Styling relies on `:focus-within` and `light-dark()`. Repository automation
+covers Chromium.
 
 Version 0.1 does not include a select mode, floating labels, auto-growing textareas, or
 form-associated custom elements.

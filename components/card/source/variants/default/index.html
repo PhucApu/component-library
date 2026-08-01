@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" class="card-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="An article card, and the whole-card link that keeps its name." />
+    <title>Card - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="card-demo">
+      <div class="card-demo__shell">
+        <section class="card-demo__card">
+          <p class="card-demo__label">Press anywhere on it</p>
+          <p class="card-demo__note">
+            The real link is on the title; a pseudo-element stretches its hit area over the
+            whole card. Measured: the link is still called
+            <em>"A quiet week in the harbour"</em>. Wrapping the card in an anchor instead
+            produced a link named <code>""</code> — one a screen reader announces as nothing
+            at all.
+          </p>
+
+          <ul class="card-demo__grid">
+            <li>
+              <ui-card interactive effect="lift">
+                <div class="card__media">
+                  <img src="../../assets/reading-room.svg" alt="A reading room with tall shelves and a lamp" />
+                </div>
+                <div class="card__body">
+                  <p class="card__eyebrow">Harbour</p>
+                  <h3 class="card__title"><a href="#quiet-week">A quiet week in the harbour</a></h3>
+                  <p class="card__text">
+                    Boats came and went, and nobody wrote any of it down until now.
+                  </p>
+                </div>
+                <div class="card__footer">
+                  <span class="card__meta">14 March &middot; 6 min</span>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card interactive effect="lift">
+                <div class="card__media">
+                  <img src="../../assets/field-notes.svg" alt="Two open notebooks covered in handwriting" />
+                </div>
+                <div class="card__body">
+                  <p class="card__eyebrow">Notebooks</p>
+                  <h3 class="card__title"><a href="#field-notes">What the field notes left out</a></h3>
+                  <p class="card__text">
+                    Every survey has a margin, and the margin is where the interesting parts
+                    end up.
+                  </p>
+                </div>
+                <div class="card__footer">
+                  <span class="card__meta">2 April &middot; 9 min</span>
+                </div>
+              </ui-card>
+            </li>
+          </ul>
+
+          <p class="card-demo__label">Without the whole-card link</p>
+          <p class="card-demo__note">
+            <code>interactive</code> is not the default, and the reason is measured: the
+            overlay covers the words, so the pointer never reaches them. A paragraph under an
+            overlay selected <strong>0</strong> characters where the same paragraph beside it
+            selected 48. Leave it off and only the title is a link — try selecting the text of
+            each and the difference is plain.
+          </p>
+
+          <ul class="card-demo__grid">
+            <li>
+              <ui-card effect="lift">
+                <div class="card__body">
+                  <p class="card__eyebrow">Selectable</p>
+                  <h3 class="card__title"><a href="#selectable">Only the title is a link</a></h3>
+                  <p class="card__text">
+                    Drag across this paragraph and it highlights, because nothing is covering
+                    it.
+                  </p>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card interactive effect="lift">
+                <div class="card__body">
+                  <p class="card__eyebrow">Covered</p>
+                  <h3 class="card__title"><a href="#covered">The whole card is a link</a></h3>
+                  <p class="card__text">
+                    Drag across this paragraph and nothing highlights: the pointer lands on
+                    the link instead.
+                  </p>
+                </div>
+              </ui-card>
+            </li>
+          </ul>
+
+          <output class="card-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCardDemo } from '../../demo.js';
+
+      initializeCardDemo();
+    </script>
+  </body>
+</html>

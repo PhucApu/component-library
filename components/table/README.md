@@ -133,10 +133,27 @@ The table is fully readable, headers are associated, the scroll box still scroll
 pointer and touch, and individual checkboxes still tick. Sorting, select-all, row detail,
 and the keyboard-reachable scroll region are what script adds.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the table follows the operating system. To pin it, narrow the
+`color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
-Current Chrome, Edge, Firefox, and Safari. Uses custom elements, `ResizeObserver`, and
-`color-mix()`.
+Current Chrome, Edge, Firefox, and Safari. Uses custom elements, `ResizeObserver`,
+`color-mix()`, and `light-dark()`.
 
 ## Running the files
 

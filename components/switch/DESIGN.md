@@ -24,18 +24,32 @@ Picker and Autocomplete, which build their controls because HTML offers no equiv
 
 ## 3. Visual tokens
 
-Every token is defined by the component. Nothing is inherited from the catalog.
+Every token is defined by the component. Nothing is inherited from the catalog. Each one
+is a `light-dark()` pair, so which half a browser uses follows the page's `color-scheme`
+rather than a class the author has to remember to set.
 
-| Token | Light | Role |
-|---|---|---|
-| `--switch-track` | `#cbd5e1` | Track when off |
-| `--switch-accent` | `#4f46e5` | Track when on |
-| `--switch-thumb` | `#ffffff` | Thumb fill |
-| `--switch-outline` | `#4b5563` | Track edge and thumb edge |
-| `--switch-focus` | `#6366f1` | Focus ring |
-| `--switch-text` | `#111827` | Label |
-| `--switch-muted` | `#5f6878` | Supporting text |
-| `--switch-danger` | `#b42318` | Failure text |
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--switch-track` | `#cbd5e1` | `#2b303a` | Track when off |
+| `--switch-accent` | `#4f46e5` | `#4968e8` | Track when on |
+| `--switch-thumb` | `#ffffff` | `#f4f6fa` | Thumb fill |
+| `--switch-outline` | `#4b5563` | `#8b94a6` | Track edge and thumb edge |
+| `--switch-focus` | `#6366f1` | `#86a0ff` | Focus ring |
+| `--switch-text` | `#111827` | `#f4f6fa` | Label |
+| `--switch-muted` | `#5f6878` | `#a8afbc` | Supporting text |
+| `--switch-danger` | `#b42318` | `#ff8e87` | Failure text |
+
+Measured for the label: `16.11:1` on the dark demo card, `17.78:1` on the light one.
+Supporting text holds `5.62:1` light and `7.9:1` dark. The rules ask for `4.5:1`.
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
 
 ## 4. Anatomy
 

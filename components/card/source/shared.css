@@ -1,0 +1,531 @@
+:root {
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.card-demo-page,
+.card-demo-page body {
+  background: light-dark(#f4f6fa, #0f1115);
+}
+
+ui-card {
+  --card-surface: light-dark(#ffffff, #171a20);
+  --card-raised: light-dark(#f7f8fa, #1c2029);
+  --card-media: light-dark(#eef1f5, #10131a);
+  --card-text: light-dark(#15181d, #f4f6fa);
+  --card-muted: light-dark(#4b525e, #a8afbc);
+  --card-border: light-dark(#dfe3ea, #2e3440);
+  --card-accent: light-dark(#3857d6, #86a0ff);
+  --card-focus: light-dark(#3857d6, #86a0ff);
+  /* The accent is dark in one theme and light in the other, so what sits on top of it
+     has to travel with it. */
+  --card-on-accent: light-dark(#ffffff, #10131a);
+  /* The scrim covers a picture rather than the card surface, so it stays dark in both
+     themes and everything drawn on it keeps the light-on-dark treatment. */
+  --card-scrim: rgb(10 12 18 / 0.78);
+  --card-radius: 14px;
+  --card-ratio: 16 / 9;
+  --card-clamp: 3;
+  /* Written by the element while the pointer is over a spotlight card. Declared here so
+     they have values of their own rather than living only in a fallback. */
+  --card-x: 50%;
+  --card-y: 50%;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  block-size: 100%;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--card-surface);
+  color: var(--card-text);
+  font: 400 0.9375rem/1.5
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  translate: 0 0;
+  transition:
+    translate 200ms ease,
+    box-shadow 200ms ease,
+    border-color 200ms ease,
+    background 200ms ease;
+}
+
+.card__media {
+  position: relative;
+  aspect-ratio: var(--card-ratio);
+  overflow: hidden;
+  background: var(--card-media);
+}
+
+.card__media img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  scale: 1;
+  transition: scale 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.card__badge {
+  position: absolute;
+  inset-block-start: 0.6rem;
+  inset-inline-start: 0.6rem;
+  z-index: 2;
+  border-radius: 999px;
+  background: var(--card-scrim);
+  padding: 0.2rem 0.6rem;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+/* The body takes the slack, which is what pins a footer to the bottom of every card in a row
+   however much or little each of them holds. */
+.card__body {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  flex: 1 1 auto;
+  padding: 0.9rem 1rem;
+}
+
+.card__eyebrow {
+  margin: 0;
+  color: var(--card-accent);
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.card__title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.card__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.card__title a:hover {
+  text-decoration: underline;
+}
+
+.card__text {
+  margin: 0;
+  color: var(--card-muted);
+  font-size: 0.875rem;
+}
+
+/* Only when a limit was asked for. "No limit" and "one line" are different answers, so the
+   element leaves the attribute off rather than defaulting to a number. */
+ui-card[data-clamped] .card__text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--card-clamp);
+  line-clamp: var(--card-clamp);
+  overflow: hidden;
+}
+
+.card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-block-start: 1px solid var(--card-border);
+  padding: 0.75rem 1rem;
+}
+
+.card__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-inline-size: 0;
+  color: var(--card-muted);
+  font-size: 0.8125rem;
+}
+
+.card__price {
+  color: var(--card-text);
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.card__was {
+  color: var(--card-muted);
+  font-size: 0.8125rem;
+  text-decoration: line-through;
+}
+
+.card__rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--card-muted);
+  font-size: 0.8125rem;
+}
+
+.card__rating svg {
+  inline-size: 0.9rem;
+  block-size: 0.9rem;
+  /* The pale gold reaches 1.6:1 on a white card, so the light theme takes it down to a
+     shade that still holds 3:1 as a graphic. */
+  fill: light-dark(#b8860b, #f0c85a);
+}
+
+.card__action {
+  flex: none;
+  border: 1px solid var(--card-border);
+  border-radius: 9px;
+  background: transparent;
+  padding: 0.4rem 0.8rem;
+  color: var(--card-text);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.card__action:hover {
+  background: color-mix(in srgb, var(--card-text) 12%, transparent);
+}
+
+.card__action--primary {
+  border-color: transparent;
+  background: var(--card-accent);
+  color: var(--card-on-accent);
+}
+
+.card__action--primary:hover {
+  background: color-mix(in srgb, var(--card-accent) 88%, #fff);
+}
+
+.card__action:focus-visible,
+.card__title a:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--card-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+/* ---- The whole-card link ------------------------------------------------------------- */
+
+/* The real link is on the title, and this stretches its hit area over the card. Measured:
+   the accessible name stays "the title", where wrapping the card in an anchor produced a
+   link named "" — an unusable one. */
+ui-card[interactive] .card__link::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  content: "";
+}
+
+/* Everything else has to be lifted above that overlay. Measured: without this, a button
+   sitting inside an interactive card is hit-tested as the link — it looks pressable and is
+   not. It is done here rather than left to the author because the failure is silent.
+
+   `position` as well as `z-index`, and the reason is easy to miss: `z-index` applies to a
+   flex item whatever its position, so a control in a flex footer is lifted by the z-index
+   alone and the rule looks redundant. Any control that is not a flex item is not, and that
+   is the one that would quietly stop working. */
+ui-card[interactive] :is(a, button, input, select, textarea, summary):not(.card__link) {
+  position: relative;
+  z-index: 2;
+}
+
+/* The card is what is being activated, so the card is what wears the ring. */
+ui-card[interactive]:has(.card__link:focus-visible) {
+  outline: 3px solid color-mix(in srgb, var(--card-focus) 65%, transparent);
+  outline-offset: 3px;
+}
+
+ui-card[interactive] .card__link:focus-visible {
+  outline: none;
+}
+
+ui-card[interactive] {
+  cursor: pointer;
+}
+
+/* ---- Hover treatments ---------------------------------------------------------------- */
+
+/* Every one of these answers focus as well as the pointer. A treatment that only appears on
+   hover tells a keyboard user nothing at all, and hovering does not exist on a touch screen
+   either. */
+
+ui-card[data-effect='lift']:is(:hover, :focus-within) {
+  translate: 0 -4px;
+  border-color: color-mix(in srgb, var(--card-accent) 45%, var(--card-border));
+  background: var(--card-raised);
+  box-shadow: 0 18px 40px light-dark(rgb(15 23 42 / 0.12), rgb(0 0 0 / 0.35));
+}
+
+ui-card[data-effect='zoom']:is(:hover, :focus-within) .card__media img {
+  scale: 1.07;
+}
+
+ui-card[data-effect='reveal'] .card__reveal {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--card-scrim);
+  padding: 0.7rem;
+  opacity: 0;
+  translate: 0 100%;
+  transition:
+    translate 240ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 200ms ease;
+}
+
+ui-card[data-effect='reveal']:is(:hover, :focus-within) .card__reveal {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* The bar is the dark scrim, not the card surface, so its controls cannot take the card
+   text colour: in the light theme that would put near-black on near-black. */
+.card__reveal .card__action {
+  border-color: rgb(255 255 255 / 0.38);
+  color: #fff;
+}
+
+.card__reveal .card__action:hover {
+  background: rgb(255 255 255 / 0.16);
+}
+
+/* Both of these paint over the card, so neither may take the pointer: the whole-card link
+   sits above them and has to keep receiving presses. */
+ui-card[data-effect='border']::after,
+ui-card[data-effect='spotlight']::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+ui-card[data-effect='border']::after {
+  box-shadow:
+    inset 0 0 0 2px var(--card-accent),
+    0 0 26px color-mix(in srgb, var(--card-accent) 26%, transparent);
+}
+
+ui-card[data-effect='spotlight']::before {
+  background: radial-gradient(
+    14rem circle at var(--card-x) var(--card-y),
+    color-mix(in srgb, var(--card-accent) 24%, transparent),
+    transparent 70%
+  );
+}
+
+ui-card[data-effect='border']:is(:hover, :focus-within)::after,
+ui-card[data-effect='spotlight']:is(:hover, :focus-within)::before {
+  opacity: 1;
+}
+
+/* ---- Orientation --------------------------------------------------------------------- */
+
+/* Only where there is a picture to put beside the words. A horizontal card with no picture
+   would otherwise keep an empty column. */
+ui-card[data-orientation='horizontal']:has(.card__media) {
+  display: grid;
+  grid-template-columns: minmax(0, 38%) minmax(0, 1fr);
+  grid-template-rows: 1fr auto;
+}
+
+ui-card[data-orientation='horizontal'] .card__media {
+  grid-row: 1 / -1;
+  aspect-ratio: auto;
+  block-size: 100%;
+}
+
+/* ---- States -------------------------------------------------------------------------- */
+
+ui-card[current] {
+  border-color: var(--card-accent);
+  box-shadow: inset 0 0 0 1px var(--card-accent);
+}
+
+/* Dimmed, and said in words as well: the markup carries a badge, because a state told only
+   by how faint something looks is a state half the room cannot read. */
+ui-card[disabled] {
+  opacity: 0.55;
+}
+
+ui-card[disabled] .card__link,
+ui-card[disabled] .card__action {
+  cursor: not-allowed;
+}
+
+/* The link keeps its tab stop. A control nobody can reach is a control nobody can discover
+   is unavailable, and a disabled element cannot hold focus at all. */
+ui-card[disabled] .card__action {
+  pointer-events: none;
+}
+
+.card__skeleton {
+  border-radius: 6px;
+  background:
+    linear-gradient(
+      90deg,
+      var(--card-media) 0%,
+      color-mix(in srgb, var(--card-text) 10%, var(--card-media)) 50%,
+      var(--card-media) 100%
+    )
+    0 0 / 200% 100%;
+  block-size: 0.85rem;
+  animation: card-shimmer 1.4s linear infinite;
+}
+
+.card__skeleton--title {
+  block-size: 1.1rem;
+  inline-size: 80%;
+}
+
+.card__skeleton--short {
+  inline-size: 55%;
+}
+
+.card__skeleton--media {
+  aspect-ratio: var(--card-ratio);
+  border-radius: 0;
+  block-size: auto;
+}
+
+@keyframes card-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 34rem) {
+  ui-card[data-orientation='horizontal']:has(.card__media) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+  }
+
+  ui-card[data-orientation='horizontal'] .card__media {
+    grid-row: auto;
+    aspect-ratio: var(--card-ratio);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ui-card,
+  .card__media img,
+  ui-card[data-effect='reveal'] .card__reveal,
+  ui-card[data-effect='border']::after,
+  ui-card[data-effect='spotlight']::before {
+    transition: none;
+  }
+
+  /* A shimmer is movement that starts on its own and never stops, which is the thing the
+     rule about moving content exists for. It becomes a plain block. */
+  .card__skeleton {
+    background: var(--card-media);
+    animation: none;
+  }
+}
+
+/* The catalog stage gives the frame a fixed height, so the demo has to fill it or the
+   background stops short of the frame and leaves a visible seam. */
+.card-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background:
+    radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
+    light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
+}
+
+.card-demo__shell {
+  min-inline-size: 0;
+  inline-size: min(100%, 46rem);
+}
+
+.card-demo__card {
+  display: grid;
+  gap: 1.1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid light-dark(#dfe3ea, #292d36);
+  border-radius: 18px;
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
+}
+
+.card-demo__label {
+  margin: 0;
+  color: light-dark(#4b525e, #a8afbc);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.card-demo__note {
+  margin: 0;
+  color: light-dark(#4b525e, #a8afbc);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.card-demo__note code {
+  border-radius: 5px;
+  background: light-dark(rgb(15 23 42 / 0.08), rgb(244 246 250 / 0.12));
+  padding: 0.1em 0.35em;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.card-demo__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card-demo__stack {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card-demo__output {
+  display: block;
+  min-block-size: 2.5rem;
+  padding: 0.75rem;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
+  border-radius: 10px;
+  background: light-dark(#f7f8fa, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

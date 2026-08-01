@@ -45,6 +45,21 @@ active intent:
 | Active slots | `--chip-surface`, `--chip-text`, `--chip-border` |
 | Other | `--chip-focus`, `--chip-radius` |
 
+Every colour token is a `light-dark()` pair, so which half a browser uses follows the
+page's `color-scheme` rather than a class the author has to remember to set. Both halves
+keep the shape described above: a tint carries the intent and the text stays dark on the
+light tint and light on the dark one. A saturated fill in either theme is what would put
+the text back below `4.5:1`.
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
+
 Surfaces are soft tints carrying strong text rather than saturated fills. A solid warning fill
 with white text is the usual way a chip fails contrast at this text size, so the palette avoids
 that shape entirely.

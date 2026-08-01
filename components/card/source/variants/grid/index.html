@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" class="card-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Cards of equal height with pinned footers and clamped descriptions." />
+    <title>Card - Grid</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="card-demo">
+      <div class="card-demo__shell">
+        <section class="card-demo__card">
+          <p class="card-demo__label">Different amounts of text, the same height</p>
+          <p class="card-demo__note">
+            Each card fills its grid cell and the body takes the slack, so the footers line up
+            however much each card holds. Nothing measures anything: it is
+            <code>block-size: 100%</code> and one flexible row.
+          </p>
+
+          <ul class="card-demo__grid">
+            <li>
+              <ui-card interactive effect="lift" clamp="2">
+                <div class="card__media">
+                  <img src="../../assets/reading-room.svg" alt="A reading room with tall shelves and a lamp" />
+                </div>
+                <div class="card__body">
+                  <p class="card__eyebrow">Short</p>
+                  <h3 class="card__title"><a href="#short">One line</a></h3>
+                  <p class="card__text">Barely anything to say.</p>
+                </div>
+                <div class="card__footer">
+                  <span class="card__meta">1 min</span>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card interactive effect="lift" clamp="2">
+                <div class="card__media">
+                  <img src="../../assets/field-notes.svg" alt="Two open notebooks covered in handwriting" />
+                </div>
+                <div class="card__body">
+                  <p class="card__eyebrow">Long</p>
+                  <h3 class="card__title">
+                    <a href="#long">A title that runs on for rather longer than the others do</a>
+                  </h3>
+                  <p class="card__text">
+                    A description long enough to prove the point, which is that
+                    <code>clamp</code> keeps it to two lines and the card keeps its shape
+                    however much of it there is. Without a limit this paragraph would push the
+                    footer down and leave the row ragged.
+                  </p>
+                </div>
+                <div class="card__footer">
+                  <span class="card__meta">12 min</span>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card interactive effect="lift" clamp="2">
+                <div class="card__media">
+                  <img src="../../assets/linen-chair.svg" alt="A linen armchair on pale wooden legs" />
+                </div>
+                <div class="card__body">
+                  <p class="card__eyebrow">Middling</p>
+                  <h3 class="card__title"><a href="#middling">Somewhere in between</a></h3>
+                  <p class="card__text">
+                    Two sentences, which is enough to sit between the other two without
+                    matching either.
+                  </p>
+                </div>
+                <div class="card__footer">
+                  <span class="card__meta">5 min</span>
+                </div>
+              </ui-card>
+            </li>
+          </ul>
+
+          <p class="card-demo__label">Without a limit</p>
+          <p class="card-demo__note">
+            <code>clamp</code> is left off here. The descriptions run to their full length and
+            the cards still match, because the height comes from the row rather than from the
+            longest paragraph.
+          </p>
+
+          <ul class="card-demo__grid">
+            <li>
+              <ui-card effect="none">
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#unclamped-a">Unclamped</a></h3>
+                  <p class="card__text">
+                    A description that runs to several lines and is allowed to, because
+                    nothing has asked it to stop.
+                  </p>
+                </div>
+                <div class="card__footer"><span class="card__meta">Full text</span></div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card effect="none">
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#unclamped-b">Also unclamped</a></h3>
+                  <p class="card__text">Much less to say.</p>
+                </div>
+                <div class="card__footer"><span class="card__meta">Full text</span></div>
+              </ui-card>
+            </li>
+          </ul>
+
+          <output class="card-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCardDemo } from '../../demo.js';
+
+      initializeCardDemo();
+    </script>
+  </body>
+</html>

@@ -2,6 +2,7 @@ import componentRegistry from '../../generated/components-index.json';
 import { COMPONENT_GROUPS } from './component-groups.js';
 import { resolveCatalogAsset } from './preview-loader.js';
 import { createSearchIndex, filterComponents } from './search.js';
+import { initializeThemeToggle } from './theme-toggle.js';
 
 const components = componentRegistry.map((component) => ({
   ...component,
@@ -144,4 +145,5 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
+initializeThemeToggle();
 render();

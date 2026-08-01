@@ -1,5 +1,8 @@
 :root {
-  color-scheme: light;
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -15,26 +18,24 @@ body {
 
 .switch-demo-page,
 .switch-demo-page body {
-  background: #0f1115;
-  color-scheme: dark;
+  background: light-dark(#f4f6fa, #0f1115);
 }
 
 ui-switch {
-  --switch-track: #cbd5e1;
-  --switch-accent: #4f46e5;
-  --switch-thumb: #ffffff;
-  --switch-outline: #4b5563;
-  --switch-focus: #6366f1;
-  --switch-text: #111827;
-  --switch-muted: #5f6878;
-  --switch-danger: #b42318;
+  --switch-track: light-dark(#cbd5e1, #2b303a);
+  --switch-accent: light-dark(#4f46e5, #4968e8);
+  --switch-thumb: light-dark(#ffffff, #f4f6fa);
+  --switch-outline: light-dark(#4b5563, #8b94a6);
+  --switch-focus: light-dark(#6366f1, #86a0ff);
+  --switch-text: light-dark(#111827, #f4f6fa);
+  --switch-muted: light-dark(#5f6878, #a8afbc);
+  --switch-danger: light-dark(#b42318, #ff8e87);
 
   --switch-track-inline: 2.75rem;
   --switch-track-block: 1.5rem;
   --switch-thumb-size: 1.125rem;
   --switch-thumb-gap: 0.1875rem;
 
-  color-scheme: light;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -209,8 +210,8 @@ ui-switch[data-placement='start'] .switch__description {
   padding: clamp(1.25rem, 4vw, 3rem);
   background:
     radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
-    #0f1115;
-  color: #f4f6fa;
+    light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
 }
 
 .switch-demo__shell {
@@ -221,23 +222,23 @@ ui-switch[data-placement='start'] .switch__description {
   display: grid;
   gap: 1.25rem;
   padding: clamp(1rem, 2vw, 1.5rem);
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 18px;
   /* Opaque, so a contrast measurement against it is the real thing. */
-  background: #171a20;
-  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
 }
 
 .switch-demo__label {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-weight: 650;
 }
 
 .switch-demo__fieldset {
   margin: 0 0 1.25rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 12px;
   padding: 0.35rem 1rem 0.85rem;
 }
@@ -257,7 +258,7 @@ ui-switch[data-placement='start'] .switch__description {
 
 .switch-demo__rows--split ui-switch {
   padding-block: 0.85rem;
-  border-block-start: 1px solid #292d36;
+  border-block-start: 1px solid light-dark(#e6e9ef, #292d36);
 }
 
 .switch-demo__rows--split ui-switch:first-of-type {
@@ -271,11 +272,11 @@ ui-switch[data-placement='start'] .switch__description {
 }
 
 .switch-demo__button {
-  border: 1px solid #3b414c;
+  border: 1px solid light-dark(#cfd5de, #3b414c);
   border-radius: 9px;
-  background: #1d2128;
+  background: light-dark(#f2f4f8, #1d2128);
   padding: 0.5rem 0.85rem;
-  color: #f4f6fa;
+  color: light-dark(#15181d, #f4f6fa);
   font: inherit;
   font-size: 0.8125rem;
   font-weight: 620;
@@ -283,37 +284,24 @@ ui-switch[data-placement='start'] .switch__description {
 }
 
 .switch-demo__button:hover {
-  background: #262b34;
-}
-
-.switch-demo ui-switch {
-  --switch-track: #2b303a;
-  --switch-accent: #4968e8;
-  --switch-thumb: #f4f6fa;
-  --switch-outline: #8b94a6;
-  --switch-focus: #86a0ff;
-  --switch-text: #f4f6fa;
-  --switch-muted: #a8afbc;
-  --switch-danger: #ff8e87;
-
-  color-scheme: dark;
+  background: light-dark(#e7eaf0, #262b34);
 }
 
 .switch-demo__output {
   display: block;
   min-block-size: 2.75rem;
   padding: 0.75rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 10px;
-  background: #0b0c0e;
-  color: #f4f6fa;
+  background: light-dark(#f7f8fa, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
   font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
   overflow-wrap: anywhere;
 }
 
 .switch-demo__note {
   margin: 0;
-  color: #ff8e87;
+  color: light-dark(#b42318, #ff8e87);
   font-size: 0.8125rem;
   font-weight: 600;
   min-block-size: 1.2rem;

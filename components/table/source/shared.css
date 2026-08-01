@@ -1,5 +1,8 @@
 :root {
-  color-scheme: light;
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -15,21 +18,20 @@ body {
 
 .table-demo-page,
 .table-demo-page body {
-  background: #0f1115;
-  color-scheme: dark;
+  background: light-dark(#f4f6fa, #0f1115);
 }
 
 ui-table {
-  --table-surface: #ffffff;
-  --table-head: #f4f6fa;
-  --table-text: #111827;
-  --table-muted: #5f6878;
-  --table-border: #dfe4ec;
-  --table-border-strong: #b9c2d0;
-  --table-hover: #f6f8fc;
-  --table-selected: #eef1ff;
-  --table-accent: #4f46e5;
-  --table-focus: #6366f1;
+  --table-surface: light-dark(#ffffff, #10131a);
+  --table-head: light-dark(#f4f6fa, #1a1e26);
+  --table-text: light-dark(#111827, #f4f6fa);
+  --table-muted: light-dark(#5f6878, #a8afbc);
+  --table-border: light-dark(#dfe4ec, #292d36);
+  --table-border-strong: light-dark(#b9c2d0, #4a5260);
+  --table-hover: light-dark(#f6f8fc, #1b1f28);
+  --table-selected: light-dark(#eef1ff, #1f2740);
+  --table-accent: light-dark(#4f46e5, #86a0ff);
+  --table-focus: light-dark(#6366f1, #86a0ff);
   --table-radius: 12px;
 
   display: block;
@@ -289,8 +291,8 @@ th[data-sorted] .table__chevron {
   padding: clamp(1.25rem, 4vw, 3rem);
   background:
     radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
-    #0f1115;
-  color: #f4f6fa;
+    light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
 }
 
 .table-demo__shell {
@@ -304,49 +306,34 @@ th[data-sorted] .table__chevron {
   display: grid;
   gap: 1.1rem;
   padding: clamp(1rem, 2vw, 1.5rem);
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 18px;
-  background: #171a20;
-  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
 }
 
 .table-demo__label {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-weight: 650;
 }
 
 .table-demo__note {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   line-height: 1.5;
-}
-
-.table-demo ui-table {
-  --table-surface: #10131a;
-  --table-head: #1a1e26;
-  --table-text: #f4f6fa;
-  --table-muted: #a8afbc;
-  --table-border: #292d36;
-  --table-border-strong: #4a5260;
-  --table-hover: #1b1f28;
-  --table-selected: #1f2740;
-  --table-accent: #86a0ff;
-  --table-focus: #86a0ff;
-
-  color-scheme: dark;
 }
 
 .table-demo__output {
   display: block;
   min-block-size: 2.5rem;
   padding: 0.75rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 10px;
-  background: #0b0c0e;
-  color: #f4f6fa;
+  background: light-dark(#f7f8fa, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
   font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
   overflow-wrap: anywhere;
   white-space: pre-wrap;

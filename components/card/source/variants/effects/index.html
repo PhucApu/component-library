@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" class="card-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Five hover treatments, each of which answers focus too." />
+    <title>Card - Effects</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="card-demo">
+      <div class="card-demo__shell">
+        <section class="card-demo__card">
+          <p class="card-demo__label">Five treatments, and one rule behind all of them</p>
+          <p class="card-demo__note">
+            Every one answers <code>:focus-within</code> as well as <code>:hover</code>. A
+            treatment that only appears under the pointer tells a keyboard user nothing, and
+            a touch screen has no hovering at all. Tab through these and each lights up in
+            turn.
+          </p>
+
+          <ul class="card-demo__grid">
+            <li>
+              <ui-card interactive effect="lift">
+                <div class="card__media">
+                  <img src="../../assets/reading-room.svg" alt="A reading room with tall shelves and a lamp" />
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#lift">Lift</a></h3>
+                  <p class="card__text">Rises, gains a shadow, and warms its border.</p>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card interactive effect="zoom">
+                <div class="card__media">
+                  <img src="../../assets/linen-chair.svg" alt="A linen armchair on pale wooden legs" />
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#zoom">Zoom</a></h3>
+                  <p class="card__text">
+                    The picture grows inside a frame that does not, so nothing reflows.
+                  </p>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card interactive effect="border">
+                <div class="card__media">
+                  <img src="../../assets/clay-mug.svg" alt="A glazed clay mug on a pale surface" />
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#border">Border</a></h3>
+                  <p class="card__text">An accent ring and a soft glow, drawn over the card.</p>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card interactive effect="spotlight">
+                <div class="card__media">
+                  <img src="../../assets/field-notes.svg" alt="Two open notebooks covered in handwriting" />
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#spotlight">Spotlight</a></h3>
+                  <p class="card__text">
+                    Follows the pointer. The one treatment that needs a script, and it only
+                    listens while it is the chosen one.
+                  </p>
+                </div>
+              </ui-card>
+            </li>
+          </ul>
+
+          <p class="card-demo__label">Reveal — a row that arrives with the pointer</p>
+          <p class="card-demo__note">
+            The controls slide up over the picture. They are real buttons, so they are in the
+            tab order whether or not they are on show — which is why focus has to bring them
+            out.
+          </p>
+
+          <ul class="card-demo__grid">
+            <li>
+              <ui-card effect="reveal">
+                <div class="card__media">
+                  <img src="../../assets/linen-chair.svg" alt="A linen armchair on pale wooden legs" />
+                  <div class="card__reveal">
+                    <button type="button" class="card__action">Save</button>
+                    <button type="button" class="card__action">Share</button>
+                  </div>
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#reveal">Reveal</a></h3>
+                  <p class="card__text">Tab into the card and the row comes up on its own.</p>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card effect="none">
+                <div class="card__media">
+                  <img src="../../assets/reading-room.svg" alt="A reading room with tall shelves and a lamp" />
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#none">None</a></h3>
+                  <p class="card__text">
+                    No treatment at all, for a card that is content rather than a control.
+                  </p>
+                </div>
+              </ui-card>
+            </li>
+          </ul>
+
+          <output class="card-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCardDemo } from '../../demo.js';
+
+      initializeCardDemo();
+    </script>
+  </body>
+</html>

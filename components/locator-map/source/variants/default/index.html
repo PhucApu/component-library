@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" class="locator-map-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Offices on a map, a search above it, and a flight to the one chosen." />
+    <title>Locator Map - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="locator-map-demo">
+      <div class="locator-map-demo__shell">
+        <section class="locator-map-demo__card">
+          <p class="locator-map-demo__label">Find an office, and the map goes to it</p>
+          <p class="locator-map-demo__note">
+            Type a city and choose it, or press a marker, and the map flies to it. This is a
+            real map from a real provider, loaded over the network — which is why this one
+            component is allowed to reach out where none of the others are, and why it needs
+            a connection to look like this.
+          </p>
+
+          <ui-locator-map focus-zoom="16">
+            <ul class="locator-map__places">
+              <li data-lat="21.0235" data-lon="105.8573" data-region="north">
+                <h3>Hanoi head office</h3>
+                <p>72 Le Thanh Tong, Cua Nam</p>
+              </li>
+              <li data-lat="20.8615" data-lon="106.6906" data-region="north">
+                <h3>Hai Phong depot</h3>
+                <p>18 Dien Bien Phu, Gia Vien</p>
+              </li>
+              <li data-lat="18.6791" data-lon="105.6854" data-region="central">
+                <h3>Vinh branch</h3>
+                <p>145 Nguyen Van Cu, Thanh Vinh</p>
+              </li>
+              <li data-lat="16.4629" data-lon="107.5855" data-region="central">
+                <h3>Hue studio</h3>
+                <p>3 Le Loi, Vinh Ninh</p>
+              </li>
+              <li data-lat="16.0739" data-lon="108.2246" data-region="central">
+                <h3>Da Nang office</h3>
+                <p>210 Bach Dang, Hai Chau</p>
+              </li>
+              <li data-lat="12.2226" data-lon="109.2024" data-region="central">
+                <h3>Nha Trang office</h3>
+                <p>40 Tran Phu, Phuoc Hoa</p>
+              </li>
+              <li data-lat="11.9373" data-lon="108.4495" data-region="south">
+                <h3>Da Lat workshop</h3>
+                <p>7 Tran Hung Dao, Xuan Huong</p>
+              </li>
+              <li data-lat="10.7758" data-lon="106.7027" data-region="south">
+                <h3>Ho Chi Minh City office</h3>
+                <p>65 Le Loi, Sai Gon</p>
+              </li>
+              <li data-lat="10.0336" data-lon="105.7844" data-region="south">
+                <h3>Can Tho branch</h3>
+                <p>12 Hoa Binh, Ninh Kieu</p>
+              </li>
+            </ul>
+          </ui-locator-map>
+
+          <p class="locator-map-demo__note">
+            The list below the map is the markup itself, not a copy of it. Turn scripting off —
+            or lose the connection — and it is still every address, readable and complete, with
+            a directions link each. That is the part that never depends on anybody else.
+          </p>
+
+          <output class="locator-map-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeLocatorMapDemo } from '../../demo.js';
+      import { attachRealMap } from '../../real-map.js';
+
+      initializeLocatorMapDemo();
+      document.querySelectorAll('ui-locator-map').forEach((map) => attachRealMap(map));
+    </script>
+  </body>
+</html>

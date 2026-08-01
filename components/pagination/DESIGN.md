@@ -24,15 +24,31 @@ missing from the download and the page would arrive broken.
 
 ## 4. Visual tokens
 
-| Token | Light | Role |
-|---|---|---|
-| `--pagination-text` | `#3b4657` | Page numbers |
-| `--pagination-muted` | `#5f6878` | Ellipsis and unavailable controls |
-| `--pagination-border` | `#cbd5e1` | Edge button outlines |
-| `--pagination-hover` | `#eef1f6` | Hover background |
-| `--pagination-accent` | `#4f46e5` | The current page |
-| `--pagination-focus` | `#6366f1` | Focus ring |
-| `--pagination-size` | `2.25rem` | Control size |
+Each colour token is a `light-dark()` pair, so which half a browser uses follows the
+page's `color-scheme` rather than a class the author has to remember to set.
+
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--pagination-text` | `#3b4657` | `#c2cad8` | Page numbers |
+| `--pagination-muted` | `#5f6878` | `#7d869a` | Ellipsis and unavailable controls |
+| `--pagination-border` | `#cbd5e1` | `#3b414c` | Edge button outlines |
+| `--pagination-hover` | `#eef1f6` | `#232833` | Hover background |
+| `--pagination-accent` | `#4f46e5` | `#4968e8` | The current page |
+| `--pagination-on-accent` | `#ffffff` | `#ffffff` | The current page number |
+| `--pagination-focus` | `#6366f1` | `#86a0ff` | Focus ring |
+| `--pagination-size` | `2.25rem` | | Control size |
+
+`--pagination-on-accent` does not pair. The accent stays a saturated indigo in both
+themes, so white keeps its contrast on it either way.
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
 
 ## 5. Which pages are shown
 

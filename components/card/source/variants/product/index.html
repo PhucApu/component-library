@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" class="card-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Price, badge and rating, with actions above the whole-card link." />
+    <title>Card - Product</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="card-demo">
+      <div class="card-demo__shell">
+        <section class="card-demo__card">
+          <p class="card-demo__label">A card that is a link and also holds buttons</p>
+          <p class="card-demo__note">
+            This is where the whole-card link earns its keep and where it usually breaks.
+            Measured: a button inside an interactive card is hit-tested as
+            <strong>the link</strong> unless it is lifted above the overlay — it looks
+            pressable and is not. The component lifts every control except the title link
+            itself, because that failure never announces itself.
+          </p>
+
+          <ul class="card-demo__grid">
+            <li>
+              <ui-card interactive effect="zoom" ratio="4 / 3">
+                <div class="card__media">
+                  <img src="../../assets/clay-mug.svg" alt="A glazed clay mug on a pale surface" />
+                  <span class="card__badge">Sale</span>
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#mug">Stoneware mug, 350ml</a></h3>
+                  <p class="card__rating">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 2l3 6.5 7 .9-5 4.8 1.2 7L12 17.8 5.8 21.2 7 14.2 2 9.4l7-.9z" />
+                    </svg>
+                    4.6 from 212 reviews
+                  </p>
+                </div>
+                <div class="card__footer">
+                  <span class="card__meta">
+                    <span class="card__price">&pound;18</span>
+                    <span class="card__was">&pound;24</span>
+                  </span>
+                  <button type="button" class="card__action card__action--primary">Add</button>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card interactive effect="zoom" ratio="4 / 3">
+                <div class="card__media">
+                  <img src="../../assets/linen-chair.svg" alt="A linen armchair on pale wooden legs" />
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#chair">Linen reading chair</a></h3>
+                  <p class="card__rating">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 2l3 6.5 7 .9-5 4.8 1.2 7L12 17.8 5.8 21.2 7 14.2 2 9.4l7-.9z" />
+                    </svg>
+                    4.8 from 96 reviews
+                  </p>
+                </div>
+                <div class="card__footer">
+                  <span class="card__meta"><span class="card__price">&pound;340</span></span>
+                  <button type="button" class="card__action card__action--primary">Add</button>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card interactive effect="zoom" ratio="4 / 3">
+                <div class="card__media">
+                  <img src="../../assets/field-notes.svg" alt="Two open notebooks covered in handwriting" />
+                  <span class="card__badge">New</span>
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title"><a href="#notebooks">Field notebooks, pack of three</a></h3>
+                  <p class="card__rating">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 2l3 6.5 7 .9-5 4.8 1.2 7L12 17.8 5.8 21.2 7 14.2 2 9.4l7-.9z" />
+                    </svg>
+                    4.4 from 58 reviews
+                  </p>
+                </div>
+                <div class="card__footer">
+                  <span class="card__meta"><span class="card__price">&pound;12</span></span>
+                  <button type="button" class="card__action card__action--primary">Add</button>
+                </div>
+              </ui-card>
+            </li>
+          </ul>
+
+          <p class="card-demo__note">
+            Press <strong>Add</strong> and the card is not followed. Press anywhere else and
+            it is. Tab through one card and focus goes to the title, then to the button —
+            two stops, in the order they are read.
+          </p>
+
+          <output class="card-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCardDemo } from '../../demo.js';
+
+      initializeCardDemo();
+    </script>
+  </body>
+</html>

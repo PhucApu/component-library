@@ -106,10 +106,31 @@ Buttons take the native `disabled` attribute and need none of that.
   cursor, so neither state depends on colour alone.
 - Every intent was checked against the label colour for contrast at both appearances.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the chip follows the operating system. To pin it, narrow the
+`color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+Both halves keep the same shape: a tint carries the intent and the text stays dark on the
+light tint and light on the dark one. A saturated fill in either theme is what would put
+the text back below `4.5:1`.
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
-Custom Elements and ES modules are needed, so serve over HTTP or HTTPS. Repository automation
-covers Chromium.
+Custom Elements and ES modules are needed, so serve over HTTP or HTTPS. Colours use
+`light-dark()`. Repository automation covers Chromium.
 
 Version 0.1 does not include chip groups with roving focus, custom delete icons, or multiline
 labels.

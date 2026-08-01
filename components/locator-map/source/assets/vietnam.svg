@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 720" width="400" height="720" role="presentation" aria-hidden="true">
+  <!--
+    The same outline the component inlines, kept here as a file so it can be looked at on its
+    own. Every point was worked out by running a real latitude and longitude through the Web
+    Mercator projection this component uses, so a marker placed by coordinates lands where it
+    should.
+
+    It is a generalisation and the mainland only. It claims nothing about any border and shows
+    nothing at sea.
+  -->
+  <path
+    fill="#26333f"
+    stroke="#3d5468"
+    stroke-width="1.5"
+    d="M176 30Q260 62 310 122Q280 200 237 269Q300 320 332 363Q370 410 384 459Q386 510 379 553Q330 595 274 623Q220 670 165 711Q152 680 150 648Q172 620 200 600Q240 578 274 553Q282 505 279 459Q258 410 237 363Q190 315 132 269Q66 205 24 128Q28 70 44 34Q110 16 176 30Z"
+  />
+</svg>

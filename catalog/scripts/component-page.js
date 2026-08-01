@@ -1,7 +1,13 @@
 import componentRegistry from '../../generated/components-index.json';
 import { getComponentGroup } from './component-groups.js';
 import { createFileSelect } from './file-select.js';
-import { getVariant, mountPreview, resolveCatalogAsset } from './preview-loader.js';
+import {
+  getVariant,
+  mountPreview,
+  resolveCatalogAsset,
+  sendPreviewTheme,
+} from './preview-loader.js';
+import { getActiveTheme, initializeThemeToggle, onThemeChange } from './theme-toggle.js';
 
 const ACCORDION_DURATION = 260;
 
@@ -279,6 +285,21 @@ export function renderComponent(component) {
   void loadText(component.docs.prompt, document.querySelector('#prompt-content'), 'PROMPT.md');
   void loadText(component.docs.design, document.querySelector('#design-content'), 'DESIGN.md');
 }
+
+const previewFrame = document.querySelector('#component-preview');
+
+// Wired at module scope, not inside renderComponent: the frame is part of the static
+// page, and a per-render subscription would stack another listener on every call.
+if (previewFrame) {
+  // Switching variant reloads the frame, so the theme has to ride the load event rather
+  // than the mount call that precedes it.
+  previewFrame.addEventListener('load', () =>
+    sendPreviewTheme(previewFrame, getActiveTheme()),
+  );
+  onThemeChange((theme) => sendPreviewTheme(previewFrame, theme));
+}
+
+initializeThemeToggle();
 
 if (component) {
   renderComponent(component);

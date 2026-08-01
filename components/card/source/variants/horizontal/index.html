@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en" class="card-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The picture beside the words, and a card with no picture." />
+    <title>Card - Horizontal</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="card-demo">
+      <div class="card-demo__shell">
+        <section class="card-demo__card">
+          <p class="card-demo__label">The picture beside the words</p>
+          <p class="card-demo__note">
+            The picture takes a column and spans both rows, which is what keeps the footer at
+            the bottom. Below <code>34rem</code> the columns become rows, because a picture
+            beside a paragraph on a narrow screen leaves neither of them room.
+          </p>
+
+          <ul class="card-demo__stack">
+            <li>
+              <ui-card interactive orientation="horizontal" effect="lift">
+                <div class="card__media">
+                  <img src="../../assets/reading-room.svg" alt="A reading room with tall shelves and a lamp" />
+                </div>
+                <div class="card__body">
+                  <p class="card__eyebrow">Long read</p>
+                  <h3 class="card__title"><a href="#shelves">Everything the shelves remember</a></h3>
+                  <p class="card__text">
+                    A room that has been lent to four different libraries, and what each of
+                    them left behind in it.
+                  </p>
+                </div>
+                <div class="card__footer">
+                  <span class="card__meta">28 May &middot; 14 min</span>
+                  <button type="button" class="card__action">Save</button>
+                </div>
+              </ui-card>
+            </li>
+            <li>
+              <ui-card interactive orientation="horizontal" effect="zoom">
+                <div class="card__media">
+                  <img src="../../assets/clay-mug.svg" alt="A glazed clay mug on a pale surface" />
+                </div>
+                <div class="card__body">
+                  <p class="card__eyebrow">Making</p>
+                  <h3 class="card__title"><a href="#glaze">The glaze that took nine attempts</a></h3>
+                  <p class="card__text">
+                    Eight of them cracked in the kiln. The ninth is the one in the picture.
+                  </p>
+                </div>
+                <div class="card__footer">
+                  <span class="card__meta">3 June &middot; 7 min</span>
+                  <button type="button" class="card__action">Save</button>
+                </div>
+              </ui-card>
+            </li>
+          </ul>
+
+          <p class="card-demo__label">No picture at all</p>
+          <p class="card-demo__note">
+            The layout is applied only where there is a picture to place, so a card without
+            one does not keep an empty column beside it.
+          </p>
+
+          <ul class="card-demo__stack">
+            <li>
+              <ui-card interactive orientation="horizontal" effect="border">
+                <div class="card__body">
+                  <p class="card__eyebrow">Note</p>
+                  <h3 class="card__title"><a href="#no-picture">A card that is only words</a></h3>
+                  <p class="card__text">
+                    Nothing here is reserved for a picture that was never supplied.
+                  </p>
+                </div>
+                <div class="card__footer">
+                  <span class="card__meta">Updated yesterday</span>
+                </div>
+              </ui-card>
+            </li>
+          </ul>
+
+          <output class="card-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCardDemo } from '../../demo.js';
+
+      initializeCardDemo();
+    </script>
+  </body>
+</html>
