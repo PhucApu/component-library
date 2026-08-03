@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en" class="donut-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The same numbers as a ring and as bars, so you can see when to switch." />
+    <title>Donut Chart - Versus</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="donut-demo">
+      <div class="donut-demo__shell">
+        <section class="donut-demo__card">
+          <p class="donut-demo__label">The same five numbers, twice</p>
+          <p class="donut-demo__note">
+            These five are close together on purpose. Try to put them in order from the ring
+            alone, then look at the bars. That difficulty is not a failure of this component —
+            it is what angle does, and it is the reason to know when to reach for something
+            else.
+          </p>
+
+          <div class="donut-demo__pair">
+            <ui-donut-chart center-label="Orders">
+              <table>
+                <caption>Orders by warehouse</caption>
+                <thead>
+                  <tr><th scope="col">Warehouse</th><th scope="col">Orders</th></tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">North</th><td data-value="2410">2,410</td></tr>
+                  <tr><th scope="row">East</th><td data-value="2280">2,280</td></tr>
+                  <tr><th scope="row">South</th><td data-value="2190">2,190</td></tr>
+                  <tr><th scope="row">West</th><td data-value="2050">2,050</td></tr>
+                  <tr><th scope="row">Central</th><td data-value="1970">1,970</td></tr>
+                </tbody>
+              </table>
+            </ui-donut-chart>
+
+            <ul class="donut-demo__bars" aria-label="The same orders as bars">
+              <li class="donut-demo__bar-row">
+                <span class="donut-demo__bar-name">North</span>
+                <span class="donut-demo__bar-value">2,410</span>
+                <span class="donut-demo__bar-track"><span class="donut-demo__bar-fill" style="inline-size: 100%"></span></span>
+              </li>
+              <li class="donut-demo__bar-row">
+                <span class="donut-demo__bar-name">East</span>
+                <span class="donut-demo__bar-value">2,280</span>
+                <span class="donut-demo__bar-track"><span class="donut-demo__bar-fill" style="inline-size: 94.6%"></span></span>
+              </li>
+              <li class="donut-demo__bar-row">
+                <span class="donut-demo__bar-name">South</span>
+                <span class="donut-demo__bar-value">2,190</span>
+                <span class="donut-demo__bar-track"><span class="donut-demo__bar-fill" style="inline-size: 90.9%"></span></span>
+              </li>
+              <li class="donut-demo__bar-row">
+                <span class="donut-demo__bar-name">West</span>
+                <span class="donut-demo__bar-value">2,050</span>
+                <span class="donut-demo__bar-track"><span class="donut-demo__bar-fill" style="inline-size: 85.1%"></span></span>
+              </li>
+              <li class="donut-demo__bar-row">
+                <span class="donut-demo__bar-name">Central</span>
+                <span class="donut-demo__bar-value">1,970</span>
+                <span class="donut-demo__bar-track"><span class="donut-demo__bar-fill" style="inline-size: 81.7%"></span></span>
+              </li>
+            </ul>
+          </div>
+
+          <p class="donut-demo__label">Which to use, plainly</p>
+          <p class="donut-demo__note">
+            <strong>Use the ring</strong> when the point is that these are parts of one whole
+            and the split is lopsided — one dominant share, a couple of also-rans. The total in
+            the hole is doing real work there.
+          </p>
+          <p class="donut-demo__note">
+            <strong>Use bars</strong> when the point is the ordering, when the values are
+            close, or when there are more than about four of them. Length is read accurately
+            and angle is not, and no amount of design changes that.
+          </p>
+          <p class="donut-demo__note">
+            The bars beside this ring are a few lines of CSS on this page, not another
+            component — that is how little it costs to switch.
+          </p>
+
+          <output class="donut-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeDonutChartDemo } from '../../demo.js';
+
+      initializeDonutChartDemo();
+    </script>
+  </body>
+</html>

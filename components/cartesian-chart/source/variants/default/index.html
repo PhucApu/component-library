@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" class="chart-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A line chart read from a table, with a legend and a crosshair." />
+    <title>Cartesian Chart - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chart-demo">
+      <div class="chart-demo__shell">
+        <section class="chart-demo__card">
+          <p class="chart-demo__label">A chart drawn from a table</p>
+          <p class="chart-demo__note">
+            Point anywhere along the plot and a hairline finds the nearest month, then one
+            read-out lists every series at that month. You never have to land on a 2px line:
+            the thing being aimed at is a date.
+          </p>
+
+          <ui-cartesian-chart type="line" y-label="Revenue">
+            <table>
+              <caption>Revenue by month</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Month</th>
+                  <th scope="col">Online</th>
+                  <th scope="col">Retail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Jan</th><td data-value="4200">$4,200</td><td data-value="3100">$3,100</td></tr>
+                <tr><th scope="row">Feb</th><td data-value="5100">$5,100</td><td data-value="3300">$3,300</td></tr>
+                <tr><th scope="row">Mar</th><td data-value="4800">$4,800</td><td data-value="3600">$3,600</td></tr>
+                <tr><th scope="row">Apr</th><td data-value="6300">$6,300</td><td data-value="3400">$3,400</td></tr>
+                <tr><th scope="row">May</th><td data-value="7100">$7,100</td><td data-value="3900">$3,900</td></tr>
+                <tr><th scope="row">Jun</th><td data-value="6800">$6,800</td><td data-value="4300">$4,300</td></tr>
+                <tr><th scope="row">Jul</th><td data-value="8200">$8,200</td><td data-value="4100">$4,100</td></tr>
+                <tr><th scope="row">Aug</th><td data-value="9400">$9,400</td><td data-value="4600">$4,600</td></tr>
+              </tbody>
+            </table>
+          </ui-cartesian-chart>
+
+          <p class="chart-demo__note">
+            The table below the chart is not a copy of the data — it <em>is</em> the data. Turn
+            scripting off and what is left is every number, readable and complete. That is also
+            why the table can be hidden but never removed: three of the eight light-theme
+            series colours sit below the contrast rule on white, which is only allowed where
+            the values are readable without colour as well.
+          </p>
+
+          <output class="chart-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCartesianChartDemo } from '../../demo.js';
+
+      initializeCartesianChartDemo();
+    </script>
+  </body>
+</html>

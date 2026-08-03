@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 2,
+  "id": "donut-chart",
+  "version": "0.1.0",
+  "name": "Donut Chart",
+  "description": "A framework-free Web Component that reads an HTML table and draws it as a ring, with the total in the hole and the numbers in the legend. Six wedges at most, because past that a ring stops answering the question it was drawn for.",
+  "group": "data-display",
+  "categories": ["data-display"],
+  "tags": [
+    "chart",
+    "donut",
+    "pie",
+    "part-to-whole",
+    "composition",
+    "dashboard",
+    "svg",
+    "web-component",
+    "accessible",
+    "progressive-enhancement"
+  ],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A ring read from a legend, with the total in the hole and a wedge's own figures when it is read.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "versus",
+      "name": "Versus",
+      "description": "The same five close values as a ring and as bars, so the moment to switch is visible rather than argued.",
+      "entry": "source/variants/versus/index.html"
+    },
+    {
+      "id": "folding",
+      "name": "Folding",
+      "description": "Eleven rows into six wedges, a remainder that is not a category, and the value columns that are not plotted.",
+      "entry": "source/variants/folding/index.html"
+    },
+    {
+      "id": "interaction",
+      "name": "Interaction",
+      "description": "Reading a wedge with a pointer or a keyboard, and a legend that never repaints the survivors.",
+      "entry": "source/variants/interaction/index.html"
+    },
+    {
+      "id": "table",
+      "name": "Table",
+      "description": "The data contract, and why a ring needs its table more than a bar chart does.",
+      "entry": "source/variants/table/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "One slice, a total of zero, refetching, a failure, and values that cannot be part of a whole.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

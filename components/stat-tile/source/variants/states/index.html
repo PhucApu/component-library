@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" class="stat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="No trend, refetching, a failure, and a number nobody has yet." />
+    <title>Stat Tile - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="stat-demo">
+      <div class="stat-demo__shell">
+        <section class="stat-demo__card">
+          <p class="stat-demo__label">Refetching, failing, and the trend taken off</p>
+
+          <div class="stat-demo__controls">
+            <button type="button" class="stat-demo__button" data-demo-action="loading" data-demo-target="live">
+              Refetching
+            </button>
+            <button type="button" class="stat-demo__button" data-demo-action="error" data-demo-target="live">
+              Failed
+            </button>
+            <button type="button" class="stat-demo__button" data-demo-action="trend" data-demo-target="live">
+              no-trend
+            </button>
+          </div>
+
+          <ui-stat-tile id="live" up="good">
+            <p class="stat-tile__label">Active sessions</p>
+            <p class="stat-tile__value" data-value="3412">3,412</p>
+            <p class="stat-tile__delta" data-change="5.9">vs an hour ago</p>
+            <ol class="stat-tile__trend" aria-label="Sessions over the last twelve hours">
+              <li>2810</li><li>2940</li><li>3050</li><li>2990</li><li>3120</li><li>3080</li>
+              <li>3210</li><li>3180</li><li>3290</li><li>3340</li><li>3300</li><li>3412</li>
+            </ol>
+          </ui-stat-tile>
+
+          <p class="stat-demo__note">
+            <strong>Refetching</strong> fades the number and holds it. A skeleton would throw
+            away a figure the reader is still looking at and flash the layout for something
+            about to be almost the same. <strong>A failure</strong> says what went wrong and
+            keeps the label, so the tile still says which number is missing.
+            <strong><code>no-trend</code></strong> drops the sparkline and leaves the readings
+            in the page for anything that reads rather than looks.
+          </p>
+
+          <p class="stat-demo__label">A number nobody has yet</p>
+          <p class="stat-demo__note">
+            An empty value says so in words. A dash is a character somebody has to decode, and
+            a zero is a claim.
+          </p>
+
+          <div class="stat-row">
+            <ui-stat-tile>
+              <p class="stat-tile__label">Refunds this week</p>
+              <p class="stat-tile__value" data-value=""></p>
+            </ui-stat-tile>
+
+            <ui-stat-tile up="good">
+              <p class="stat-tile__label">Deliveries</p>
+              <p class="stat-tile__value" data-value="0">0</p>
+              <p class="stat-tile__delta" data-change="-100">vs yesterday</p>
+            </ui-stat-tile>
+
+            <ui-stat-tile up="good">
+              <p class="stat-tile__label">Single reading</p>
+              <p class="stat-tile__value" data-value="42">42</p>
+              <ol class="stat-tile__trend" aria-label="Only reading"><li>42</li></ol>
+            </ui-stat-tile>
+          </div>
+
+          <p class="stat-demo__note">
+            Zero is a real measurement and is drawn as one — it is <em>missing</em> that gets
+            the wording. And a single reading is not a trend: one point cannot show a direction,
+            so no sparkline is drawn from it.
+          </p>
+
+          <output class="stat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeStatTileDemo } from '../../demo.js';
+
+      initializeStatTileDemo();
+    </script>
+  </body>
+</html>

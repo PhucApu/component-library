@@ -1,0 +1,608 @@
+:root {
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to a
+     single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.chart-demo-page,
+.chart-demo-page body {
+  background: light-dark(#f4f6fa, #0f1115);
+}
+
+ui-cartesian-chart {
+  /* ---- The eight categorical slots -------------------------------------------------
+     The order is the colour-vision safety mechanism, not a preference. Measured against
+     the two surfaces below with the palette validator: worst adjacent pair 9.1 light and
+     8.4 dark against a floor of 8, worst normal-vision pair 19.6 and 19.3 against 15.
+     Re-ordering them or adding a ninth breaks that, and it cannot be checked by eye.
+
+     Three light slots sit below 3:1 on white (aqua 2.82, yellow 2.17, magenta 2.69). The
+     relief for that is the table, which this component cannot be told to remove. */
+  --chart-series-1: light-dark(#2a78d6, #3987e5);
+  --chart-series-2: light-dark(#eb6834, #d95926);
+  --chart-series-3: light-dark(#1baf7a, #199e70);
+  --chart-series-4: light-dark(#eda100, #c98500);
+  --chart-series-5: light-dark(#e87ba4, #d55181);
+  --chart-series-6: light-dark(#008300, #008300);
+  --chart-series-7: light-dark(#4a3aa7, #9085e9);
+  --chart-series-8: light-dark(#e34948, #e66767);
+
+  /* ---- Chrome and ink ---------------------------------------------------------------
+     Everything below is one step off the surface on purpose. The data is the only thing
+     allowed to be loud. */
+  --chart-surface: light-dark(#ffffff, #171a20);
+  --chart-ink: light-dark(#111827, #f4f6fa);
+  --chart-ink-soft: light-dark(#3f4757, #cbd1dc);
+  --chart-ink-muted: light-dark(#5f6878, #a8afbc);
+  --chart-grid: light-dark(#e6e9f0, #23272f);
+  --chart-axis: light-dark(#cfd5e0, #333a45);
+  --chart-border: light-dark(#dfe4ec, #2e3440);
+  --chart-focus: light-dark(#4f46e5, #86a0ff);
+  --chart-radius: 12px;
+  /* The frame holds the plot *and* the axis band. Sizing a chart container to the plot alone
+     is why so many chart cards grow a tiny nested scrollbar. */
+  --chart-height: 20rem;
+
+  /* The wash under a line. A saturated block at this size would shout over the line it is
+     supposed to sit behind. */
+  --chart-area-opacity: 0.1;
+  /* White doing the separating. Never a stroke drawn around a mark: that is data-weight ink
+     spent on something that is not data. */
+  --chart-gap: 2px;
+  --chart-motion: 420ms;
+  /* Short enough that the panel arrives before the eye does, long enough that it glides from
+     one category to the next instead of teleporting. */
+  --chart-read-motion: 130ms;
+
+  /* Written by the element onto individual marks, swatches and keys. Declared here so it has
+     a value of its own rather than living only in a fallback. */
+  --mark-colour: var(--chart-series-1);
+
+  display: grid;
+  gap: 0.85rem;
+  min-inline-size: 0;
+  color: var(--chart-ink);
+  font: 400 0.9375rem/1.5
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* ---- The plot -------------------------------------------------------------------------- */
+
+.chart__frame {
+  position: relative;
+  inline-size: 100%;
+  /* The axis band lives inside this box, not below it. A container sized to the plot alone
+     is the reason so many chart cards grow a tiny nested scrollbar. */
+  block-size: var(--chart-height);
+  border-radius: var(--chart-radius);
+  background: var(--chart-surface);
+  touch-action: pan-y;
+}
+
+.chart__frame:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--chart-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+.chart__canvas {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+}
+
+/* Solid hairlines, never dashed. Dashing reads as "projection" or "threshold" when it is
+   only a grid, and it adds noise to every band at once. */
+.chart__grid-line {
+  stroke: var(--chart-grid);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.chart__axis-line {
+  stroke: var(--chart-axis);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.chart__tick,
+.chart__category,
+.chart__measure {
+  fill: var(--chart-ink-muted);
+  font-size: 0.75rem;
+  /* Columns of numbers that have to line up vertically, which is exactly what an axis is. */
+  font-variant-numeric: tabular-nums;
+}
+
+/* The ruler. It carries the tick font so what it measures is what will be drawn, and a class
+   of its own so it never answers a query looking for a real label. */
+.chart__measure {
+  visibility: hidden;
+}
+
+.chart__axis-title {
+  fill: var(--chart-ink-soft);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ---- The marks ------------------------------------------------------------------------- */
+
+.chart__line {
+  fill: none;
+  stroke: var(--mark-colour);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chart__area {
+  fill: var(--mark-colour);
+  fill-opacity: var(--chart-area-opacity);
+  stroke: none;
+}
+
+.chart__marker {
+  fill: var(--mark-colour);
+  /* The ring is the surface, so a dot stays legible where it crosses its own line or another
+     series. It is part of the hit target too, not only spacing. */
+  stroke: var(--chart-surface);
+  stroke-width: var(--chart-gap);
+}
+
+.chart__bar {
+  fill: var(--mark-colour);
+  /* Square at the baseline, rounded at the data end. The rounding says "this end is the
+     value"; rounding the foot as well would lift the bar off its own zero. */
+  transition: fill-opacity 140ms ease;
+}
+
+/* The mark being read lifts, so the chart answers rather than only a panel appearing near
+   the pointer. A lighten rather than an outline: an outline on a 24px bar is a border, and a
+   border around a mark is data-weight ink doing a spacer's job. */
+.chart__bar[data-active] {
+  fill-opacity: 0.78;
+}
+
+/* One pass on the first paint only, and none at all when the reader has asked for stillness
+   (`--chart-motion` goes to 0ms under prefers-reduced-motion). */
+.chart__series--enter {
+  animation: chart-enter var(--chart-motion) cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@keyframes chart-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---- Crosshair and read-out ------------------------------------------------------------ */
+
+/* The hairline and the rings ride one group, so following the pointer is a composited
+   translate rather than a coordinate rewritten on every frame. */
+.chart__crosshair {
+  pointer-events: none;
+  transition: transform var(--chart-read-motion) cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.chart__crosshair[hidden],
+.chart__read-mark[hidden] {
+  display: none;
+}
+
+.chart__crosshair-line {
+  stroke: var(--chart-axis);
+  stroke-width: 1;
+}
+
+/* The mark being read answers as well as the panel. Without it the chart itself looks inert
+   while a box floats about beside it. */
+.chart__read-mark {
+  fill: var(--mark-colour);
+  stroke: var(--chart-surface);
+  stroke-width: var(--chart-gap);
+  transition: cy var(--chart-read-motion) cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.chart__readout {
+  --readout-x: 0px;
+  --readout-y: 0px;
+
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: 2;
+  min-inline-size: 9rem;
+  max-inline-size: 15rem;
+  border: 1px solid var(--chart-border);
+  border-radius: 10px;
+  background: var(--chart-surface);
+  padding: 0.5rem 0.65rem;
+  box-shadow: 0 14px 34px rgb(0 0 0 / 0.18);
+  pointer-events: none;
+  /* Translated, not inset. `inset-inline-start` is a layout property: it cannot be
+     transitioned to the next category, so the panel jumped from one to the next. */
+  transform: translate(var(--readout-x), var(--readout-y));
+  transition: transform var(--chart-read-motion) cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.chart__readout[hidden] {
+  display: none;
+}
+
+.chart__readout-category {
+  margin: 0 0 0.35rem;
+  color: var(--chart-ink-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.chart__readout-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding-block: 0.1rem;
+}
+
+/* A short stroke of the series colour, not a filled box. At this density a box is
+   data-weight ink doing a label's job. */
+.chart__readout-key {
+  flex: none;
+  inline-size: 0.75rem;
+  block-size: 0.1875rem;
+  border-radius: 2px;
+  background: var(--mark-colour);
+}
+
+.chart__readout-name {
+  flex: 1 1 auto;
+  color: var(--chart-ink-muted);
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+/* The value leads and the name follows: the legend's hierarchy inverted, because here the
+   reader already has the series and wants the number. */
+.chart__readout-value {
+  flex: none;
+  color: var(--chart-ink);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Direct labels --------------------------------------------------------------------- */
+
+/* Text never wears the data colour. A light categorical hue is illegible as text on the
+   surface; identity comes from the coloured mark beside it. */
+.chart__value-label {
+  fill: var(--chart-ink-soft);
+  font-size: 0.75rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Legend ---------------------------------------------------------------------------- */
+
+.chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chart__legend[hidden] {
+  display: none;
+}
+
+.chart__legend-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  padding: 0.15rem 0.2rem;
+  color: var(--chart-ink-soft);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.chart__legend-button:hover {
+  color: var(--chart-ink);
+}
+
+.chart__legend-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--chart-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+/* A hidden series is struck through as well as faded, so its state is not carried by colour
+   alone for anyone who cannot see the fade. */
+.chart__legend-button[aria-pressed="false"] {
+  color: var(--chart-ink-muted);
+  text-decoration: line-through;
+}
+
+.chart__legend-button[aria-pressed="false"] .chart__legend-swatch {
+  opacity: 0.35;
+}
+
+/* The legend mirrors the mark: a rectangle for bars and areas, a line for lines. */
+.chart__legend-swatch {
+  flex: none;
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  border-radius: 3px;
+  background: var(--mark-colour);
+}
+
+.chart__legend-swatch[data-shape="line"] {
+  block-size: 0.1875rem;
+  border-radius: 2px;
+}
+
+/* ---- The table, which is the data and the fallback at once ----------------------------- */
+
+.chart__table-toggle {
+  justify-self: start;
+  border: 1px solid var(--chart-border);
+  border-radius: 8px;
+  background: none;
+  padding: 0.3rem 0.6rem;
+  color: var(--chart-ink-soft);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chart__table-toggle:hover {
+  color: var(--chart-ink);
+}
+
+.chart__table-toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--chart-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+/* A wide table scrolls inside its own box rather than pushing the page sideways. Eleven
+   columns on a phone is a real case, and the answer is never a document-level scrollbar. */
+.chart__table-wrap {
+  min-inline-size: 0;
+  overflow-x: auto;
+}
+
+ui-cartesian-chart table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+ui-cartesian-chart caption {
+  margin-block-end: 0.4rem;
+  color: var(--chart-ink-soft);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  text-align: start;
+}
+
+ui-cartesian-chart th,
+ui-cartesian-chart td {
+  border-block-end: 1px solid var(--chart-border);
+  padding: 0.35rem 0.5rem;
+  text-align: end;
+}
+
+ui-cartesian-chart thead th,
+ui-cartesian-chart tbody th {
+  color: var(--chart-ink-soft);
+  font-weight: 650;
+}
+
+ui-cartesian-chart th:first-child,
+ui-cartesian-chart td:first-child {
+  text-align: start;
+}
+
+ui-cartesian-chart td {
+  color: var(--chart-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A colour key beside each series heading, so the table is a way of reading the chart rather
+   than a separate document that happens to hold the same numbers. */
+.chart__table-key {
+  display: inline-block;
+  inline-size: 0.6rem;
+  block-size: 0.6rem;
+  margin-inline-end: 0.35rem;
+  border-radius: 2px;
+  background: var(--mark-colour);
+  vertical-align: baseline;
+}
+
+/* ---- States ---------------------------------------------------------------------------- */
+
+.chart__note {
+  margin: 0;
+  color: var(--chart-ink-muted);
+  font-size: 0.8125rem;
+}
+
+.chart__note[hidden] {
+  display: none;
+}
+
+.chart__empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  color: var(--chart-ink-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.chart__empty[hidden] {
+  display: none;
+}
+
+/* Refetching holds the previous render at reduced opacity. A skeleton would throw the shape
+   away and flash the layout for something that is about to look almost the same. */
+ui-cartesian-chart[loading] .chart__canvas {
+  opacity: 0.45;
+  transition: opacity 160ms ease;
+}
+
+ui-cartesian-chart[error] .chart__canvas,
+ui-cartesian-chart[error] .chart__crosshair {
+  display: none;
+}
+
+.chart__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ui-cartesian-chart {
+    --chart-motion: 0ms;
+    --chart-read-motion: 0ms;
+  }
+
+  .chart__series--enter {
+    animation: none;
+  }
+
+  .chart__bar,
+  .chart__crosshair,
+  .chart__read-mark,
+  .chart__readout,
+  ui-cartesian-chart[loading] .chart__canvas {
+    transition: none;
+  }
+}
+
+/* ---- The demo page --------------------------------------------------------------------- */
+
+.chart-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background: light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
+}
+
+.chart-demo__shell {
+  min-inline-size: 0;
+  inline-size: min(100%, 48rem);
+}
+
+.chart-demo__card {
+  display: grid;
+  gap: 1.1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid light-dark(#e3e7ef, #292d36);
+  border-radius: 18px;
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
+}
+
+.chart-demo__label {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.chart-demo__note {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.chart-demo__note code {
+  border-radius: 5px;
+  background: light-dark(rgb(15 23 42 / 0.07), rgb(244 246 250 / 0.12));
+  padding: 0.1em 0.35em;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.chart-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chart-demo__button {
+  border: 1px solid light-dark(#dfe4ec, #292d36);
+  border-radius: 9px;
+  background: light-dark(#f7f8fb, #10131a);
+  padding: 0.45rem 0.85rem;
+  color: light-dark(#15181d, #f4f6fa);
+  font:
+    600 0.8125rem/1.45 Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.chart-demo__button:hover {
+  background: light-dark(#eef1f7, #171a20);
+}
+
+.chart-demo__button[data-current] {
+  border-color: light-dark(#4f46e5, #86a0ff);
+  color: light-dark(#4f46e5, #86a0ff);
+}
+
+.chart-demo__button:focus-visible {
+  outline: 3px solid light-dark(rgb(79 70 229 / 0.6), rgb(134 160 255 / 0.6));
+  outline-offset: 2px;
+}
+
+.chart-demo__output {
+  display: block;
+  min-block-size: 2.5rem;
+  padding: 0.75rem;
+  border: 1px solid light-dark(#e3e7ef, #292d36);
+  border-radius: 10px;
+  background: light-dark(#f7f8fb, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

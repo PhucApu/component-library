@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" class="heat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A retention grid, long row labels, and a pinned ceiling so two grids can be compared." />
+    <title>Heatmap Chart - Cohort</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="heat-demo">
+      <div class="heat-demo__shell">
+        <section class="heat-demo__card">
+          <p class="heat-demo__label">The triangle a cohort grid always is</p>
+          <p class="heat-demo__note">
+            Each row is a month's intake and each column is how many months later. Newer
+            cohorts have not lived long enough to fill the row, so those cells are
+            <strong>empty rather than zero</strong> — and the staircase of missing squares is
+            the shape that tells you which rows are still in progress.
+          </p>
+
+          <ui-heatmap-chart id="retention" max="100" cell="2.6rem">
+            <table>
+              <caption>Retention by signup month, per cent</caption>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th scope="col">M0</th><th scope="col">M1</th><th scope="col">M2</th>
+                  <th scope="col">M3</th><th scope="col">M4</th><th scope="col">M5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">January</th><td>100</td><td>68</td><td>54</td><td>47</td><td>43</td><td>41</td></tr>
+                <tr><th scope="row">February</th><td>100</td><td>71</td><td>58</td><td>50</td><td>46</td><td></td></tr>
+                <tr><th scope="row">March</th><td>100</td><td>66</td><td>52</td><td>44</td><td></td><td></td></tr>
+                <tr><th scope="row">April</th><td>100</td><td>74</td><td>61</td><td></td><td></td><td></td></tr>
+                <tr><th scope="row">May</th><td>100</td><td>77</td><td></td><td></td><td></td><td></td></tr>
+                <tr><th scope="row">June</th><td>100</td><td></td><td></td><td></td><td></td><td></td></tr>
+              </tbody>
+            </table>
+          </ui-heatmap-chart>
+
+          <p class="heat-demo__label">A ceiling you set, so two grids agree</p>
+          <p class="heat-demo__note">
+            <code>max="100"</code> pins the top of the scale. Without it each grid scales to
+            its own busiest cell, and two retention charts side by side use the same colours
+            for different numbers — which is a comparison that quietly lies.
+          </p>
+
+          <div class="heat-demo__controls">
+            <button type="button" class="heat-demo__button" data-demo-action="max" data-demo-max="100" data-demo-target="retention" data-current>
+              Pin the ceiling at 100
+            </button>
+          </div>
+
+          <p class="heat-demo__label">Long row names</p>
+          <p class="heat-demo__note">
+            Row labels take whatever width they need and the cells start after them. Nothing
+            is truncated: a cohort called <em>February</em> that reads as <em>Febr…</em> is a
+            row somebody has to hover to identify.
+          </p>
+
+          <output class="heat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeHeatmapChartDemo } from '../../demo.js';
+
+      initializeHeatmapChartDemo();
+    </script>
+  </body>
+</html>

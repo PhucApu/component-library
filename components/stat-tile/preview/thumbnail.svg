@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="A row of four stat tiles, each with a label, a large number, a signed change and a sparkline">
+  <title>Stat Tile row preview</title>
+  <desc>Four tiles side by side: revenue up twelve point four per cent, new accounts down three point one, support cost up eight point two shown as bad news, and headcount up four with no judgement.</desc>
+
+  <defs>
+    <radialGradient id="glow" cx="12%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#4968e8" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#4968e8" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect width="640" height="360" fill="url(#glow)" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="32" y="46" fill="#a8afbc" font-size="13" font-weight="650">Last 30 days</text>
+
+    <!-- Tile 1: revenue, up and good. -->
+    <rect x="32" y="66" width="132" height="150" rx="12" fill="#171a20" stroke="#2e3440" />
+    <text x="48" y="94" fill="#a8afbc" font-size="11" font-weight="600">Revenue</text>
+    <text x="48" y="124" fill="#f4f6fa" font-size="22" font-weight="650">$48,290</text>
+    <!-- The arrow and the word carry the judgement; the colour is the third signal, never
+         the only one. -->
+    <path d="M50 143v-9M47 137l3-3 3 3" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <text x="58" y="144" fill="#0ca30c" font-size="11" font-weight="650">up 12.4%</text>
+    <path d="M48 196L69 191L90 193L111 184L132 176L148 168" fill="none" stroke="#8b96a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="148" cy="168" r="3" fill="#3987e5" stroke="#171a20" stroke-width="2" />
+
+    <!-- Tile 2: new accounts, down and bad. -->
+    <rect x="180" y="66" width="132" height="150" rx="12" fill="#171a20" stroke="#2e3440" />
+    <text x="196" y="94" fill="#a8afbc" font-size="11" font-weight="600">New accounts</text>
+    <text x="196" y="124" fill="#f4f6fa" font-size="22" font-weight="650">1,284</text>
+    <path d="M198 134v9M195 140l3 3 3-3" stroke="#f08a86" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <text x="206" y="144" fill="#f08a86" font-size="11" font-weight="650">down 3.1%</text>
+    <path d="M196 172L217 176L238 180L259 189L280 185L296 194" fill="none" stroke="#8b96a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="296" cy="194" r="3" fill="#3987e5" stroke="#171a20" stroke-width="2" />
+
+    <!-- Tile 3: cost, up and *also* bad. Same arrow as tile 1, opposite news. -->
+    <rect x="328" y="66" width="132" height="150" rx="12" fill="#171a20" stroke="#2e3440" />
+    <text x="344" y="94" fill="#a8afbc" font-size="11" font-weight="600">Support cost</text>
+    <text x="344" y="124" fill="#f4f6fa" font-size="22" font-weight="650">$9,140</text>
+    <path d="M346 143v-9M343 137l3-3 3 3" stroke="#f08a86" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <text x="354" y="144" fill="#f08a86" font-size="11" font-weight="650">up 8.2%</text>
+    <path d="M344 196L365 192L386 188L407 182L428 176L444 169" fill="none" stroke="#8b96a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="444" cy="169" r="3" fill="#3987e5" stroke="#171a20" stroke-width="2" />
+
+    <!-- Tile 4: headcount, up and neither. -->
+    <rect x="476" y="66" width="132" height="150" rx="12" fill="#171a20" stroke="#2e3440" />
+    <text x="492" y="94" fill="#a8afbc" font-size="11" font-weight="600">Headcount</text>
+    <text x="492" y="124" fill="#f4f6fa" font-size="22" font-weight="650">212</text>
+    <path d="M494 143v-9M491 137l3-3 3 3" stroke="#a8afbc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <text x="502" y="144" fill="#a8afbc" font-size="11" font-weight="650">up 4%</text>
+    <path d="M492 194L513 190L534 187L555 184L576 181L592 176" fill="none" stroke="#8b96a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="592" cy="176" r="3" fill="#3987e5" stroke="#171a20" stroke-width="2" />
+
+    <!-- A meter below, which is the same tile answering a different question: a value against
+         a ceiling, with the state in words as well as colour. -->
+    <rect x="32" y="234" width="280" height="94" rx="12" fill="#171a20" stroke="#2e3440" />
+    <text x="48" y="262" fill="#a8afbc" font-size="11" font-weight="600">Seats</text>
+    <text x="48" y="292" fill="#f4f6fa" font-size="22" font-weight="650">46</text>
+    <rect x="48" y="302" width="248" height="8" rx="4" fill="#2d1e23" />
+    <rect x="48" y="302" width="228" height="8" rx="4" fill="#d03b3b" />
+    <text x="48" y="324" fill="#a8afbc" font-size="11">of 50</text>
+    <text x="80" y="324" fill="#d03b3b" font-size="11" font-weight="650">at the limit</text>
+
+    <rect x="328" y="234" width="280" height="94" rx="12" fill="#171a20" stroke="#2e3440" />
+    <text x="344" y="262" fill="#a8afbc" font-size="11" font-weight="600">Storage used</text>
+    <text x="344" y="292" fill="#f4f6fa" font-size="22" font-weight="650">430 GB</text>
+    <rect x="344" y="302" width="248" height="8" rx="4" fill="#1b2738" />
+    <rect x="344" y="302" width="104" height="8" rx="4" fill="#3987e5" />
+    <text x="344" y="324" fill="#a8afbc" font-size="11">of 1 TB</text>
+  </g>
+</svg>

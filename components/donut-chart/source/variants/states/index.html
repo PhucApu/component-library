@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" class="donut-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="One slice, nothing at all, a total of zero, refetching, and a failure." />
+    <title>Donut Chart - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="donut-demo">
+      <div class="donut-demo__shell">
+        <section class="donut-demo__card">
+          <p class="donut-demo__label">Refetching and failing</p>
+
+          <div class="donut-demo__controls">
+            <button type="button" class="donut-demo__button" data-demo-action="loading" data-demo-target="live">
+              Refetching
+            </button>
+            <button type="button" class="donut-demo__button" data-demo-action="error" data-demo-target="live">
+              Failed
+            </button>
+          </div>
+
+          <ui-donut-chart id="live" center-label="Tickets">
+            <table>
+              <caption>Tickets by status</caption>
+              <thead>
+                <tr><th scope="col">Status</th><th scope="col">Tickets</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Open</th><td data-value="86">86</td></tr>
+                <tr><th scope="row">Waiting</th><td data-value="42">42</td></tr>
+                <tr><th scope="row">Resolved</th><td data-value="318">318</td></tr>
+              </tbody>
+            </table>
+          </ui-donut-chart>
+
+          <p class="donut-demo__note">
+            <strong>Refetching</strong> holds the ring at reduced opacity. A skeleton would
+            throw away a shape the reader is still looking at. <strong>A failure</strong>
+            replaces the ring with what went wrong and leaves the table where it was, so the
+            numbers that did arrive are still readable.
+          </p>
+
+          <p class="donut-demo__label">One slice is a whole ring</p>
+          <p class="donut-demo__note">
+            No notch cut into it for a gap that has nothing to separate — a circle with a
+            two-pixel bite out of it reads as a rendering fault.
+          </p>
+
+          <ui-donut-chart center-label="Sessions">
+            <table>
+              <caption>Sessions by platform</caption>
+              <thead>
+                <tr><th scope="col">Platform</th><th scope="col">Sessions</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Web</th><td data-value="12400">12,400</td></tr>
+              </tbody>
+            </table>
+          </ui-donut-chart>
+
+          <p class="donut-demo__label">Nothing to divide</p>
+          <p class="donut-demo__note">
+            An empty table, or a table whose values are all zero, says so in words. There is no
+            honest ring to draw for a total of nothing, and an empty circle with a legend
+            beside it looks like a chart that failed to load rather than a true answer.
+          </p>
+
+          <ui-donut-chart>
+            <table>
+              <caption>Refunds this week</caption>
+              <thead>
+                <tr><th scope="col">Reason</th><th scope="col">Refunds</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Damaged</th><td data-value="0">0</td></tr>
+                <tr><th scope="row">Late</th><td data-value="0">0</td></tr>
+              </tbody>
+            </table>
+          </ui-donut-chart>
+
+          <p class="donut-demo__label">What cannot be part of a whole</p>
+          <p class="donut-demo__note">
+            A negative share of a total is not a thing. Those rows are left out and counted in
+            the note, rather than inverting a wedge or quietly shrinking everybody else.
+          </p>
+
+          <ui-donut-chart center-label="Adjustments">
+            <table>
+              <caption>Adjustments by type</caption>
+              <thead>
+                <tr><th scope="col">Type</th><th scope="col">Amount</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Credits applied</th><td data-value="4200">$4,200</td></tr>
+                <tr><th scope="row">Discounts</th><td data-value="1850">$1,850</td></tr>
+                <tr><th scope="row">Chargebacks</th><td data-value="-940">($940)</td></tr>
+              </tbody>
+            </table>
+          </ui-donut-chart>
+
+          <output class="donut-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeDonutChartDemo } from '../../demo.js';
+
+      initializeDonutChartDemo();
+    </script>
+  </body>
+</html>

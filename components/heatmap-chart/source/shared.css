@@ -1,0 +1,403 @@
+:root {
+  color-scheme: light dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.heat-demo-page,
+.heat-demo-page body {
+  background: light-dark(#f4f6fa, #0f1115);
+}
+
+ui-heatmap-chart {
+  /* ---- The scale ---------------------------------------------------------------------
+     One hue, five steps, plus a sixth for a measured zero. Not a categorical palette: here
+     colour carries magnitude rather than identity, so the rules are different — a single
+     hue, monotonic lightness, and no rainbow.
+
+     It runs the other way in each theme. On a light surface more is darker; on a dark one
+     more is brighter, or the busiest cells sink into the background.
+
+     Measured against the two surfaces below — the weakest neighbouring pair is 1.36 light
+     and 1.42 dark, the lowest step clears a zero cell by 1.36 and 1.51, and the two ends of
+     the scale sit 4.31 and 4.70 apart. */
+  --heat-step-0: light-dark(#eef1f7, #212734);
+  --heat-step-1: light-dark(#b7d3f6, #104281);
+  --heat-step-2: light-dark(#86b6ef, #1c5cab);
+  --heat-step-3: light-dark(#5598e7, #2a78d6);
+  --heat-step-4: light-dark(#2a78d6, #5598e7);
+  --heat-step-5: light-dark(#1c5cab, #86b6ef);
+
+  --heat-surface: light-dark(#ffffff, #171a20);
+  --heat-ink: light-dark(#111827, #f4f6fa);
+  --heat-ink-soft: light-dark(#3f4757, #cbd1dc);
+  --heat-ink-muted: light-dark(#5f6878, #a8afbc);
+  --heat-border: light-dark(#dfe4ec, #2e3440);
+  --heat-focus: light-dark(#4f46e5, #86a0ff);
+  --heat-radius: 12px;
+
+  /* A cell's size and the air around it. The gap is the surface, as everywhere else here. */
+  --heat-cell: 1rem;
+  --heat-gap: 3px;
+  --heat-motion: 140ms;
+
+  /* Written by the element onto a cell or a legend swatch. */
+  --cell-colour: var(--heat-step-0);
+
+  display: grid;
+  gap: 0.85rem;
+  min-inline-size: 0;
+  color: var(--heat-ink);
+  font: 400 0.9375rem/1.5
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* ---- The grid -------------------------------------------------------------------------- */
+
+.heat__frame {
+  position: relative;
+  min-inline-size: 0;
+  border-radius: var(--heat-radius);
+  background: var(--heat-surface);
+  /* A wide grid scrolls inside its own box rather than pushing the page sideways. Fifty-three
+     weeks on a phone is a real case and the answer is never a document-level scrollbar. */
+  overflow-x: auto;
+}
+
+.heat__frame:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--heat-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+.heat__grid {
+  display: grid;
+  gap: var(--heat-gap);
+  inline-size: max-content;
+  margin: 0;
+  padding: 0.15rem;
+  list-style: none;
+}
+
+.heat__column-label,
+.heat__row-label {
+  color: var(--heat-ink-muted);
+  font-size: 0.6875rem;
+  line-height: var(--heat-cell);
+  white-space: nowrap;
+}
+
+/* Centred over its column. Left-aligned, a two-character label sits visibly off its own
+   cells, which reads as a grid that does not line up. */
+.heat__column-label {
+  text-align: center;
+}
+
+.heat__row-label {
+  padding-inline-end: 0.35rem;
+  text-align: end;
+}
+
+/* A cell carries no number. A heatmap with a figure in every square is a table, and printing
+   one on five different backgrounds would mean choosing the ink per step as well. The value
+   is in the cell's name, in the read-out, and in the table. */
+.heat__cell {
+  display: block;
+  inline-size: var(--heat-cell);
+  block-size: var(--heat-cell);
+  border-radius: 3px;
+  background: var(--cell-colour);
+  transition: outline-color var(--heat-motion) ease;
+  /* Reserved rather than added on hover, so a cell never grows and shifts its neighbours. */
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+}
+
+/* No cell at all, rather than a cell coloured to mean nothing. A day that has not happened is
+   not a day with no activity. */
+.heat__cell[data-outside] {
+  background: none;
+  pointer-events: none;
+}
+
+/* The cell being read is ringed rather than recoloured — its colour is its value, and
+   changing it would be changing the reading. */
+.heat__cell[data-active] {
+  outline-color: var(--heat-ink);
+}
+
+/* ---- Reading a cell -------------------------------------------------------------------- */
+
+.heat__readout {
+  position: absolute;
+  z-index: 2;
+  max-inline-size: 14rem;
+  border: 1px solid var(--heat-border);
+  border-radius: 10px;
+  background: var(--heat-surface);
+  padding: 0.4rem 0.6rem;
+  box-shadow: 0 14px 34px rgb(0 0 0 / 0.18);
+  font-size: 0.8125rem;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.heat__readout[hidden] {
+  display: none;
+}
+
+.heat__readout-value {
+  color: var(--heat-ink);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.heat__readout-where {
+  color: var(--heat-ink-muted);
+}
+
+/* ---- The scale legend, which is not optional -------------------------------------------- */
+
+/* With identity a legend can sometimes be dropped. With magnitude it cannot: a colour that
+   means "a lot" says nothing until the reader is told how much a lot is. */
+.heat__scale {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0;
+  color: var(--heat-ink-muted);
+  font-size: 0.75rem;
+}
+
+.heat__scale-swatch {
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
+  border-radius: 3px;
+  background: var(--cell-colour);
+}
+
+/* ---- The table ------------------------------------------------------------------------- */
+
+.heat__table-toggle {
+  justify-self: start;
+  border: 1px solid var(--heat-border);
+  border-radius: 8px;
+  background: none;
+  padding: 0.3rem 0.6rem;
+  color: var(--heat-ink-soft);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.heat__table-toggle:hover {
+  color: var(--heat-ink);
+}
+
+.heat__table-toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--heat-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+.heat__table-wrap {
+  min-inline-size: 0;
+  overflow-x: auto;
+}
+
+ui-heatmap-chart table {
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+ui-heatmap-chart caption {
+  margin-block-end: 0.4rem;
+  color: var(--heat-ink-soft);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  text-align: start;
+}
+
+ui-heatmap-chart th,
+ui-heatmap-chart td {
+  border-block-end: 1px solid var(--heat-border);
+  padding: 0.3rem 0.45rem;
+  text-align: end;
+}
+
+ui-heatmap-chart thead th,
+ui-heatmap-chart tbody th {
+  color: var(--heat-ink-soft);
+  font-weight: 650;
+}
+
+ui-heatmap-chart th:first-child {
+  text-align: start;
+}
+
+ui-heatmap-chart td {
+  color: var(--heat-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- States ---------------------------------------------------------------------------- */
+
+.heat__note {
+  margin: 0;
+  color: var(--heat-ink-muted);
+  font-size: 0.8125rem;
+}
+
+.heat__note[hidden] {
+  display: none;
+}
+
+.heat__empty {
+  margin: 0;
+  padding: 2rem 1rem;
+  color: var(--heat-ink-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.heat__empty[hidden] {
+  display: none;
+}
+
+.heat__grid[hidden],
+.heat__scale[hidden] {
+  display: none;
+}
+
+ui-heatmap-chart[loading] .heat__grid {
+  opacity: 0.45;
+  transition: opacity 160ms ease;
+}
+
+.heat__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ui-heatmap-chart {
+    --heat-motion: 0ms;
+  }
+
+  .heat__cell,
+  ui-heatmap-chart[loading] .heat__grid {
+    transition: none;
+  }
+}
+
+/* ---- The demo page --------------------------------------------------------------------- */
+
+.heat-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background: light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
+}
+
+.heat-demo__shell {
+  min-inline-size: 0;
+  inline-size: min(100%, 50rem);
+}
+
+.heat-demo__card {
+  display: grid;
+  gap: 1.1rem;
+  min-inline-size: 0;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid light-dark(#e3e7ef, #292d36);
+  border-radius: 18px;
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
+}
+
+.heat-demo__label {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.heat-demo__note {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.heat-demo__note code {
+  border-radius: 5px;
+  background: light-dark(rgb(15 23 42 / 0.07), rgb(244 246 250 / 0.12));
+  padding: 0.1em 0.35em;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.heat-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.heat-demo__button {
+  border: 1px solid light-dark(#dfe4ec, #292d36);
+  border-radius: 9px;
+  background: light-dark(#f7f8fb, #10131a);
+  padding: 0.45rem 0.85rem;
+  color: light-dark(#15181d, #f4f6fa);
+  font:
+    600 0.8125rem/1.45 Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.heat-demo__button:hover {
+  background: light-dark(#eef1f7, #171a20);
+}
+
+.heat-demo__button[data-current] {
+  border-color: light-dark(#4f46e5, #86a0ff);
+  color: light-dark(#4f46e5, #86a0ff);
+}
+
+.heat-demo__button:focus-visible {
+  outline: 3px solid light-dark(rgb(79 70 229 / 0.6), rgb(134 160 255 / 0.6));
+  outline-offset: 2px;
+}
+
+.heat-demo__output {
+  display: block;
+  min-block-size: 2.5rem;
+  padding: 0.75rem;
+  border: 1px solid light-dark(#e3e7ef, #292d36);
+  border-radius: 10px;
+  background: light-dark(#f7f8fb, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" class="donut-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A ring read from a legend, with the total in the hole." />
+    <title>Donut Chart - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="donut-demo">
+      <div class="donut-demo__shell">
+        <section class="donut-demo__card">
+          <p class="donut-demo__label">How the total divides</p>
+          <p class="donut-demo__note">
+            A ring answers one question well — how a total splits — and one question badly:
+            which of two similar wedges is bigger. People read length accurately and angle
+            poorly. So the numbers live in the legend rather than in the shape, and nobody is
+            asked to estimate.
+          </p>
+
+          <ui-donut-chart>
+            <table>
+              <caption>Traffic by source</caption>
+              <thead>
+                <tr><th scope="col">Source</th><th scope="col">Sessions</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Organic search</th><td data-value="18400">18,400</td></tr>
+                <tr><th scope="row">Direct</th><td data-value="9100">9,100</td></tr>
+                <tr><th scope="row">Paid search</th><td data-value="6250">6,250</td></tr>
+                <tr><th scope="row">Referral</th><td data-value="3800">3,800</td></tr>
+                <tr><th scope="row">Social</th><td data-value="2150">2,150</td></tr>
+              </tbody>
+            </table>
+          </ui-donut-chart>
+
+          <p class="donut-demo__label">The hole is the reason it is a ring</p>
+          <p class="donut-demo__note">
+            A pie has nowhere to put the number the parts are parts of. The hole holds the
+            total, and while a wedge is being read it holds that wedge instead — its name, its
+            value and its share — so the answer appears where the eye already is rather than
+            in a panel somewhere beside the pointer.
+          </p>
+          <p class="donut-demo__note">
+            Two pixels of the card's own background separate the wedges. It is taken out of
+            each wedge rather than drawn on top, so they still add up to the whole circle. A
+            stroke around each one would be ink with the weight of data doing a spacer's job.
+          </p>
+
+          <output class="donut-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeDonutChartDemo } from '../../demo.js';
+
+      initializeDonutChartDemo();
+    </script>
+  </body>
+</html>

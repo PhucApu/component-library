@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" class="heat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The data contract: a heatmap is a table that has been coloured in." />
+    <title>Heatmap Chart - Table</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="heat-demo">
+      <div class="heat-demo__shell">
+        <section class="heat-demo__card">
+          <p class="heat-demo__label">A heatmap is a table that has been coloured in</p>
+          <p class="heat-demo__note">
+            Of every chart in this collection this is the one where the table contract fits
+            best, because the two are the same shape. Row headings become the row labels,
+            column headings become the column labels, and each cell becomes a square. Nothing
+            is configured in JavaScript and nothing is fetched.
+          </p>
+
+          <ui-heatmap-chart cell="2rem">
+            <table>
+              <caption>Deploys by service and day</caption>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th scope="col">Mon</th><th scope="col">Tue</th><th scope="col">Wed</th>
+                  <th scope="col">Thu</th><th scope="col">Fri</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">API</th><td data-value="6">6</td><td data-value="4">4</td><td data-value="9">9</td><td data-value="7">7</td><td data-value="2">2</td></tr>
+                <tr><th scope="row">Web</th><td data-value="3">3</td><td data-value="8">8</td><td data-value="5">5</td><td data-value="11">11</td><td data-value="1">1</td></tr>
+                <tr><th scope="row">Workers</th><td data-value="0">0</td><td data-value="2">2</td><td data-value="1">1</td><td data-value="3">3</td><td data-value="0">0</td></tr>
+              </tbody>
+            </table>
+          </ui-heatmap-chart>
+
+          <p class="heat-demo__label">Why the table matters more here than anywhere</p>
+          <p class="heat-demo__note">
+            On a bar chart the table is a second way to read a value. On a grid where every
+            square is a colour and nothing else, it is <strong>the only exact one</strong> — a
+            step of the scale is a range, not a number. Press <em>Show the table</em>: it is
+            not a copy generated beside the grid, it is what the grid was drawn from.
+          </p>
+          <p class="heat-demo__note">
+            The grid itself stays out of the accessibility tree entirely. Exposing both would
+            read every figure twice — once as a field of squares and once as the table it came
+            from — and the table is much the better of the two readings.
+          </p>
+
+          <p class="heat-demo__label">With no script</p>
+          <p class="heat-demo__note">
+            A complete, readable grid of numbers. For a page whose subject is a matrix of
+            counts that is most of what anyone came for, and it is the same markup rather than
+            a fallback written twice.
+          </p>
+
+          <output class="heat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeHeatmapChartDemo } from '../../demo.js';
+
+      initializeHeatmapChartDemo();
+    </script>
+  </body>
+</html>

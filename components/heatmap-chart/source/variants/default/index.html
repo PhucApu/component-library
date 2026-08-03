@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" class="heat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A grid where colour carries size, with a scale that is never optional." />
+    <title>Heatmap Chart - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="heat-demo">
+      <div class="heat-demo__shell">
+        <section class="heat-demo__card">
+          <p class="heat-demo__label">Colour carrying size rather than identity</p>
+          <p class="heat-demo__note">
+            The other charts here use colour to say <em>which</em> — which series, which
+            source. This one uses it to say <em>how much</em>, and the rules are almost the
+            opposite: one hue instead of eight, light to dark instead of a fixed order, and a
+            scale legend that can never be dropped. A colour meaning "a lot" says nothing until
+            the reader is told how much a lot is.
+          </p>
+
+          <ui-heatmap-chart cell="1.35rem">
+            <table>
+              <caption>Sessions by hour and weekday</caption>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th scope="col">00</th><th scope="col">03</th><th scope="col">06</th>
+                  <th scope="col">09</th><th scope="col">12</th><th scope="col">15</th>
+                  <th scope="col">18</th><th scope="col">21</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Mon</th><td>12</td><td>4</td><td>38</td><td>186</td><td>164</td><td>142</td><td>96</td><td>41</td></tr>
+                <tr><th scope="row">Tue</th><td>9</td><td>3</td><td>44</td><td>198</td><td>171</td><td>151</td><td>88</td><td>36</td></tr>
+                <tr><th scope="row">Wed</th><td>14</td><td>6</td><td>41</td><td>204</td><td>182</td><td>149</td><td>92</td><td>44</td></tr>
+                <tr><th scope="row">Thu</th><td>11</td><td>5</td><td>39</td><td>191</td><td>176</td><td>158</td><td>101</td><td>39</td></tr>
+                <tr><th scope="row">Fri</th><td>16</td><td>7</td><td>36</td><td>172</td><td>149</td><td>118</td><td>74</td><td>52</td></tr>
+                <tr><th scope="row">Sat</th><td>28</td><td>12</td><td>18</td><td>54</td><td>68</td><td>72</td><td>81</td><td>66</td></tr>
+                <tr><th scope="row">Sun</th><td>24</td><td>9</td><td>15</td><td>46</td><td>61</td><td>69</td><td>78</td><td>58</td></tr>
+              </tbody>
+            </table>
+          </ui-heatmap-chart>
+
+          <p class="heat-demo__label">Five steps, and that is a limit</p>
+          <p class="heat-demo__note">
+            Past about seven classes the neighbouring steps blur and the reader is back to
+            consulting the legend for every cell — which is the thing a colour scale exists to
+            avoid. Five are distinguishable and, more to the point, memorable. Measured, the
+            closest neighbouring pair is <code>1.36</code> on the light surface and
+            <code>1.42</code> on the dark one.
+          </p>
+
+          <p class="heat-demo__label">No numbers in the squares</p>
+          <p class="heat-demo__note">
+            A heatmap with a figure in every cell is a table. Printing one would also mean
+            choosing the ink per step, since the same grey cannot sit on both ends of the
+            scale. The value is in the read-out, in the cell's name, and in the table below —
+            three ways to get it without making the grid unreadable.
+          </p>
+
+          <output class="heat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeHeatmapChartDemo } from '../../demo.js';
+
+      initializeHeatmapChartDemo();
+    </script>
+  </body>
+</html>

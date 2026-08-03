@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" class="chart-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The data contract: a table that is the source, the fallback and the accessible twin." />
+    <title>Cartesian Chart - Table</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chart-demo">
+      <div class="chart-demo__shell">
+        <section class="chart-demo__card">
+          <p class="chart-demo__label">The markup is the data</p>
+          <p class="chart-demo__note">
+            The whole contract is an ordinary <code>&lt;table&gt;</code>: first column the
+            categories, every column after it a series named by its heading. Nothing is
+            configured in JavaScript and nothing is fetched.
+          </p>
+          <p class="chart-demo__note">
+            Press <em>Show the table</em>. It is not a copy generated beside the chart — it is
+            what the chart was drawn from, so the two cannot drift apart. Turn scripting off
+            and it is all that is left, which for a page of numbers is most of what anyone
+            came for.
+          </p>
+
+          <ui-cartesian-chart type="area" y-label="Storage used (TB)">
+            <table>
+              <caption>Storage used per region</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Quarter</th>
+                  <th scope="col">Europe</th>
+                  <th scope="col">Americas</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Q1</th><td data-value="18.4">18.4 TB</td><td data-value="24.1">24.1 TB</td></tr>
+                <tr><th scope="row">Q2</th><td data-value="21.9">21.9 TB</td><td data-value="26.8">26.8 TB</td></tr>
+                <tr><th scope="row">Q3</th><td data-value="25.2">25.2 TB</td><td></td></tr>
+                <tr><th scope="row">Q4</th><td data-value="29.7">29.7 TB</td><td data-value="33.5">33.5 TB</td></tr>
+              </tbody>
+            </table>
+          </ui-cartesian-chart>
+
+          <p class="chart-demo__label">Written for a person, plotted as a number</p>
+          <p class="chart-demo__note">
+            The cells say <code>18.4 TB</code> and the chart plots <code>18.4</code>. Where the
+            text cannot be parsed with confidence — a decimal comma, an accounting figure in
+            brackets, a word — <code>data-value</code> settles it and the cell goes on reading
+            however it was written. The read-out shows the author's own wording rather than a
+            reformatted version of the same number.
+          </p>
+
+          <p class="chart-demo__label">An empty cell is missing, not zero</p>
+          <p class="chart-demo__note">
+            The Americas figure for Q3 was never collected, so the cell is empty and the area
+            breaks across it. Drawing it as zero would put a confident dip in a quarter nobody
+            measured — the one mistake in this component that would be invisible in the chart
+            and obvious in the table.
+          </p>
+
+          <p class="chart-demo__label">Why it can be hidden but never removed</p>
+          <p class="chart-demo__note">
+            Collapsed, the table is hidden from the eye and not from the page: a screen reader
+            still has every number while the drawing beside it stays out of the way. Three of
+            the eight light-theme series colours sit below the contrast rule on white by
+            design, and that is only allowed where the values are readable without colour as
+            well. The table is what makes that true, so there is no attribute to take it away.
+          </p>
+
+          <output class="chart-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCartesianChartDemo } from '../../demo.js';
+
+      initializeCartesianChartDemo();
+    </script>
+  </body>
+</html>

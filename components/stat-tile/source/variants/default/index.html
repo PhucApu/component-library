@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" class="stat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A number, what it did, and where it has been." />
+    <title>Stat Tile - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="stat-demo">
+      <div class="stat-demo__shell">
+        <section class="stat-demo__card">
+          <p class="stat-demo__label">One number is not a chart</p>
+          <p class="stat-demo__note">
+            A single current value drawn as a one-bar bar chart spends an axis, a grid and a
+            legend saying what the number already said. The tile is the honest form: the value
+            leads, the change explains it, and the sparkline is context rather than a second
+            reading to compare.
+          </p>
+
+          <ui-stat-tile up="good">
+            <p class="stat-tile__label">Revenue</p>
+            <p class="stat-tile__value" data-value="48290">$48,290</p>
+            <p class="stat-tile__delta" data-change="12.4">vs last month</p>
+            <ol class="stat-tile__trend" aria-label="Revenue over the last twelve months">
+              <li>32100</li>
+              <li>34500</li>
+              <li>33800</li>
+              <li>36200</li>
+              <li>35400</li>
+              <li>38900</li>
+              <li>41200</li>
+              <li>40100</li>
+              <li>43800</li>
+              <li>44600</li>
+              <li>46300</li>
+              <li>48290</li>
+            </ol>
+          </ui-stat-tile>
+
+          <p class="stat-demo__label">What the markup carries, and what the script adds</p>
+          <p class="stat-demo__note">
+            The label, the value and the change are ordinary paragraphs — turn scripting off
+            and the headline is untouched. The only thing the script draws is the sparkline,
+            and the twelve readings it drew from stay in the page for anything that reads
+            rather than looks.
+          </p>
+          <p class="stat-demo__note">
+            <code>data-value</code> carries the number while the text carries the wording, so
+            <code>$48,290</code> is never reformatted into something the author did not write.
+            The line recedes and only the current reading takes the accent: context should not
+            compete with the number it is context for.
+          </p>
+
+          <output class="stat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeStatTileDemo } from '../../demo.js';
+
+      initializeStatTileDemo();
+    </script>
+  </body>
+</html>

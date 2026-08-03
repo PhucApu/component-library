@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 2,
+  "id": "heatmap-chart",
+  "version": "0.1.0",
+  "name": "Heatmap Chart",
+  "description": "A framework-free Web Component that reads an HTML table and colours it in: one hue, five steps, and a scale legend that is never optional. An empty cell and a measured zero are kept apart, which is the difference an activity calendar usually loses.",
+  "group": "data-display",
+  "categories": ["data-display"],
+  "tags": [
+    "chart",
+    "heatmap",
+    "calendar",
+    "cohort",
+    "sequential",
+    "matrix",
+    "dashboard",
+    "web-component",
+    "accessible",
+    "progressive-enhancement"
+  ],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Hours against weekdays, with the five-step scale and a read-out on every cell.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "calendar",
+      "name": "Calendar",
+      "description": "An activity calendar, and the difference between a quiet day and a day that has not happened.",
+      "entry": "source/variants/calendar/index.html"
+    },
+    {
+      "id": "cohort",
+      "name": "Cohort",
+      "description": "A retention triangle, long row names, and a pinned ceiling so two grids can be compared.",
+      "entry": "source/variants/cohort/index.html"
+    },
+    {
+      "id": "scale",
+      "name": "Scale",
+      "description": "Equal slices against equal counts on a grid one cell dominates, and what each costs.",
+      "entry": "source/variants/scale/index.html"
+    },
+    {
+      "id": "table",
+      "name": "Table",
+      "description": "The data contract, and why a grid of colours needs its table more than any other chart.",
+      "entry": "source/variants/table/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "Nothing at all, every reading zero, a single cell, refetching, and a failure.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "calendar",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

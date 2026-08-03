@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" class="chart-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The crosshair, the keyboard, and a legend that never repaints the survivors." />
+    <title>Cartesian Chart - Interaction</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chart-demo">
+      <div class="chart-demo__shell">
+        <section class="chart-demo__card">
+          <p class="chart-demo__label">Aim at a week, not at a line</p>
+          <p class="chart-demo__note">
+            A hairline follows the pointer and snaps to the nearest week, and one read-out
+            lists every series at that week. Nobody has to land on a two-pixel stroke to find
+            out what it says.
+          </p>
+          <p class="chart-demo__note">
+            Tab to the chart and use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> to walk it,
+            <kbd>Home</kbd> and <kbd>End</kbd> for the ends, <kbd>Escape</kbd> to let go.
+            <strong>Focus shows exactly what hover shows</strong> — a value only a mouse can
+            reach is a value half the room cannot.
+          </p>
+
+          <ui-cartesian-chart type="line" y-label="Active accounts">
+            <table>
+              <caption>Active accounts by plan</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Week</th>
+                  <th scope="col">Free</th>
+                  <th scope="col">Team</th>
+                  <th scope="col">Enterprise</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">W1</th><td>4,120</td><td>860</td><td>142</td></tr>
+                <tr><th scope="row">W2</th><td>4,380</td><td>905</td><td>149</td></tr>
+                <tr><th scope="row">W3</th><td>4,290</td><td>948</td><td>151</td></tr>
+                <tr><th scope="row">W4</th><td>4,610</td><td>1,012</td><td>163</td></tr>
+                <tr><th scope="row">W5</th><td>4,980</td><td>1,088</td><td>170</td></tr>
+                <tr><th scope="row">W6</th><td>5,240</td><td>1,141</td><td>184</td></tr>
+                <tr><th scope="row">W7</th><td>5,120</td><td>1,196</td><td>191</td></tr>
+                <tr><th scope="row">W8</th><td>5,530</td><td>1,264</td><td>205</td></tr>
+              </tbody>
+            </table>
+          </ui-cartesian-chart>
+
+          <p class="chart-demo__label">Switching a series off does not repaint the rest</p>
+          <p class="chart-demo__note">
+            Press a legend entry. The colour belongs to the series' position in the table, not
+            to its rank among whatever is currently shown — so hiding <em>Free</em> leaves
+            <em>Team</em> orange rather than promoting it to blue. A reader who learned that
+            orange means Team gets to keep it.
+          </p>
+          <p class="chart-demo__note">
+            A hidden entry is struck through as well as faded, so its state does not rest on
+            colour alone. The last visible series will not switch off: an empty plot under a
+            full legend reads as a fault rather than as a choice.
+          </p>
+
+          <output class="chart-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCartesianChartDemo } from '../../demo.js';
+
+      initializeCartesianChartDemo();
+    </script>
+  </body>
+</html>

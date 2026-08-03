@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 2,
+  "id": "stat-tile",
+  "version": "0.1.0",
+  "name": "Stat Tile",
+  "description": "A framework-free Web Component for the headline numbers on an admin dashboard: a value, what it changed by, an optional sparkline, and an optional meter against a limit. The direction is read from the number and the judgement from the author, so a rise in costs is not green.",
+  "group": "data-display",
+  "categories": ["data-display", "feedback"],
+  "tags": [
+    "stat",
+    "kpi",
+    "metric",
+    "sparkline",
+    "meter",
+    "dashboard",
+    "web-component",
+    "accessible",
+    "progressive-enhancement"
+  ],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A value, its change, and a sparkline drawn from readings that stay in the page.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "row",
+      "name": "Row",
+      "description": "Four tiles whose labels, values and changes line up, and the filter row that belongs above them.",
+      "entry": "source/variants/row/index.html"
+    },
+    {
+      "id": "delta",
+      "name": "Delta",
+      "description": "Same arrow, opposite news, and a change that is never carried by colour alone.",
+      "entry": "source/variants/delta/index.html"
+    },
+    {
+      "id": "meter",
+      "name": "Meter",
+      "description": "A value against a ceiling, with the track in the fill's own hue and the state in words.",
+      "entry": "source/variants/meter/index.html"
+    },
+    {
+      "id": "hero",
+      "name": "Hero",
+      "description": "The one number a view leads with, and why there is exactly one of it.",
+      "entry": "source/variants/hero/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "Refetching, a failure, the trend taken off, and a number nobody has yet.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "row",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

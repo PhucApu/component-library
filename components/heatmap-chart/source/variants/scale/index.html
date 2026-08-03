@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" class="heat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Equal slices or equal counts, on data one cell dominates." />
+    <title>Heatmap Chart - Scale</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="heat-demo">
+      <div class="heat-demo__shell">
+        <section class="heat-demo__card">
+          <p class="heat-demo__label">When equal slices stop working</p>
+          <p class="heat-demo__note">
+            One endpoint here takes almost all the traffic. With the range cut into equal
+            slices, every other cell lands in the first step and the grid is one bright square
+            on a flat field — technically true, and it says nothing.
+          </p>
+
+          <div class="heat-demo__controls">
+            <button type="button" class="heat-demo__button" data-demo-action="scale" data-demo-scale="linear" data-current>
+              Equal slices
+            </button>
+            <button type="button" class="heat-demo__button" data-demo-action="scale" data-demo-scale="quantile">
+              Equal counts
+            </button>
+          </div>
+
+          <ui-heatmap-chart cell="2.2rem">
+            <table>
+              <caption>Requests by endpoint and hour, thousands</caption>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th scope="col">08</th><th scope="col">10</th><th scope="col">12</th>
+                  <th scope="col">14</th><th scope="col">16</th><th scope="col">18</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Search</th><td>412</td><td>486</td><td>531</td><td>498</td><td>452</td><td>388</td></tr>
+                <tr><th scope="row">Catalog</th><td>18</td><td>24</td><td>29</td><td>26</td><td>22</td><td>17</td></tr>
+                <tr><th scope="row">Cart</th><td>9</td><td>14</td><td>19</td><td>17</td><td>13</td><td>8</td></tr>
+                <tr><th scope="row">Checkout</th><td>4</td><td>6</td><td>9</td><td>8</td><td>6</td><td>3</td></tr>
+                <tr><th scope="row">Account</th><td>2</td><td>3</td><td>4</td><td>4</td><td>3</td><td>2</td></tr>
+              </tbody>
+            </table>
+          </ui-heatmap-chart>
+
+          <p class="heat-demo__label">What each one costs</p>
+          <p class="heat-demo__note">
+            <strong>Equal slices</strong> is the honest default: a colour means the same
+            quantity wherever it appears, so two cells of one shade really are about the same
+            size. It is the one to keep unless it has stopped saying anything.
+          </p>
+          <p class="heat-demo__note">
+            <strong>Equal counts</strong> divides by rank instead — each step holds the same
+            number of cells — so the quiet end spreads out and the picture comes back. The
+            price is that the colour no longer means a fixed amount, and two cells of one shade
+            may be ten apart or ten thousand. That is why it has to be asked for, and why the
+            grid says so underneath itself whenever it is on.
+          </p>
+
+          <output class="heat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeHeatmapChartDemo } from '../../demo.js';
+
+      initializeHeatmapChartDemo();
+    </script>
+  </body>
+</html>

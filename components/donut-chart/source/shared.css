@@ -1,0 +1,509 @@
+:root {
+  color-scheme: light dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.donut-demo-page,
+.donut-demo-page body {
+  background: light-dark(#f4f6fa, #0f1115);
+}
+
+ui-donut-chart {
+  /* The first six of the validated eight slots. A ring may not use more, so the last two are
+     not defined here — a token that exists is a token somebody will reach for. */
+  --donut-series-1: light-dark(#2a78d6, #3987e5);
+  --donut-series-2: light-dark(#eb6834, #d95926);
+  --donut-series-3: light-dark(#1baf7a, #199e70);
+  --donut-series-4: light-dark(#eda100, #c98500);
+  --donut-series-5: light-dark(#e87ba4, #d55181);
+  --donut-series-6: light-dark(#008300, #008300);
+
+  --donut-surface: light-dark(#ffffff, #171a20);
+  --donut-ink: light-dark(#111827, #f4f6fa);
+  --donut-ink-soft: light-dark(#3f4757, #cbd1dc);
+  --donut-ink-muted: light-dark(#5f6878, #a8afbc);
+  --donut-border: light-dark(#dfe4ec, #2e3440);
+  --donut-focus: light-dark(#4f46e5, #86a0ff);
+  --donut-radius: 12px;
+  --donut-height: 16rem;
+
+  /* The surface doing the separating, exactly as in the bar charts. Never a stroke around a
+     wedge: that is ink with the weight of data doing a spacer's job. */
+  --donut-gap: 2px;
+  --donut-motion: 160ms;
+
+  /* Written by the element onto a wedge, a swatch or a table key. */
+  --mark-colour: var(--donut-series-1);
+
+  display: grid;
+  gap: 0.85rem;
+  min-inline-size: 0;
+  color: var(--donut-ink);
+  font: 400 0.9375rem/1.5
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* ---- The ring -------------------------------------------------------------------------- */
+
+.donut__frame {
+  position: relative;
+  inline-size: 100%;
+  block-size: var(--donut-height);
+  border-radius: var(--donut-radius);
+  background: var(--donut-surface);
+}
+
+.donut__frame:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--donut-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+.donut__canvas {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.donut__slice {
+  /* Written per wedge by the element, from that wedge's own middle angle. Declared here so
+     they have values of their own rather than living only in a fallback. */
+  --lift-x: 0px;
+  --lift-y: 0px;
+
+  fill: var(--mark-colour);
+  cursor: pointer;
+  transition:
+    opacity var(--donut-motion) ease,
+    translate var(--donut-motion) cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* The wedge being read comes out of the ring along its own angle and keeps its full weight.
+   A stroke would be a border, and a border round a wedge is the thing the gap already does,
+   done twice. */
+.donut__slice[data-active] {
+  translate: var(--lift-x) var(--lift-y);
+}
+
+/* And the others step back, so the one being read is the only thing at full strength. The
+   emphasis is the pair — lifting alone is easy to miss on a small ring, dimming alone leaves
+   nothing to look at. */
+.donut__frame[data-reading] .donut__slice:not([data-active]) {
+  opacity: 0.32;
+}
+
+.donut__slice:focus {
+  outline: none;
+}
+
+.donut__slice:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--donut-focus) 65%, transparent);
+}
+
+/* ---- The hole, which is why this is a donut ------------------------------------------- */
+
+.donut__centre {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.1rem;
+  pointer-events: none;
+  text-align: center;
+}
+
+/* An author `display` beats the browser's own `[hidden] { display: none }` — a class selector
+   outranks it — so hiding the middle needs saying explicitly. */
+.donut__centre[hidden] {
+  display: none;
+}
+
+.donut__centre-label {
+  color: var(--donut-ink-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  /* The hole is round and the words are not, so they are kept well inside it. */
+  max-inline-size: 8rem;
+  overflow-wrap: anywhere;
+}
+
+.donut__centre-value {
+  color: var(--donut-ink);
+  font-size: 1.5rem;
+  font-weight: 650;
+  line-height: 1.1;
+  /* Proportional figures: a large standalone number is not a column. */
+  font-variant-numeric: proportional-nums;
+}
+
+.donut__centre-share {
+  color: var(--donut-ink-muted);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.donut__centre-share[hidden] {
+  display: none;
+}
+
+/* ---- Legend ---------------------------------------------------------------------------- */
+
+/* Always with the number and the share beside it. A ring is read by angle, which nobody reads
+   accurately — so the legend is where the actual values live, not a colour key. */
+.donut__legend {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.donut__legend-button {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: baseline;
+  gap: 0.5rem;
+  inline-size: 100%;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  padding: 0.25rem 0.35rem;
+  color: var(--donut-ink-soft);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  text-align: start;
+}
+
+.donut__legend-button:hover,
+.donut__legend-button[data-active] {
+  background: color-mix(in srgb, var(--donut-ink) 6%, transparent);
+  color: var(--donut-ink);
+}
+
+.donut__legend-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--donut-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+/* Struck through as well as faded, so the state does not rest on colour. */
+.donut__legend-button[aria-pressed="false"] {
+  color: var(--donut-ink-muted);
+  text-decoration: line-through;
+}
+
+.donut__legend-button[aria-pressed="false"] .donut__legend-swatch {
+  opacity: 0.35;
+}
+
+.donut__legend-swatch {
+  inline-size: 0.7rem;
+  block-size: 0.7rem;
+  border-radius: 3px;
+  background: var(--mark-colour);
+  translate: 0 0.1rem;
+}
+
+.donut__legend-value,
+.donut__legend-share {
+  color: var(--donut-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.donut__legend-share {
+  color: var(--donut-ink-muted);
+  min-inline-size: 3.2rem;
+  text-align: end;
+}
+
+/* ---- The table ------------------------------------------------------------------------- */
+
+.donut__table-toggle {
+  justify-self: start;
+  border: 1px solid var(--donut-border);
+  border-radius: 8px;
+  background: none;
+  padding: 0.3rem 0.6rem;
+  color: var(--donut-ink-soft);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.donut__table-toggle:hover {
+  color: var(--donut-ink);
+}
+
+.donut__table-toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--donut-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+.donut__table-wrap {
+  min-inline-size: 0;
+  overflow-x: auto;
+}
+
+ui-donut-chart table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+ui-donut-chart caption {
+  margin-block-end: 0.4rem;
+  color: var(--donut-ink-soft);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  text-align: start;
+}
+
+ui-donut-chart th,
+ui-donut-chart td {
+  border-block-end: 1px solid var(--donut-border);
+  padding: 0.35rem 0.5rem;
+  text-align: end;
+}
+
+ui-donut-chart thead th,
+ui-donut-chart tbody th {
+  color: var(--donut-ink-soft);
+  font-weight: 650;
+}
+
+ui-donut-chart th:first-child,
+ui-donut-chart td:first-child {
+  text-align: start;
+}
+
+ui-donut-chart td {
+  color: var(--donut-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.donut__table-key {
+  display: inline-block;
+  inline-size: 0.6rem;
+  block-size: 0.6rem;
+  margin-inline-end: 0.35rem;
+  border-radius: 2px;
+  background: var(--mark-colour);
+  vertical-align: baseline;
+}
+
+/* ---- States ---------------------------------------------------------------------------- */
+
+.donut__note {
+  margin: 0;
+  color: var(--donut-ink-muted);
+  font-size: 0.8125rem;
+}
+
+.donut__note[hidden] {
+  display: none;
+}
+
+.donut__empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  color: var(--donut-ink-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.donut__empty[hidden] {
+  display: none;
+}
+
+ui-donut-chart[loading] .donut__canvas {
+  opacity: 0.45;
+  transition: opacity 160ms ease;
+}
+
+ui-donut-chart[error] .donut__canvas,
+ui-donut-chart[error] .donut__centre {
+  display: none;
+}
+
+.donut__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ui-donut-chart {
+    --donut-motion: 0ms;
+  }
+
+  /* The wedge still comes out — it is a position, not an animation — but it arrives there
+     rather than travelling. */
+  .donut__slice,
+  ui-donut-chart[loading] .donut__canvas {
+    transition: none;
+  }
+}
+
+/* ---- The demo page --------------------------------------------------------------------- */
+
+.donut-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background: light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
+}
+
+.donut-demo__shell {
+  min-inline-size: 0;
+  inline-size: min(100%, 48rem);
+}
+
+.donut-demo__card {
+  display: grid;
+  gap: 1.1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid light-dark(#e3e7ef, #292d36);
+  border-radius: 18px;
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
+}
+
+/* Side by side, so the same data can be read two ways at once. */
+.donut-demo__pair {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  align-items: start;
+}
+
+.donut-demo__label {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.donut-demo__note {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.donut-demo__note code {
+  border-radius: 5px;
+  background: light-dark(rgb(15 23 42 / 0.07), rgb(244 246 250 / 0.12));
+  padding: 0.1em 0.35em;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.donut-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.donut-demo__button {
+  border: 1px solid light-dark(#dfe4ec, #292d36);
+  border-radius: 9px;
+  background: light-dark(#f7f8fb, #10131a);
+  padding: 0.45rem 0.85rem;
+  color: light-dark(#15181d, #f4f6fa);
+  font:
+    600 0.8125rem/1.45 Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.donut-demo__button:hover {
+  background: light-dark(#eef1f7, #171a20);
+}
+
+.donut-demo__button[data-current] {
+  border-color: light-dark(#4f46e5, #86a0ff);
+  color: light-dark(#4f46e5, #86a0ff);
+}
+
+.donut-demo__button:focus-visible {
+  outline: 3px solid light-dark(rgb(79 70 229 / 0.6), rgb(134 160 255 / 0.6));
+  outline-offset: 2px;
+}
+
+/* A plain horizontal bar chart, written on the page rather than imported, so the Versus
+   variant can put one beside the ring without this component depending on another. */
+.donut-demo__bars {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.donut-demo__bar-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.15rem 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.donut-demo__bar-name {
+  color: light-dark(#3f4757, #cbd1dc);
+}
+
+.donut-demo__bar-value {
+  color: light-dark(#15181d, #f4f6fa);
+  font-variant-numeric: tabular-nums;
+}
+
+.donut-demo__bar-track {
+  grid-column: 1 / -1;
+  block-size: 0.65rem;
+  border-radius: 3px;
+  background: light-dark(#eef1f7, #10131a);
+}
+
+.donut-demo__bar-fill {
+  display: block;
+  block-size: 100%;
+  border-radius: 3px;
+  background: light-dark(#2a78d6, #3987e5);
+}
+
+.donut-demo__output {
+  display: block;
+  min-block-size: 2.5rem;
+  padding: 0.75rem;
+  border: 1px solid light-dark(#e3e7ef, #292d36);
+  border-radius: 10px;
+  background: light-dark(#f7f8fb, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

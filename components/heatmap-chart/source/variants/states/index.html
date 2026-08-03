@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en" class="heat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Nothing at all, all zeroes, one cell, refetching, and a failure." />
+    <title>Heatmap Chart - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="heat-demo">
+      <div class="heat-demo__shell">
+        <section class="heat-demo__card">
+          <p class="heat-demo__label">Refetching and failing</p>
+
+          <div class="heat-demo__controls">
+            <button type="button" class="heat-demo__button" data-demo-action="loading" data-demo-target="live">
+              Refetching
+            </button>
+            <button type="button" class="heat-demo__button" data-demo-action="error" data-demo-target="live">
+              Failed
+            </button>
+          </div>
+
+          <ui-heatmap-chart id="live" cell="2rem">
+            <table>
+              <caption>Errors by service and day</caption>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th scope="col">Mon</th><th scope="col">Tue</th><th scope="col">Wed</th>
+                  <th scope="col">Thu</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Gateway</th><td>2</td><td>0</td><td>14</td><td>3</td></tr>
+                <tr><th scope="row">Payments</th><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+              </tbody>
+            </table>
+          </ui-heatmap-chart>
+
+          <p class="heat-demo__note">
+            <strong>Refetching</strong> holds the grid at reduced opacity rather than throwing
+            it away for a skeleton. <strong>A failure</strong> says what went wrong and leaves
+            the table where it was.
+          </p>
+
+          <p class="heat-demo__label">Every reading is zero</p>
+          <p class="heat-demo__note">
+            There is no scale to draw — every cell is the same measured nothing — so the
+            legend goes rather than showing five steps that describe no data. The squares stay,
+            because "we counted, and it was zero everywhere" is a real answer.
+          </p>
+
+          <ui-heatmap-chart cell="2rem">
+            <table>
+              <caption>Incidents this week</caption>
+              <thead>
+                <tr><th></th><th scope="col">Mon</th><th scope="col">Tue</th><th scope="col">Wed</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Sev 1</th><td>0</td><td>0</td><td>0</td></tr>
+                <tr><th scope="row">Sev 2</th><td>0</td><td>0</td><td>0</td></tr>
+              </tbody>
+            </table>
+          </ui-heatmap-chart>
+
+          <p class="heat-demo__label">Nothing at all</p>
+          <p class="heat-demo__note">
+            An empty table says so in words. An empty grid with a legend beside it looks like
+            a chart that failed to load rather than a true answer.
+          </p>
+
+          <ui-heatmap-chart>
+            <table>
+              <caption>Failed jobs</caption>
+              <thead>
+                <tr><th></th><th scope="col">Mon</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </ui-heatmap-chart>
+
+          <p class="heat-demo__label">One cell</p>
+          <p class="heat-demo__note">
+            A single reading is its own scale: it is the busiest cell there is, so it takes the
+            last step. Nothing here needs a special case for it.
+          </p>
+
+          <ui-heatmap-chart cell="2rem">
+            <table>
+              <caption>Releases today</caption>
+              <thead>
+                <tr><th></th><th scope="col">Today</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Platform</th><td>3</td></tr>
+              </tbody>
+            </table>
+          </ui-heatmap-chart>
+
+          <output class="heat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeHeatmapChartDemo } from '../../demo.js';
+
+      initializeHeatmapChartDemo();
+    </script>
+  </body>
+</html>

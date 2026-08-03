@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" class="donut-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Reading a wedge with a pointer or a keyboard, and a legend that never repaints." />
+    <title>Donut Chart - Interaction</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="donut-demo">
+      <div class="donut-demo__shell">
+        <section class="donut-demo__card">
+          <p class="donut-demo__label">The answer appears where the eye already is</p>
+          <p class="donut-demo__note">
+            Point at a wedge and the hole becomes that wedge — its name, its value, its share.
+            No panel floating beside the pointer: the middle of the ring is where a reader is
+            already looking, and it was empty.
+          </p>
+          <p class="donut-demo__note">
+            Tab to the ring and use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> to walk it,
+            <kbd>Home</kbd> and <kbd>End</kbd> for the ends, <kbd>Escape</kbd> to let go. The
+            ring is <strong>one</strong> tab stop, not six: a chart that costs six presses to
+            get past is a chart people learn to avoid.
+          </p>
+
+          <ui-donut-chart center-label="Spend">
+            <table>
+              <caption>Spend by department</caption>
+              <thead>
+                <tr><th scope="col">Department</th><th scope="col">Spend</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Engineering</th><td data-value="482000">$482,000</td></tr>
+                <tr><th scope="row">Sales</th><td data-value="316000">$316,000</td></tr>
+                <tr><th scope="row">Marketing</th><td data-value="198000">$198,000</td></tr>
+                <tr><th scope="row">Support</th><td data-value="124000">$124,000</td></tr>
+                <tr><th scope="row">Operations</th><td data-value="86000">$86,000</td></tr>
+              </tbody>
+            </table>
+          </ui-donut-chart>
+
+          <p class="donut-demo__label">Switching one off does not repaint the rest</p>
+          <p class="donut-demo__note">
+            Press a legend row. The colour belongs to the row's position in the table, not to
+            its rank among whatever is currently shown — so hiding <em>Engineering</em> leaves
+            <em>Sales</em> orange rather than promoting it to blue. The shares recalculate
+            against what is left, because that is what a part-to-whole chart is for, and the
+            total in the hole follows.
+          </p>
+          <p class="donut-demo__note">
+            A hidden row is struck through as well as faded, and the last visible wedge will
+            not switch off — an empty ring under a full legend reads as a fault rather than as
+            a choice.
+          </p>
+
+          <output class="donut-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeDonutChartDemo } from '../../demo.js';
+
+      initializeDonutChartDemo();
+    </script>
+  </body>
+</html>

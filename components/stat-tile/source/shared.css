@@ -1,0 +1,379 @@
+:root {
+  color-scheme: light dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.stat-demo-page,
+.stat-demo-page body {
+  background: light-dark(#f4f6fa, #0f1115);
+}
+
+ui-stat-tile {
+  --stat-surface: light-dark(#ffffff, #171a20);
+  --stat-ink: light-dark(#111827, #f4f6fa);
+  --stat-ink-soft: light-dark(#3f4757, #cbd1dc);
+  --stat-ink-muted: light-dark(#5f6878, #a8afbc);
+  --stat-border: light-dark(#dfe4ec, #2e3440);
+  --stat-accent: light-dark(#2a78d6, #3987e5);
+  --stat-focus: light-dark(#4f46e5, #86a0ff);
+  --stat-radius: 12px;
+
+  /* ---- Delta ink -------------------------------------------------------------------
+     Text, so these are held to 4.5:1 rather than the 3:1 a mark has to clear. Measured
+     against the two surfaces above: good 7.54 light / 5.19 dark, bad 4.80 / 7.21.
+
+     The light green and the dark red are not the status fills. `#0ca30c` reaches only
+     3.27 on white and `#d03b3b` only 3.63 on the dark surface — fine for a bar, short
+     for a word. */
+  --stat-good: light-dark(#006300, #0ca30c);
+  --stat-bad: light-dark(#d03b3b, #f08a86);
+
+  /* ---- Meter -----------------------------------------------------------------------
+     Reserved status colours. Never a series colour, and a series colour is never one of
+     these: a hue that means "critical" cannot also mean "the third product line". */
+  --stat-meter-ok: light-dark(#2a78d6, #3987e5);
+  --stat-meter-warning: #fab219;
+  --stat-meter-critical: #d03b3b;
+
+  /* The sparkline recedes; only its last reading is in the accent. */
+  --stat-spark: light-dark(#7c8798, #8b96a8);
+
+  --stat-motion: 320ms;
+
+  /* Written by the element onto the delta and the meter. Declared here so it has a value
+     of its own rather than living only in a fallback. */
+  --tone-colour: var(--stat-ink-muted);
+
+  display: grid;
+  align-content: start;
+  gap: 0.3rem;
+  min-inline-size: 0;
+  border: 1px solid var(--stat-border);
+  border-radius: var(--stat-radius);
+  background: var(--stat-surface);
+  padding: 0.9rem 1rem 1rem;
+  color: var(--stat-ink);
+  font: 400 0.9375rem/1.5
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* ---- The three lines ------------------------------------------------------------------- */
+
+.stat-tile__label {
+  margin: 0;
+  color: var(--stat-ink-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.stat-tile__value {
+  margin: 0;
+  color: var(--stat-ink);
+  font-size: 1.75rem;
+  font-weight: 650;
+  line-height: 1.15;
+  /* Proportional figures, deliberately. `tabular-nums` gives every digit the width of a
+     zero, which makes a number like 121 look loose at this size. Tabular is for columns
+     that have to line up, and a headline is not a column. */
+  font-variant-numeric: proportional-nums;
+}
+
+ui-stat-tile[size="hero"] .stat-tile__value {
+  /* The one number a view leads with. Same sans as everything else — a display or serif
+     face here reads as off-brand decoration rather than emphasis. */
+  font-size: clamp(3rem, 7vw, 3.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.stat-tile__delta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.3rem;
+  margin: 0;
+  color: var(--stat-ink-muted);
+  font-size: 0.8125rem;
+}
+
+/* The judgement, and never by colour alone: the arrow and the word carry it too, which is
+   also the mitigation for the light-theme status colours that sit below 3:1. */
+.stat-tile__change {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: var(--tone-colour);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  /* Arrow, word and number are one phrase. In a narrow tile they broke across two lines as
+     "up" then "12.4%", which reads as two separate facts. The period after them is free to
+     wrap; this is not. */
+  white-space: nowrap;
+}
+
+.stat-tile__arrow {
+  inline-size: 0.7rem;
+  block-size: 0.7rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.stat-tile__arrow[hidden] {
+  display: none;
+}
+
+/* ---- The meter ------------------------------------------------------------------------- */
+
+.stat-tile__meter {
+  block-size: 0.5rem;
+  margin-block: 0.35rem 0.1rem;
+  border-radius: 999px;
+  /* The track is the fill's own hue mixed into the surface, so the whole bar reads as one
+     measurement rather than as two different things meeting. Measured fill against track:
+     ok 3.80 light / 4.14 dark, critical 4.03 / 3.31.
+
+     Warning on the light surface reaches only 1.70 and no lighter step of amber can do
+     better — the palette says so, and the answer is the word beside it rather than a
+     colour nobody can see. */
+  background: color-mix(in srgb, var(--tone-colour) 12%, var(--stat-surface));
+  overflow: hidden;
+}
+
+.stat-tile__meter-fill {
+  display: block;
+  block-size: 100%;
+  border-radius: inherit;
+  background: var(--tone-colour);
+  transition: inline-size var(--stat-motion) cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.stat-tile__limit {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin: 0;
+  color: var(--stat-ink-muted);
+  font-size: 0.8125rem;
+}
+
+/* The word that carries the state where the colour cannot. */
+.stat-tile__condition {
+  color: var(--tone-colour);
+  font-weight: 650;
+}
+
+.stat-tile__condition[hidden] {
+  display: none;
+}
+
+/* ---- The sparkline --------------------------------------------------------------------- */
+
+.stat-tile__spark {
+  display: block;
+  inline-size: 100%;
+  block-size: 2.25rem;
+  margin-block-start: 0.4rem;
+  overflow: visible;
+}
+
+/* Set as attributes, not properties. `Element.hidden` is defined on HTMLElement and does
+   nothing at all on an SVG node — the same trap that left a stray hairline down the side of
+   the chart component. */
+.stat-tile__spark[hidden],
+.stat-tile__spark-point[hidden] {
+  display: none;
+}
+
+.stat-tile__spark-line {
+  fill: none;
+  stroke: var(--stat-spark);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Only the current reading is in the accent. Colouring the whole line would make context
+   compete with the number it is context for. */
+.stat-tile__spark-point {
+  fill: var(--stat-accent);
+  stroke: var(--stat-surface);
+  stroke-width: 2;
+}
+
+/* ---- States ---------------------------------------------------------------------------- */
+
+ui-stat-tile[loading] .stat-tile__value,
+ui-stat-tile[loading] .stat-tile__spark,
+ui-stat-tile[loading] .stat-tile__meter {
+  opacity: 0.45;
+  transition: opacity 160ms ease;
+}
+
+.stat-tile__note {
+  margin: 0;
+  color: var(--stat-ink-muted);
+  font-size: 0.8125rem;
+}
+
+.stat-tile__note[hidden] {
+  display: none;
+}
+
+.stat-tile__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ui-stat-tile {
+    --stat-motion: 0ms;
+  }
+
+  .stat-tile__meter-fill,
+  ui-stat-tile[loading] .stat-tile__value {
+    transition: none;
+  }
+}
+
+/* ---- A row of tiles -------------------------------------------------------------------- */
+
+/* Not a component. A row of tiles is layout and adds no meaning of its own — and a wrapper
+   element would invite a filter per card, when the rule is one filter row above everything
+   it scopes. This is the CSS to copy instead.
+
+   `subgrid` is what makes the labels, the values and the deltas line up across tiles rather
+   than each tile packing its own contents. Without it the row still works; the lines just do
+   not agree. */
+.stat-row {
+  display: grid;
+  /* Four across on a normal card and two on a phone, without a breakpoint anywhere. */
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  grid-template-rows: auto auto auto auto;
+  gap: 0.75rem;
+}
+
+.stat-row > ui-stat-tile {
+  grid-row: span 4;
+  grid-template-rows: subgrid;
+}
+
+/* ---- The demo page --------------------------------------------------------------------- */
+
+.stat-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background: light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
+}
+
+.stat-demo__shell {
+  min-inline-size: 0;
+  inline-size: min(100%, 48rem);
+}
+
+.stat-demo__card {
+  display: grid;
+  gap: 1.1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid light-dark(#e3e7ef, #292d36);
+  border-radius: 18px;
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
+}
+
+/* The tiles sit on the page, not inside another card, so they carry their own surface. */
+.stat-demo__card ui-stat-tile {
+  --stat-surface: light-dark(#f8fafc, #10131a);
+}
+
+.stat-demo__label {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.stat-demo__note {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.stat-demo__note code {
+  border-radius: 5px;
+  background: light-dark(rgb(15 23 42 / 0.07), rgb(244 246 250 / 0.12));
+  padding: 0.1em 0.35em;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.stat-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.stat-demo__button {
+  border: 1px solid light-dark(#dfe4ec, #292d36);
+  border-radius: 9px;
+  background: light-dark(#f7f8fb, #10131a);
+  padding: 0.45rem 0.85rem;
+  color: light-dark(#15181d, #f4f6fa);
+  font:
+    600 0.8125rem/1.45 Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.stat-demo__button:hover {
+  background: light-dark(#eef1f7, #171a20);
+}
+
+.stat-demo__button[data-current] {
+  border-color: light-dark(#4f46e5, #86a0ff);
+  color: light-dark(#4f46e5, #86a0ff);
+}
+
+.stat-demo__button:focus-visible {
+  outline: 3px solid light-dark(rgb(79 70 229 / 0.6), rgb(134 160 255 / 0.6));
+  outline-offset: 2px;
+}
+
+.stat-demo__output {
+  display: block;
+  min-block-size: 2.5rem;
+  padding: 0.75rem;
+  border: 1px solid light-dark(#e3e7ef, #292d36);
+  border-radius: 10px;
+  background: light-dark(#f7f8fb, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

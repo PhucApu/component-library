@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" class="chart-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Round ticks, a pinned range, long names, and the axis that does not exist." />
+    <title>Cartesian Chart - Scales</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chart-demo">
+      <div class="chart-demo__shell">
+        <section class="chart-demo__card">
+          <p class="chart-demo__label">Ticks a person would have chosen</p>
+          <p class="chart-demo__note">
+            The step is always one, two or five times a power of ten — never 3.7 — and the top
+            and bottom of the plot land on a labelled tick rather than on whatever the largest
+            value happened to be. The ticks are counted from the floor rather than added up,
+            because adding a step to itself thirty times is how an axis ends up labelled
+            <code>0.30000000000000004</code>.
+          </p>
+
+          <ui-cartesian-chart type="line" y-label="Response time (ms)">
+            <table>
+              <caption>Median response time</caption>
+              <thead>
+                <tr><th scope="col">Hour</th><th scope="col">Median</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">00:00</th><td>184</td></tr>
+                <tr><th scope="row">02:00</th><td>172</td></tr>
+                <tr><th scope="row">04:00</th><td>166</td></tr>
+                <tr><th scope="row">06:00</th><td>198</td></tr>
+                <tr><th scope="row">08:00</th><td>341</td></tr>
+                <tr><th scope="row">10:00</th><td>402</td></tr>
+                <tr><th scope="row">12:00</th><td>388</td></tr>
+                <tr><th scope="row">14:00</th><td>355</td></tr>
+                <tr><th scope="row">16:00</th><td>412</td></tr>
+                <tr><th scope="row">18:00</th><td>296</td></tr>
+                <tr><th scope="row">20:00</th><td>241</td></tr>
+                <tr><th scope="row">22:00</th><td>203</td></tr>
+              </tbody>
+            </table>
+          </ui-cartesian-chart>
+
+          <p class="chart-demo__label">Names too long for the bottom</p>
+          <p class="chart-demo__note">
+            When labels stop fitting they are thinned out — every second, every third — and the
+            last one is always kept, because on a time axis that is the one a reader looks for
+            first. They are never turned on their side: a rotated label is slower to read, and
+            on a narrow screen the axis ends up taller than the plot it belongs to. Names this
+            long are usually a sign the chart wants to be horizontal.
+          </p>
+
+          <ui-cartesian-chart type="line" y-min="0" y-max="100" y-label="Uptime (%)">
+            <table>
+              <caption>Uptime against the 99% commitment</caption>
+              <thead>
+                <tr><th scope="col">Service</th><th scope="col">Uptime</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Authentication gateway</th><td>99.98</td></tr>
+                <tr><th scope="row">Payment processing</th><td>99.91</td></tr>
+                <tr><th scope="row">Search and indexing</th><td>99.42</td></tr>
+                <tr><th scope="row">Notification delivery</th><td>98.76</td></tr>
+                <tr><th scope="row">Reporting warehouse</th><td>99.65</td></tr>
+                <tr><th scope="row">Media transcoding</th><td>97.88</td></tr>
+                <tr><th scope="row">Public API edge</th><td>99.99</td></tr>
+                <tr><th scope="row">Webhook dispatch</th><td>99.12</td></tr>
+              </tbody>
+            </table>
+          </ui-cartesian-chart>
+
+          <p class="chart-demo__label">There is no second axis, and no way to ask for one</p>
+          <p class="chart-demo__note">
+            Two scales on one plot invent a correlation the data does not have: where the two
+            lines cross depends entirely on how the second axis was aligned, and that choice
+            belongs to whoever drew the chart rather than to the numbers. Two measures of
+            different size are two charts — or one chart with both indexed to a common base at
+            the first period, which puts them on one honest scale.
+          </p>
+
+          <output class="chart-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCartesianChartDemo } from '../../demo.js';
+
+      initializeCartesianChartDemo();
+    </script>
+  </body>
+</html>

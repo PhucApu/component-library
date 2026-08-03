@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" class="stat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A row of tiles that line up, and the filter row that belongs above them." />
+    <title>Stat Tile - Row</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="stat-demo">
+      <div class="stat-demo__shell">
+        <section class="stat-demo__card">
+          <p class="stat-demo__label">A row of tiles is layout, not a component</p>
+          <p class="stat-demo__note">
+            There is no <code>&lt;ui-stat-row&gt;</code> here on purpose. A row arranges tiles
+            and adds no meaning of its own, and a wrapper element would invite a date filter
+            inside each card — when the rule is <strong>one filter row above everything it
+            scopes</strong>, so every number on the page always agrees with every other.
+          </p>
+
+          <div class="stat-demo__controls" role="group" aria-label="Range">
+            <button type="button" class="stat-demo__button">Last 7 days</button>
+            <button type="button" class="stat-demo__button" data-current>Last 30 days</button>
+            <button type="button" class="stat-demo__button">Last 90 days</button>
+          </div>
+
+          <div class="stat-row">
+            <ui-stat-tile up="good">
+              <p class="stat-tile__label">Revenue</p>
+              <p class="stat-tile__value" data-value="48290">$48,290</p>
+              <p class="stat-tile__delta" data-change="12.4">vs last month</p>
+              <ol class="stat-tile__trend" aria-label="Revenue trend">
+                <li>32100</li><li>34500</li><li>33800</li><li>38900</li><li>43800</li><li>48290</li>
+              </ol>
+            </ui-stat-tile>
+
+            <ui-stat-tile up="good">
+              <p class="stat-tile__label">New accounts</p>
+              <p class="stat-tile__value" data-value="1284">1,284</p>
+              <p class="stat-tile__delta" data-change="-3.1">vs last month</p>
+              <ol class="stat-tile__trend" aria-label="New accounts trend">
+                <li>1410</li><li>1380</li><li>1355</li><li>1302</li><li>1325</li><li>1284</li>
+              </ol>
+            </ui-stat-tile>
+
+            <ui-stat-tile up="bad">
+              <p class="stat-tile__label">Support cost</p>
+              <p class="stat-tile__value" data-value="9140">$9,140</p>
+              <p class="stat-tile__delta" data-change="8.2">vs last month</p>
+              <ol class="stat-tile__trend" aria-label="Support cost trend">
+                <li>7900</li><li>8050</li><li>8210</li><li>8480</li><li>8790</li><li>9140</li>
+              </ol>
+            </ui-stat-tile>
+
+            <ui-stat-tile up="neutral">
+              <p class="stat-tile__label">Headcount</p>
+              <p class="stat-tile__value" data-value="212">212</p>
+              <p class="stat-tile__delta" data-change="4">vs last month</p>
+              <ol class="stat-tile__trend" aria-label="Headcount trend">
+                <li>198</li><li>201</li><li>204</li><li>206</li><li>208</li><li>212</li>
+              </ol>
+            </ui-stat-tile>
+          </div>
+
+          <p class="stat-demo__label">Why the lines agree across the row</p>
+          <p class="stat-demo__note">
+            The row is a grid with <code>subgrid</code> rows, so every label, every value and
+            every change sits on the same line as its neighbours. Without it each tile packs
+            its own contents and a longer label in one card pushes that card's number out of
+            step with the rest — which reads as sloppiness before anyone can say why.
+          </p>
+          <p class="stat-demo__note">
+            Four tiles, four judgements: revenue up is good, accounts down is bad, cost up is
+            <em>also</em> bad, and headcount is neither. Same arrows, four different meanings.
+          </p>
+
+          <output class="stat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeStatTileDemo } from '../../demo.js';
+
+      initializeStatTileDemo();
+    </script>
+  </body>
+</html>

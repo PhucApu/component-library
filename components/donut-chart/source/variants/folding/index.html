@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" class="donut-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Six wedges at most, a folded remainder, and the columns that are not plotted." />
+    <title>Donut Chart - Folding</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="donut-demo">
+      <div class="donut-demo__shell">
+        <section class="donut-demo__card">
+          <p class="donut-demo__label">Six wedges, and the rest summed into one</p>
+          <p class="donut-demo__note">
+            Eleven rows go in and six wedges come out. Past six the small ones are slivers,
+            their labels have nowhere to sit, and the shape stops answering the question it was
+            drawn for. The note under the ring says how many were folded, and the table still
+            has every one of them.
+          </p>
+          <p class="donut-demo__note">
+            This is <strong>the opposite default</strong> from the line chart, on purpose. A
+            ninth line is still a readable line; a ninth wedge is not a readable wedge.
+          </p>
+
+          <ui-donut-chart id="sources" center-label="Requests">
+            <table>
+              <caption>Requests by endpoint</caption>
+              <thead>
+                <tr><th scope="col">Endpoint</th><th scope="col">Requests</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Search</th><td data-value="41200">41,200</td></tr>
+                <tr><th scope="row">Catalog</th><td data-value="28600">28,600</td></tr>
+                <tr><th scope="row">Cart</th><td data-value="19400">19,400</td></tr>
+                <tr><th scope="row">Checkout</th><td data-value="11800">11,800</td></tr>
+                <tr><th scope="row">Account</th><td data-value="8900">8,900</td></tr>
+                <tr><th scope="row">Media</th><td data-value="6100">6,100</td></tr>
+                <tr><th scope="row">Webhooks</th><td data-value="4200">4,200</td></tr>
+                <tr><th scope="row">Reports</th><td data-value="2800">2,800</td></tr>
+                <tr><th scope="row">Admin</th><td data-value="1900">1,900</td></tr>
+                <tr><th scope="row">Health</th><td data-value="900">900</td></tr>
+                <tr><th scope="row">Legacy</th><td data-value="400">400</td></tr>
+              </tbody>
+            </table>
+          </ui-donut-chart>
+
+          <p class="donut-demo__label">Other is last, and it is not a category</p>
+          <p class="donut-demo__note">
+            The remainder keeps the last slot rather than being given a colour of its own, and
+            it always sits at the end of the legend. An <em>Other</em> that turns up in the
+            middle reads as a category somebody named, rather than as what is left.
+          </p>
+
+          <p class="donut-demo__label">One value column, and it says so</p>
+          <p class="donut-demo__note">
+            A ring divides one total. The table below has three value columns, and only the
+            first is plotted — with the note saying so. Quietly drawing the first would let
+            somebody believe the other two were in there somewhere.
+          </p>
+
+          <ui-donut-chart center-label="Plan mix">
+            <table>
+              <caption>Accounts by plan, this month and last</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Plan</th>
+                  <th scope="col">This month</th>
+                  <th scope="col">Last month</th>
+                  <th scope="col">A year ago</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Free</th><td data-value="4120">4,120</td><td>3,980</td><td>2,410</td></tr>
+                <tr><th scope="row">Team</th><td data-value="1860">1,860</td><td>1,740</td><td>1,120</td></tr>
+                <tr><th scope="row">Enterprise</th><td data-value="240">240</td><td>228</td><td>150</td></tr>
+              </tbody>
+            </table>
+          </ui-donut-chart>
+
+          <output class="donut-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeDonutChartDemo } from '../../demo.js';
+
+      initializeDonutChartDemo();
+    </script>
+  </body>
+</html>

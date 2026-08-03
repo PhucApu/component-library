@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" class="chart-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Part-to-whole over time, with the surface doing the separating." />
+    <title>Cartesian Chart - Stacked</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chart-demo">
+      <div class="chart-demo__shell">
+        <section class="chart-demo__card">
+          <p class="chart-demo__label">Part to whole, over time</p>
+          <p class="chart-demo__note">
+            Stacking answers two questions at once: how big the total is, and how it splits.
+            It answers the first well and the second only for the segment sitting on the
+            baseline — every band above it starts somewhere different each month, and lengths
+            that do not share a start are hard to compare. Grouped columns are the better
+            answer when the split is the question.
+          </p>
+
+          <div class="chart-demo__controls">
+            <button type="button" class="chart-demo__button" data-demo-action="stacked" data-current>
+              Stacked
+            </button>
+            <button type="button" class="chart-demo__button" data-demo-action="type" data-demo-type="column" data-current>
+              Columns
+            </button>
+            <button type="button" class="chart-demo__button" data-demo-action="type" data-demo-type="area">
+              Area
+            </button>
+          </div>
+
+          <ui-cartesian-chart type="column" stacked y-label="Tickets">
+            <table>
+              <caption>Support tickets by priority</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Week</th>
+                  <th scope="col">Low</th>
+                  <th scope="col">Normal</th>
+                  <th scope="col">Urgent</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">W1</th><td>120</td><td>86</td><td>18</td></tr>
+                <tr><th scope="row">W2</th><td>104</td><td>92</td><td>24</td></tr>
+                <tr><th scope="row">W3</th><td>132</td><td>78</td><td>15</td></tr>
+                <tr><th scope="row">W4</th><td>118</td><td>110</td><td>31</td></tr>
+                <tr><th scope="row">W5</th><td>96</td><td>124</td><td>22</td></tr>
+                <tr><th scope="row">W6</th><td>141</td><td>102</td><td>12</td></tr>
+              </tbody>
+            </table>
+          </ui-cartesian-chart>
+
+          <p class="chart-demo__label">The gap is the surface, not a border</p>
+          <p class="chart-demo__note">
+            Two pixels of the card's own background separate every segment from the one above
+            it, and every column from its neighbour. It is taken out of the mark rather than
+            drawn on top, so the segments still add up to their own total. A stroke around
+            each band would be ink with the weight of data doing a spacer's job.
+          </p>
+
+          <p class="chart-demo__label">A missing week is missing</p>
+          <p class="chart-demo__note">
+            A blank cell adds nothing to the stack and draws no band. Counting it as zero
+            would keep the total the same height while a segment quietly disappeared, which is
+            the same lie a line chart tells when it draws straight through a gap.
+          </p>
+
+          <output class="chart-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCartesianChartDemo } from '../../demo.js';
+
+      initializeCartesianChartDemo();
+    </script>
+  </body>
+</html>

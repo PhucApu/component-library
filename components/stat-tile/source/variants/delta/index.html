@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en" class="stat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Same arrow, opposite news, and never carried by colour alone." />
+    <title>Stat Tile - Delta</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="stat-demo">
+      <div class="stat-demo__shell">
+        <section class="stat-demo__card">
+          <p class="stat-demo__label">The direction is a fact; the judgement is yours</p>
+          <p class="stat-demo__note">
+            Costs rising twelve per cent and revenue rising twelve per cent are the same arrow
+            and opposite news. The arrow comes from the number; whether it is good news comes
+            from <code>up</code>, which defaults to the common case.
+          </p>
+
+          <div class="stat-demo__controls">
+            <button type="button" class="stat-demo__button" data-demo-action="polarity" data-demo-up="good" data-current>
+              up is good
+            </button>
+            <button type="button" class="stat-demo__button" data-demo-action="polarity" data-demo-up="bad">
+              up is bad
+            </button>
+            <button type="button" class="stat-demo__button" data-demo-action="polarity" data-demo-up="neutral">
+              neither
+            </button>
+          </div>
+
+          <ui-stat-tile up="good">
+            <p class="stat-tile__label">Monthly spend</p>
+            <p class="stat-tile__value" data-value="9140">$9,140</p>
+            <p class="stat-tile__delta" data-change="8.2">vs last month</p>
+          </ui-stat-tile>
+
+          <p class="stat-demo__label">Never colour alone</p>
+          <p class="stat-demo__note">
+            Every change carries three signals: an arrow, a word, and a colour — in that order
+            of reliability. Two of the light-theme status colours sit below the contrast rule
+            by design, and the arrow and the word are what make that legal. They are also what
+            make the tile readable in a grey-scale print-out, or by the one reader in twelve
+            who cannot separate the red from the green.
+          </p>
+
+          <div class="stat-row">
+            <ui-stat-tile up="good">
+              <p class="stat-tile__label">Conversion</p>
+              <p class="stat-tile__value" data-value="4.8">4.8%</p>
+              <p class="stat-tile__delta" data-change="0.6">vs last week</p>
+            </ui-stat-tile>
+
+            <ui-stat-tile up="good">
+              <p class="stat-tile__label">Churn</p>
+              <p class="stat-tile__value" data-value="2.1">2.1%</p>
+              <p class="stat-tile__delta" data-change="-0.4">vs last week</p>
+            </ui-stat-tile>
+
+            <ui-stat-tile up="good">
+              <p class="stat-tile__label">Open tickets</p>
+              <p class="stat-tile__value" data-value="86">86</p>
+              <p class="stat-tile__delta" data-change="0">vs last week</p>
+            </ui-stat-tile>
+
+            <ui-stat-tile>
+              <p class="stat-tile__label">Median order</p>
+              <p class="stat-tile__value" data-value="64">$64</p>
+            </ui-stat-tile>
+          </div>
+
+          <p class="stat-demo__note">
+            <strong>No change</strong> says so in words and shows no arrow at all — a flat
+            arrow or a zero in green both suggest something happened. <strong>No delta</strong>
+            is a tile with nothing to compare against yet, and it simply does not have the
+            line rather than showing an empty one.
+          </p>
+
+          <output class="stat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeStatTileDemo } from '../../demo.js';
+
+      initializeStatTileDemo();
+    </script>
+  </body>
+</html>

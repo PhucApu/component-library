@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="A line chart of two series over eight months, with a legend, a value axis and a label at the end of each line">
+  <title>Cartesian Chart line preview</title>
+  <desc>Two lines, Online and Retail, rising across eight months on a value axis labelled two thousand to ten thousand, with the last value written at the end of each line.</desc>
+
+  <defs>
+    <radialGradient id="glow" cx="12%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#4968e8" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#4968e8" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect width="640" height="360" fill="url(#glow)" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <rect x="24" y="20" width="592" height="320" rx="16" fill="#171a20" stroke="#292d36" />
+
+    <text x="44" y="52" fill="#a8afbc" font-size="12" font-weight="700">Revenue</text>
+
+    <!-- Gridlines: solid hairlines one step off the surface. Never dashed, because dashing
+         reads as a threshold when it is only a grid. -->
+    <g stroke="#23272f" stroke-width="1">
+      <path d="M78 290h500M78 235h500M78 180h500M78 125h500M78 70h500" />
+    </g>
+
+    <!-- Value axis. Tabular figures, rounded to a step a person would have chosen. -->
+    <g fill="#a8afbc" font-size="11" text-anchor="end">
+      <text x="68" y="294">2,000</text>
+      <text x="68" y="239">4,000</text>
+      <text x="68" y="184">6,000</text>
+      <text x="68" y="129">8,000</text>
+      <text x="68" y="74">10,000</text>
+    </g>
+
+    <!-- Category axis, thinned to every other month so the labels never touch. -->
+    <g fill="#a8afbc" font-size="11" text-anchor="middle">
+      <text x="109" y="311">Jan</text>
+      <text x="234" y="311">Mar</text>
+      <text x="359" y="311">May</text>
+      <text x="484" y="311">Jul</text>
+    </g>
+
+    <!-- Online. Slot 1, the first categorical hue. -->
+    <g>
+      <path
+        d="M109 229.5L171 204.8L234 213L296 171.8L359 149.8L421 158L484 119.5L546 86.5"
+        fill="none"
+        stroke="#3987e5"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <g fill="#3987e5" stroke="#171a20" stroke-width="2">
+        <circle cx="109" cy="229.5" r="4" />
+        <circle cx="171" cy="204.8" r="4" />
+        <circle cx="234" cy="213" r="4" />
+        <circle cx="296" cy="171.8" r="4" />
+        <circle cx="359" cy="149.8" r="4" />
+        <circle cx="421" cy="158" r="4" />
+        <circle cx="484" cy="119.5" r="4" />
+        <circle cx="546" cy="86.5" r="4" />
+      </g>
+    </g>
+
+    <!-- Retail. Slot 2. -->
+    <g>
+      <path
+        d="M109 259.8L171 254.3L234 246L296 251.5L359 237.8L421 226.8L484 232.3L546 218.5"
+        fill="none"
+        stroke="#d95926"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <g fill="#d95926" stroke="#171a20" stroke-width="2">
+        <circle cx="109" cy="259.8" r="4" />
+        <circle cx="171" cy="254.3" r="4" />
+        <circle cx="234" cy="246" r="4" />
+        <circle cx="296" cy="251.5" r="4" />
+        <circle cx="359" cy="237.8" r="4" />
+        <circle cx="421" cy="226.8" r="4" />
+        <circle cx="484" cy="232.3" r="4" />
+        <circle cx="546" cy="218.5" r="4" />
+      </g>
+    </g>
+
+    <!-- Labelled at the end only. A number beside every point is chaos and goes unread; the
+         text wears an ink token rather than the series colour. -->
+    <g fill="#e4e8f0" font-size="12" font-weight="650">
+      <text x="556" y="90">$9,400</text>
+      <text x="556" y="222">$4,600</text>
+    </g>
+
+    <!-- The legend mirrors the mark: a short stroke for a line, not a filled box. -->
+    <g>
+      <rect x="78" y="332" width="12" height="3" rx="1.5" fill="#3987e5" />
+      <text x="96" y="337" fill="#cbd1dc" font-size="12">Online</text>
+      <rect x="152" y="332" width="12" height="3" rx="1.5" fill="#d95926" />
+      <text x="170" y="337" fill="#cbd1dc" font-size="12">Retail</text>
+    </g>
+  </g>
+</svg>

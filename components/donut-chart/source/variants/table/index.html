@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" class="donut-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The data contract: the same table the chart is drawn from." />
+    <title>Donut Chart - Table</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="donut-demo">
+      <div class="donut-demo__shell">
+        <section class="donut-demo__card">
+          <p class="donut-demo__label">The same contract as the other charts</p>
+          <p class="donut-demo__note">
+            An ordinary <code>&lt;table&gt;</code>: first column the names, second column the
+            values. Nothing configured in JavaScript, nothing fetched. Press
+            <em>Show the table</em> — it is not a copy generated beside the ring, it is what
+            the ring was drawn from.
+          </p>
+          <p class="donut-demo__note">
+            Here the table earns its place twice over. On a bar chart it is a second way to
+            read the values; on a ring it is <strong>the only accurate one</strong>, because a
+            wedge is an angle and nobody reads angle to three figures.
+          </p>
+
+          <ui-donut-chart center-label="Storage">
+            <table>
+              <caption>Storage by bucket</caption>
+              <thead>
+                <tr><th scope="col">Bucket</th><th scope="col">Used</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Media originals</th><td data-value="412.5">412.5 GB</td></tr>
+                <tr><th scope="row">Derivatives</th><td data-value="188.2">188.2 GB</td></tr>
+                <tr><th scope="row">Backups</th><td data-value="96.4">96.4 GB</td></tr>
+                <tr><th scope="row">Logs</th><td data-value="41.9">41.9 GB</td></tr>
+                <tr><th scope="row">Everything else</th><td data-value="12.3">12.3 GB</td></tr>
+              </tbody>
+            </table>
+          </ui-donut-chart>
+
+          <p class="donut-demo__label">Written for a person, plotted as a number</p>
+          <p class="donut-demo__note">
+            The cells say <code>412.5 GB</code> and the ring divides <code>412.5</code>. The
+            hole and the legend both show the author's own wording rather than a reformatted
+            version of the same number. Where the text cannot be parsed with confidence —
+            a decimal comma above all — <code>data-value</code> settles it.
+          </p>
+
+          <p class="donut-demo__label">With no script</p>
+          <p class="donut-demo__note">
+            A complete, readable table of every bucket and every figure. For a page whose
+            subject is a breakdown, that is most of what anyone came for — and it is the same
+            markup, not a fallback written twice.
+          </p>
+
+          <output class="donut-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeDonutChartDemo } from '../../demo.js';
+
+      initializeDonutChartDemo();
+    </script>
+  </body>
+</html>

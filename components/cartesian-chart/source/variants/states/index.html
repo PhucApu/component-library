@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en" class="chart-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="One series, nothing at all, refetching, a failure, and the ninth colour that is never invented." />
+    <title>Cartesian Chart - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chart-demo">
+      <div class="chart-demo__shell">
+        <section class="chart-demo__card">
+          <p class="chart-demo__label">One series needs no legend</p>
+          <p class="chart-demo__note">
+            There is one colour, and the caption already says what is plotted. A box holding a
+            single swatch restates the title and costs a line. Two series or more and the
+            legend is always there — never optional, because matching colours by eye against
+            the plot is not a thing anyone should be asked to do.
+          </p>
+
+          <ui-cartesian-chart id="single" type="column" y-label="Signups">
+            <table>
+              <caption>Signups per day</caption>
+              <thead>
+                <tr><th scope="col">Day</th><th scope="col">Signups</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Mon</th><td>142</td></tr>
+                <tr><th scope="row">Tue</th><td>168</td></tr>
+                <tr><th scope="row">Wed</th><td>151</td></tr>
+                <tr><th scope="row">Thu</th><td>193</td></tr>
+                <tr><th scope="row">Fri</th><td>176</td></tr>
+              </tbody>
+            </table>
+          </ui-cartesian-chart>
+
+          <div class="chart-demo__controls">
+            <button type="button" class="chart-demo__button" data-demo-action="loading" data-demo-target="single">
+              Refetching
+            </button>
+            <button type="button" class="chart-demo__button" data-demo-action="error" data-demo-target="single">
+              Failed
+            </button>
+          </div>
+
+          <p class="chart-demo__note">
+            <strong>Refetching holds the previous render</strong> at reduced opacity. A
+            skeleton would throw away a shape the reader is still looking at and flash the
+            layout for something about to look almost the same. <strong>A failure</strong>
+            replaces the plot with what went wrong and leaves the table exactly where it was,
+            so the numbers that did arrive are still readable.
+          </p>
+
+          <p class="chart-demo__label">Nothing to plot</p>
+          <p class="chart-demo__note">
+            An empty table says so in words rather than drawing an empty grid with an axis and
+            no data on it.
+          </p>
+
+          <ui-cartesian-chart type="column">
+            <table>
+              <caption>Refunds this week</caption>
+              <thead>
+                <tr><th scope="col">Day</th><th scope="col">Refunds</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </ui-cartesian-chart>
+
+          <p class="chart-demo__label">The ninth colour is never invented</p>
+          <p class="chart-demo__note">
+            There are eight categorical slots and the order they sit in is what keeps every
+            neighbouring pair apart for a reader with colour blindness. A generated ninth is
+            indistinguishable from one already on screen under simulation, so the ninth series
+            onward is simply not drawn and the note says where to find it.
+          </p>
+          <p class="chart-demo__note">
+            <code>fold-others</code> sums the tail into a single <em>Other</em> series instead.
+            That changes what the author wrote, so it is something to ask for rather than
+            something that quietly happens.
+          </p>
+
+          <div class="chart-demo__controls">
+            <button type="button" class="chart-demo__button" data-demo-action="fold" data-demo-target="many">
+              Fold the tail into Other
+            </button>
+          </div>
+
+          <ui-cartesian-chart id="many" type="line">
+            <table>
+              <caption>Requests by endpoint</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Hour</th>
+                  <th scope="col">Search</th>
+                  <th scope="col">Catalog</th>
+                  <th scope="col">Cart</th>
+                  <th scope="col">Checkout</th>
+                  <th scope="col">Account</th>
+                  <th scope="col">Media</th>
+                  <th scope="col">Webhooks</th>
+                  <th scope="col">Reports</th>
+                  <th scope="col">Admin</th>
+                  <th scope="col">Health</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">09:00</th><td>820</td><td>640</td><td>410</td><td>180</td><td>260</td><td>150</td><td>90</td><td>70</td><td>40</td><td>25</td></tr>
+                <tr><th scope="row">10:00</th><td>910</td><td>700</td><td>460</td><td>210</td><td>280</td><td>170</td><td>96</td><td>78</td><td>44</td><td>26</td></tr>
+                <tr><th scope="row">11:00</th><td>870</td><td>680</td><td>430</td><td>195</td><td>272</td><td>162</td><td>92</td><td>74</td><td>41</td><td>24</td></tr>
+                <tr><th scope="row">12:00</th><td>1040</td><td>760</td><td>520</td><td>240</td><td>310</td><td>188</td><td>104</td><td>86</td><td>49</td><td>29</td></tr>
+              </tbody>
+            </table>
+          </ui-cartesian-chart>
+
+          <output class="chart-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeCartesianChartDemo } from '../../demo.js';
+
+      initializeCartesianChartDemo();
+    </script>
+  </body>
+</html>

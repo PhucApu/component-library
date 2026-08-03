@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 2,
+  "id": "cartesian-chart",
+  "version": "0.1.0",
+  "name": "Cartesian Chart",
+  "description": "A framework-free Web Component that reads an ordinary HTML table and draws it as a line, area, column or bar chart. The table is the data, the no-script fallback and the accessible twin at once, and there is no second value axis to be had.",
+  "group": "data-display",
+  "categories": ["data-display", "feedback"],
+  "tags": [
+    "chart",
+    "line",
+    "area",
+    "bar",
+    "column",
+    "stacked",
+    "dashboard",
+    "svg",
+    "web-component",
+    "accessible",
+    "progressive-enhancement"
+  ],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A line chart with a legend and a crosshair that reads every series at once.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "bars",
+      "name": "Bars",
+      "description": "Columns and horizontal bars, one series in one colour, always measured from zero.",
+      "entry": "source/variants/bars/index.html"
+    },
+    {
+      "id": "stacked",
+      "name": "Stacked",
+      "description": "Part-to-whole over time, with the surface itself separating the segments.",
+      "entry": "source/variants/stacked/index.html"
+    },
+    {
+      "id": "scales",
+      "name": "Scales",
+      "description": "Round ticks, a pinned range, thinned category labels, and why there is no second axis.",
+      "entry": "source/variants/scales/index.html"
+    },
+    {
+      "id": "interaction",
+      "name": "Interaction",
+      "description": "The crosshair, the keyboard walking the same values, and a legend that never repaints the survivors.",
+      "entry": "source/variants/interaction/index.html"
+    },
+    {
+      "id": "table",
+      "name": "Table",
+      "description": "The data contract: written for a person, plotted as a number, and still there with no script.",
+      "entry": "source/variants/table/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "One series, nothing at all, refetching, a failure, and the ninth colour that is never invented.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}
