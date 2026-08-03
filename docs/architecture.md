@@ -97,3 +97,11 @@ Every runtime URL resolves relative to `document.baseURI`, allowing deployment u
 Repository components are trusted in the current version. The iframe isolates presentation but
 is not a security boundary for untrusted contributions. External uploads would require a
 separate origin and a stricter sandbox policy.
+
+The preview sandbox grants `allow-popups allow-popups-to-escape-sandbox` on top of
+`allow-scripts allow-same-origin allow-forms allow-modals`. Without the first, every
+`target="_blank"` in every preview is swallowed — silently, apart from one console line — so a
+component offering a way out to a map, a specification or a repository loses it. Without the
+second, the opened tab inherits the sandbox and cannot navigate itself, which leaves a tab
+where nothing on the far side works. Neither flag lets a preview touch the page around it:
+`allow-top-navigation` is still withheld, so a preview cannot navigate the catalog.

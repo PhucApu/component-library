@@ -219,6 +219,27 @@ return when the map is swapped from a surface that cannot hold it to one that ca
 reappearing after somebody closed it. Collapsing them into one flag was the first version, and
 swapping grid → drawing silently lost the card.
 
+### The link that went nowhere
+
+The card's link was correct from the first version and still did nothing on the catalog's
+detail page. The cause was not in this component at all: the preview iframe in
+`component.html` was sandboxed `allow-scripts allow-same-origin allow-forms allow-modals`, and
+a sandbox without `allow-popups` swallows every `target="_blank"` inside it. Measured, the
+only trace was one console line:
+
+```text
+Blocked opening 'https://www.google.com/maps/search/?api=1&query=21.0235,105.8573' in a new
+window because the request was made in a sandboxed frame whose 'allow-popups' permission is
+not set.
+```
+
+It was never only this card. The nine directions links in the directory had been dead the same
+way since they were written, and so is any outbound link in any other component's preview. The
+fix is a shared one — `allow-popups allow-popups-to-escape-sandbox` on that iframe — and it is
+covered by a catalog test rather than a locator-map one, because the fault belongs to the
+catalog. `allow-top-navigation` is still withheld, so a preview still cannot navigate the page
+around it.
+
 ### Two smaller decisions
 
 `maps/search/` rather than `maps/dir/`. A card that says "view on Google Maps" and then opens

@@ -398,6 +398,41 @@ test('the theme is resolved before the first paint rather than after it', async 
   expect(await page.evaluate(() => window.__themeAtParse)).toBe('light');
 });
 
+test('a link out of a preview actually goes somewhere', async ({ page, context }) => {
+  // Nothing may reach Google here; what is on trial is whether the click was allowed to try.
+  await context.route(/google\.com/, (route) =>
+    route.fulfill({ status: 200, contentType: 'text/html', body: '<title>away</title>' }),
+  );
+
+  const blocked = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error' && message.text().includes('sandboxed frame')) {
+      blocked.push(message.text());
+    }
+  });
+
+  await page.goto('/component.html?id=locator-map');
+
+  const frame = page.frameLocator('#component-preview');
+  const link = frame.locator('.locator-map__directions').first();
+  await expect(link).toHaveAttribute('target', '_blank');
+
+  const opened = context.waitForEvent('page');
+  await link.click();
+  const away = await opened;
+
+  // The preview iframe is sandboxed, and a sandbox without `allow-popups` swallows every
+  // `target="_blank"` in every preview — silently, apart from one console line. Components
+  // that offer a way out to a map, a spec or a repository all lose it at once.
+  expect(blocked).toEqual([]);
+  expect(away.url()).toContain('google.com/maps');
+
+  // And it escapes the sandbox rather than inheriting it: a tab that cannot navigate itself
+  // is a tab where nothing on the far side works.
+  expect(await away.evaluate(() => document.title)).toBe('away');
+  await away.close();
+});
+
 test('a preview is told which theme the catalog is showing', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('/component.html?id=switch');
