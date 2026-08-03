@@ -90,14 +90,32 @@ failed the person it was hardest to serve.
 
 ## Public API
 
-Support `zoom`, `min-zoom`, `max-zoom`, `focus-zoom`, `region` and `no-search` as attributes.
-Expose `places`, `visible`, `selected`, `view`, `labels` and **`adapter`**, plus `flyTo()`,
-`reset()`, `zoomIn()` and `zoomOut()`. Emit `locator-select` and `locator-view-change`.
+Support `zoom`, `min-zoom`, `max-zoom`, `focus-zoom`, `region`, `no-search` and `no-popup` as
+attributes. Expose `places`, `visible`, `selected`, `view`, `labels` and **`adapter`**, plus
+`flyTo()`, `reset()`, `zoomIn()` and `zoomOut()`. Emit `locator-select` and
+`locator-view-change`.
 
 `adapter` is settable at any time: setting it again tears the old surface down and mounts the
 new one in the same frame, which is what lets a page start with the drawing and hand over once
 a provider's script has loaded. The frame belongs to the element — it carries the tab stop,
 the size and the clipping — and `view` is passed through without being read into.
+
+## A card over the chosen office
+
+Choosing an office opens a card on its pin: name, address, a link out to Google Maps, and a
+close button. It closes on that button, on <kbd>Escape</kbd>, and when the whole extent is
+asked for — and closing it leaves the office chosen and the map where it was.
+
+The component cannot place the card; it knows a coordinate, not a pixel. Build the node and
+hand it to the adapter through two **optional** members, `showPopup(place, node)` and
+`hidePopup()`. Every word inside belongs to the component; the adapter is asked where, never
+what. Leave them out of an adapter and there is simply no card.
+
+Link to `maps/search/?api=1&query=lat,lon`, not `maps/dir/` — "view on Google Maps" and "how
+do I get there" are different questions, and the directory already answers the second. Stop
+Escape at the card: a locator inside a dialog is the ordinary case, and one press should
+dismiss one thing. Keep **wanting** a card separate from **having** one, or swapping to a
+surface that cannot hold one and back again silently loses it.
 
 ## Trace the outline from the projection
 
@@ -169,4 +187,5 @@ Serve the folder over HTTP and check each item by hand.
 - Tab to the map and press the arrows, `+`, `-`, `0`.
 - Filter to one region and search for something only in another: nothing is found.
 - Replace the map with a stub that only logs: the search, the directory and the flight all
-  still work, and nothing outside the seven members is ever called.
+  still work, and nothing outside the seven members and the two optional popup ones is ever
+called.

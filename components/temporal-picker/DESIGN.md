@@ -16,23 +16,48 @@ The direction is **Calm Precision**: neutral surfaces, system typography, clear 
 indigo accent, and compact hierarchy. The component owns every token it uses. Example pages use
 an independent dark palette that visually fits the catalog preview stage.
 
-| Token | Default | Role |
-|---|---|---|
-| `--temporal-surface` | `#ffffff` | Trigger and panel |
-| `--temporal-surface-subtle` | `#f8fafc` | Header and subtle hover |
-| `--temporal-text` | `#111827` | Primary text |
-| `--temporal-muted` | `#5f6878` | Secondary text |
-| `--temporal-border` | `#cbd5e1` | Boundaries |
-| `--temporal-accent` | `#4f46e5` | Selection and primary action |
-| `--temporal-accent-strong` | `#4338ca` | Hover and active |
-| `--temporal-focus` | `#6366f1` | Focus ring |
-| `--temporal-danger` | `#b42318` | Invalid configuration or value |
-| `--temporal-current` | `#7c3aed` | Current day, month, or year ring |
-| `--temporal-scrollbar-track` | `#eef2f7` | Scrollable surface track |
-| `--temporal-scrollbar-thumb` | `#94a3b8` | Scroll thumb |
-| `--temporal-scrollbar-thumb-hover` | `#64748b` | Hovered scroll thumb |
-| `--temporal-radius` | `12px` | Trigger and panel radius |
-| `--temporal-shadow` | `0 18px 48px rgb(15 23 42 / 0.18)` | Panel elevation |
+Each colour token is a `light-dark()` pair, so which half a browser uses follows the
+page's `color-scheme` rather than a class the author has to remember to set.
+
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--temporal-surface` | `#ffffff` | `#171a20` | Trigger and panel |
+| `--temporal-surface-subtle` | `#f8fafc` | `#1d2128` | Header and subtle hover |
+| `--temporal-text` | `#111827` | `#f4f6fa` | Primary text |
+| `--temporal-muted` | `#5f6878` | `#a8afbc` | Secondary text |
+| `--temporal-border` | `#cbd5e1` | `#3b414c` | Boundaries |
+| `--temporal-border-strong` | `#94a3b8` | `#5a6272` | Trigger on hover |
+| `--temporal-accent` | `#4f46e5` | `#4968e8` | Selection and primary action |
+| `--temporal-accent-strong` | `#4338ca` | `#3857d6` | Hover and active |
+| `--temporal-on-accent` | `#ffffff` | `#ffffff` | Text on the accent |
+| `--temporal-focus` | `#6366f1` | `#86a0ff` | Focus ring |
+| `--temporal-danger` | `#b42318` | `#ff8e87` | Invalid configuration or value |
+| `--temporal-current` | `#7c3aed` | `#91a8ff` | Current day, month, or year ring |
+| `--temporal-scrollbar-track` | `#eef2f7` | `#111318` | Scrollable surface track |
+| `--temporal-scrollbar-thumb` | `#94a3b8` | `#4a5260` | Scroll thumb |
+| `--temporal-scrollbar-thumb-hover` | `#64748b` | `#697385` | Hovered scroll thumb |
+| `--temporal-radius` | `12px` | | Trigger and panel radius |
+| `--temporal-shadow` | `0 20px 52px` plus a paired colour | | Panel elevation |
+
+`--temporal-on-accent` does not pair. The accent is a saturated indigo in both themes, so
+white holds on it either way: `6.29:1` light, `4.74:1` dark. It exists as a token rather
+than as a repeated literal so that the relationship between a fill and what is written on
+it stays visible in one place.
+
+`--temporal-shadow` keeps one offset and blur across both themes and pairs only its
+colour, because `light-dark()` resolves a colour rather than a whole value.
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
+
+The panel is portalled to the end of the body when the popover API is unavailable, so it
+resolves these tokens from the document rather than from an ancestor it no longer has.
 
 Normal text meets WCAG AA `4.5:1`; focus indicators and UI boundaries meet at least `3:1`.
 

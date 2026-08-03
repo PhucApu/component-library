@@ -1,5 +1,8 @@
 :root {
-  color-scheme: light;
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -15,28 +18,32 @@ body {
 
 .temporal-demo-page,
 .temporal-demo-page body {
-  background: #0f1115;
-  color-scheme: dark;
+  background: light-dark(#f4f6fa, #0f1115);
 }
 
 temporal-picker {
-  --temporal-surface: #ffffff;
-  --temporal-surface-subtle: #f8fafc;
-  --temporal-text: #111827;
-  --temporal-muted: #5f6878;
-  --temporal-border: #cbd5e1;
-  --temporal-accent: #4f46e5;
-  --temporal-accent-strong: #4338ca;
-  --temporal-focus: #6366f1;
-  --temporal-danger: #b42318;
-  --temporal-current: #7c3aed;
-  --temporal-scrollbar-track: #eef2f7;
-  --temporal-scrollbar-thumb: #94a3b8;
-  --temporal-scrollbar-thumb-hover: #64748b;
+  --temporal-surface: light-dark(#ffffff, #171a20);
+  --temporal-surface-subtle: light-dark(#f8fafc, #1d2128);
+  --temporal-text: light-dark(#111827, #f4f6fa);
+  --temporal-muted: light-dark(#5f6878, #a8afbc);
+  --temporal-border: light-dark(#cbd5e1, #3b414c);
+  --temporal-border-strong: light-dark(#94a3b8, #5a6272);
+  --temporal-accent: light-dark(#4f46e5, #4968e8);
+  --temporal-accent-strong: light-dark(#4338ca, #3857d6);
+  /* Not a pair. The accent is a saturated indigo in both themes, so white holds its
+     contrast on it either way — 6.29:1 light, 4.74:1 dark. */
+  --temporal-on-accent: #ffffff;
+  --temporal-focus: light-dark(#6366f1, #86a0ff);
+  --temporal-danger: light-dark(#b42318, #ff8e87);
+  --temporal-current: light-dark(#7c3aed, #91a8ff);
+  --temporal-scrollbar-track: light-dark(#eef2f7, #111318);
+  --temporal-scrollbar-thumb: light-dark(#94a3b8, #4a5260);
+  --temporal-scrollbar-thumb-hover: light-dark(#64748b, #697385);
   --temporal-radius: 12px;
-  --temporal-shadow: 0 18px 48px rgb(15 23 42 / 0.18);
+  /* `light-dark()` resolves colours, not whole values, so the offset and blur are shared
+     and only the shadow's colour changes with the theme. */
+  --temporal-shadow: 0 20px 52px light-dark(rgb(15 23 42 / 0.18), rgb(0 0 0 / 0.42));
 
-  color-scheme: light;
   display: inline-block;
   max-inline-size: 100%;
   color: var(--temporal-text);
@@ -70,7 +77,7 @@ temporal-picker {
 }
 
 .temporal-picker__trigger:hover:not(:disabled) {
-  border-color: #94a3b8;
+  border-color: var(--temporal-border-strong);
   background: var(--temporal-surface-subtle);
 }
 
@@ -329,7 +336,7 @@ button.temporal-picker__view-title {
 .temporal-picker__choice.is-selected {
   border-color: var(--temporal-accent);
   background: var(--temporal-accent);
-  color: #ffffff;
+  color: var(--temporal-on-accent);
   font-weight: 700;
 }
 
@@ -344,7 +351,7 @@ button.temporal-picker__view-title {
 .temporal-picker__day.is-selected:focus-visible {
   border-color: var(--temporal-accent);
   background: var(--temporal-accent);
-  color: #ffffff;
+  color: var(--temporal-on-accent);
 }
 
 .temporal-picker__day:disabled,
@@ -579,7 +586,7 @@ button.temporal-picker__view-title {
 .temporal-picker__button--primary {
   border-color: var(--temporal-accent);
   background: var(--temporal-accent);
-  color: #ffffff;
+  color: var(--temporal-on-accent);
 }
 
 .temporal-picker__button--primary:hover:not(:disabled) {
@@ -611,8 +618,8 @@ button.temporal-picker__view-title {
   padding: clamp(1.25rem, 4vw, 3rem);
   background:
     radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
-    #0f1115;
-  color: #f4f6fa;
+    light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
 }
 
 .temporal-demo__shell {
@@ -623,46 +630,27 @@ button.temporal-picker__view-title {
   display: grid;
   gap: 1rem;
   padding: clamp(1rem, 2vw, 1.5rem);
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 18px;
-  background: rgb(23 26 32 / 0.88);
-  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+  background: light-dark(rgb(255 255 255 / 0.92), rgb(23 26 32 / 0.88));
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
 }
 
 .temporal-demo__label {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-weight: 650;
-}
-
-.temporal-demo temporal-picker {
-  --temporal-surface: #171a20;
-  --temporal-surface-subtle: #1d2128;
-  --temporal-text: #f4f6fa;
-  --temporal-muted: #a8afbc;
-  --temporal-border: #3b414c;
-  --temporal-accent: #4968e8;
-  --temporal-accent-strong: #3857d6;
-  --temporal-focus: #86a0ff;
-  --temporal-danger: #ff8e87;
-  --temporal-current: #91a8ff;
-  --temporal-scrollbar-track: #111318;
-  --temporal-scrollbar-thumb: #4a5260;
-  --temporal-scrollbar-thumb-hover: #697385;
-  --temporal-shadow: 0 22px 56px rgb(0 0 0 / 0.42);
-
-  color-scheme: dark;
 }
 
 .temporal-demo__output {
   display: block;
   min-block-size: 2.75rem;
   padding: 0.75rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 10px;
-  background: #0b0c0e;
-  color: #f4f6fa;
+  background: light-dark(#f7f8fa, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
   font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
   overflow-wrap: anywhere;
 }

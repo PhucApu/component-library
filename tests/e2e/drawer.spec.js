@@ -306,45 +306,52 @@ test('the panel body scrolls while its header stays put', async ({ page }) => {
   expect(measured.headerMoved).toBeLessThan(2);
 });
 
-test('the panel is toned to the page around it', async ({ page }) => {
-  await page.setViewportSize({ width: 960, height: 720 });
-  await ready(page, 'default');
+// A modal panel is a sibling of the main content, not a child of it, so anything scoped
+// to the demo container never reaches it. That used to be a real trap — the panel kept
+// its light defaults and arrived as a white slab over a dark page. Reading the colours
+// from `light-dark()` on the document removes the scoping question entirely, and this
+// runs under both schemes to prove the panel lands on the right side in each.
+for (const colorScheme of ['light', 'dark']) {
+  test(`the panel is toned to the page around it in the ${colorScheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme });
+    await page.setViewportSize({ width: 960, height: 720 });
+    await ready(page, 'default');
 
-  await page.locator('#menu-button').click();
-  await expect(page.locator('.drawer__panel')).toBeVisible();
+    await page.locator('#menu-button').click();
+    await expect(page.locator('.drawer__panel')).toBeVisible();
 
-  // A modal panel is a sibling of the main content, not a child of it, so an override
-  // scoped to the demo container never reaches it and the panel stays on its light
-  // defaults — a white slab over a dark page.
-  const measured = await page.evaluate(() => {
-    const linear = (channel) => {
-      const value = channel / 255;
-      return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
-    };
-    const luminance = (colour) => {
-      const [r, g, b] = colour.match(/[\d.]+/g).slice(0, 3).map(Number);
-      return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
-    };
-    const ratio = (a, b) => {
-      const [light, dark] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-      return (light + 0.05) / (dark + 0.05);
-    };
+    const measured = await page.evaluate(() => {
+      const linear = (channel) => {
+        const value = channel / 255;
+        return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+      };
+      const luminance = (colour) => {
+        const [r, g, b] = colour.match(/[\d.]+/g).slice(0, 3).map(Number);
+        return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
+      };
+      const ratio = (a, b) => {
+        const [lighter, darker] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+        return (lighter + 0.05) / (darker + 0.05);
+      };
 
-    const panel = getComputedStyle(document.querySelector('.drawer__panel'));
-    const card = getComputedStyle(document.querySelector('.drawer-demo__card'));
+      const panel = getComputedStyle(document.querySelector('.drawer__panel'));
+      const card = getComputedStyle(document.querySelector('.drawer-demo__card'));
 
-    return {
-      panel: panel.backgroundColor,
-      againstCard: ratio(panel.backgroundColor, card.backgroundColor),
-      textOnPanel: ratio(panel.color, panel.backgroundColor),
-    };
+      return {
+        againstCard: ratio(panel.backgroundColor, card.backgroundColor),
+        textOnPanel: ratio(panel.color, panel.backgroundColor),
+      };
+    });
+
+    // The relationship is the whole point, and it says more than naming one colour would:
+    // a panel on the wrong side of the theme cannot sit this close to the surfaces beside
+    // it, whichever theme is showing.
+    expect(measured.againstCard).toBeLessThan(1.2);
+    expect(measured.textOnPanel).toBeGreaterThanOrEqual(4.5);
   });
-
-  expect(measured.panel).not.toBe('rgb(255, 255, 255)');
-  // Effectively the same tone as the surfaces beside it.
-  expect(measured.againstCard).toBeLessThan(1.2);
-  expect(measured.textOnPanel).toBeGreaterThanOrEqual(4.5);
-});
+}
 
 test('reduced motion removes the slide', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });

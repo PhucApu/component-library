@@ -31,15 +31,38 @@ back on the gallery link that opened it.
 
 ## 4. Visual tokens
 
-| Token | Value | Role |
-|---|---|---|
-| `--lightbox-surface` | `#12141a` | Viewer background |
-| `--lightbox-bar` | `#1a1e26` | Toolbar and strip |
-| `--lightbox-text` | `#f4f6fa` | Controls |
-| `--lightbox-muted` | `#a8afbc` | Counter and caption |
-| `--lightbox-border` | `#2e3440` | Rules and outlines |
-| `--lightbox-accent` | `#86a0ff` | The current thumbnail |
-| `--lightbox-backdrop` | `rgb(6 8 12 / 0.82)` | The dimmed page |
+Each colour token is a `light-dark()` pair, so which half a browser uses follows the
+page's `color-scheme` rather than a class the author has to remember to set.
+
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--lightbox-surface` | `#ffffff` | `#12141a` | Viewer background |
+| `--lightbox-bar` | `#f4f6fa` | `#1a1e26` | Toolbar, strip, and gallery tiles |
+| `--lightbox-text` | `#111827` | `#f4f6fa` | Controls |
+| `--lightbox-muted` | `#5f6878` | `#a8afbc` | Counter and caption |
+| `--lightbox-border` | `#dfe4ec` | `#2e3440` | Rules and outlines |
+| `--lightbox-accent` | `#4f46e5` | `#86a0ff` | The current thumbnail |
+| `--lightbox-focus` | `#6366f1` | `#86a0ff` | The focus ring |
+| `--lightbox-backdrop` | `rgb(6 8 12 / 0.82)` | | The dimmed page |
+
+The viewer follows the theme like everything else, so opening a picture from a light page
+does not black the screen out. Two things stay dark regardless, and for the same reason
+they always did: the backdrop dims the page behind the viewer, and the previous and next
+controls sit **over a photograph** rather than over the viewer, so each carries its own
+dark scrim and a white icon. A photograph is not a component surface and does not change
+with the theme, so nothing drawn on one may take the theme's text colour.
+
+The accent only draws the current thumbnail's border. Nothing is written on it, so it
+needs no companion token.
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
 
 ## 5. Four ways to magnify, because a wheel is not universal
 

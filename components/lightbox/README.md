@@ -152,10 +152,31 @@ panel. The caption is selectable — it is the one part worth copying.
 The gallery is a list of links to the full pictures, so it stays entirely usable. The
 viewer, the magnification, and the strip are what the script adds.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the gallery and the viewer follow the operating system. To pin
+them, narrow the `color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+Two things stay dark either way. `--lightbox-backdrop` dims the page behind the viewer,
+and the previous and next controls sit over a photograph rather than over the viewer, so
+each keeps its own dark scrim and a white icon.
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
 Current Chrome, Edge, Firefox, and Safari. Uses custom elements, the `dialog` element with
-`showModal()`, `ResizeObserver`, and `color-mix()`.
+`showModal()`, `ResizeObserver`, `color-mix()`, and `light-dark()`.
 
 ## Layout note
 

@@ -89,10 +89,31 @@ An inline panel written `open` in the markup is there and usable — it is a `na
 in it. A modal panel is not: `showModal()` is the only thing that opens a `dialog`, so a
 drawer that must work without script should be inline.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the drawer follows the operating system. To pin it, narrow the
+`color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+`--drawer-backdrop` is the exception: it dims the page behind the panel, which is
+something to darken in either theme, so it stays dark and so does the shadow the panel
+casts onto it.
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
 Current Chrome, Edge, Firefox, and Safari. Uses custom elements, the `dialog` element with
-`showModal()`, and `color-mix()`.
+`showModal()`, `color-mix()`, and `light-dark()`.
 
 ## Running the files
 

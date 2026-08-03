@@ -369,64 +369,72 @@ test('a message raised while another is leaving survives the exit', async ({ pag
   await expect(page.locator('.snackbar__message')).toHaveText('Anchored bottom-end');
 });
 
-test('the surface meets contrast at every severity', async ({ page }) => {
-  await ready(page, 'severity');
+// Both themes, because every severity is a light-dark() pair and the browser picks the
+// half from the colour scheme. Measuring only the default would leave four of the eight
+// palettes unchecked.
+for (const colorScheme of ['light', 'dark']) {
+  test(`the surface meets contrast at every severity in the ${colorScheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme });
+    await ready(page, 'severity');
 
-  for (const level of ['Info', 'Success', 'Warning', 'Error']) {
-    await page.getByRole('button', { name: level }).click();
-    await expect(page.locator('.snackbar__surface')).toBeVisible();
+    for (const level of ['Info', 'Success', 'Warning', 'Error']) {
+      await page.getByRole('button', { name: level }).click();
+      await expect(page.locator('.snackbar__surface')).toBeVisible();
 
-    const measured = await page.evaluate(() => {
-      const linear = (channel) => {
-        const value = channel / 255;
-        return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
-      };
-      // `color-mix()` computes to `color(srgb r g b)` with 0-1 channels, not `rgb()`.
-      // Reading it with a plain digit match produced ratios in the hundreds of millions,
-      // which is to say a threshold that could never fail.
-      const channels = (colour) => {
-        const srgb = colour.match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)/);
-        return srgb
-          ? [Number(srgb[1]) * 255, Number(srgb[2]) * 255, Number(srgb[3]) * 255]
-          : colour.match(/[\d.]+/g).slice(0, 3).map(Number);
-      };
-      const luminance = (colour) => {
-        const [r, g, b] = channels(colour);
-        return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
-      };
-      const ratio = (a, b) => {
-        const [light, dark] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-        return (light + 0.05) / (dark + 0.05);
-      };
+      const measured = await page.evaluate(() => {
+        const linear = (channel) => {
+          const value = channel / 255;
+          return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+        };
+        // `color-mix()` computes to `color(srgb r g b)` with 0-1 channels, not `rgb()`.
+        // Reading it with a plain digit match produced ratios in the hundreds of millions,
+        // which is to say a threshold that could never fail.
+        const channels = (colour) => {
+          const srgb = colour.match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)/);
+          return srgb
+            ? [Number(srgb[1]) * 255, Number(srgb[2]) * 255, Number(srgb[3]) * 255]
+            : colour.match(/[\d.]+/g).slice(0, 3).map(Number);
+        };
+        const luminance = (colour) => {
+          const [r, g, b] = channels(colour);
+          return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
+        };
+        const ratio = (a, b) => {
+          const [lighter, darker] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+          return (lighter + 0.05) / (darker + 0.05);
+        };
 
-      const surface = document.querySelector('.snackbar__surface');
-      const style = getComputedStyle(surface);
-      return {
-        text: ratio(
-          getComputedStyle(surface.querySelector('.snackbar__message')).color,
-          style.backgroundColor,
-        ),
-        action: ratio(
-          getComputedStyle(surface.querySelector('.snackbar__action')).color,
-          style.backgroundColor,
-        ),
-        icon: ratio(
-          getComputedStyle(surface.querySelector('.snackbar__icon')).color,
-          style.backgroundColor,
-        ),
-        edge: ratio(style.borderTopColor, getComputedStyle(document.body).backgroundColor),
-      };
-    });
+        const surface = document.querySelector('.snackbar__surface');
+        const style = getComputedStyle(surface);
+        return {
+          text: ratio(
+            getComputedStyle(surface.querySelector('.snackbar__message')).color,
+            style.backgroundColor,
+          ),
+          action: ratio(
+            getComputedStyle(surface.querySelector('.snackbar__action')).color,
+            style.backgroundColor,
+          ),
+          icon: ratio(
+            getComputedStyle(surface.querySelector('.snackbar__icon')).color,
+            style.backgroundColor,
+          ),
+          edge: ratio(style.borderTopColor, getComputedStyle(document.body).backgroundColor),
+        };
+      });
 
-    expect(measured.text, `${level} text`).toBeGreaterThanOrEqual(4.5);
-    expect(measured.action, `${level} action`).toBeGreaterThanOrEqual(4.5);
-    expect(measured.icon, `${level} icon`).toBeGreaterThanOrEqual(3);
-    expect(measured.edge, `${level} edge`).toBeGreaterThanOrEqual(3);
+      expect(measured.text, `${level} text in ${colorScheme}`).toBeGreaterThanOrEqual(4.5);
+      expect(measured.action, `${level} action in ${colorScheme}`).toBeGreaterThanOrEqual(4.5);
+      expect(measured.icon, `${level} icon in ${colorScheme}`).toBeGreaterThanOrEqual(3);
+      expect(measured.edge, `${level} edge in ${colorScheme}`).toBeGreaterThanOrEqual(3);
 
-    await page.locator('.snackbar__close').click();
-    await expect(page.locator('.snackbar__surface')).toBeHidden();
-  }
-});
+      await page.locator('.snackbar__close').click();
+      await expect(page.locator('.snackbar__surface')).toBeHidden();
+    }
+  });
+}
 
 /**
  * Shows a message and reports the state at the instant it was raised, the frames that

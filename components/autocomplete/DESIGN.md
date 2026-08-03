@@ -10,20 +10,43 @@ design tokens so a download runs without catalog CSS.
 
 Every token is defined by the component. Nothing is inherited from the catalog.
 
-| Token | Light | Role |
-|---|---|---|
-| `--autocomplete-surface` | `#ffffff` | Field and list background |
-| `--autocomplete-surface-subtle` | `#f8fafc` | Hover and active row |
-| `--autocomplete-text` | `#111827` | Primary text |
-| `--autocomplete-muted` | `#5f6878` | Placeholder, group heading, messages |
-| `--autocomplete-border` | `#cbd5e1` | Field and list border |
-| `--autocomplete-accent` | `#4f46e5` | Focus border, active ring, selected check |
-| `--autocomplete-focus` | `#6366f1` | Focus ring |
-| `--autocomplete-danger` | `#b42318` | Invalid border and error message |
-| `--autocomplete-chip` | `#eef2ff` | Chip background |
-| `--autocomplete-mark` | `#fde68a` | Matched text background |
-| `--autocomplete-radius` | `12px` | Field radius |
-| `--autocomplete-shadow` | large soft shadow | List elevation |
+Each colour token is a `light-dark()` pair, so which half a browser uses follows the
+page's `color-scheme` rather than a class the author has to remember to set.
+
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--autocomplete-surface` | `#ffffff` | `#171a20` | Field and list background |
+| `--autocomplete-surface-subtle` | `#f8fafc` | `#1d2128` | Hover and active row |
+| `--autocomplete-text` | `#111827` | `#f4f6fa` | Primary text |
+| `--autocomplete-muted` | `#5f6878` | `#a8afbc` | Placeholder, group heading, messages |
+| `--autocomplete-border` | `#cbd5e1` | `#3b414c` | Field and list border |
+| `--autocomplete-border-strong` | `#94a3b8` | `#5a6272` | Field on hover |
+| `--autocomplete-accent` | `#4f46e5` | `#4968e8` | Focus border, active ring, selected check |
+| `--autocomplete-focus` | `#6366f1` | `#86a0ff` | Focus ring |
+| `--autocomplete-danger` | `#b42318` | `#ff8e87` | Invalid border and error message |
+| `--autocomplete-chip` | `#eef2ff` | `#232a3d` | Chip background |
+| `--autocomplete-mark` | `#fde68a` | `#4b3f12` | Matched text background |
+| `--autocomplete-mark-text` | `#111827` | `#ffe9a8` | Matched text |
+| `--autocomplete-scrollbar-track` | `#eef2f7` | `#111318` | Scrollable list track |
+| `--autocomplete-scrollbar-thumb` | `#94a3b8` | `#4a5260` | Scroll thumb |
+| `--autocomplete-radius` | `12px` | | Field radius |
+| `--autocomplete-shadow` | large soft shadow | | List elevation |
+
+The highlight needs a text colour of its own. It is a pale wash in one theme and a deep
+one in the other, so inheriting the field's text colour — which is what it used to do —
+would put near-black on a dark amber. Measured: `14.24:1` light, `8.66:1` dark.
+
+`--autocomplete-shadow` keeps one offset and blur across both themes and pairs only its
+colour, because `light-dark()` resolves a colour rather than a whole value.
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
 
 The demo page overrides the same names for its dark presentation. A consumer retheme is the same
 operation.

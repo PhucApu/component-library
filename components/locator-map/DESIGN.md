@@ -113,6 +113,9 @@ Seven members: `mount`, `update`, `flyTo`, `reset`, `zoomBy`, `view`, `destroy`.
 is asked for, which is what makes a provider's map a plausible substitute rather than a
 rewrite.
 
+Two more are **optional**: `showPopup(place, node)` and `hidePopup()`. They came with the card
+over the chosen office, and they were the only honest way to build it — see §2h.
+
 Two decisions keep it honest:
 
 - **The frame belongs to the element, not the adapter.** It carries the tab stop, the size and
@@ -181,6 +184,51 @@ above them has to be above them in the outline too.
 The heading rows are list items, which caused the one real bug in this change: `_read` counted
 them as offices on every re-read after the first render, giving thirteen places where there
 were ten. Found by a test that was checking something else.
+
+## 2h. The card over the chosen office, and the two members it cost
+
+A popup has to sit on the pin, and **the pin's position on screen is the one thing this
+component does not know**. It knows a latitude and a longitude; turning those into pixels is
+the whole job it handed to the adapter. Three ways out were considered:
+
+| Approach | Why not |
+|---|---|
+| Anchor the card at the middle of the frame — the flight centres the office, so that is where the pin is | True until somebody drags the map, and then the card is describing a pin that has moved out from under it |
+| Find the selected marker in the frame and measure it | The frame's contents belong to the adapter. A provider drawing markers to a canvas has no element to find, and reaching in is exactly what the seam exists to prevent |
+| Ask the adapter to anchor a node the component built | Costs two members |
+
+The third one won, because it makes the same division the rest of the contract already makes:
+**the component decides what, the adapter decides where on screen.** Every word in the card —
+the name, the address, the link, the close button, the labels, the focus behaviour — is the
+component's. `showPopup(place, node)` is handed a finished node and asked only to put it in the
+right place.
+
+That has a payoff beyond tidiness: Leaflet keeps a popup glued to a coordinate through a
+flight, a drag and a zoom for free, because that is what `L.popup` is for. Nothing in this
+component tracks anything, and there is no animation frame loop anywhere.
+
+**Both members are optional.** An adapter with seven keeps working and simply has no card;
+`GridMap` leaves them out on purpose so the Adapter variant shows what that looks like. That
+is the whole reason the contract could grow without breaking anything written against it.
+
+### Wanting a card and having one
+
+`_popupWanted` is the decision — somebody chose an office and has not dismissed it.
+`_popupNode` is whether one is actually mounted. Keeping them apart is what lets the card
+return when the map is swapped from a surface that cannot hold it to one that can, without it
+reappearing after somebody closed it. Collapsing them into one flag was the first version, and
+swapping grid → drawing silently lost the card.
+
+### Two smaller decisions
+
+`maps/search/` rather than `maps/dir/`. A card that says "view on Google Maps" and then opens
+a route from wherever you happen to be has answered a question nobody put. The directory keeps
+the directions link, so both are on offer.
+
+<kbd>Escape</kbd> is stopped at the card. Nothing inside this component reads Escape there —
+the frame only answers `0` — so the reason is entirely about whatever the component was
+dropped into. A locator inside a dialog is the ordinary case, and one press should dismiss one
+thing. Measured: with the press left to bubble, a `document`-level listener sees it.
 
 ## 3. The drawing is decoration; the projection is not
 
@@ -293,14 +341,49 @@ clamp: a hard drag put the edge at `11.3` frames off, showing sea where the coun
 
 ## 15. Visual tokens
 
-| Token | Value | Used for |
-|---|---|---|
-| `--locator-sea` | `#101822` | Behind the country |
-| `--locator-land` | `#26333f` | The country |
-| `--locator-coast` | `#3d5468` | Its outline |
-| `--locator-marker` | `#ff8a5b` | A pin |
-| `--locator-accent` | `#86a0ff` | The chosen pin, the marked match, the current entry |
-| `--locator-surface`, `--locator-text`, `--locator-muted`, `--locator-border`, `--locator-focus`, `--locator-radius` | | |
+Each colour token is a `light-dark()` pair, so which half a browser uses follows the
+page's `color-scheme` rather than a class the author has to remember to set.
+
+| Token | Light | Dark | Used for |
+|---|---|---|---|
+| `--locator-sea` | `#cfe0ee` | `#101822` | Behind the country |
+| `--locator-land` | `#f8fafc` | `#26333f` | The country |
+| `--locator-coast` | `#6b8299` | `#3d5468` | Its outline |
+| `--locator-marker` | `#c2410c` | `#ff8a5b` | A pin |
+| `--locator-pin-ring` | `#10131a` | `#10131a` | The pin's outline |
+| `--locator-accent` | `#4f46e5` | `#86a0ff` | The chosen pin, the marked match, the current entry |
+| `--locator-surface` | `#ffffff` | `#171a20` | Panel, results, and entries |
+| `--locator-text` | `#111827` | `#f4f6fa` | |
+| `--locator-muted` | `#5f6878` | `#a8afbc` | |
+| `--locator-border` | `#dfe4ec` | `#2e3440` | |
+| `--locator-focus` | `#6366f1` | `#86a0ff` | |
+| `--locator-radius` | `12px` | | |
+
+The map is drawn rather than photographed, so its three colours are as much a part of the
+theme as the panel around them — unlike a carousel slide or a lightbox picture, there is
+no photograph here to leave alone.
+
+Sea against land is a quiet step in either half, which is what a map looks like: `1.29:1`
+on the light map. The coastline is what actually draws that boundary, so that is the
+stroke that owes `3:1` — measured `3.81:1` against the light land.
+
+The warm pin is the one colour that could not simply be carried across. A pin is a user
+interface boundary, and it is measured against the sea it may be standing on; the dark
+theme's `#ff8a5b` reaches only `1.27:1` there once the sea is pale. The light half is
+taken down to `#c2410c`, which holds `3.83:1` on the sea and `4.91:1` on the land.
+
+`--locator-pin-ring` does not pair. It outlines the pin so its shape reads whatever it is
+standing on, and a dark outline does that on both a dark map and a pale one; a white one
+would vanish into the light theme's land.
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
 | `--locator-ratio` | `400 / 720` | The drawing's proportions, and the frame's |
 | `--map-x`, `--map-y`, `--map-k`, `--map-flight` | | Written by the element, declared here |
 
@@ -361,4 +444,13 @@ self-contained with no animation, script, external asset, or embedded raster ima
 - A map surface the component has never heard of takes its place, and everything the search
   does still works over it.
 - Swapping one surface for another leaves one behind, not two, and the choice survives.
-- The component calls nothing on an adapter beyond the seven members.
+- The component calls nothing on an adapter beyond the seven members and the two optional
+  popup ones, and hands `showPopup` a node it built itself.
+- Choosing an office opens a card over its pin, clear of the pin and inside the frame, with
+  the name, the address and a `maps/search/` link.
+- The card closes on its button, on Escape, and when the whole country is asked for — and
+  closing it leaves the office chosen and the map where it was.
+- Escape at the card does not reach a listener outside the component.
+- A surface that cannot hold a card loses nothing else, and the card returns when one that
+  can is put back.
+- `no-popup` removes the card and nothing else.

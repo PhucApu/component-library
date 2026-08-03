@@ -24,7 +24,7 @@
     {
       "id": "detail",
       "name": "Detail",
-      "description": "The chosen office written out beside the map, and the way back to the whole country.",
+      "description": "The card that opens over the chosen office, and the way back to the whole country.",
       "entry": "source/variants/detail/index.html"
     },
     {
@@ -42,7 +42,7 @@
     {
       "id": "states",
       "name": "States",
-      "description": "One office, no offices at all, and a map that holds still when asked to.",
+      "description": "One office, no offices at all, parts taken off, and a map that holds still when asked to.",
       "entry": "source/variants/states/index.html"
     },
     {

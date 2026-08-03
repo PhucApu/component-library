@@ -33,16 +33,37 @@ scrolled and cannot be reached is a strip the keyboard cannot use.
 
 ## 4. Visual tokens
 
-| Token | Value | Used for |
-|---|---|---|
-| `--carousel-surface` | `#171a20` | The frame |
-| `--carousel-slide` | `#10131a` | Behind a picture while it loads |
-| `--carousel-text` | `#f4f6fa` | |
-| `--carousel-muted` | `#a8afbc` | A dot under the pointer |
-| `--carousel-border` | `#2e3440` | The frame edge and the resting dots |
-| `--carousel-accent` | `#86a0ff` | The current dot |
-| `--carousel-focus` | `#86a0ff` | The focus ring |
-| `--carousel-scrim` | `rgb(10 12 18 / 0.72)` | Behind an arrow and under a caption |
+Each colour token is a `light-dark()` pair, so which half a browser uses follows the
+page's `color-scheme` rather than a class the author has to remember to set.
+
+| Token | Light | Dark | Used for |
+|---|---|---|---|
+| `--carousel-surface` | `#ffffff` | `#171a20` | The frame |
+| `--carousel-slide` | `#eef1f5` | `#10131a` | Behind a picture while it loads |
+| `--carousel-text` | `#111827` | `#f4f6fa` | |
+| `--carousel-muted` | `#5f6878` | `#a8afbc` | A dot under the pointer |
+| `--carousel-border` | `#dfe4ec` | `#2e3440` | The frame edge and the resting dots |
+| `--carousel-accent` | `#4f46e5` | `#86a0ff` | The current dot |
+| `--carousel-focus` | `#6366f1` | `#86a0ff` | The focus ring |
+| `--carousel-scrim` | `rgb(10 12 18 / 0.72)` | | Behind an arrow and under a caption |
+
+The pictures do not change with the theme, and neither does the scrim: it covers a picture
+rather than a component surface, so it stays dark in both and the caption and the arrows
+drawn on it keep white. What does pair is `--carousel-slide`, which is what shows around a
+picture that has not arrived or does not fill its slide — that is the frame showing
+through, not the picture.
+
+The accent only fills a pagination dot. Nothing is written on it, so it needs no companion
+token.
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
 | `--carousel-gap`, `--carousel-radius`, `--carousel-ratio`, `--carousel-move` | | |
 
 Measured: an arrow icon on its own scrim `19.55:1`, a caption on its scrim `19.55:1`, the

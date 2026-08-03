@@ -10,6 +10,7 @@ import {
   groupPlaces,
   highlightSegments,
   matchPlaces,
+  placeUrl,
   project,
   viewFor,
   zoomAbout,
@@ -76,7 +77,7 @@ const LAND = `<svg class="locator-map__drawing" viewBox="0 0 ${MAP_SIZE.width} $
  * consumer put Google Maps behind the same search without this catalog depending on it.
  *
  * ```js
- * carousel.adapter = {
+ * locator.adapter = {
  *   mount(frame, { onSelect, onViewChange }) {},
  *   update({ places, selected }) {},
  *   flyTo(place, { zoom, reduced }) {},
@@ -84,6 +85,10 @@ const LAND = `<svg class="locator-map__drawing" viewBox="0 0 ${MAP_SIZE.width} $
  *   zoomBy(factor) {},
  *   get view() {},
  *   destroy() {},
+ *
+ *   // Optional. Without them there is simply no popup; nothing else changes.
+ *   showPopup(place, node) {},
+ *   hidePopup() {},
  * };
  * ```
  */
@@ -116,7 +121,13 @@ export class DrawingMap {
 
     this._markers = document.createElement('div');
     this._markers.className = 'locator-map__markers';
-    this._world.append(this._markers);
+
+    // Its own layer, above the markers. `update` replaces the markers wholesale, and a popup
+    // living among them would be swept away by the next render.
+    this._popups = document.createElement('div');
+    this._popups.className = 'locator-map__popups';
+
+    this._world.append(this._markers, this._popups);
 
     this._zoom = document.createElement('div');
     this._zoom.className = 'locator-map__zoom';
@@ -138,6 +149,7 @@ export class DrawingMap {
     this._frame?.removeEventListener('click', this._handleClick);
     this._frame?.removeEventListener('keydown', this._handleKeyDown);
     this._frame?.removeEventListener('pointerdown', this._handlePointerDown);
+    this.hidePopup();
     this._world?.remove();
     this._zoom?.remove();
     this._frame = null;
@@ -188,6 +200,35 @@ export class DrawingMap {
     const scale = Math.min(Math.max(zoom, this.minZoom), this.maxZoom);
 
     this._apply(viewFor({ point: project(place), scale }), { reduced });
+  }
+
+  /**
+   * Anchors the element's popup over a place.
+   *
+   * The node is built by the component and belongs to it — its wording, its link, its close
+   * button, its focus behaviour. All this does is put it where the place is, which is the one
+   * thing the component cannot work out for itself.
+   *
+   * It goes in a layer of its own rather than among the markers, because `update` replaces
+   * those wholesale and would take the popup with them.
+   */
+  showPopup(place, node) {
+    this.hidePopup();
+
+    const point = project(place);
+    const anchor = document.createElement('div');
+    anchor.className = 'locator-map__popup-anchor';
+    anchor.style.setProperty('--marker-x', `${(point.x / MAP_SIZE.width) * 100}%`);
+    anchor.style.setProperty('--marker-y', `${(point.y / MAP_SIZE.height) * 100}%`);
+    anchor.append(node);
+
+    this._popups.append(anchor);
+    this._popup = anchor;
+  }
+
+  hidePopup() {
+    this._popup?.remove();
+    this._popup = null;
   }
 
   reset({ reduced = false } = {}) {
@@ -264,7 +305,9 @@ export class DrawingMap {
   }
 
   _handlePointerDown(event) {
-    if (event.button !== 0 || event.target.closest('button')) {
+    // Anchors as well as buttons: the popup carries a link out to Google, and dragging the
+    // map out from under it would make that link almost impossible to press.
+    if (event.button !== 0 || event.target.closest('button, a')) {
       return;
     }
 
@@ -335,6 +378,7 @@ export class UiLocatorMap extends HTMLElement {
       'no-search',
       'no-directions',
       'no-groups',
+      'no-popup',
     ];
   }
 
@@ -346,6 +390,8 @@ export class UiLocatorMap extends HTMLElement {
     this._results = [];
     this._active = -1;
     this._selected = -1;
+    this._popupWanted = false;
+    this._popupNode = null;
 
     this._handleInput = this._handleInput.bind(this);
     this._handleSearchKeyDown = this._handleSearchKeyDown.bind(this);
@@ -355,6 +401,8 @@ export class UiLocatorMap extends HTMLElement {
     this._handleClear = this._handleClear.bind(this);
     this._handleAdapterSelect = this._handleAdapterSelect.bind(this);
     this._handleAdapterView = this._handleAdapterView.bind(this);
+    this._handlePopupClick = this._handlePopupClick.bind(this);
+    this._handlePopupKeyDown = this._handlePopupKeyDown.bind(this);
   }
 
   connectedCallback() {
@@ -409,6 +457,8 @@ export class UiLocatorMap extends HTMLElement {
     this.removeAttribute('data-map-provider');
     this.removeAttribute('data-map-unavailable');
 
+    // The node went down with the old surface, but the decision that produced it did not.
+    this._popupNode = null;
     this._adapter?.destroy?.();
     this._adapter = next;
 
@@ -419,6 +469,13 @@ export class UiLocatorMap extends HTMLElement {
         labels: this.labels,
       });
       this._render();
+
+      // The card belongs to the chosen office rather than to whatever was drawing the map, so
+      // a new surface that can hold one is asked to put it back — including after a surface
+      // that could not.
+      if (this._popupWanted && this._places[this._selected]) {
+        this._mountPopup(this._places[this._selected]);
+      }
     }
   }
 
@@ -686,6 +743,12 @@ export class UiLocatorMap extends HTMLElement {
     this._search.hidden = this.hasAttribute('no-search');
     this.toggleAttribute('data-empty', visible.length === 0);
 
+    // A popup over an office the region filter has just taken away is a card describing
+    // something that is no longer on the map.
+    if (this._popupWanted && !visible.includes(this._places[this._selected])) {
+      this._hidePopup();
+    }
+
     this._adapter?.update?.({ places: visible, selected: this._selected });
 
     this._places.forEach((place) => {
@@ -710,6 +773,9 @@ export class UiLocatorMap extends HTMLElement {
     this._selected = index;
     this._adapter?.flyTo?.(place, { zoom: this.focusZoom, reduced: prefersReducedMotion() });
     this._render();
+    // After the render, because `update` rebuilds the markers and an adapter that anchored the
+    // popup to one of them would be left holding a node that no longer exists.
+    this._showPopup(place);
 
     this._status.textContent = fillLabel(this.labels.selected, {
       name: place.name,
@@ -729,6 +795,7 @@ export class UiLocatorMap extends HTMLElement {
 
   reset() {
     this._selected = -1;
+    this._hidePopup();
     this._adapter?.reset?.({ reduced: prefersReducedMotion() });
     this._render();
   }
@@ -739,6 +806,128 @@ export class UiLocatorMap extends HTMLElement {
 
   zoomOut() {
     this._adapter?.zoomBy?.(1 / ZOOM_STEP);
+  }
+
+  /* ---- The popup --------------------------------------------------------------------- */
+
+  /**
+   * The card that sits over the chosen office.
+   *
+   * **Built here and anchored there.** Every word of it belongs to the component — the name,
+   * the address, the link out, the close button, the labels that can be overridden — and the
+   * adapter is asked only to put it where the place is, which is the one thing the component
+   * has no way of working out. An adapter that does not implement `showPopup` simply has no
+   * popup; nothing else about it changes.
+   */
+  _buildPopupNode(place) {
+    const labels = this.labels;
+
+    const popup = document.createElement('div');
+    popup.className = 'locator-map__popup';
+    popup.setAttribute('role', 'group');
+    popup.setAttribute('aria-label', place.name);
+
+    const name = document.createElement('p');
+    name.className = 'locator-map__popup-name';
+    name.textContent = place.name;
+
+    const address = document.createElement('p');
+    address.className = 'locator-map__popup-address';
+    address.textContent = place.address;
+
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'locator-map__popup-close';
+    close.dataset.action = 'close-popup';
+    close.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS.clear}"></path></svg>`;
+    close.setAttribute('aria-label', labels.closePopup);
+
+    popup.append(name, address, close);
+
+    // `search/` rather than `dir/`: a popup that says "view on Google Maps" and then asks for
+    // directions has answered a question nobody put. The directory keeps the directions link.
+    const href = placeUrl(place);
+
+    if (href) {
+      const link = document.createElement('a');
+      link.className = 'locator-map__popup-link';
+      link.href = href;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = labels.viewOnMap;
+      link.setAttribute('aria-label', fillLabel(labels.viewOnMapFor, { name: place.name }));
+      popup.append(link);
+    }
+
+    popup.addEventListener('click', this._handlePopupClick);
+    popup.addEventListener('keydown', this._handlePopupKeyDown);
+
+    return popup;
+  }
+
+  /**
+   * Wanting a card and having one are two different things.
+   *
+   * `_popupWanted` is the decision — somebody chose an office and has not dismissed it. Whether
+   * a card is actually on screen depends on the surface, and an adapter is allowed not to do
+   * popups at all. Keeping the two apart is what lets the card come back when the map is
+   * swapped from one that cannot hold it to one that can, without it reappearing after
+   * somebody has closed it.
+   */
+  _showPopup(place) {
+    if (this.hasAttribute('no-popup')) {
+      return;
+    }
+
+    this._popupWanted = true;
+    this._mountPopup(place);
+  }
+
+  _mountPopup(place) {
+    if (!this._adapter?.showPopup) {
+      return;
+    }
+
+    this._popupNode = this._buildPopupNode(place);
+    this._adapter.showPopup(place, this._popupNode);
+  }
+
+  _hidePopup() {
+    this._popupWanted = false;
+
+    if (!this._popupNode) {
+      return;
+    }
+
+    // Only when focus is inside the card that is about to go. Moving it any time the popup
+    // closes would take focus off the reset button the moment that button was pressed; leaving
+    // it alone when the card really did hold focus drops it on `<body>`, and the map then has
+    // to be found again from the top of the page.
+    if (this._popupNode?.contains(document.activeElement)) {
+      this._frame.focus();
+    }
+
+    this._adapter?.hidePopup?.();
+    this._popupNode = null;
+  }
+
+  _handlePopupClick(event) {
+    if (event.target.closest('[data-action="close-popup"]')) {
+      this._hidePopup();
+    }
+  }
+
+  _handlePopupKeyDown(event) {
+    if (event.key === 'Escape') {
+      // Stopped so the press goes no further than the thing it dismissed. A locator inside a
+      // dialog is the ordinary case, and one Escape that closes the card *and* the dialog
+      // around it takes away more than was asked for. Nothing inside this component reads
+      // Escape from here — the frame only answers `0` — so the reason is entirely about
+      // whatever the component was dropped into.
+      event.stopPropagation();
+      event.preventDefault();
+      this._hidePopup();
+    }
   }
 
   _handleAdapterSelect(index) {

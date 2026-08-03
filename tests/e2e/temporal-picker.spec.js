@@ -64,6 +64,10 @@ test('all six variants run independently without external requests or overflow',
     }
   });
 
+  // The surface colours below are the dark half of the pairs, so the scheme is pinned.
+  // The light half is covered by the catalog's own per-preview theme test.
+  await page.emulateMedia({ colorScheme: 'dark' });
+
   for (const variant of VARIANTS) {
     await page.setViewportSize({ width: 960, height: 720 });
     await page.goto(`${COMPONENT_BASE}/${variant}/index.html`);
@@ -169,6 +173,8 @@ test('selected dates keep their accent fill on hover and focus', async ({ page }
 test('panel and time listbox scrolling use dark component-owned scrollbars without resetting', async ({
   page,
 }) => {
+  // Named for the dark scrollbars, so the scheme that produces them is pinned.
+  await page.emulateMedia({ colorScheme: 'dark' });
   await page.goto(`${COMPONENT_BASE}/time/index.html`);
   let controls = await openPicker(page);
   const minute = controls.picker.locator('input[data-time-part="minute"]');
@@ -630,6 +636,9 @@ test('time-capable variants keep responsive geometry at all visual QA viewports'
 test('fixed-position fallback portals the panel without losing theme tokens', async ({
   page,
 }) => {
+  // The panel is moved to the end of the body, so this checks it still resolves the
+  // document's tokens from there. Pinned dark because that is the surface asserted below.
+  await page.emulateMedia({ colorScheme: 'dark' });
   await page.addInitScript(() => {
     Object.defineProperty(HTMLElement.prototype, 'showPopover', {
       configurable: true,

@@ -1,5 +1,8 @@
 :root {
-  color-scheme: light;
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -15,19 +18,21 @@ body {
 
 .accordion-demo-page,
 .accordion-demo-page body {
-  background: #0f1115;
-  color-scheme: dark;
+  background: light-dark(#f4f6fa, #0f1115);
 }
 
 ui-accordion {
-  --accordion-surface: #171a20;
-  --accordion-summary: #1a1e26;
-  --accordion-summary-hover: #20252f;
-  --accordion-text: #f4f6fa;
-  --accordion-muted: #a8afbc;
-  --accordion-border: #2e3440;
-  --accordion-accent: #86a0ff;
-  --accordion-focus: #86a0ff;
+  --accordion-surface: light-dark(#ffffff, #171a20);
+  --accordion-summary: light-dark(#f7f8fa, #1a1e26);
+  --accordion-summary-hover: light-dark(#eef1f5, #20252f);
+  --accordion-text: light-dark(#111827, #f4f6fa);
+  --accordion-muted: light-dark(#5f6878, #a8afbc);
+  --accordion-border: light-dark(#dfe4ec, #2e3440);
+  --accordion-accent: light-dark(#4f46e5, #86a0ff);
+  --accordion-focus: light-dark(#6366f1, #86a0ff);
+  /* The accent is dark in one theme and light in the other, so what is drawn on top of it
+     has to travel with it rather than naming a colour of its own. */
+  --accordion-on-accent: light-dark(#ffffff, #10131a);
   --accordion-radius: 12px;
 
   display: block;
@@ -225,7 +230,7 @@ ui-accordion[data-icon-placement='start'] .accordion__marker {
 .accordion__button--primary {
   border-color: transparent;
   background: var(--accordion-accent);
-  color: #10131a;
+  color: var(--accordion-on-accent);
 }
 
 .accordion__button--primary:hover {
@@ -291,8 +296,8 @@ ui-accordion[data-icon-placement='start'] .accordion__marker {
   padding: clamp(1.25rem, 4vw, 3rem);
   background:
     radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
-    #0f1115;
-  color: #f4f6fa;
+    light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
 }
 
 .accordion-demo__shell {
@@ -304,22 +309,22 @@ ui-accordion[data-icon-placement='start'] .accordion__marker {
   display: grid;
   gap: 1.1rem;
   padding: clamp(1rem, 2vw, 1.5rem);
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 18px;
-  background: #171a20;
-  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
 }
 
 .accordion-demo__label {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-weight: 650;
 }
 
 .accordion-demo__note {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   line-height: 1.5;
 }
@@ -334,11 +339,11 @@ ui-accordion[data-icon-placement='start'] .accordion__marker {
    are declared, so its controls carry their own colours rather than reaching for tokens that
    would resolve to nothing. */
 .accordion-demo__button {
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 9px;
-  background: #10131a;
+  background: light-dark(#f2f4f8, #10131a);
   padding: 0.45rem 0.85rem;
-  color: #f4f6fa;
+  color: light-dark(#15181d, #f4f6fa);
   font: 600 0.8125rem/1.45 inherit;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -347,11 +352,11 @@ ui-accordion[data-icon-placement='start'] .accordion__marker {
 }
 
 .accordion-demo__button:hover {
-  background: #171a20;
+  background: light-dark(#e7eaf0, #171a20);
 }
 
 .accordion-demo__button:focus-visible {
-  outline: 3px solid rgb(134 160 255 / 0.6);
+  outline: 3px solid light-dark(rgb(79 70 229 / 0.55), rgb(134 160 255 / 0.6));
   outline-offset: 2px;
 }
 
@@ -359,10 +364,10 @@ ui-accordion[data-icon-placement='start'] .accordion__marker {
   display: block;
   min-block-size: 2.5rem;
   padding: 0.75rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 10px;
-  background: #0b0c0e;
-  color: #f4f6fa;
+  background: light-dark(#f7f8fa, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
   font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
   overflow-wrap: anywhere;
   white-space: pre-wrap;

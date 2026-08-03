@@ -134,11 +134,31 @@ Every matching option is rendered; there is no virtualization in this version. L
 hundreds are comfortable. Beyond a few thousand options, filter the data before assigning it to
 the `options` property.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the field follows the operating system. To pin it, narrow the
+`color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+The list is portalled out of the field when the Popover API is unavailable, and it reads
+its colours from the document, so it stays on the right side of the theme either way.
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
 The component requires Custom Elements and ES modules, so it has to be served over HTTP or
 HTTPS. It uses the native Popover API when available and a fixed-position portal fallback
-otherwise. Repository automation covers Chromium.
+otherwise. Colours use `light-dark()`. Repository automation covers Chromium.
 
 Version 0.1 does not include virtualization, custom render slots, fuzzy matching, or
 form-associated custom elements.

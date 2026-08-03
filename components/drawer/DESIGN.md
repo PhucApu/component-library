@@ -63,15 +63,40 @@ exactly that.
 
 ## 8. Visual tokens
 
-| Token | Light | Role |
-|---|---|---|
-| `--drawer-surface` | `#ffffff` | Panel background |
-| `--drawer-text` | `#111827` | Panel text |
-| `--drawer-muted` | `#5f6878` | Secondary text and the close button |
-| `--drawer-border` | `#dfe4ec` | Header, footer, and edge rules |
-| `--drawer-accent` | `#4f46e5` | Current item |
-| `--drawer-backdrop` | `rgb(9 12 20 / 0.55)` | The dimmed page |
-| `--drawer-size` | `20rem` | Panel width or height |
+Each colour token is a `light-dark()` pair, so which half a browser uses follows the
+page's `color-scheme` rather than a class the author has to remember to set.
+
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--drawer-surface` | `#ffffff` | `#171a20` | Panel background |
+| `--drawer-text` | `#111827` | `#f4f6fa` | Panel text |
+| `--drawer-muted` | `#5f6878` | `#a8afbc` | Secondary text and the close button |
+| `--drawer-border` | `#dfe4ec` | `#292d36` | Header, footer, and edge rules |
+| `--drawer-accent` | `#4f46e5` | `#86a0ff` | Current item |
+| `--drawer-backdrop` | `rgb(9 12 20 / 0.55)` | | The dimmed page |
+| `--drawer-size` | `20rem` | | Panel width or height |
+
+The backdrop is deliberately not a pair. It dims the page behind the drawer, and a page is
+something to darken in either theme; a pale scrim would read as fog rather than as "the
+drawer is what you are dealing with now". The panel's own drop shadow follows the same
+reasoning: it is cast onto that backdrop, so it stays dark in both themes while the demo
+surfaces around it do pair.
+
+The accent is only ever mixed down to a 12–18% wash behind a navigation item, never used
+as an opaque fill, so nothing is drawn on top of it and no companion token is needed.
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
+
+A modal panel is a sibling of the main content rather than a child of it, so nothing
+scoped to a container reaches it. Reading the colours from the document removes that
+question: the panel lands on the right side of the theme wherever it is portalled to.
 
 ## 9. Theming reaches a panel that sits outside the layout
 

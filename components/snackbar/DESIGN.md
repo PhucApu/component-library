@@ -42,6 +42,22 @@ The icon, the action label, and the dismiss button all take `--snackbar-text`. T
 already says which kind of message this is, so a second hue would be one more thing to keep
 above `4.5:1` for no gain. The action is set apart by weight and an underline.
 
+Both halves of the table above live in one `light-dark()` pair per token, so which one a
+browser uses follows the page's `color-scheme`. The derived border needs no change to
+follow: it is mixed from two tokens that already pair.
+
+The surface's drop shadow pairs as well. It falls on the page rather than on a scrim, and
+the dark half under a pale tint reads as a smudge.
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
+
 ## 4. Anatomy
 
 Three parts, deliberately separate:

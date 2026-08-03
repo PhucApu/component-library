@@ -30,17 +30,35 @@ bought nothing that could not be had another way.
 
 ## 4. Visual tokens
 
-| Token | Value | Used for |
-|---|---|---|
-| `--accordion-surface` | `#171a20` | The group and the panels |
-| `--accordion-summary` | `#1a1e26` | The header |
-| `--accordion-summary-hover` | `#20252f` | The header under the pointer |
-| `--accordion-text` | `#f4f6fa` | Titles |
-| `--accordion-muted` | `#a8afbc` | Body copy, secondary text, the marker |
-| `--accordion-border` | `#2e3440` | The outline and the rules between panels |
-| `--accordion-accent` | `#86a0ff` | Links and the primary action |
-| `--accordion-focus` | `#86a0ff` | The focus ring |
-| `--accordion-radius` | `12px` | |
+Each colour token is a `light-dark()` pair, so which half a browser uses follows the
+page's `color-scheme` rather than a class the author has to remember to set.
+
+| Token | Light | Dark | Used for |
+|---|---|---|---|
+| `--accordion-surface` | `#ffffff` | `#171a20` | The group and the panels |
+| `--accordion-summary` | `#f7f8fa` | `#1a1e26` | The header |
+| `--accordion-summary-hover` | `#eef1f5` | `#20252f` | The header under the pointer |
+| `--accordion-text` | `#111827` | `#f4f6fa` | Titles |
+| `--accordion-muted` | `#5f6878` | `#a8afbc` | Body copy, secondary text, the marker |
+| `--accordion-border` | `#dfe4ec` | `#2e3440` | The outline and the rules between panels |
+| `--accordion-accent` | `#4f46e5` | `#86a0ff` | Links and the primary action |
+| `--accordion-focus` | `#6366f1` | `#86a0ff` | The focus ring |
+| `--accordion-on-accent` | `#ffffff` | `#10131a` | The primary action's label |
+| `--accordion-radius` | `12px` | | |
+
+The accent is dark in one theme and light in the other, so the primary action's label
+travels with it through `--accordion-on-accent` rather than naming a colour of its own.
+Its hover lightens the accent by mixing 12% white into it, which still leaves the label at
+`4.95:1` on the light theme's indigo.
+
+### Choosing a theme
+
+`:root` declares `color-scheme: light dark`, so a page on its own follows the operating
+system and needs no script at all. A page that shows this demo inside a frame may post
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, and the demo narrows its own
+`color-scheme` to that keyword, which repoints every pair at once. The message carries a
+theme keyword and no sender identity, so answering it creates no dependency on whoever
+sent it, and a demo that never receives one keeps following the system.
 
 Measured: title on the header `15.43:1`, body copy on the panel `7.9:1`, the marker `7.57:1`,
 and a disabled title on the header `7.57:1`. The rules ask for `4.5:1` on text and `3:1` on a

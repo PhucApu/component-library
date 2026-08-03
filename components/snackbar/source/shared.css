@@ -1,5 +1,8 @@
 :root {
-  color-scheme: light;
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -15,25 +18,25 @@ body {
 
 .snackbar-demo-page,
 .snackbar-demo-page body {
-  background: #0f1115;
-  color-scheme: dark;
+  background: light-dark(#f4f6fa, #0f1115);
 }
 
 ui-snackbar {
-  /* The same soft tinted surfaces carrying strong text that Chip uses for its intents. A
-     saturated fill is how a message this size fails contrast. */
-  --snackbar-info-surface: #e7e9ff;
-  --snackbar-info-text: #2f2a86;
-  --snackbar-success-surface: #e2f5e9;
-  --snackbar-success-text: #14532d;
-  --snackbar-warning-surface: #fdf0d5;
-  --snackbar-warning-text: #6b4708;
-  --snackbar-error-surface: #fdeae8;
-  --snackbar-error-text: #8a1c14;
+  /* The same soft tinted surfaces carrying strong text that Chip uses for its intents,
+     and matching it token for token in both halves. A saturated fill is how a message
+     this size fails contrast, in either theme. */
+  --snackbar-info-surface: light-dark(#e7e9ff, #232c48);
+  --snackbar-info-text: light-dark(#2f2a86, #b9c8ff);
+  --snackbar-success-surface: light-dark(#e2f5e9, #1d3327);
+  --snackbar-success-text: light-dark(#14532d, #9fe0b6);
+  --snackbar-warning-surface: light-dark(#fdf0d5, #372c17);
+  --snackbar-warning-text: light-dark(#6b4708, #f0cd8a);
+  --snackbar-error-surface: light-dark(#fdeae8, #3a2321);
+  --snackbar-error-text: light-dark(#8a1c14, #ffb1a9);
 
   --snackbar-surface: var(--snackbar-info-surface);
   --snackbar-text: var(--snackbar-info-text);
-  --snackbar-focus: #6366f1;
+  --snackbar-focus: light-dark(#6366f1, #86a0ff);
   --snackbar-radius: 12px;
   --snackbar-inset: 1rem;
 
@@ -86,7 +89,9 @@ ui-snackbar {
   font: 400 0.9375rem/1.4
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
-  box-shadow: 0 18px 40px rgb(0 0 0 / 0.45);
+  /* The surface floats over the page rather than over a scrim, so the shadow follows the
+     theme: the dark half would read as a smudge under a pale tint. */
+  box-shadow: 0 18px 40px light-dark(rgb(15 23 42 / 0.16), rgb(0 0 0 / 0.45));
 
   /* The resting state is also the leaving state, so this timing is the exit: quicker than
      the arrival, which is how a message should get out of the way. */
@@ -274,8 +279,8 @@ ui-snackbar[data-placement$='center'] .snackbar__surface {
   padding: clamp(1.25rem, 4vw, 3rem);
   background:
     radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
-    #0f1115;
-  color: #f4f6fa;
+    light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
 }
 
 .snackbar-demo__shell {
@@ -286,22 +291,22 @@ ui-snackbar[data-placement$='center'] .snackbar__surface {
   display: grid;
   gap: 1.1rem;
   padding: clamp(1rem, 2vw, 1.5rem);
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 18px;
-  background: #171a20;
-  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
 }
 
 .snackbar-demo__label {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-weight: 650;
 }
 
 .snackbar-demo__note {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   line-height: 1.5;
 }
@@ -313,11 +318,11 @@ ui-snackbar[data-placement$='center'] .snackbar__surface {
 }
 
 .snackbar-demo__button {
-  border: 1px solid #3b414c;
+  border: 1px solid light-dark(#cfd5de, #3b414c);
   border-radius: 9px;
-  background: #1d2128;
+  background: light-dark(#f2f4f8, #1d2128);
   padding: 0.5rem 0.85rem;
-  color: #f4f6fa;
+  color: light-dark(#15181d, #f4f6fa);
   font: inherit;
   font-size: 0.8125rem;
   font-weight: 620;
@@ -325,38 +330,22 @@ ui-snackbar[data-placement$='center'] .snackbar__surface {
 }
 
 .snackbar-demo__button:hover {
-  background: #262b34;
+  background: light-dark(#e7eaf0, #262b34);
 }
 
 .snackbar-demo__button:focus-visible {
-  outline: 3px solid rgb(134 160 255 / 0.6);
+  outline: 3px solid light-dark(rgb(79 70 229 / 0.55), rgb(134 160 255 / 0.6));
   outline-offset: 2px;
-}
-
-/* The dark counterpart of the same intents, matching Chip token for token. Scoped to the
-   page rather than to the demo container: the host is a sibling of it, not a child. */
-.snackbar-demo-page ui-snackbar {
-  --snackbar-info-surface: #232c48;
-  --snackbar-info-text: #b9c8ff;
-  --snackbar-success-surface: #1d3327;
-  --snackbar-success-text: #9fe0b6;
-  --snackbar-warning-surface: #372c17;
-  --snackbar-warning-text: #f0cd8a;
-  --snackbar-error-surface: #3a2321;
-  --snackbar-error-text: #ffb1a9;
-  --snackbar-focus: #86a0ff;
-
-  color-scheme: dark;
 }
 
 .snackbar-demo__output {
   display: block;
   min-block-size: 3.5rem;
   padding: 0.75rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 10px;
-  background: #0b0c0e;
-  color: #f4f6fa;
+  background: light-dark(#f7f8fa, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
   font: 500 0.8125rem/1.5 ui-monospace, "SFMono-Regular", Consolas, monospace;
   overflow-wrap: anywhere;
   white-space: pre-wrap;

@@ -11,7 +11,8 @@ anything else here.
 
 The component owns the **search**, the ranking, the directory, the announcements and the
 decision to go somewhere. The surface that actually moves is an **adapter** it is handed:
-seven members, and anything that answers them can take the job.
+seven members — nine if it wants to hold the popup too — and anything that answers them can
+take the job.
 
 Three of them ship. Which one is in front of you depends on what the page does:
 
@@ -99,6 +100,7 @@ rewrites what it says; it only turns each name into a button.
 | `no-search` | present | absent | Removes the search and leaves everything else |
 | `no-directions` | present | absent | Removes the directions links |
 | `no-groups` | present | absent | Leaves the directory ungrouped |
+| `no-popup` | present | absent | Stops the card appearing over the chosen office |
 
 `focus-zoom` is handed to the adapter untouched, and every adapter counts in its own units.
 Leaflet and Google use tile zoom levels — `16` puts the street name on screen, `14` the
@@ -123,6 +125,25 @@ can tell apart, which is exactly how a screen reader lists them.
 
 `no-directions` takes them off. A place with unusable coordinates gets no link rather than one
 to the middle of the ocean.
+
+## The card over the chosen office
+
+Choose an office — from the search, the directory or the map — and a card opens over its pin
+with the name, the address, a link out to Google Maps and a close button.
+
+The link is `maps/search/?api=1&query=lat,lon`, **not** `maps/dir/`. "View on Google Maps" and
+"how do I get there" are different questions; the directory keeps the directions link, so both
+are on offer and neither is guessed at.
+
+It closes on its own button, on <kbd>Escape</kbd>, and when the whole country is asked for
+again. It does **not** close when the map is dragged, because the surface holding it keeps it
+on the pin. Closing it leaves the office chosen and the map where the flight left it — the
+card is a card, not the selection.
+
+<kbd>Escape</kbd> is stopped at the card. A locator inside a dialog is the ordinary case, and
+one press should dismiss one thing.
+
+`no-popup` turns the whole thing off. Choosing still happens and still announces itself.
 
 ## Groups
 
@@ -153,8 +174,8 @@ the list flat.
 
 ## Writing an adapter
 
-Seven members. Set it on the element as a property, before it connects or afterwards to swap
-one out:
+Seven required members and two optional ones. Set it on the element as a property, before it
+connects or afterwards to swap one out:
 
 ```js
 document.querySelector('ui-locator-map').adapter = {
@@ -165,6 +186,10 @@ document.querySelector('ui-locator-map').adapter = {
   zoomBy(factor) {},
   get view() {},
   destroy() {},
+
+  // Optional. Leave them out and there is simply no popup.
+  showPopup(place, node) {},
+  hidePopup() {},
 };
 ```
 
@@ -177,6 +202,17 @@ document.querySelector('ui-locator-map').adapter = {
 | `zoomBy` | `zoomIn()` or `zoomOut()` |
 | `view` | Anything you like; the component passes it through and never reads into it |
 | `destroy` | Another adapter is taking over |
+| `showPopup` | *Optional.* A place was chosen. `node` is the finished card — anchor it over the place |
+| `hidePopup` | *Optional.* Take the card away |
+
+`showPopup` receives a node the component has already built: the name, the address, the link
+out, the close button, the labels, the focus behaviour. **Anchor it; do not read it.** The
+division is the same one the rest of the contract makes — the component decides what and the
+adapter decides where on screen, because that is the half only the adapter can know.
+
+An adapter with seven members keeps working exactly as before and simply has no popup. The
+`GridMap` in the Adapter variant leaves both out on purpose, so you can see what that looks
+like.
 
 The component never touches the frame's contents, so a provider can own it entirely.
 
@@ -287,10 +323,32 @@ Every address, readable and complete, each with a directions link. The map, the 
 search and the flight are what the script adds — and the directory is the part that depends on
 nobody at all.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the map follows the operating system. To pin it, narrow the
+`color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+The map itself is drawn rather than photographed, so the sea, the land, and the coastline
+change with the theme too. The pin's warm fill is darkened on the light map, where the
+dark theme's orange would reach only `1.27:1` against a pale sea; `--locator-pin-ring`
+stays dark in both so the pin keeps its shape whatever it is standing on.
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
 Current Chrome, Edge, Firefox, and Safari. Uses custom elements, `aspect-ratio`,
-`vector-effect: non-scaling-stroke`, and `color-mix()`.
+`vector-effect: non-scaling-stroke`, `color-mix()`, and `light-dark()`.
 
 ## Using a different country
 

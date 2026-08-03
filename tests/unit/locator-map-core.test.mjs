@@ -14,6 +14,7 @@ import {
   highlightSegments,
   matchPlaces,
   normalise,
+  placeUrl,
   project,
   viewFor,
   zoomAbout,
@@ -260,6 +261,32 @@ describe('highlightSegments', () => {
 
   it('survives being handed nothing', () => {
     assert.deepEqual(highlightSegments(), [{ text: '', match: false }]);
+  });
+});
+
+describe('placeUrl', () => {
+  it('opens the spot rather than a route to it', () => {
+    // `search/` and not `dir/`. A popup that says "view on Google Maps" and then asks for
+    // directions has answered a question nobody put.
+    assert.equal(
+      placeUrl({ lat: 16.0739, lon: 108.2246 }),
+      'https://www.google.com/maps/search/?api=1&query=16.0739%2C108.2246',
+    );
+  });
+
+  it('says nothing rather than pointing at the ocean', () => {
+    assert.equal(placeUrl({ lat: Number.NaN, lon: 108.2246 }), null);
+    assert.equal(placeUrl({ lat: 16.0739, lon: 'somewhere' }), null);
+    assert.equal(placeUrl({ lat: 91, lon: 108.2246 }), null);
+    assert.equal(placeUrl({ lat: 16.0739, lon: 181 }), null);
+    assert.equal(placeUrl(undefined), null);
+  });
+
+  it('reads coordinates written as strings, the way an attribute gives them', () => {
+    assert.equal(
+      placeUrl({ lat: '10.7758', lon: '106.7027' }),
+      'https://www.google.com/maps/search/?api=1&query=10.7758%2C106.7027',
+    );
   });
 });
 

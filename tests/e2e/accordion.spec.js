@@ -509,11 +509,8 @@ test('a panel the author wrapped is measured whole', async ({ page }) => {
   expect(opened.actions).toBeLessThanOrEqual(opened.panelBottom);
 });
 
-test('the summary and its title clear the contrast the rules ask for', async ({ page }) => {
-  await page.setViewportSize({ width: 960, height: 720 });
-  await ready(page, 'default');
-
-  const contrast = await page.evaluate(() => {
+function measureSummaryContrast(page) {
+  return page.evaluate(() => {
     const channels = (value) => {
       const numbers = value.match(/[\d.]+/g)?.map(Number) ?? [];
       return value.startsWith('color(')
@@ -546,11 +543,25 @@ test('the summary and its title clear the contrast the rules ask for', async ({ 
       ),
     };
   });
+}
 
-  expect(contrast.title).toBeGreaterThanOrEqual(4.5);
-  expect(contrast.body).toBeGreaterThanOrEqual(4.5);
-  expect(contrast.marker).toBeGreaterThanOrEqual(3);
-});
+// Both themes, because every colour is a light-dark() pair and the browser picks the half
+// from the colour scheme. Measuring only the default would leave one palette unchecked.
+for (const colorScheme of ['light', 'dark']) {
+  test(`the summary and its title clear the contrast the rules ask for in the ${colorScheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme });
+    await page.setViewportSize({ width: 960, height: 720 });
+    await ready(page, 'default');
+
+    const contrast = await measureSummaryContrast(page);
+
+    expect(contrast.title, `title in ${colorScheme}`).toBeGreaterThanOrEqual(4.5);
+    expect(contrast.body, `body in ${colorScheme}`).toBeGreaterThanOrEqual(4.5);
+    expect(contrast.marker, `marker in ${colorScheme}`).toBeGreaterThanOrEqual(3);
+  });
+}
 
 test('reduced motion removes the movement', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });

@@ -64,6 +64,8 @@ dialog.drawer__panel {
   inset: auto;
   margin: 0;
   max-inline-size: none;
+  /* Not a pair, unlike the demo surfaces: this panel is lifted off the backdrop, which is
+     dark in both themes, so the shadow it casts is too. */
   box-shadow: 0 24px 64px rgb(0 0 0 / 0.4);
   opacity: 0;
   translate: calc(var(--drawer-x) * var(--drawer-away))

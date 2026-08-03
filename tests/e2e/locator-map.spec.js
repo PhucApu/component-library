@@ -275,6 +275,10 @@ test('the provider is dressed in the component own tokens', async ({ page }) => 
 
   const external = trackExternalRequests(page);
 
+  // Pinned dark: the assertions below are about the dark skin this test was written for —
+  // a bright street map in a dark page reads as a hole punched in it. The light skin is
+  // covered by the contrast test and by the catalog's per-preview theme test.
+  await page.emulateMedia({ colorScheme: 'dark' });
   await page.setViewportSize({ width: 960, height: 720 });
   await readyOnline(page, 'default');
 
@@ -296,7 +300,6 @@ test('the provider is dressed in the component own tokens', async ({ page }) => 
       pins: map.querySelectorAll('.locator-map__provider-pin .locator-map__pin').length,
       chosen: map.querySelectorAll('.locator-map__pin[data-selected]').length,
       pinColour: read('.locator-map__pin[data-selected]', 'backgroundColor'),
-      accent: getComputedStyle(map).getPropertyValue('--locator-accent').trim(),
       // The zoom control matches the three the drawing puts in the same corner, rather than
       // arriving white.
       zoomBackground: read('.leaflet-control-zoom a', 'backgroundColor'),
@@ -308,13 +311,24 @@ test('the provider is dressed in the component own tokens', async ({ page }) => 
   expect(skin.tiles).not.toBe('none');
   expect(skin.pins).toBe(9);
   expect(skin.chosen).toBe(1);
-  expect(skin.accent).toBe('#86a0ff');
+  // The resolved colour rather than the declaration. Reading `--locator-accent` back now
+  // returns the `light-dark()` pair it is written as, which would be asserting on the
+  // stylesheet's text; the pin below is the same token after the browser has picked a half.
   expect(skin.pinColour).toBe('rgb(134, 160, 255)');
   expect(skin.zoomBackground).not.toBe('rgb(255, 255, 255)');
   expect(skin.attribution).toContain('OpenStreetMap');
 
   // And the provider's own pin images are never asked for, because they are never used.
   expect(external.filter((url) => /marker-icon|marker-shadow/.test(url.pathname))).toEqual([]);
+
+  // The light half is not inverted. A provider's tiles are already a light map, so darkening
+  // them there would put a dark map inside a light panel — which is the same fault as the one
+  // the dark half exists to fix, pointing the other way.
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.waitForTimeout(150);
+  expect(
+    await page.evaluate(() => getComputedStyle(document.querySelector('.leaflet-tile-pane')).filter),
+  ).toBe('none');
 });
 
 test('a provider that cannot be reached leaves the drawing and says so', async ({ page }) => {
@@ -455,6 +469,286 @@ test('choosing a result moves the real map too', async ({ page }) => {
 
   // The component reports the choice whatever is underneath it.
   expect(await page.evaluate(() => document.querySelector('ui-locator-map').selected)).toBe(4);
+});
+
+test('choosing an office opens a card over its pin', async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 720 });
+  await ready(page, 'default');
+
+  await expect(page.locator('.locator-map__popup')).toHaveCount(0);
+
+  await page.locator('.locator-map__entry').nth(4).click();
+  await settle(page);
+
+  const popup = page.locator('.locator-map__popup');
+  await expect(popup).toBeVisible();
+  await expect(popup.locator('.locator-map__popup-name')).toHaveText('Da Nang office');
+  await expect(popup.locator('.locator-map__popup-address')).toHaveText('210 Bach Dang, Hai Chau');
+
+  const link = popup.locator('.locator-map__popup-link');
+  // `search/` rather than `dir/`: the card says "view on Google Maps", which is a different
+  // question from "how do I get there" — and the directory keeps the directions link.
+  await expect(link).toHaveAttribute(
+    'href',
+    'https://www.google.com/maps/search/?api=1&query=16.0739%2C108.2246',
+  );
+  await expect(link).toHaveAttribute('target', '_blank');
+  await expect(link).toHaveAttribute('rel', /noopener/);
+  await expect(link).toHaveAccessibleName('View Da Nang office on Google Maps');
+
+  // Over the pin and clear of it, rather than covering the thing it describes.
+  const placed = await page.evaluate(() => {
+    const map = document.querySelector('ui-locator-map');
+    const card = map.querySelector('.locator-map__popup').getBoundingClientRect();
+    const pin = map
+      .querySelector('.locator-map__marker[data-selected] .locator-map__pin')
+      .getBoundingClientRect();
+    const frame = map.querySelector('.locator-map__frame').getBoundingClientRect();
+
+    return {
+      clearOfThePin: card.bottom <= pin.top,
+      centredOnIt: Math.abs((card.left + card.right) / 2 - (pin.left + pin.right) / 2) < 2,
+      insideTheFrame: card.top >= frame.top && card.left >= frame.left && card.right <= frame.right,
+    };
+  });
+
+  expect(placed).toEqual({ clearOfThePin: true, centredOnIt: true, insideTheFrame: true });
+});
+
+test('the card closes on its own button and leaves the map where it was', async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 720 });
+  await ready(page, 'default');
+
+  await page.locator('.locator-map__entry').nth(4).click();
+  await settle(page);
+
+  const before = await viewOf(page);
+  await page.locator('.locator-map__popup-close').click();
+
+  await expect(page.locator('.locator-map__popup')).toHaveCount(0);
+  // Closing the card is not the same request as going back to the whole country: the map
+  // stays where the flight left it, and the office is still the chosen one.
+  expect(await viewOf(page)).toEqual(before);
+  expect(await page.evaluate(() => document.querySelector('ui-locator-map').selected)).toBe(4);
+  await expect(page.locator('.locator-map__marker[data-selected]')).toHaveCount(1);
+});
+
+test('the card can be closed from the keyboard without taking the map with it', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 960, height: 720 });
+  await ready(page, 'default');
+
+  await page.locator('.locator-map__entry').nth(4).click();
+  await settle(page);
+
+  const before = await viewOf(page);
+
+  // A locator inside a dialog is the ordinary case, and the dialog around it will be
+  // listening for Escape. One press should dismiss one thing.
+  await page.evaluate(() => {
+    window.escapesSeenOutside = 0;
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        window.escapesSeenOutside += 1;
+      }
+    });
+  });
+
+  await page.locator('.locator-map__popup-close').focus();
+  await page.keyboard.press('Escape');
+
+  await expect(page.locator('.locator-map__popup')).toHaveCount(0);
+  expect(await page.evaluate(() => window.escapesSeenOutside)).toBe(0);
+  expect(await viewOf(page)).toEqual(before);
+  // And focus went somewhere findable rather than onto the body with the element it was on.
+  expect(await page.evaluate(() => document.activeElement?.className)).toContain(
+    'locator-map__frame',
+  );
+});
+
+test('the card goes when the office it describes goes', async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 720 });
+  await ready(page, 'regions');
+
+  await page.locator('.locator-map__entry').first().click();
+  await settle(page);
+  await expect(page.locator('.locator-map__popup')).toHaveCount(1);
+
+  // A card describing an office the region filter has just taken off the map is a card about
+  // nothing.
+  await page.evaluate(() => document.querySelector('ui-locator-map').setAttribute('region', 'south'));
+  await page.waitForTimeout(200);
+  await expect(page.locator('.locator-map__popup')).toHaveCount(0);
+
+  await page.evaluate(() => document.querySelector('ui-locator-map').removeAttribute('region'));
+  await page.waitForTimeout(200);
+  // And it does not come back on its own: it was closed, not hidden.
+  await expect(page.locator('.locator-map__popup')).toHaveCount(0);
+});
+
+test('going back to the whole country takes the card with it', async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 720 });
+  await ready(page, 'detail');
+
+  await page.evaluate(() => document.querySelector('ui-locator-map').flyTo(2));
+  await settle(page);
+  await expect(page.locator('.locator-map__popup')).toHaveCount(1);
+
+  await page.locator('[data-action="reset"]').click();
+  await settle(page);
+
+  await expect(page.locator('.locator-map__popup')).toHaveCount(0);
+  // And focus stayed on the control that was pressed rather than being dragged to the frame.
+  expect(await page.evaluate(() => document.activeElement?.dataset?.action)).toBe('reset');
+});
+
+test('no-popup leaves everything else alone', async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 900 });
+  await ready(page, 'states');
+
+  const quiet = page.locator('ui-locator-map').nth(2);
+  await quiet.locator('.locator-map__entry').first().click();
+  await page.waitForTimeout(500);
+
+  await expect(quiet.locator('.locator-map__popup')).toHaveCount(0);
+  // The choice still happened; only the card is gone.
+  expect(await quiet.evaluate((map) => map.selected)).toBe(0);
+  await expect(quiet.locator('.locator-map__marker[data-selected]')).toHaveCount(1);
+});
+
+test('the real map anchors the card, and it is still the component card', async ({ page }) => {
+  // Waits on somebody else's servers, and shares them with every other online test in this
+  // file. The default budget is for a page that answers from disk.
+  test.slow();
+
+  await page.setViewportSize({ width: 960, height: 720 });
+  await readyOnline(page, 'default');
+
+  await page.locator('.locator-map__entry').nth(4).click();
+  await page.waitForTimeout(1600);
+
+  // Leaflet holds it, so it stays glued to the coordinate through the flight and any drag —
+  // but every word inside it is the component's.
+  const card = page.locator('.leaflet-popup .locator-map__popup');
+  await expect(card).toBeVisible();
+  await expect(card.locator('.locator-map__popup-name')).toHaveText('Da Nang office');
+  await expect(card.locator('.locator-map__popup-link')).toHaveAttribute(
+    'href',
+    'https://www.google.com/maps/search/?api=1&query=16.0739%2C108.2246',
+  );
+
+  // The provider's own chrome is off: its close button, its tip, its white wrapper.
+  const chrome = await page.evaluate(() => {
+    const map = document.querySelector('ui-locator-map');
+    const wrapper = map.querySelector('.leaflet-popup-content-wrapper');
+    return {
+      ownCloseButtons: map.querySelectorAll('.leaflet-popup-close-button').length,
+      componentCloseButtons: map.querySelectorAll('.locator-map__popup-close').length,
+      wrapperBackground: getComputedStyle(wrapper).backgroundColor,
+      tip: getComputedStyle(map.querySelector('.leaflet-popup-tip-container')).display,
+    };
+  });
+
+  expect(chrome.ownCloseButtons).toBe(0);
+  expect(chrome.componentCloseButtons).toBe(1);
+  expect(chrome.wrapperBackground).toBe('rgba(0, 0, 0, 0)');
+  expect(chrome.tip).toBe('none');
+
+  // The link is the component's, not the provider's. Leaflet styles every anchor inside its
+  // container — one class more specific than the card's own rule, from a stylesheet appended
+  // after this component's — so without taking it back the card came out with Leaflet's blue
+  // and an underline. Compared against the directions link in the directory, which uses the
+  // same token and sits outside the provider's reach, so this holds in either theme.
+  const link = await page.evaluate(() => {
+    const card = getComputedStyle(document.querySelector('.locator-map__popup-link'));
+    const directory = getComputedStyle(document.querySelector('.locator-map__directions'));
+    return { colour: card.color, decoration: card.textDecorationLine, accent: directory.color };
+  });
+
+  expect(link.colour).toBe(link.accent);
+  expect(link.decoration).toBe('none');
+
+  // And the card follows the pin when the map is dragged, because the provider is holding it.
+  //
+  // Scrolled into view first, and measured after. Choosing from the directory scrolls the
+  // page — the entry is below the map — which had put the frame at `y: -224`, so the drag
+  // landed on nothing at all and the test passed a map that had never moved.
+  await page.locator('.locator-map__frame').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(200);
+
+  const box = await page.locator('.locator-map__frame').boundingBox();
+  const start = await card.boundingBox();
+  const grab = [box.x + box.width / 2, box.y + box.height - 60];
+
+  await page.mouse.move(grab[0], grab[1]);
+  await page.mouse.down();
+  await page.mouse.move(grab[0] - 90, grab[1], { steps: 8 });
+  await page.mouse.up();
+  await page.waitForTimeout(400);
+
+  const moved = await card.boundingBox();
+  expect(Math.round(start.x - moved.x)).toBeGreaterThan(60);
+
+  await page.locator('.locator-map__popup-close').click();
+  await expect(page.locator('.locator-map__popup')).toHaveCount(0);
+});
+
+test('a surface that cannot show a card loses nothing else', async ({ page }) => {
+  const runtimeErrors = trackRuntimeErrors(page);
+
+  await page.setViewportSize({ width: 960, height: 720 });
+  await ready(page, 'adapter');
+
+  await page.locator('[data-demo-swap="grid"]').click();
+  await page.waitForTimeout(300);
+
+  await page.locator('.locator-map__entry').nth(2).click();
+  await page.waitForTimeout(600);
+
+  // `showPopup` is the one member of the contract an adapter may leave out. The grid does,
+  // and everything else about it still works — which is the point of the member being
+  // optional rather than required.
+  const swapped = await page.evaluate(() => {
+    const map = document.querySelector('ui-locator-map');
+    return {
+      adapter: map.adapter?.constructor?.name,
+      hasShowPopup: typeof map.adapter?.showPopup,
+      popups: map.querySelectorAll('.locator-map__popup').length,
+      selected: map.selected,
+      status: map.querySelector('[role="status"]').textContent,
+    };
+  });
+
+  expect(swapped).toEqual({
+    adapter: 'GridMap',
+    hasShowPopup: 'undefined',
+    popups: 0,
+    selected: 2,
+    status: 'Da Nang office. 210 Bach Dang, Hai Chau',
+  });
+  expect(runtimeErrors).toEqual([]);
+});
+
+test('the card moves to the new surface when the map is swapped', async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 720 });
+  await ready(page, 'adapter');
+
+  await page.locator('.locator-map__entry').nth(2).click();
+  await settle(page);
+  await expect(page.locator('.locator-map__popup')).toHaveCount(1);
+
+  await page.locator('[data-demo-swap="grid"]').click();
+  await page.waitForTimeout(300);
+  // The grid cannot hold it, so it goes.
+  await expect(page.locator('.locator-map__popup')).toHaveCount(0);
+
+  await page.locator('[data-demo-swap="drawing"]').click();
+  await page.waitForTimeout(400);
+
+  // And the drawing can, so it comes back — one of it, over the office that is still chosen.
+  await expect(page.locator('.locator-map__popup')).toHaveCount(1);
+  await expect(page.locator('.locator-map__popup-name')).toHaveText('Da Nang office');
 });
 
 test('the flight passes through the middle rather than jumping', async ({ page }) => {
@@ -1061,6 +1355,8 @@ test('the adapter contract is small enough to be worth having', async ({ page })
       reset: () => seen.push(['reset']),
       zoomBy: (factor) => seen.push(['zoomBy', factor]),
       destroy: () => seen.push(['destroy']),
+      showPopup: (place, node) => seen.push(['showPopup', place.name, node.className]),
+      hidePopup: () => seen.push(['hidePopup']),
       view: { note: 'anything the adapter likes' },
     };
 
@@ -1079,7 +1375,11 @@ test('the adapter contract is small enough to be worth having', async ({ page })
     ['update', 9, -1],
     ['flyTo', 'Vinh branch', 16],
     ['update', 9, 2],
+    // The card is handed over already built, and it is the component's own node. The adapter
+    // is asked where, never what.
+    ['showPopup', 'Vinh branch', 'locator-map__popup'],
     ['zoomBy', 1.6],
+    ['hidePopup'],
     ['reset'],
     ['update', 9, -1],
   ]);
@@ -1087,47 +1387,54 @@ test('the adapter contract is small enough to be worth having', async ({ page })
   expect(calls.view).toEqual({ note: 'anything the adapter likes' });
 });
 
-test('the words on the map clear the contrast the rules ask for', async ({ page }) => {
-  await page.setViewportSize({ width: 960, height: 720 });
-  await ready(page, 'default');
+// Both themes. The map is drawn rather than photographed, so a whole second cartography
+// is on trial here and not just the words sitting on the panel.
+for (const colorScheme of ['light', 'dark']) {
+  test(`the words on the map clear the contrast the rules ask for in the ${colorScheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme });
+    await page.setViewportSize({ width: 960, height: 720 });
+    await ready(page, 'default');
 
-  const contrast = await page.evaluate(() => {
-    const channels = (value) => {
-      const numbers = value.match(/[\d.]+/g)?.map(Number) ?? [];
-      return value.startsWith('color(')
-        ? numbers.slice(0, 3).map((n) => n * 255)
-        : numbers.slice(0, 3);
-    };
-    const luminance = (rgb) => {
-      const [r, g, b] = rgb.map((c) => {
-        const s = c / 255;
-        return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
-      });
-      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    };
-    const ratio = (a, b) => {
-      const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-      return +((hi + 0.05) / (lo + 0.05)).toFixed(2);
-    };
+    const contrast = await page.evaluate(() => {
+      const channels = (value) => {
+        const numbers = value.match(/[\d.]+/g)?.map(Number) ?? [];
+        return value.startsWith('color(')
+          ? numbers.slice(0, 3).map((n) => n * 255)
+          : numbers.slice(0, 3);
+      };
+      const luminance = (rgb) => {
+        const [r, g, b] = rgb.map((c) => {
+          const s = c / 255;
+          return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      const ratio = (a, b) => {
+        const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+        return +((hi + 0.05) / (lo + 0.05)).toFixed(2);
+      };
 
-    const map = document.querySelector('ui-locator-map');
-    const surface = channels(getComputedStyle(map.querySelector('.locator-map__places > li')).backgroundColor);
-    const sea = channels(getComputedStyle(map.querySelector('.locator-map__frame')).backgroundColor);
+      const map = document.querySelector('ui-locator-map');
+      const surface = channels(getComputedStyle(map.querySelector('.locator-map__places > li')).backgroundColor);
+      const sea = channels(getComputedStyle(map.querySelector('.locator-map__frame')).backgroundColor);
 
-    return {
-      entry: ratio(channels(getComputedStyle(map.querySelector('.locator-map__entry')).color), surface),
-      address: ratio(channels(getComputedStyle(map.querySelector('.locator-map__places p')).color), surface),
-      // A marker over the sea is a user interface boundary rather than text.
-      marker: ratio(channels(getComputedStyle(map.querySelector('.locator-map__pin')).backgroundColor), sea),
-      land: ratio(channels(getComputedStyle(map.querySelector('.locator-map__land')).fill), sea),
-    };
+      return {
+        entry: ratio(channels(getComputedStyle(map.querySelector('.locator-map__entry')).color), surface),
+        address: ratio(channels(getComputedStyle(map.querySelector('.locator-map__places p')).color), surface),
+        // A marker over the sea is a user interface boundary rather than text.
+        marker: ratio(channels(getComputedStyle(map.querySelector('.locator-map__pin')).backgroundColor), sea),
+        land: ratio(channels(getComputedStyle(map.querySelector('.locator-map__land')).fill), sea),
+      };
+    });
+
+    expect(contrast.entry, `entry in ${colorScheme}`).toBeGreaterThanOrEqual(4.5);
+    expect(contrast.address, `address in ${colorScheme}`).toBeGreaterThanOrEqual(4.5);
+    expect(contrast.marker, `pin on the sea in ${colorScheme}`).toBeGreaterThanOrEqual(3);
+    expect(contrast.land, `land against sea in ${colorScheme}`).toBeGreaterThanOrEqual(1.2);
   });
-
-  expect(contrast.entry).toBeGreaterThanOrEqual(4.5);
-  expect(contrast.address).toBeGreaterThanOrEqual(4.5);
-  expect(contrast.marker).toBeGreaterThanOrEqual(3);
-  expect(contrast.land).toBeGreaterThanOrEqual(1.2);
-});
+}
 
 test('reduced motion removes the flight rather than slowing it', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });

@@ -1,5 +1,8 @@
 :root {
-  color-scheme: light;
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -15,21 +18,36 @@ body {
 
 .locator-map-demo-page,
 .locator-map-demo-page body {
-  background: #0f1115;
-  color-scheme: dark;
+  background: light-dark(#f4f6fa, #0f1115);
 }
 
 ui-locator-map {
-  --locator-surface: #171a20;
-  --locator-sea: #101822;
-  --locator-land: #26333f;
-  --locator-coast: #3d5468;
-  --locator-text: #f4f6fa;
-  --locator-muted: #a8afbc;
-  --locator-border: #2e3440;
-  --locator-accent: #86a0ff;
-  --locator-focus: #86a0ff;
-  --locator-marker: #ff8a5b;
+  --locator-surface: light-dark(#ffffff, #171a20);
+  /* The map is drawn, not photographed, so its three colours are as much a part of the
+     theme as the panel around them. Sea against land is a quiet step in either half; the
+     coastline is what actually draws the boundary, so that is the one that has to hold
+     3:1 — measured 3.98:1 on the light map. */
+  --locator-sea: light-dark(#cfe0ee, #101822);
+  --locator-land: light-dark(#f8fafc, #26333f);
+  --locator-coast: light-dark(#6b8299, #3d5468);
+  --locator-text: light-dark(#111827, #f4f6fa);
+  --locator-muted: light-dark(#5f6878, #a8afbc);
+  --locator-border: light-dark(#dfe4ec, #2e3440);
+  --locator-accent: light-dark(#4f46e5, #86a0ff);
+  --locator-focus: light-dark(#6366f1, #86a0ff);
+  /* The warm pin has to read against the sea it is measured on, and the dark half reaches
+     only 1.27:1 there once the sea is pale. The light half is taken down until it clears
+     the boundary rule with room to spare: 3.83:1 on the sea, 4.91:1 on the land. */
+  --locator-marker: light-dark(#c2410c, #ff8a5b);
+  /* Not a pair. It outlines the pin so its shape reads whatever it is standing on, and a
+     dark outline does that on both a dark map and a pale one; a white one would vanish
+     into the light theme's land. */
+  --locator-pin-ring: #10131a;
+  /* Not a `light-dark()` pair, because that function takes colours and this is a filter. A
+     bright street map belongs in a light panel and reads as a hole punched in a dark one, so
+     it is only inverted in the dark half. The media query is the closest honest equivalent;
+     a page that pins `color-scheme` instead of following the system can set this itself. */
+  --locator-tile-filter: none;
   --locator-radius: 12px;
   /* The drawing's own proportions. The frame matches them, so the projection's coordinates
      and the frame's percentages are the same thing and a marker never drifts. */
@@ -124,7 +142,7 @@ ui-locator-map {
   background: var(--locator-surface);
   padding: 0.25rem;
   overflow-y: auto;
-  box-shadow: 0 18px 40px rgb(0 0 0 / 0.45);
+  box-shadow: 0 18px 40px light-dark(rgb(15 23 42 / 0.16), rgb(0 0 0 / 0.45));
   list-style: none;
 }
 
@@ -256,13 +274,20 @@ ui-locator-map:has(.locator-map__surface) {
   font: inherit;
 }
 
-/* A bright street map dropped into a dark page reads as a hole punched in it. Inverting the
-   tiles and turning the hue back through half a circle is the one transform that darkens a
-   map without making its labels illegible: land goes dark, water stays recognisably water,
-   and the type comes out light. Applied to the pane rather than to each tile, or every seam
-   between two tiles shows as a line where the filter is composited twice. */
+/* Inverting the tiles and turning the hue back through half a circle is the one transform
+   that darkens a map without making its labels illegible: land goes dark, water stays
+   recognisably water, and the type comes out light. Applied to the pane rather than to each
+   tile, or every seam between two tiles shows as a line where the filter composites twice.
+   In the light theme it is `none`: the provider's own tiles are already a light map. */
 .locator-map__frame .leaflet-tile-pane {
-  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) saturate(0.68);
+  filter: var(--locator-tile-filter);
+}
+
+@media (prefers-color-scheme: dark) {
+  ui-locator-map {
+    --locator-tile-filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9)
+      saturate(0.68);
+  }
 }
 
 /* The provider's own pin, which is this component's pin. A `divIcon` rather than the default
@@ -319,6 +344,62 @@ ui-locator-map:has(.locator-map__surface) {
   outline-offset: 2px;
 }
 
+/* The provider's popup chrome, stripped back to a frame around the component's own card.
+   Leaflet draws a white wrapper and a white tip; Google draws a close button that its API
+   gives no way to turn off, and two close buttons on one card is a card that needs
+   explaining. */
+.locator-map__frame .leaflet-popup-content-wrapper,
+.locator-map__frame .leaflet-popup-content {
+  margin: 0;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  inline-size: auto !important;
+}
+
+.locator-map__frame .leaflet-popup-tip-container {
+  display: none;
+}
+
+.locator-map__frame .gm-style-iw,
+.locator-map__frame .gm-style-iw-d {
+  background: none;
+  padding: 0;
+  overflow: visible !important;
+  box-shadow: none;
+  max-height: none !important;
+}
+
+.locator-map__frame .gm-style-iw-tc,
+.locator-map__frame .gm-ui-hover-effect {
+  display: none !important;
+}
+
+/* The card's own link, taken back from the provider. Leaflet styles every anchor inside its
+   container — `.leaflet-container a` is one class more specific than `.locator-map__popup-link`
+   and its stylesheet is appended at run time, so it wins twice over. The card came out with
+   Leaflet's blue and an underline until these were scoped to the frame as well. */
+.locator-map__frame .locator-map__popup-link {
+  color: var(--locator-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.locator-map__frame .locator-map__popup-link:hover {
+  text-decoration: underline;
+}
+
+.locator-map__frame .locator-map__popup-close {
+  color: var(--locator-muted);
+}
+
+.locator-map__frame .locator-map__popup-close:hover {
+  color: var(--locator-text);
+}
+
 /* Attribution is a licence condition, not decoration, so it is restyled rather than hidden. */
 .locator-map__frame .leaflet-control-attribution {
   border-start-start-radius: 6px;
@@ -372,7 +453,7 @@ ui-locator-map:has(.locator-map__surface) {
   display: block;
   inline-size: 0.85rem;
   block-size: 0.85rem;
-  border: 2px solid #10131a;
+  border: 2px solid var(--locator-pin-ring);
   border-radius: 50% 50% 50% 0;
   background: var(--locator-marker);
   rotate: -45deg;
@@ -394,6 +475,103 @@ ui-locator-map:has(.locator-map__surface) {
   background: var(--locator-accent);
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--locator-accent) 35%, transparent);
   scale: 1.25;
+}
+
+/* ---- The popup over the chosen office ------------------------------------------------ */
+
+/* The layer the built-in surface anchors popups in. Above the markers and not among them,
+   because `update` replaces the markers wholesale. */
+.locator-map__popups {
+  position: absolute;
+  inset: 0;
+  /* The markers are buttons; this layer must not sit over them and eat their presses. Only
+     the popup itself takes the pointer back. */
+  pointer-events: none;
+}
+
+.locator-map__popup-anchor {
+  --marker-x: 50%;
+  --marker-y: 50%;
+
+  position: absolute;
+  inset-block-start: var(--marker-y);
+  inset-inline-start: var(--marker-x);
+  /* Above the pin's point, and counter-scaled the way the pins are: a card that grows with
+     the map would cover the country it is describing. */
+  translate: -50% calc(-100% - 0.65rem);
+  scale: calc(1 / var(--map-k));
+  transform-origin: 50% 100%;
+  pointer-events: auto;
+}
+
+.locator-map__popup {
+  position: relative;
+  inline-size: max-content;
+  max-inline-size: 15rem;
+  border: 1px solid var(--locator-border);
+  border-radius: 10px;
+  background: var(--locator-surface);
+  padding: 0.6rem 2.1rem 0.65rem 0.75rem;
+  box-shadow: 0 14px 34px rgb(0 0 0 / 0.45);
+  text-align: start;
+}
+
+.locator-map__popup-name {
+  margin: 0;
+  color: var(--locator-text);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.locator-map__popup-address {
+  margin: 0.15rem 0 0;
+  color: var(--locator-muted);
+  font-size: 0.8125rem;
+}
+
+.locator-map__popup-link {
+  display: inline-block;
+  margin-block-start: 0.4rem;
+  color: var(--locator-accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.locator-map__popup-close {
+  position: absolute;
+  inset-block-start: 0.35rem;
+  inset-inline-end: 0.35rem;
+  display: grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  color: var(--locator-muted);
+  cursor: pointer;
+}
+
+.locator-map__popup-close:hover {
+  background: color-mix(in srgb, var(--locator-text) 12%, transparent);
+  color: var(--locator-text);
+}
+
+.locator-map__popup-close svg {
+  inline-size: 0.9rem;
+  block-size: 0.9rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.locator-map__popup-close:focus-visible,
+.locator-map__popup-link:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--locator-focus) 65%, transparent);
+  outline-offset: 2px;
 }
 
 .locator-map__zoom {
@@ -574,8 +752,8 @@ ui-locator-map[data-empty] .locator-map__places {
   padding: clamp(1.25rem, 4vw, 3rem);
   background:
     radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
-    #0f1115;
-  color: #f4f6fa;
+    light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
 }
 
 .locator-map-demo__shell {
@@ -587,29 +765,29 @@ ui-locator-map[data-empty] .locator-map__places {
   display: grid;
   gap: 1.1rem;
   padding: clamp(1rem, 2vw, 1.5rem);
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 18px;
-  background: #171a20;
-  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
 }
 
 .locator-map-demo__label {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-weight: 650;
 }
 
 .locator-map-demo__note {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   line-height: 1.5;
 }
 
 .locator-map-demo__note code {
   border-radius: 5px;
-  background: rgb(244 246 250 / 0.12);
+  background: light-dark(rgb(15 23 42 / 0.08), rgb(244 246 250 / 0.12));
   padding: 0.1em 0.35em;
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
   font-size: 0.9em;
@@ -622,11 +800,11 @@ ui-locator-map[data-empty] .locator-map__places {
 }
 
 .locator-map-demo__button {
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 9px;
-  background: #10131a;
+  background: light-dark(#f2f4f8, #10131a);
   padding: 0.45rem 0.85rem;
-  color: #f4f6fa;
+  color: light-dark(#15181d, #f4f6fa);
   font:
     600 0.8125rem/1.45 Inter,
     ui-sans-serif,
@@ -636,7 +814,7 @@ ui-locator-map[data-empty] .locator-map__places {
 }
 
 .locator-map-demo__button:hover {
-  background: #171a20;
+  background: light-dark(#e7eaf0, #171a20);
 }
 
 /* The same control, sometimes a link out to a worked example rather than a button. */
@@ -646,7 +824,7 @@ a.locator-map-demo__button {
 }
 
 .locator-map-demo__button:focus-visible {
-  outline: 3px solid rgb(134 160 255 / 0.6);
+  outline: 3px solid light-dark(rgb(79 70 229 / 0.55), rgb(134 160 255 / 0.6));
   outline-offset: 2px;
 }
 
@@ -654,10 +832,10 @@ a.locator-map-demo__button {
   display: block;
   min-block-size: 2.5rem;
   padding: 0.75rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 10px;
-  background: #0b0c0e;
-  color: #f4f6fa;
+  background: light-dark(#f7f8fa, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
   font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
   overflow-wrap: anywhere;
   white-space: pre-wrap;

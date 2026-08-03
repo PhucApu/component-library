@@ -138,11 +138,18 @@ own never receives the message and keeps following `prefers-color-scheme`. A com
 that ignores the message keeps its own colours, and the stage stays correct either way.
 
 Answering it is therefore optional per component and is recorded in that component's
-`DESIGN.md`. Components that answer it today: `breadcrumbs`, `card`, `chip`, `pagination`,
-`radio-group`, `switch`, `table`, `text-field`.
+`DESIGN.md`. Every component answers it today.
 
-Still to convert: `accordion`, `autocomplete`, `carousel`, `drawer`, `lightbox`,
-`locator-map`, `snackbar`, `temporal-picker`.
+A surface that covers the page rather than the component keeps one colour across both
+themes. A modal backdrop dims what is behind it, and a scrim over a picture is not a
+component surface at all, so both stay dark and anything drawn on them keeps its
+light-on-dark treatment.
+
+The line to draw is between a picture and a drawing. A carousel slide, a card's media, and
+a lightbox photograph do not change with the theme, so what is laid over them does not
+either. A locator map is drawn from coordinates, so its sea, land, and coastline are part
+of the theme like any other surface — and the pin standing on them has to be re-measured
+for the light half rather than carried across.
 
 ## 8. Source Package
 

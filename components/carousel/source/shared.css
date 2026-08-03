@@ -1,5 +1,8 @@
 :root {
-  color-scheme: light;
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -15,18 +18,21 @@ body {
 
 .carousel-demo-page,
 .carousel-demo-page body {
-  background: #0f1115;
-  color-scheme: dark;
+  background: light-dark(#f4f6fa, #0f1115);
 }
 
 ui-carousel {
-  --carousel-surface: #171a20;
-  --carousel-slide: #10131a;
-  --carousel-text: #f4f6fa;
-  --carousel-muted: #a8afbc;
-  --carousel-border: #2e3440;
-  --carousel-accent: #86a0ff;
-  --carousel-focus: #86a0ff;
+  --carousel-surface: light-dark(#ffffff, #171a20);
+  /* What shows around a picture that does not fill its slide, so it follows the theme
+     rather than the pictures, which do not change. */
+  --carousel-slide: light-dark(#eef1f5, #10131a);
+  --carousel-text: light-dark(#111827, #f4f6fa);
+  --carousel-muted: light-dark(#5f6878, #a8afbc);
+  --carousel-border: light-dark(#dfe4ec, #2e3440);
+  --carousel-accent: light-dark(#4f46e5, #86a0ff);
+  --carousel-focus: light-dark(#6366f1, #86a0ff);
+  /* Deliberately not a pair. It covers a picture rather than a component surface, so it
+     stays dark in both themes and the caption and arrows drawn on it keep white. */
   --carousel-scrim: rgb(10 12 18 / 0.72);
   --carousel-radius: 14px;
   --carousel-gap: 0.75rem;
@@ -389,8 +395,8 @@ ui-carousel[data-single] .carousel__bar {
   padding: clamp(1.25rem, 4vw, 3rem);
   background:
     radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
-    #0f1115;
-  color: #f4f6fa;
+    light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
 }
 
 .carousel-demo__shell {
@@ -402,29 +408,29 @@ ui-carousel[data-single] .carousel__bar {
   display: grid;
   gap: 1.1rem;
   padding: clamp(1rem, 2vw, 1.5rem);
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 18px;
-  background: #171a20;
-  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
 }
 
 .carousel-demo__label {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-weight: 650;
 }
 
 .carousel-demo__note {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   line-height: 1.5;
 }
 
 .carousel-demo__note code {
   border-radius: 5px;
-  background: rgb(244 246 250 / 0.12);
+  background: light-dark(rgb(15 23 42 / 0.08), rgb(244 246 250 / 0.12));
   padding: 0.1em 0.35em;
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
   font-size: 0.9em;
@@ -439,11 +445,11 @@ ui-carousel[data-single] .carousel__bar {
 /* The demo page is outside `ui-carousel`, where none of the component's custom properties are
    declared, so its controls carry their own colours. */
 .carousel-demo__button {
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 9px;
-  background: #10131a;
+  background: light-dark(#f2f4f8, #10131a);
   padding: 0.45rem 0.85rem;
-  color: #f4f6fa;
+  color: light-dark(#15181d, #f4f6fa);
   font:
     600 0.8125rem/1.45 Inter,
     ui-sans-serif,
@@ -453,11 +459,11 @@ ui-carousel[data-single] .carousel__bar {
 }
 
 .carousel-demo__button:hover {
-  background: #171a20;
+  background: light-dark(#e7eaf0, #171a20);
 }
 
 .carousel-demo__button:focus-visible {
-  outline: 3px solid rgb(134 160 255 / 0.6);
+  outline: 3px solid light-dark(rgb(79 70 229 / 0.55), rgb(134 160 255 / 0.6));
   outline-offset: 2px;
 }
 
@@ -465,10 +471,10 @@ ui-carousel[data-single] .carousel__bar {
   display: block;
   min-block-size: 2.5rem;
   padding: 0.75rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 10px;
-  background: #0b0c0e;
-  color: #f4f6fa;
+  background: light-dark(#f7f8fa, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
   font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
   overflow-wrap: anywhere;
   white-space: pre-wrap;

@@ -1,5 +1,8 @@
 :root {
-  color-scheme: light;
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -15,18 +18,20 @@ body {
 
 .lightbox-demo-page,
 .lightbox-demo-page body {
-  background: #0f1115;
-  color-scheme: dark;
+  background: light-dark(#f4f6fa, #0f1115);
 }
 
 ui-lightbox {
-  --lightbox-surface: #12141a;
-  --lightbox-bar: #1a1e26;
-  --lightbox-text: #f4f6fa;
-  --lightbox-muted: #a8afbc;
-  --lightbox-border: #2e3440;
-  --lightbox-accent: #86a0ff;
-  --lightbox-focus: #86a0ff;
+  --lightbox-surface: light-dark(#ffffff, #12141a);
+  --lightbox-bar: light-dark(#f4f6fa, #1a1e26);
+  --lightbox-text: light-dark(#111827, #f4f6fa);
+  --lightbox-muted: light-dark(#5f6878, #a8afbc);
+  --lightbox-border: light-dark(#dfe4ec, #2e3440);
+  --lightbox-accent: light-dark(#4f46e5, #86a0ff);
+  --lightbox-focus: light-dark(#6366f1, #86a0ff);
+  /* Deliberately not a pair. It dims the page behind the viewer, and a page is something
+     to darken in either theme. The controls that sit over a photograph rather than over
+     this surface carry their own dark scrim for the same reason. */
   --lightbox-backdrop: rgb(6 8 12 / 0.82);
   --lightbox-radius: 12px;
   /* Tall enough for the largest a thumbnail ever gets, so growing one changes nothing. */
@@ -568,8 +573,8 @@ dialog.lightbox__panel:not([open]) {
   padding: clamp(1.25rem, 4vw, 3rem);
   background:
     radial-gradient(circle at 12% 12%, rgb(73 104 232 / 0.12), transparent 26rem),
-    #0f1115;
-  color: #f4f6fa;
+    light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
 }
 
 .lightbox-demo__shell {
@@ -581,22 +586,22 @@ dialog.lightbox__panel:not([open]) {
   display: grid;
   gap: 1.1rem;
   padding: clamp(1rem, 2vw, 1.5rem);
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 18px;
-  background: #171a20;
-  box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
 }
 
 .lightbox-demo__label {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   font-weight: 650;
 }
 
 .lightbox-demo__note {
   margin: 0;
-  color: #a8afbc;
+  color: light-dark(#4b525e, #a8afbc);
   font-size: 0.8125rem;
   line-height: 1.5;
 }
@@ -605,10 +610,10 @@ dialog.lightbox__panel:not([open]) {
   display: block;
   min-block-size: 2.5rem;
   padding: 0.75rem;
-  border: 1px solid #292d36;
+  border: 1px solid light-dark(#dfe3ea, #292d36);
   border-radius: 10px;
-  background: #0b0c0e;
-  color: #f4f6fa;
+  background: light-dark(#f7f8fa, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
   font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
   overflow-wrap: anywhere;
   white-space: pre-wrap;

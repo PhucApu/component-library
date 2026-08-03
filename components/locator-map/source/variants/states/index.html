@@ -38,13 +38,16 @@
             <ul class="locator-map__places"></ul>
           </ui-locator-map>
 
-          <p class="locator-map-demo__label">Without the search</p>
+          <p class="locator-map-demo__label">With parts taken off</p>
           <p class="locator-map-demo__note">
             <code>no-search</code> leaves the map, the markers, the directory and the keyboard
-            alone. It is for a page that already has a search of its own.
+            alone; it is for a page that already has a search of its own.
+            <code>no-popup</code> stops the card appearing over the chosen office, for a page
+            that would rather write the office out somewhere of its own. Choosing still
+            happens, and still announces itself; only the card is gone.
           </p>
 
-          <ui-locator-map no-search focus-zoom="16">
+          <ui-locator-map no-search no-popup focus-zoom="16">
             <ul class="locator-map__places">
               <li data-lat="21.0235" data-lon="105.8573" data-region="north">
                 <h3>Ha Noi head office</h3>

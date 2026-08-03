@@ -45,6 +45,9 @@ export const DEFAULT_LABELS = Object.freeze({
   directionsTo: 'Directions to {name}',
   group: '{region}',
   groupCount: '{count}',
+  viewOnMap: 'View on Google Maps',
+  viewOnMapFor: 'View {name} on Google Maps',
+  closePopup: 'Close',
 });
 
 function finite(value, fallback) {
@@ -279,16 +282,12 @@ export function highlightSegments(text, query) {
 }
 
 /**
- * Where to send somebody who wants to be told how to get there.
+ * A place's coordinates, or nothing at all.
  *
- * A plain link to Google's directions, which is the one piece of a real map provider that
- * costs nothing to use: no key, no billing, no script, and no request at all until it is
- * pressed. That is why it can live inside a component that is checked for reaching nowhere.
- *
- * Returns `null` for a place with no usable coordinates rather than a link to the middle of
- * the ocean, so the caller can leave it out.
+ * Shared by both link builders. A place with no usable coordinates gets no link rather than
+ * one to the middle of the ocean, so the caller can leave it out.
  */
-export function directionsUrl(place, { base = 'https://www.google.com/maps/dir/' } = {}) {
+function usableCoordinates(place) {
   const lat = number(place?.lat, Number.NaN);
   const lon = number(place?.lon, Number.NaN);
 
@@ -300,7 +299,41 @@ export function directionsUrl(place, { base = 'https://www.google.com/maps/dir/'
     return null;
   }
 
-  return `${base}?api=1&destination=${encodeURIComponent(`${lat},${lon}`)}`;
+  return { lat, lon };
+}
+
+/**
+ * Where to send somebody who wants to be told how to get there.
+ *
+ * A plain link to Google's directions, which is the one piece of a real map provider that
+ * costs nothing to use: no key, no billing, no script, and no request at all until it is
+ * pressed. That is why the links stay even on a page whose map never arrived.
+ */
+export function directionsUrl(place, { base = 'https://www.google.com/maps/dir/' } = {}) {
+  const point = usableCoordinates(place);
+
+  if (!point) {
+    return null;
+  }
+
+  return `${base}?api=1&destination=${encodeURIComponent(`${point.lat},${point.lon}`)}`;
+}
+
+/**
+ * Where to send somebody who wants to look at the place rather than travel to it.
+ *
+ * The other half of the same free offer, and a different question: `dir/` opens a route from
+ * wherever you are, `search/` opens the spot itself. A popup that says "view on Google Maps"
+ * and then asks for directions has answered something nobody asked.
+ */
+export function placeUrl(place, { base = 'https://www.google.com/maps/search/' } = {}) {
+  const point = usableCoordinates(place);
+
+  if (!point) {
+    return null;
+  }
+
+  return `${base}?api=1&query=${encodeURIComponent(`${point.lat},${point.lon}`)}`;
 }
 
 /**

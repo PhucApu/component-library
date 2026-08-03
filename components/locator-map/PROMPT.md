@@ -8,10 +8,11 @@ framework, a backend, or a new dependency.
 
 **The map is not part of the component.** The element owns the search, the ranking, the
 directory, the announcements and the decision to go somewhere; the surface that moves is an
-**adapter** it is handed. Seven members and no more:
+**adapter** it is handed. Seven members, plus two optional ones for the popup:
 
 ```js
 { mount, update, flyTo, reset, zoomBy, get view, destroy }
+{ showPopup, hidePopup }   // optional; without them there is simply no popup
 ```
 
 Ship **three** adapters:
@@ -109,6 +110,34 @@ Name the ward the coordinate is actually in. An address naming a ward the map di
 reads as a wrong pin even when the pin is right. And set `focus-zoom` close enough that the
 street name is on screen: correct data that lands too far out to read is correct data nobody
 can check.
+
+## A card over the chosen office
+
+Choosing an office opens a card on its pin: the name, the address, a link out to Google Maps
+and a close button. It closes on that button, on <kbd>Escape</kbd>, and when the whole extent
+is asked for again — and closing it leaves the office chosen and the map where the flight left
+it. A card is a card, not the selection.
+
+**The component cannot place it.** It knows a latitude and a longitude; turning those into
+pixels is the whole job it handed away. Do not anchor the card at the middle of the frame
+because the flight centres the place — true until somebody drags the map — and do not go
+looking for the marker element, because a provider drawing to a canvas has none and reaching
+in is what the seam exists to prevent. **Build the node and ask the adapter to anchor it**:
+`showPopup(place, node)`. Every word inside belongs to the component; the adapter is asked
+where, never what.
+
+Make both members optional, and the payoff is real: a library popup stays glued to its
+coordinate through a flight, a drag and a zoom for nothing, so no part of this has to track
+anything.
+
+Keep **wanting** a card and **having** one as two separate pieces of state, or swapping to a
+surface that cannot hold one and back again silently loses it.
+
+Link to `maps/search/?api=1&query=lat,lon`, not `maps/dir/`. "View on Google Maps" and "how do
+I get there" are different questions.
+
+Stop <kbd>Escape</kbd> at the card. A locator inside a dialog is the ordinary case, and one
+press should dismiss one thing.
 
 ## Directions cost nothing, so include them
 
@@ -289,8 +318,14 @@ Check these explicitly, because each is a place this component quietly goes wron
 - Count search **options**, not rows: the "no office matches" line is a row too, and counting
   it reports a match that is not one.
 - Reduced motion removes the flight, on the drawing and on the real map alike.
-- A stub adapter written in the test receives **only** the seven members. Anything else the
+- A stub adapter written in the test receives **only** the seven members and the two optional
+  popup ones, and `showPopup` is handed a node the component built. Anything else the
   component reaches for is a leak that makes a real provider harder to plug in than it looks.
+- The card opens over the pin and clear of it, closes on its button and on Escape, and closing
+  it leaves the office chosen and the map where the flight left it.
+- Escape at the card does not reach a `document`-level listener. Add one in the test and count
+  it, or the claim is untested.
+- An adapter without `showPopup` loses the card and nothing else.
 - Swapping one surface for another leaves one behind, not two, and the choice survives it.
 - Every place has a directions link, every link is named differently, and **none of them
   fetches anything** — a link is an offer, not a request.

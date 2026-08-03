@@ -117,10 +117,27 @@ in there.
 Everything except the animation, the arrow keys, the region and the disabled panel. The
 panels open, close, report their state, and — with `name` — still keep to one at a time.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the group follows the operating system. To pin it, narrow the
+`color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
-Current Chrome, Edge, Firefox, and Safari. Uses custom elements, `details`/`summary`, and
-`color-mix()`. The `name` attribute on `details` is what an older browser ignores, and it
+Current Chrome, Edge, Firefox, and Safari. Uses custom elements, `details`/`summary`,
+`color-mix()`, and `light-dark()`. The `name` attribute on `details` is what an older browser ignores, and it
 degrades to panels that all open independently.
 
 ## Motion

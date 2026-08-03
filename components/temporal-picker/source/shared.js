@@ -94,13 +94,20 @@ const CHEVRON_ICON = `
 `;
 
 const THEME_PROPERTIES = Object.freeze([
+  /* Copied first, and not a custom property. Every colour below is a `light-dark()` pair,
+     and a pair is resolved by the colour scheme in force where it is *used*. The panel is
+     moved to the end of the body, so without carrying the host's scheme across it the
+     portalled copy would answer to the document instead of to the picker it belongs to. */
+  'color-scheme',
   '--temporal-surface',
   '--temporal-surface-subtle',
   '--temporal-text',
   '--temporal-muted',
   '--temporal-border',
+  '--temporal-border-strong',
   '--temporal-accent',
   '--temporal-accent-strong',
+  '--temporal-on-accent',
   '--temporal-focus',
   '--temporal-danger',
   '--temporal-current',

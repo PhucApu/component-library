@@ -124,10 +124,31 @@ A scrollable, snapping strip of pictures with real alt text. Swiping, the trackp
 scrolling all work; the arrows, dots, dragging and the stacked transitions are what the
 script adds.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the carousel follows the operating system. To pin it, narrow
+the `color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+The pictures do not change with the theme, and neither does `--carousel-scrim`: it covers
+a picture rather than a component surface, so the caption and the arrows drawn on it keep
+white in both.
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
 Current Chrome, Edge, Firefox, and Safari. Uses custom elements, CSS scroll snap, the
-`scrollend` event, `inert`, and `color-mix()`.
+`scrollend` event, `inert`, `color-mix()`, and `light-dark()`.
 
 Newer CSS carousel primitives — `::scroll-marker`, `::scroll-button()` and scroll-driven
 animations — would replace some of this script, but they are not in every current browser

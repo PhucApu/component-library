@@ -134,10 +134,30 @@ snackbar.labels = { withAction: '{message} — press {action} to reverse it' };
 
 Escape is scoped on purpose. A global listener would close your dialogs and pickers too.
 
+## Light and dark
+
+Every colour is a `light-dark()` pair, and `:root` declares `color-scheme: light dark`.
+Dropped into a page as-is, the message follows the operating system. To pin it, narrow the
+`color-scheme` of any ancestor:
+
+```css
+:root {
+  color-scheme: light;
+}
+```
+
+All four severities pair, and the derived border follows without a change of its own: it
+is mixed from two tokens that already pair.
+
+The example page also answers a frame that posts
+`{ type: 'ui-theme', theme: 'light' | 'dark' }`, which is how a host showing it in an
+iframe keeps it in step. Nothing is sent back, and a page that never receives the message
+keeps following the system.
+
 ## Browser support
 
-Current Chrome, Edge, Firefox, and Safari. Uses custom elements, `color-mix()`, and the
-Popover API for the top layer. Without the Popover API the message still renders, animates,
+Current Chrome, Edge, Firefox, and Safari. Uses custom elements, `color-mix()`,
+`light-dark()`, and the Popover API for the top layer. Without the Popover API the message still renders, animates,
 and behaves the same; it simply sits on a high `z-index` instead of the top layer.
 
 ## Running the files

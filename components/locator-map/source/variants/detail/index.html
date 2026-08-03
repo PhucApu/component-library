@@ -14,9 +14,21 @@
         <section class="locator-map-demo__card">
           <p class="locator-map-demo__label">What was chosen, written out</p>
           <p class="locator-map-demo__note">
-            <code>locator-select</code> carries the name, the address and the region, so the
-            page can put the office wherever it wants it. The component does not own that
-            panel — it only says what happened.
+            Choosing an office opens a card over its pin: the name, the address, a link out to
+            Google Maps, and a close button. The card is built here and anchored by whatever is
+            drawing the map, which is why it is the same card over a real provider's tiles as
+            over the drawing.
+          </p>
+          <p class="locator-map-demo__note">
+            The link is <code>maps/search/</code> rather than <code>maps/dir/</code>: the card
+            offers to <em>show</em> you the place, which is a different question from how to
+            get there. The directory below keeps the directions link, so both are on offer and
+            neither is guessed at.
+          </p>
+          <p class="locator-map-demo__note">
+            <code>locator-select</code> carries the name, the address and the region as well,
+            so a page can put the office somewhere of its own instead. The component does not
+            own that panel — it only says what happened.
           </p>
 
           <output class="locator-map-demo__output" data-demo-detail aria-live="polite"></output>

@@ -185,12 +185,42 @@ export class LeafletMap {
     this.map.setZoom(this.map.getZoom() + (factor > 1 ? 1 : -1));
   }
 
+  /**
+   * Anchors the element's popup over a place.
+   *
+   * Leaflet already knows how to keep a popup glued to a coordinate through a flight, a drag
+   * and a zoom, so it is asked to. Its own chrome is turned off — no close button of its own,
+   * no closing on a click elsewhere, no panning the map to make room — because the component
+   * supplies the close button and the flight has already put the place in the middle.
+   */
+  showPopup(place, node) {
+    this.hidePopup();
+
+    this.popup = L.popup({
+      className: 'locator-map__popup-shell',
+      closeButton: false,
+      closeOnClick: false,
+      autoClose: false,
+      autoPan: false,
+      offset: [0, -12],
+    })
+      .setLatLng([place.lat, place.lon])
+      .setContent(node)
+      .openOn(this.map);
+  }
+
+  hidePopup() {
+    this.popup?.remove();
+    this.popup = null;
+  }
+
   get view() {
     const centre = this.map?.getCenter();
     return { lat: centre?.lat, lon: centre?.lng, zoom: this.map?.getZoom() };
   }
 
   destroy() {
+    this.hidePopup();
     this.map?.remove();
     this.surface?.remove();
   }
@@ -247,12 +277,40 @@ export class GoogleMap {
     this.map.setZoom(this.map.getZoom() + (factor > 1 ? 1 : -1));
   }
 
+  /**
+   * The same job through Google's `InfoWindow`.
+   *
+   * Positioned by coordinate rather than anchored to a marker, which keeps it working whether
+   * or not that place currently has a pin. Google draws a close button of its own that the
+   * API gives no way to turn off; `shared.css` takes it off, because two close buttons on one
+   * card is a card that has to be explained.
+   *
+   * Untested: this path needs an API key, and there is deliberately none in this repository.
+   */
+  showPopup(place, node) {
+    this.hidePopup();
+
+    this.popup = new google.maps.InfoWindow({
+      content: node,
+      position: { lat: place.lat, lng: place.lon },
+      disableAutoPan: true,
+    });
+
+    this.popup.open({ map: this.map });
+  }
+
+  hidePopup() {
+    this.popup?.close();
+    this.popup = null;
+  }
+
   get view() {
     const centre = this.map?.getCenter()?.toJSON();
     return { lat: centre?.lat, lon: centre?.lng, zoom: this.map?.getZoom() };
   }
 
   destroy() {
+    this.hidePopup();
     this.pins.forEach((pin) => pin.setMap(null));
     this.surface?.remove();
   }

@@ -422,13 +422,21 @@ test('a preview is told which theme the catalog is showing', async ({ page }) =>
 // under each colour scheme has to come back with a different surface. This is the guard
 // against a component being converted in the stylesheet but pinned somewhere else.
 const THEMED_PREVIEWS = [
+  { id: 'accordion', root: '.accordion-demo' },
+  { id: 'autocomplete', root: '.autocomplete-demo' },
   { id: 'breadcrumbs', root: '.breadcrumbs-demo' },
+  { id: 'carousel', root: '.carousel-demo' },
   { id: 'card', root: '.card-demo' },
   { id: 'chip', root: '.chip-demo' },
+  { id: 'drawer', root: '.drawer-demo' },
+  { id: 'lightbox', root: '.lightbox-demo' },
+  { id: 'locator-map', root: '.locator-map-demo' },
   { id: 'pagination', root: '.pagination-demo' },
   { id: 'radio-group', root: '.radio-group-demo' },
+  { id: 'snackbar', root: '.snackbar-demo' },
   { id: 'switch', root: '.switch-demo' },
   { id: 'table', root: '.table-demo' },
+  { id: 'temporal-picker', root: '.temporal-demo' },
   { id: 'text-field', root: '.text-field-demo' },
 ];
 

@@ -678,40 +678,47 @@ test('the dots say where you are by shape as well as colour', async ({ page }) =
   expect(dots.current).toBeGreaterThan(dots.other);
 });
 
-test('the arrows hold their contrast over a picture', async ({ page }) => {
-  await page.setViewportSize({ width: 960, height: 720 });
-  await ready(page, 'default');
+// Both themes. The arrows sit on a scrim that deliberately does not pair, so this is what
+// proves that decision holds: the icon has to clear 4.5:1 whichever theme is showing.
+for (const colorScheme of ['light', 'dark']) {
+  test(`the arrows hold their contrast over a picture in the ${colorScheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme });
+    await page.setViewportSize({ width: 960, height: 720 });
+    await ready(page, 'default');
 
-  const measured = await page.evaluate(() => {
-    const channels = (value) => {
-      const numbers = value.match(/[\d.]+/g)?.map(Number) ?? [];
-      return value.startsWith('color(')
-        ? numbers.slice(0, 3).map((n) => n * 255)
-        : numbers.slice(0, 3);
-    };
-    const luminance = (rgb) => {
-      const [r, g, b] = rgb.map((c) => {
-        const s = c / 255;
-        return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
-      });
-      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    };
-    const ratio = (a, b) => {
-      const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-      return +((hi + 0.05) / (lo + 0.05)).toFixed(2);
-    };
+    const measured = await page.evaluate(() => {
+      const channels = (value) => {
+        const numbers = value.match(/[\d.]+/g)?.map(Number) ?? [];
+        return value.startsWith('color(')
+          ? numbers.slice(0, 3).map((n) => n * 255)
+          : numbers.slice(0, 3);
+      };
+      const luminance = (rgb) => {
+        const [r, g, b] = rgb.map((c) => {
+          const s = c / 255;
+          return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      const ratio = (a, b) => {
+        const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+        return +((hi + 0.05) / (lo + 0.05)).toFixed(2);
+      };
 
-    const arrow = document.querySelector('.carousel__arrow--next');
-    const style = getComputedStyle(arrow);
+      const arrow = document.querySelector('.carousel__arrow--next');
+      const style = getComputedStyle(arrow);
 
-    return {
-      // Each arrow carries its own dark scrim, so the icon holds against any picture.
-      contrast: ratio(channels(style.color), channels(style.backgroundColor)),
-      resting: +style.opacity,
-    };
+      return {
+        // Each arrow carries its own dark scrim, so the icon holds against any picture.
+        contrast: ratio(channels(style.color), channels(style.backgroundColor)),
+        resting: +style.opacity,
+      };
+    });
+
+    expect(measured.contrast, `arrow icon in ${colorScheme}`).toBeGreaterThanOrEqual(4.5);
+    // Faded rather than hidden, because hovering does not exist on a touch screen.
+    expect(measured.resting).toBeGreaterThan(0.5);
   });
-
-  expect(measured.contrast).toBeGreaterThanOrEqual(4.5);
-  // Faded rather than hidden, because hovering does not exist on a touch screen.
-  expect(measured.resting).toBeGreaterThan(0.5);
-});
+}
