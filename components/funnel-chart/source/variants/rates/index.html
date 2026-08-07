@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" class="funnel-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Step-to-step conversion against conversion from the top, and why printing only one of them hides the broken step." />
+    <title>Funnel Chart - Rates</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="funnel-demo">
+      <div class="funnel-demo__shell">
+        <section class="funnel-demo__card">
+          <p class="funnel-demo__label">Two rates, two different questions</p>
+          <p class="funnel-demo__note">
+            <strong>Of previous</strong> — of the people who reached this stage, how many went
+            on. This is the one that finds the broken step, because it is not dragged down by
+            every loss above it.
+          </p>
+          <p class="funnel-demo__note">
+            <strong>Of the top</strong> — of everyone who entered, how many got this far. This
+            is the one that goes in the report, because it is what the business earns.
+          </p>
+
+          <div class="funnel-demo__controls">
+            <button class="funnel-demo__button" type="button" data-demo-action="rates" data-demo-rates="both" data-current>Both</button>
+            <button class="funnel-demo__button" type="button" data-demo-action="rates" data-demo-rates="step">Of previous only</button>
+            <button class="funnel-demo__button" type="button" data-demo-action="rates" data-demo-rates="top">Of the top only</button>
+          </div>
+
+          <ui-funnel-chart>
+            <table>
+              <caption>Trial to paid, signups in March</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Stage</th>
+                  <th scope="col">Accounts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Signed up</th><td data-value="9600">9,600</td></tr>
+                <tr><th scope="row">Verified email</th><td data-value="8940">8,940</td></tr>
+                <tr><th scope="row">Invited a teammate</th><td data-value="3120">3,120</td></tr>
+                <tr><th scope="row">Created a project</th><td data-value="2870">2,870</td></tr>
+                <tr><th scope="row">Started a paid plan</th><td data-value="640">640</td></tr>
+              </tbody>
+            </table>
+          </ui-funnel-chart>
+
+          <p class="funnel-demo__label">Try "of the top only"</p>
+          <p class="funnel-demo__note">
+            With only the from-the-top rate on, the invite step reads as an unremarkable slide
+            from <code>93.1%</code> to <code>32.5%</code>, and the last step looks like the
+            disaster. Switch back and the step rates say it plainly: the invite step keeps
+            <code>34.9%</code> and the paid step keeps <code>22.3%</code> — two different
+            problems, one of which was invisible until the denominator changed.
+          </p>
+
+          <p class="funnel-demo__label">And the count, always</p>
+          <p class="funnel-demo__note">
+            A rate is something a reader has to turn back into people before it can be argued
+            about in a meeting. <code>5,820 lost</code> already is the sentence.
+          </p>
+
+          <output class="funnel-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeFunnelChartDemo } from '../../demo.js';
+
+      initializeFunnelChartDemo();
+    </script>
+  </body>
+</html>

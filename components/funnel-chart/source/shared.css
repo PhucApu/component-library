@@ -1,0 +1,455 @@
+:root {
+  color-scheme: light dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.funnel-demo-page,
+.funnel-demo-page body {
+  background: light-dark(#f4f6fa, #0f1115);
+}
+
+ui-funnel-chart {
+  /* ---- One colour for every stage ------------------------------------------------------
+     The order of the stages is already in their vertical position, and the value is already
+     in the length of the bar. Shading each stage a different depth would spend the only free
+     channel restating the order — so the bars are one colour, and the colour channel goes to
+     the thing nothing else shows: where the people were lost.
+
+     Measured against the two surfaces below, on exact ratios rather than rounded ones. An
+     earlier dark drop was recorded as "1.20 PASS" by a check that rounded before comparing;
+     the browser measured the same pair at 1.1950 and the floor was never actually met.
+
+       bar vs surface            4.4154 light   4.7890 dark  (floor 3.0, it is a UI mark)
+       drop region vs surface    1.2507 light   1.2462 dark  (floor 1.2, it must read as area)
+       drop region vs bar        3.5303 light   3.8428 dark
+       largest drop vs the rest  1.2059 light   1.2329 dark
+       its label on its own fill 5.1522 light   5.8607 dark  (floor 4.5, it is a word) */
+  --funnel-bar: light-dark(#2a78d6, #3987e5);
+  --funnel-drop: light-dark(#e1e6f1, #262c39);
+  --funnel-drop-worst: light-dark(#f2cd92, #463824);
+  --funnel-worst-ink: light-dark(#7d4408, #f0ad60);
+
+  /* ---- The opt-in ordinal ramp ---------------------------------------------------------
+     `shade="stages"` for anyone who wants the familiar look. Six steps and no more: past the
+     sixth there is no seventh that stays apart from it.
+
+     Ordinal is a third kind of colour problem again. A categorical palette needs neighbours
+     to stay apart under colour blindness. A sequential ramp may let its palest step recede
+     toward the surface, because "near zero" is allowed to look like near nothing. These are
+     discrete marks that all have to be seen — a funnel stage is a bar, not a shade of
+     nothing — so every step, including the palest, clears 2:1 against the surface.
+
+     Spaced evenly along the ramp rather than crowded at one end. An earlier candidate ran
+     650 to 700 for its last pair where every other gap was twice that, and that one uneven
+     step measured 1.21 and 1.18. Even spacing moved the weakest pair to 1.42 and 1.35.
+
+       worst step vs surface   2.1103 light   2.1503 dark   (floor 2.0)
+       worst neighbouring pair 1.4152 light   1.3508 dark   (floor 1.2) */
+  --funnel-stage-1: light-dark(#86b6ef, #184f95);
+  --funnel-stage-2: light-dark(#5598e7, #256abf);
+  --funnel-stage-3: light-dark(#2a78d6, #3987e5);
+  --funnel-stage-4: light-dark(#1c5cab, #6da7ec);
+  --funnel-stage-5: light-dark(#104281, #9ec5f4);
+  --funnel-stage-6: light-dark(#0a2a52, #cde2fb);
+
+  --funnel-surface: light-dark(#ffffff, #171a20);
+  --funnel-ink: light-dark(#111827, #f4f6fa);
+  --funnel-ink-soft: light-dark(#3f4757, #cbd1dc);
+  --funnel-ink-muted: light-dark(#5f6878, #a8afbc);
+  --funnel-border: light-dark(#dfe4ec, #2e3440);
+  --funnel-focus: light-dark(#4f46e5, #86a0ff);
+  --funnel-radius: 12px;
+
+  --funnel-bar-size: 1.5rem;
+  --funnel-bar-radius: 5px;
+  --funnel-motion: 140ms;
+
+  /* Written by the element onto a bar. */
+  --bar-colour: var(--funnel-bar);
+
+  display: grid;
+  gap: 0.85rem;
+  min-inline-size: 0;
+  color: var(--funnel-ink);
+  font: 400 0.9375rem/1.5
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* ---- The finding, before the picture ---------------------------------------------------- */
+
+/* Visible rather than screen-reader-only. The overall rate and the worst step are the two
+   things the chart exists to produce, and a sighted reader should not have to derive them from
+   the bars any more than anyone else should. */
+.funnel__summary {
+  margin: 0;
+  color: var(--funnel-ink-soft);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.funnel__summary[hidden] {
+  display: none;
+}
+
+/* ---- The funnel ------------------------------------------------------------------------- */
+
+.funnel__frame {
+  position: relative;
+  min-inline-size: 0;
+  border-radius: var(--funnel-radius);
+  background: var(--funnel-surface);
+}
+
+.funnel__frame:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--funnel-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+.funnel__list {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0.15rem;
+  list-style: none;
+}
+
+.funnel__list[hidden] {
+  display: none;
+}
+
+.funnel__stage {
+  display: grid;
+  gap: 0.2rem;
+  border-radius: 8px;
+  padding: 0.3rem 0.4rem;
+  transition: background-color var(--funnel-motion) ease;
+}
+
+/* Tinted rather than outlined, so a row can be tracked across its whole width without the
+   stage growing and shifting the ones below it. */
+.funnel__stage[data-active] {
+  background: color-mix(in srgb, var(--funnel-ink) 6%, transparent);
+}
+
+.funnel__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  font-size: 0.8125rem;
+}
+
+.funnel__name {
+  color: var(--funnel-ink);
+  font-weight: 600;
+}
+
+.funnel__value {
+  color: var(--funnel-ink);
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+/* The coordinate space the bar and its loss are measured in. Its own width is the pinned
+   ceiling, so two funnels given the same `max` draw to the same scale. */
+.funnel__track {
+  position: relative;
+  display: block;
+  block-size: var(--funnel-bar-size);
+}
+
+/* Every bar starts at the same left edge and starts at zero. That common baseline is the whole
+   reason this is bars and not a tapering shape: length read from a shared origin is the one
+   visual channel people compare accurately. */
+.funnel__bar {
+  display: block;
+  block-size: 100%;
+  /* Square at the baseline, rounded at the data end — a rounded left edge would lift the bar
+     off the zero it is measured from. */
+  border-start-end-radius: var(--funnel-bar-radius);
+  border-end-end-radius: var(--funnel-bar-radius);
+  background: var(--bar-colour);
+  transition: inline-size var(--funnel-motion) ease;
+}
+
+/* The piece that fell off, drawn where it fell off: starting where this bar ends and running
+   back to where the previous one did. The loss is the quantity a funnel is drawn to show, and
+   in most funnels it gets no ink at all. */
+.funnel__drop {
+  position: absolute;
+  inset-block: 0;
+  border-inline-start: 2px solid var(--funnel-surface);
+  border-start-end-radius: var(--funnel-bar-radius);
+  border-end-end-radius: var(--funnel-bar-radius);
+  background: var(--funnel-drop);
+}
+
+.funnel__stage[data-worst] .funnel__drop {
+  background: var(--funnel-drop-worst);
+}
+
+/* ---- The rates -------------------------------------------------------------------------- */
+
+.funnel__rates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem 0.5rem;
+  margin: 0;
+  color: var(--funnel-ink-muted);
+  font-size: 0.75rem;
+}
+
+.funnel__rate {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.funnel__loss {
+  color: var(--funnel-ink-soft);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* The marking is a word as well as a fill. Nothing here is carried by colour alone. */
+.funnel__flag {
+  border-radius: 999px;
+  background: var(--funnel-drop-worst);
+  padding: 0.05rem 0.45rem;
+  color: var(--funnel-worst-ink);
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+/* ---- Notes and states -------------------------------------------------------------------- */
+
+.funnel__note {
+  margin: 0;
+  color: var(--funnel-ink-muted);
+  font-size: 0.8125rem;
+}
+
+.funnel__note[hidden] {
+  display: none;
+}
+
+.funnel__empty {
+  margin: 0;
+  padding: 2rem 1rem;
+  color: var(--funnel-ink-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.funnel__empty[hidden] {
+  display: none;
+}
+
+ui-funnel-chart[loading] .funnel__list {
+  opacity: 0.45;
+  transition: opacity 160ms ease;
+}
+
+/* ---- The table ---------------------------------------------------------------------------- */
+
+.funnel__table-toggle {
+  justify-self: start;
+  border: 1px solid var(--funnel-border);
+  border-radius: 8px;
+  background: none;
+  padding: 0.3rem 0.6rem;
+  color: var(--funnel-ink-soft);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.funnel__table-toggle:hover {
+  color: var(--funnel-ink);
+}
+
+.funnel__table-toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--funnel-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+.funnel__table-wrap {
+  min-inline-size: 0;
+  overflow-x: auto;
+}
+
+ui-funnel-chart table {
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+ui-funnel-chart caption {
+  margin-block-end: 0.4rem;
+  color: var(--funnel-ink-soft);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  text-align: start;
+}
+
+ui-funnel-chart th,
+ui-funnel-chart td {
+  border-block-end: 1px solid var(--funnel-border);
+  padding: 0.3rem 0.45rem;
+  text-align: end;
+}
+
+ui-funnel-chart thead th,
+ui-funnel-chart tbody th {
+  color: var(--funnel-ink-soft);
+  font-weight: 650;
+}
+
+ui-funnel-chart th:first-child {
+  text-align: start;
+}
+
+ui-funnel-chart td {
+  color: var(--funnel-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.funnel__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ui-funnel-chart {
+    --funnel-motion: 0ms;
+  }
+
+  .funnel__bar,
+  .funnel__stage,
+  ui-funnel-chart[loading] .funnel__list {
+    transition: none;
+  }
+}
+
+/* ---- The demo page ----------------------------------------------------------------------- */
+
+.funnel-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background: light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
+}
+
+.funnel-demo__shell {
+  min-inline-size: 0;
+  inline-size: min(100%, 50rem);
+}
+
+.funnel-demo__card {
+  display: grid;
+  gap: 1.1rem;
+  min-inline-size: 0;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid light-dark(#e3e7ef, #292d36);
+  border-radius: 18px;
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
+}
+
+.funnel-demo__pair {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  min-inline-size: 0;
+}
+
+.funnel-demo__label {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.funnel-demo__note {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.funnel-demo__note code {
+  border-radius: 5px;
+  background: light-dark(rgb(15 23 42 / 0.07), rgb(244 246 250 / 0.12));
+  padding: 0.1em 0.35em;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.funnel-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.funnel-demo__button {
+  border: 1px solid light-dark(#dfe4ec, #292d36);
+  border-radius: 9px;
+  background: light-dark(#f7f8fb, #10131a);
+  padding: 0.45rem 0.85rem;
+  color: light-dark(#15181d, #f4f6fa);
+  font:
+    600 0.8125rem/1.45 Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.funnel-demo__button:hover {
+  background: light-dark(#eef1f7, #171a20);
+}
+
+.funnel-demo__button[data-current] {
+  border-color: light-dark(#4f46e5, #86a0ff);
+  color: light-dark(#4f46e5, #86a0ff);
+}
+
+.funnel-demo__button:focus-visible {
+  outline: 3px solid light-dark(rgb(79 70 229 / 0.6), rgb(134 160 255 / 0.6));
+  outline-offset: 2px;
+}
+
+.funnel-demo__output {
+  display: block;
+  min-block-size: 2.5rem;
+  padding: 0.75rem;
+  border: 1px solid light-dark(#e3e7ef, #292d36);
+  border-radius: 10px;
+  background: light-dark(#f7f8fb, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

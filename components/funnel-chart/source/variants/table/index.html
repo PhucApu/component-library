@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" class="funnel-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The data contract: an ordinary table that is the source, the no-script fallback, and the accessible reading all at once." />
+    <title>Funnel Chart - Table</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="funnel-demo">
+      <div class="funnel-demo__shell">
+        <section class="funnel-demo__card">
+          <p class="funnel-demo__label">The markup is the data and the fallback</p>
+          <p class="funnel-demo__note">
+            No configuration object, no fetch. An ordinary table goes in and it does three jobs
+            at once: it is the data, it is what remains when the script does not run, and it is
+            what a screen reader reads. Only the first value column is plotted; a second one is
+            somebody's extra metric and is left alone rather than drawn as a stage.
+          </p>
+
+          <p class="funnel-demo__label">Row order is stage order</p>
+          <p class="funnel-demo__note">
+            Nothing is sorted. A funnel sorted by size is no longer a funnel — it is a bar
+            chart that has thrown away the sequence, which was the only reason to draw a funnel
+            in the first place.
+          </p>
+
+          <ui-funnel-chart>
+            <table>
+              <caption>Job application pipeline</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Stage</th>
+                  <th scope="col">Candidates</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Applied</th><td data-value="1240">1,240</td></tr>
+                <tr><th scope="row">Screened</th><td data-value="430">430</td></tr>
+                <tr><th scope="row">Interviewed</th><td data-value="180">180</td></tr>
+                <tr><th scope="row">Offered</th><td data-value="42">42</td></tr>
+                <tr><th scope="row">Accepted</th><td data-value="31">31</td></tr>
+              </tbody>
+            </table>
+          </ui-funnel-chart>
+
+          <p class="funnel-demo__label">Where the numbers come from</p>
+          <p class="funnel-demo__note">
+            <code>data-value</code> settles anything ambiguous, so a cell can read
+            <code>1,240</code> or <code>1.2k</code> for a person while the chart gets the
+            figure. Without it the text is parsed, which handles thousands separators and
+            currency symbols but not an abbreviation.
+          </p>
+
+          <p class="funnel-demo__label">The table is the accessible reading</p>
+          <p class="funnel-demo__note">
+            The bars carry <code>aria-hidden</code> in their entirety. Every word beside them is
+            either already in the table or already in the summary line above, so exposing both
+            would read the funnel twice. What the table cannot hold — the conversion rates,
+            which are computed rather than given — is in that summary and in the announcement
+            when you walk the stages with the arrow keys.
+          </p>
+
+          <output class="funnel-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeFunnelChartDemo } from '../../demo.js';
+
+      initializeFunnelChartDemo();
+    </script>
+  </body>
+</html>

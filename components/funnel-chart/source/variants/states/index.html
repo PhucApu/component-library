@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" class="funnel-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="One stage, a stage that grew, a top of zero, refetching, and a failure." />
+    <title>Funnel Chart - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="funnel-demo">
+      <div class="funnel-demo__shell">
+        <section class="funnel-demo__card">
+          <p class="funnel-demo__label">A stage that grew is not a funnel</p>
+          <p class="funnel-demo__note">
+            More people at step four than at step three describes a shape that cannot exist.
+            Rather than drawing it anyway — which would mean a bar longer than the one it came
+            from, and a conversion rate above 100% — the chart names the stage and says what
+            usually causes it: stages measured over different windows, or people joining
+            part-way through.
+          </p>
+
+          <ui-funnel-chart>
+            <table>
+              <caption>Onboarding, week 12</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Stage</th>
+                  <th scope="col">Accounts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Invited</th><td data-value="820">820</td></tr>
+                <tr><th scope="row">Accepted invite</th><td data-value="610">610</td></tr>
+                <tr><th scope="row">Set a password</th><td data-value="540">540</td></tr>
+                <tr><th scope="row">Joined a workspace</th><td data-value="705">705</td></tr>
+                <tr><th scope="row">Completed setup</th><td data-value="480">480</td></tr>
+              </tbody>
+            </table>
+          </ui-funnel-chart>
+
+          <p class="funnel-demo__label">One stage</p>
+          <p class="funnel-demo__note">
+            No previous stage, so no step rate, and no "100% of the top" either — a first stage
+            is not a conversion of anything. The summary line stays away rather than reporting
+            a rate against itself.
+          </p>
+
+          <ui-funnel-chart>
+            <table>
+              <caption>New signups today</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Stage</th>
+                  <th scope="col">Accounts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Signed up</th><td data-value="318">318</td></tr>
+              </tbody>
+            </table>
+          </ui-funnel-chart>
+
+          <p class="funnel-demo__label">Nobody entered</p>
+          <p class="funnel-demo__note">
+            A top stage of zero makes every rate a division by zero. The stages are still drawn
+            and still named; the rates are simply absent, which is the truthful answer rather
+            than <code>0%</code> or <code>NaN%</code>.
+          </p>
+
+          <ui-funnel-chart id="cold">
+            <table>
+              <caption>Campaign that has not launched</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Stage</th>
+                  <th scope="col">People</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Saw the ad</th><td data-value="0">0</td></tr>
+                <tr><th scope="row">Clicked through</th><td data-value="0">0</td></tr>
+                <tr><th scope="row">Bought</th><td data-value="0">0</td></tr>
+              </tbody>
+            </table>
+          </ui-funnel-chart>
+
+          <p class="funnel-demo__label">Refetching, and failing</p>
+          <p class="funnel-demo__note">
+            Loading holds the bars at reduced opacity rather than replacing them, so the shape
+            you were reading does not vanish while it refreshes. An error says what happened
+            and leaves the table in place — the data was already on the page and there is no
+            reason to take it away.
+          </p>
+
+          <div class="funnel-demo__controls">
+            <button class="funnel-demo__button" type="button" data-demo-action="loading" data-demo-target="cold">Loading</button>
+            <button class="funnel-demo__button" type="button" data-demo-action="error" data-demo-target="cold">Error</button>
+          </div>
+
+          <output class="funnel-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeFunnelChartDemo } from '../../demo.js';
+
+      initializeFunnelChartDemo();
+    </script>
+  </body>
+</html>

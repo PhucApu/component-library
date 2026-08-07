@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" class="funnel-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Two funnels side by side, and the pinned ceiling that makes them comparable rather than merely adjacent." />
+    <title>Funnel Chart - Compare</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="funnel-demo">
+      <div class="funnel-demo__shell">
+        <section class="funnel-demo__card">
+          <p class="funnel-demo__label">Two funnels next to each other are not yet a comparison</p>
+          <p class="funnel-demo__note">
+            Left to itself each funnel scales to its own first stage, so both top bars run the
+            full width whatever they count. Desktop starts at 18,400 and mobile at 6,900, and
+            unpinned they draw as the same length. Every pair of bars below then invites a
+            comparison that is not there.
+          </p>
+
+          <div class="funnel-demo__controls">
+            <button class="funnel-demo__button" type="button" data-demo-action="max" data-demo-max="18400">Pin both to 18,400</button>
+          </div>
+
+          <div class="funnel-demo__pair">
+            <ui-funnel-chart id="desktop" rates="step">
+              <table>
+                <caption>Desktop</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Stage</th>
+                    <th scope="col">People</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">Viewed product</th><td data-value="18400">18,400</td></tr>
+                  <tr><th scope="row">Added to cart</th><td data-value="6200">6,200</td></tr>
+                  <tr><th scope="row">Started checkout</th><td data-value="4380">4,380</td></tr>
+                  <tr><th scope="row">Paid</th><td data-value="2140">2,140</td></tr>
+                </tbody>
+              </table>
+            </ui-funnel-chart>
+
+            <ui-funnel-chart id="mobile" rates="step">
+              <table>
+                <caption>Mobile</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Stage</th>
+                    <th scope="col">People</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">Viewed product</th><td data-value="6900">6,900</td></tr>
+                  <tr><th scope="row">Added to cart</th><td data-value="2480">2,480</td></tr>
+                  <tr><th scope="row">Started checkout</th><td data-value="1510">1,510</td></tr>
+                  <tr><th scope="row">Paid</th><td data-value="470">470</td></tr>
+                </tbody>
+              </table>
+            </ui-funnel-chart>
+          </div>
+
+          <p class="funnel-demo__label">What pinning changes, and what it does not</p>
+          <p class="funnel-demo__note">
+            Pinned, the two funnels share one ruler and mobile draws at the size it actually
+            is. The rates do not move — they never depended on the drawing — which is the
+            useful half of the lesson: a shape can mislead while every number beside it stays
+            true.
+          </p>
+
+          <p class="funnel-demo__label">Step rates only, here</p>
+          <p class="funnel-demo__note">
+            Both funnels have different tops, so "of the top" means a different denominator in
+            each column and the two are not comparable side by side. The step rate is, which is
+            why it is the one left on.
+          </p>
+
+          <output class="funnel-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeFunnelChartDemo } from '../../demo.js';
+
+      initializeFunnelChartDemo();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="A checkout funnel of five stages drawn as bars from a shared left edge, each shortening, with the loss between stages shaded beside them and the largest drop marked">
+  <title>Funnel Chart default preview</title>
+  <desc>Five stages run down the card as horizontal bars, every one starting at the same left edge so the length is the value. Beside each bar the shaded run is the people lost since the stage above. The second stage, Added to cart, carries the largest drop marking.</desc>
+
+  <defs>
+    <radialGradient id="glow" cx="12%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#4968e8" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#4968e8" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect width="640" height="360" fill="url(#glow)" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <rect x="24" y="20" width="592" height="320" rx="16" fill="#171a20" stroke="#292d36" />
+
+    <text x="48" y="48" fill="#cbd1dc" font-size="12" font-weight="650">Checkout funnel, last 30 days</text>
+    <text x="48" y="68" fill="#a8afbc" font-size="11">18,400 to 2,140, 11.6% overall</text>
+
+    <!-- Every bar starts at x=48. That shared baseline is the whole reason this is bars rather
+         than a tapering trapezoid, whose area does not match the number it stands for. -->
+    <g>
+      <text x="48" y="90" fill="#f4f6fa" font-size="11" font-weight="600">Viewed product</text>
+      <text x="592" y="90" fill="#f4f6fa" font-size="11" font-weight="650" text-anchor="end">18,400</text>
+      <path d="M48 96H588A4 4 0 0 1 592 100V110A4 4 0 0 1 588 114H48Z" fill="#3987e5" />
+    </g>
+
+    <g>
+      <text x="48" y="140" fill="#f4f6fa" font-size="11" font-weight="600">Added to cart</text>
+      <rect x="128" y="130" width="80" height="14" rx="7" fill="#463824" />
+      <text x="168" y="140" fill="#f0ad60" font-size="9" font-weight="650" text-anchor="middle">Largest drop</text>
+      <text x="592" y="140" fill="#f4f6fa" font-size="11" font-weight="650" text-anchor="end">6,200</text>
+      <path d="M48 146H227.3A4 4 0 0 1 231.3 150V160A4 4 0 0 1 227.3 164H48Z" fill="#3987e5" />
+      <path d="M233.3 146H588A4 4 0 0 1 592 150V160A4 4 0 0 1 588 164H233.3Z" fill="#463824" />
+    </g>
+
+    <g>
+      <text x="48" y="190" fill="#f4f6fa" font-size="11" font-weight="600">Started checkout</text>
+      <text x="592" y="190" fill="#f4f6fa" font-size="11" font-weight="650" text-anchor="end">4,380</text>
+      <path d="M48 196H173.5A4 4 0 0 1 177.5 200V210A4 4 0 0 1 173.5 214H48Z" fill="#3987e5" />
+      <path d="M179.5 196H227.3A4 4 0 0 1 231.3 200V210A4 4 0 0 1 227.3 214H179.5Z" fill="#262c39" />
+    </g>
+
+    <g>
+      <text x="48" y="240" fill="#f4f6fa" font-size="11" font-weight="600">Entered payment</text>
+      <text x="592" y="240" fill="#f4f6fa" font-size="11" font-weight="650" text-anchor="end">2,960</text>
+      <path d="M48 246H131.5A4 4 0 0 1 135.5 250V260A4 4 0 0 1 131.5 264H48Z" fill="#3987e5" />
+      <path d="M137.5 246H173.5A4 4 0 0 1 177.5 250V260A4 4 0 0 1 173.5 264H137.5Z" fill="#262c39" />
+    </g>
+
+    <g>
+      <text x="48" y="290" fill="#f4f6fa" font-size="11" font-weight="600">Paid</text>
+      <text x="592" y="290" fill="#f4f6fa" font-size="11" font-weight="650" text-anchor="end">2,140</text>
+      <path d="M48 296H107.3A4 4 0 0 1 111.3 300V310A4 4 0 0 1 107.3 314H48Z" fill="#3987e5" />
+      <path d="M113.3 296H131.5A4 4 0 0 1 135.5 300V310A4 4 0 0 1 131.5 314H113.3Z" fill="#262c39" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 2,
+  "id": "funnel-chart",
+  "version": "0.1.0",
+  "name": "Funnel Chart",
+  "description": "A framework-free Web Component that reads an HTML table and draws ordered stages as bars from a shared baseline, not as a trapezoid whose area exaggerates every drop. Both conversion rates are printed, the loss is drawn where it happened, and the largest drop is named.",
+  "group": "data-display",
+  "categories": ["data-display"],
+  "tags": [
+    "chart",
+    "funnel",
+    "conversion",
+    "pipeline",
+    "ordinal",
+    "dashboard",
+    "web-component",
+    "accessible",
+    "progressive-enhancement"
+  ],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Ordered bars, both conversion rates, the loss drawn where it happened, and the largest drop marked.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "shape",
+      "name": "Shape",
+      "description": "Why a funnel is not a trapezoid, and the optional six-step ordinal shading for the familiar look.",
+      "entry": "source/variants/shape/index.html"
+    },
+    {
+      "id": "rates",
+      "name": "Rates",
+      "description": "Step-to-step against from-the-top, and the broken step that only one of them finds.",
+      "entry": "source/variants/rates/index.html"
+    },
+    {
+      "id": "compare",
+      "name": "Compare",
+      "description": "Two funnels side by side, and the pinned ceiling that makes them comparable rather than merely adjacent.",
+      "entry": "source/variants/compare/index.html"
+    },
+    {
+      "id": "table",
+      "name": "Table",
+      "description": "The data contract, the no-script fallback, and why row order is never sorted.",
+      "entry": "source/variants/table/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "A stage that grew, a single stage, a top of zero, refetching, and a failure.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" class="funnel-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Ordered stages drawn as bars from a common baseline, with both conversion rates and the largest drop marked." />
+    <title>Funnel Chart - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="funnel-demo">
+      <div class="funnel-demo__shell">
+        <section class="funnel-demo__card">
+          <p class="funnel-demo__label">Where the people went</p>
+          <p class="funnel-demo__note">
+            A funnel is read for two things: what fraction survived end to end, and which step
+            is costing the most. Both are worked out and written above the bars rather than
+            left for the reader to derive.
+          </p>
+
+          <ui-funnel-chart>
+            <table>
+              <caption>Checkout funnel, last 30 days</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Stage</th>
+                  <th scope="col">People</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Viewed product</th><td data-value="18400">18,400</td></tr>
+                <tr><th scope="row">Added to cart</th><td data-value="6200">6,200</td></tr>
+                <tr><th scope="row">Started checkout</th><td data-value="4380">4,380</td></tr>
+                <tr><th scope="row">Entered payment</th><td data-value="2960">2,960</td></tr>
+                <tr><th scope="row">Paid</th><td data-value="2140">2,140</td></tr>
+              </tbody>
+            </table>
+          </ui-funnel-chart>
+
+          <p class="funnel-demo__label">The shaded run is the loss</p>
+          <p class="funnel-demo__note">
+            It starts exactly where the bar ends and runs back to where the previous bar
+            stopped, so the piece that fell off is drawn at the size it actually was. In most
+            funnels that quantity gets no ink at all — you are left subtracting two numbers to
+            find the thing the chart was drawn to show.
+          </p>
+
+          <p class="funnel-demo__label">Marked by count, not by rate</p>
+          <p class="funnel-demo__note">
+            The worst <em>rate</em> is usually the last step of a long funnel, where a handful
+            of people are left and losing three of them reads as a catastrophe. The worst
+            <em>count</em> is where the work is. The marking is a word as well as a fill, so it
+            survives a greyscale print.
+          </p>
+
+          <output class="funnel-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeFunnelChartDemo } from '../../demo.js';
+
+      initializeFunnelChartDemo();
+    </script>
+  </body>
+</html>

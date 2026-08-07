@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" class="funnel-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Why a funnel is not drawn as a trapezoid, and the optional ordinal shading for anyone who wants the familiar look." />
+    <title>Funnel Chart - Shape</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="funnel-demo">
+      <div class="funnel-demo__shell">
+        <section class="funnel-demo__card">
+          <p class="funnel-demo__label">The tapering shape is the problem</p>
+          <p class="funnel-demo__note">
+            The classic funnel encodes the value as a width but hands the eye an
+            <em>area</em> to read — and the area of a trapezoid is not proportional to the
+            number it stands for. A stage at half the count comes out looking far worse than
+            half, every time, in the same direction. Bars from a shared left edge put the value
+            in a length, which is the one visual channel people compare accurately.
+          </p>
+
+          <p class="funnel-demo__label">One colour, because position already says the order</p>
+          <p class="funnel-demo__note">
+            Shading each stage a different depth spends the only free channel restating
+            something the layout already shows. Colour is better spent on the loss.
+          </p>
+
+          <div class="funnel-demo__controls">
+            <button class="funnel-demo__button" type="button" data-demo-action="shade" data-demo-shade="single" data-current>One colour</button>
+            <button class="funnel-demo__button" type="button" data-demo-action="shade" data-demo-shade="stages">Shade the stages</button>
+          </div>
+
+          <ui-funnel-chart>
+            <table>
+              <caption>Support ticket resolution</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Stage</th>
+                  <th scope="col">Tickets</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Received</th><td data-value="4820">4,820</td></tr>
+                <tr><th scope="row">Triaged</th><td data-value="4310">4,310</td></tr>
+                <tr><th scope="row">Assigned</th><td data-value="3640">3,640</td></tr>
+                <tr><th scope="row">First reply sent</th><td data-value="3180">3,180</td></tr>
+                <tr><th scope="row">Resolved</th><td data-value="2450">2,450</td></tr>
+                <tr><th scope="row">Confirmed by customer</th><td data-value="1810">1,810</td></tr>
+              </tbody>
+            </table>
+          </ui-funnel-chart>
+
+          <p class="funnel-demo__label">Six steps, and the ramp stops there</p>
+          <p class="funnel-demo__note">
+            Ordinal colour is a third problem again. A categorical palette needs neighbours to
+            stay apart under colour blindness; a sequential ramp may let its palest step recede
+            toward the surface, because "near zero" is allowed to look like near nothing. These
+            are discrete marks that all have to be <em>seen</em>, so every step clears
+            <code>2:1</code> against the surface — measured at <code>2.11</code> light and
+            <code>2.15</code> dark, with the closest neighbouring pair at <code>1.42</code> and
+            <code>1.35</code>.
+          </p>
+          <p class="funnel-demo__note">
+            Past six there is no seventh step that stays apart from the sixth. Nothing is
+            discarded when a funnel is longer — summing two stages of a funnel would be
+            meaningless, unlike summing two slices of a donut — so the ramp falls back to one
+            colour and says so underneath.
+          </p>
+
+          <output class="funnel-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeFunnelChartDemo } from '../../demo.js';
+
+      initializeFunnelChartDemo();
+    </script>
+  </body>
+</html>
