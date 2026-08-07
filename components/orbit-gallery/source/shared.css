@@ -1,0 +1,347 @@
+:root {
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.orbit-demo-page,
+.orbit-demo-page body {
+  background: light-dark(#f4f6fa, #0f1115);
+}
+
+ui-orbit-gallery {
+  --orbit-surface: light-dark(#ffffff, #171a20);
+  /* What shows behind a picture that has not loaded, so it follows the theme rather than
+     the pictures, which do not change with it. */
+  --orbit-tile: light-dark(#eef1f5, #10131a);
+  --orbit-text: light-dark(#111827, #f4f6fa);
+  --orbit-muted: light-dark(#5f6878, #a8afbc);
+  --orbit-border: light-dark(#dfe4ec, #2e3440);
+  --orbit-focus: light-dark(#4338ca, #86a0ff);
+  --orbit-shadow: light-dark(rgb(15 23 42 / 0.22), rgb(0 0 0 / 0.55));
+  --orbit-radius-corner: 14px;
+  --orbit-item-width: clamp(8.5rem, 23vw, 14rem);
+  --orbit-item-height: calc(var(--orbit-item-width) * 0.75);
+  /* The breathing space between neighbours, which is half of what decides the radius. */
+  --orbit-gap: 28px;
+  /* Room for the picture at the front to come out of the ring and still cast a shadow
+     inside the stage, which clips whatever leaves it. */
+  --orbit-stage-height: calc(var(--orbit-item-height) + 7.5rem);
+  --orbit-perspective: 1200px;
+  --orbit-move: 280ms;
+  --orbit-ease: cubic-bezier(0.2, 0, 0, 1);
+  /* How far the picture at the front leaves the ring, and how much it grows once it is
+     out of it. */
+  --orbit-front-lift: 90px;
+  --orbit-front-zoom: 1.14;
+
+  /* Written per frame by the element. Declared here so the ring has a resting position of
+     its own rather than living only in a fallback, and so a page that never runs the
+     script still resolves every custom property it reads. */
+  --orbit-angle: 0deg;
+  --orbit-step: 0deg;
+  --orbit-radius: 0px;
+  --orbit-index: 0;
+  --orbit-depth-opacity: 1;
+  --orbit-fade: 1;
+  --orbit-lift: 0px;
+  --orbit-zoom: 1;
+
+  display: block;
+  min-inline-size: 0;
+  color: var(--orbit-text);
+  font: 400 0.9375rem/1.5
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* Before the script arrives there is no ring, only pictures, and a plain grid of them is
+   the honest thing to show. */
+ui-orbit-gallery ul,
+ui-orbit-gallery ol {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+ui-orbit-gallery img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  border-radius: calc(var(--orbit-radius-corner) - 4px);
+  object-fit: cover;
+  /* A picture is the obvious thing to take hold of, and the browser's own image dragging
+     would take the gesture away before the ring ever saw it. */
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.orbit__stage {
+  position: relative;
+  block-size: var(--orbit-stage-height);
+  overflow: hidden;
+  border-radius: var(--orbit-radius-corner);
+  perspective: var(--orbit-perspective);
+  cursor: grab;
+  /* Sideways belongs to the ring; downwards still belongs to the page. */
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.orbit__stage:focus-visible {
+  outline: 3px solid var(--orbit-focus);
+  outline-offset: -3px;
+}
+
+.orbit__ring {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform: translateZ(calc(var(--orbit-radius) * -1)) rotateY(var(--orbit-angle));
+  transform-style: preserve-3d;
+}
+
+.orbit__ring.is-dragging {
+  cursor: grabbing;
+}
+
+.orbit__item {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: var(--orbit-item-width);
+  block-size: var(--orbit-item-height);
+  margin-block-start: calc(var(--orbit-item-height) / -2);
+  margin-inline-start: calc(var(--orbit-item-width) / -2);
+  /* The ring places it; the lift is the only part of this that ever moves, so the
+     transition below has one job and never fights the frame loop. */
+  transform: rotateY(calc(var(--orbit-index) * var(--orbit-step)))
+    translateZ(calc(var(--orbit-radius) + var(--orbit-lift)));
+  /* The far half of the ring faces away. Hiding it is what stops a mirrored picture from
+     showing through the middle of the front one. */
+  backface-visibility: hidden;
+  opacity: var(--orbit-depth-opacity);
+  transition: transform var(--orbit-move) var(--orbit-ease);
+}
+
+.orbit__tile {
+  display: block;
+  block-size: 100%;
+  overflow: hidden;
+  border: 1px solid var(--orbit-border);
+  border-radius: var(--orbit-radius-corner);
+  background: var(--orbit-tile);
+  opacity: var(--orbit-fade);
+  transform: scale(var(--orbit-zoom));
+  transition:
+    transform var(--orbit-move) var(--orbit-ease),
+    opacity var(--orbit-move) var(--orbit-ease),
+    box-shadow var(--orbit-move) var(--orbit-ease);
+}
+
+/* The picture brought round to the front, with the ring at rest on it, is the one singled
+   out — never the one under the pointer. `is-centred` is written by the element, which is
+   the only thing that knows the ring has stopped rather than merely slowed. */
+.orbit__ring.is-centred .orbit__item[data-front] {
+  --orbit-lift: var(--orbit-front-lift);
+}
+
+.orbit__ring.is-centred .orbit__item[data-front] .orbit__tile {
+  --orbit-zoom: var(--orbit-front-zoom);
+
+  box-shadow: 0 12px 26px var(--orbit-shadow);
+}
+
+.orbit__ring.is-centred .orbit__item:not([data-front]) .orbit__tile {
+  --orbit-fade: 0.35;
+}
+
+/* The arrows stand on the stage rather than on the ring: they must not be turned with it,
+   dimmed by depth, or hidden with the half that faces away. */
+.orbit__arrow {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 50%;
+  display: grid;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  place-items: center;
+  border: 1px solid var(--orbit-border);
+  border-radius: 999px;
+  background: var(--orbit-surface);
+  padding: 0;
+  color: var(--orbit-text);
+  translate: 0 -50%;
+  cursor: pointer;
+  transition:
+    background var(--orbit-move) var(--orbit-ease),
+    border-color var(--orbit-move) var(--orbit-ease);
+}
+
+.orbit__arrow--previous {
+  inset-inline-start: 0.75rem;
+}
+
+.orbit__arrow--next {
+  inset-inline-end: 0.75rem;
+}
+
+.orbit__arrow:hover {
+  border-color: var(--orbit-focus);
+}
+
+.orbit__arrow:focus-visible {
+  outline: 3px solid var(--orbit-focus);
+  outline-offset: 2px;
+}
+
+.orbit__arrow-icon {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  /* The press belongs to the button, and a drag that starts on it belongs to the ring.
+     Neither wants the icon as an event target of its own. */
+  pointer-events: none;
+}
+
+.orbit__item[data-unavailable] .orbit__tile {
+  display: grid;
+  place-items: center;
+  border-style: dashed;
+}
+
+.orbit__item[data-unavailable] img {
+  display: none;
+}
+
+.orbit__unavailable {
+  margin: 0;
+  padding-inline: 0.75rem;
+  color: var(--orbit-muted);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.orbit__status {
+  position: absolute;
+  overflow: hidden;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.orbit-demo {
+  display: grid;
+  /* The page is otherwise as tall as its content, and the background it paints would stop
+     there, leaving a seam across the rest of the preview frame. */
+  min-block-size: 100dvh;
+  align-content: start;
+  gap: 1.5rem;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  background: light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
+}
+
+.orbit-demo__shell {
+  display: grid;
+  gap: 1.5rem;
+  inline-size: min(100%, 60rem);
+  margin-inline: auto;
+}
+
+.orbit-demo__card {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 18px;
+  background: light-dark(#ffffff, #171a20);
+  padding: clamp(1rem, 3vw, 1.75rem);
+  color: light-dark(#111827, #f4f6fa);
+}
+
+.orbit-demo__label {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.orbit-demo__note {
+  max-width: 46rem;
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.orbit-demo code {
+  border-radius: 5px;
+  background: light-dark(#eef1f5, #10131a);
+  padding: 0.1rem 0.35rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+.orbit-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.orbit-demo__button {
+  min-block-size: 2.25rem;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 10px;
+  background: light-dark(#f4f6fa, #10131a);
+  padding-inline: 0.85rem;
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.orbit-demo__button:hover {
+  border-color: light-dark(#4338ca, #86a0ff);
+}
+
+.orbit-demo__button:focus-visible {
+  outline: 3px solid light-dark(#4338ca, #86a0ff);
+  outline-offset: 2px;
+}
+
+.orbit-demo output {
+  display: block;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 10px;
+  background: light-dark(#f4f6fa, #10131a);
+  padding: 0.65rem 0.8rem;
+  color: light-dark(#5f6878, #a8afbc);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.78rem;
+  white-space: pre-line;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit__item,
+  .orbit__tile {
+    transition: none;
+  }
+}

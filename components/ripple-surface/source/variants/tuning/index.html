@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" class="ripple-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="How long a ripple lives, how strongly it draws, and what colour it is drawn in."
+    />
+    <title>Ripple Surface - Tuning</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="ripple-demo">
+      <div class="ripple-demo__shell">
+        <section class="ripple-demo__card">
+          <p class="ripple-demo__label">How long the water keeps moving</p>
+          <p class="ripple-demo__note">
+            <code>drop-duration</code> and <code>wake-duration</code> are the life of one
+            ripple in milliseconds. Short lives read as shallow water; long ones as a heavy
+            swell. Both are clamped, because a ripple that outlived the visit would still be
+            spreading when the next reader arrived.
+          </p>
+
+          <div class="ripple-demo__grid">
+            <ui-ripple-surface drop-duration="600" wake-duration="320">
+              <div class="ripple-demo__pool"></div>
+            </ui-ripple-surface>
+
+            <ui-ripple-surface drop-duration="2600" wake-duration="1500">
+              <div class="ripple-demo__pool"></div>
+            </ui-ripple-surface>
+          </div>
+        </section>
+
+        <section class="ripple-demo__card">
+          <p class="ripple-demo__label">How hard it draws</p>
+          <p class="ripple-demo__note">
+            The ink and the strength are the component's own custom properties, so a page
+            sets them the way it sets any other colour. This pair is drawn in the same ink at
+            <code>--ripple-strength: 0.35</code> and <code>1</code>: the first is a surface
+            you notice only if you look, the second is one that announces itself.
+          </p>
+
+          <div class="ripple-demo__grid">
+            <ui-ripple-surface style="--ripple-strength: 0.35">
+              <div class="ripple-demo__pool"></div>
+            </ui-ripple-surface>
+
+            <ui-ripple-surface style="--ripple-strength: 1; --ripple-drop-width: 3.4">
+              <div class="ripple-demo__pool"></div>
+            </ui-ripple-surface>
+          </div>
+
+          <output></output>
+        </section>
+
+        <section class="ripple-demo__card">
+          <p class="ripple-demo__label">How much water there is at once</p>
+          <p class="ripple-demo__note">
+            <code>max-ripples="8"</code> keeps only the eight newest, so sweeping across this
+            surface leaves a short tail however long the gesture is. The cap is what stands
+            between a pointer swept for a minute and a canvas drawing thousands of arcs.
+          </p>
+
+          <ui-ripple-surface max-ripples="8" spacing="8">
+            <div class="ripple-demo__pool"></div>
+          </ui-ripple-surface>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeRippleDemo } from '../../demo.js';
+
+      initializeRippleDemo();
+    </script>
+  </body>
+</html>

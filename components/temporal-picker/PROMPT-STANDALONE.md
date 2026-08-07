@@ -166,6 +166,19 @@ with `position: fixed`.
 - Escape, Apply, Clear, and immediate commits restore trigger focus.
 - Limit panel width to `calc(100vw - 24px)` and scroll internally when required.
 - Keep all three time inputs usable at `320px`; avoid horizontal overflow at `375x667`.
+- **Given the room, move the datetime time fields beside the calendar rather than under it.**
+  From about `37rem` widen the panel from `22rem` to `35rem`, move the Hour, Minute and Second
+  row into a column on the right, top-aligned with the month heading, and turn the dividing rule
+  from a top border into an inline-start one running the calendar's height. The panel gets `90px`
+  shorter, which is the reason to do it. Move the row; do not rearrange it — the three fields
+  stay across with their colons, exactly as in the time-only picker. Reach it from CSS alone: the
+  panel already carries its mode as a data attribute, and leaving the markup alone leaves the tab
+  order alone. Give the time column a definite track, or the full-width fields inside it take
+  everything the flexible column gives up and the *calendar* is what disappears. Declare the
+  calendar's rows explicitly, or the span collapses and the panel comes out *taller*. Assert the
+  day grid's width and not just its cell size — a cell keeps its size while overflowing a
+  collapsed track. Write it mobile-first so the narrow layout is the original rather than a
+  second one to maintain.
 - Render 42 day cells and derive week start from the configured attribute or `Intl.Locale`.
 - Use native disabled state, `aria-selected`, `aria-current="date"`, full date labels, and
   roving `tabindex`.

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 2,
+  "id": "ripple-surface",
+  "kind": "animation",
+  "version": "0.1.0",
+  "name": "Ripple Surface",
+  "description": "A framework-free Web Component that lays still water over any content: a wake opens behind the pointer, a press spreads rings from where it landed, and at rest it draws nothing and asks for no frames.",
+  "group": "pointer-effects",
+  "categories": ["surface", "canvas"],
+  "tags": [
+    "ripple",
+    "water",
+    "wake",
+    "canvas",
+    "pointer",
+    "hover",
+    "click",
+    "overlay",
+    "web-component",
+    "reduced-motion"
+  ],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A wake behind the pointer and rings from a press, over content that still takes its own clicks.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "wake",
+      "name": "Wake",
+      "description": "The trail on its own: marks made by distance travelled, opening wider the faster the pointer goes.",
+      "entry": "source/variants/wake/index.html"
+    },
+    {
+      "id": "drop",
+      "name": "Drop",
+      "description": "The rings on their own, from a press, from a tap, and from a page calling drop() itself.",
+      "entry": "source/variants/drop/index.html"
+    },
+    {
+      "id": "tuning",
+      "name": "Tuning",
+      "description": "How long a ripple lives, how hard it draws, and how much water may move at once.",
+      "entry": "source/variants/tuning/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "The surface over a picture, over selectable words with a working link, and under reduced motion.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

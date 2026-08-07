@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="">
+  <defs>
+    <linearGradient id="dune-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffd9a0" />
+      <stop offset="100%" stop-color="#f3a95f" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#dune-sky)" />
+  <circle cx="230" cy="164" r="58" fill="#fff3dc" />
+  <path d="M0 396c150-70 250 30 400-16s250-96 400-20v240H0z" fill="#e08a4a" />
+  <path d="M0 486c180-60 260 24 420-8s220-72 380-16v138H0z" fill="#b6612f" />
+  <path d="M0 560c200-36 300 20 440 0s200-32 360-8v48H0z" fill="#7d3e21" />
+</svg>

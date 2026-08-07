@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en" class="sortable-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Reordering real table rows, and the two things a table costs." />
+    <title>Sortable List - Table</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="sortable-demo">
+      <div class="sortable-demo__shell">
+        <section class="sortable-demo__card">
+          <p class="sortable-demo__label">The same component, on real table rows</p>
+          <p class="sortable-demo__note">
+            A <code>&lt;tr&gt;</code> is a row too — arguably the row people mean. The only thing
+            that changes inside the component is where it looks for the container:
+            <code>&lt;tbody&gt;</code> instead of <code>&lt;ol&gt;</code>. The arithmetic, the
+            keyboard and the announcements are the same code.
+          </p>
+
+          <ui-sortable-list>
+            <table>
+              <caption>Pricing tiers, in the order they appear on the site</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Plan</th>
+                  <th scope="col">Seats</th>
+                  <th scope="col">Monthly</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span data-sortable-name>Starter</span></td>
+                  <td class="sortable__numeric">3</td>
+                  <td class="sortable__numeric">$19</td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="sortable__stack">
+                      <span data-sortable-name>Team</span>
+                      <small>Shared billing, one workspace</small>
+                    </span>
+                  </td>
+                  <td class="sortable__numeric">15</td>
+                  <td class="sortable__numeric">$79</td>
+                </tr>
+                <tr>
+                  <td><span data-sortable-name>Business</span></td>
+                  <td class="sortable__numeric">50</td>
+                  <td class="sortable__numeric">$249</td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="sortable__stack">
+                      <span data-sortable-name>Enterprise</span>
+                      <small>Custom terms, audit log, invoiced annually</small>
+                    </span>
+                  </td>
+                  <td class="sortable__numeric">Unlimited</td>
+                  <td class="sortable__numeric">Contact us</td>
+                </tr>
+              </tbody>
+            </table>
+          </ui-sortable-list>
+
+          <p class="sortable-demo__label">A table costs two things, and both are worth saying</p>
+          <p class="sortable-demo__note">
+            <strong>The handle goes inside the first cell, not beside it.</strong> A component
+            cannot invent a table column: a new <code>&lt;td&gt;</code> would leave the header one
+            heading short and every row misaligned from it.
+          </p>
+          <p class="sortable-demo__note">
+            <strong>Borders have to be separate.</strong> A row cannot carry a shadow while the
+            table collapses its borders, and the shadow is what says "this one is off the page in
+            your hand". Separate borders is the price of the lift.
+          </p>
+
+          <p class="sortable-demo__label">Rows of different heights</p>
+          <p class="sortable-demo__note">
+            Two of these rows carry a second line and are taller than the others. The distance a
+            row travels to swap with its neighbour is <em>the neighbour's</em> height plus the
+            gap, never its own — with one height any formula looks right, and with a real table
+            the wrong one drops a place off from where you let go. Drag the short
+            <em>Starter</em> row past the tall <em>Team</em> row and it commits where you expect,
+            not at half its own height.
+          </p>
+
+          <output class="sortable-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeSortableListDemo } from '../../demo.js';
+
+      initializeSortableListDemo();
+    </script>
+  </body>
+</html>

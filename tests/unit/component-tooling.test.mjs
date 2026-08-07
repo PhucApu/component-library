@@ -135,6 +135,43 @@ test('missing thumbnails, invalid groups, and missing variant descriptions fail 
   );
 });
 
+test('kind decides which taxonomy a group is validated against', async (t) => {
+  const animation = await copyFixtureComponents(t);
+  await mutateFixtureManifest(animation.componentsDirectory, (manifest) => {
+    manifest.kind = 'animation';
+    manifest.group = 'loaders';
+  });
+  const records = await readAndValidateComponents({
+    componentsDirectory: animation.componentsDirectory,
+  });
+  assert.equal(records[0].manifest.kind, 'animation');
+  assert.equal(records[0].manifest.group, 'loaders');
+
+  // The same mistake in both directions: a group is only valid beside the kind it belongs
+  // to, so neither pair can quietly land in the wrong homepage tab.
+  const componentGroupOnAnimation = await copyFixtureComponents(t);
+  await mutateFixtureManifest(componentGroupOnAnimation.componentsDirectory, (manifest) => {
+    manifest.kind = 'animation';
+  });
+  await assert.rejects(
+    readAndValidateComponents({
+      componentsDirectory: componentGroupOnAnimation.componentsDirectory,
+    }),
+    /must be equal to one of the allowed values/,
+  );
+
+  const animationGroupOnComponent = await copyFixtureComponents(t);
+  await mutateFixtureManifest(animationGroupOnComponent.componentsDirectory, (manifest) => {
+    manifest.group = 'loaders';
+  });
+  await assert.rejects(
+    readAndValidateComponents({
+      componentsDirectory: animationGroupOnComponent.componentsDirectory,
+    }),
+    /must be equal to one of the allowed values/,
+  );
+});
+
 test('duplicate component and variant IDs are reported', async (t) => {
   const { componentsDirectory } = await copyFixtureComponents(t);
   const originalDirectory = path.join(componentsDirectory, 'test-button');
@@ -175,6 +212,8 @@ test('registry contains taxonomy, thumbnail, documents, and deterministic source
   const [component] = registry;
 
   assert.equal(component.group, 'inputs');
+  // A manifest that never names a kind still reaches the catalog as a component.
+  assert.equal(component.kind, 'component');
   assert.equal(
     component.preview.thumbnail,
     'components/test-button/preview/thumbnail.svg',

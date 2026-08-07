@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="">
+  <defs>
+    <linearGradient id="harbour-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1b2a4a" />
+      <stop offset="100%" stop-color="#4a4270" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#harbour-sky)" />
+  <g fill="#f6f1c8" opacity="0.85">
+    <circle cx="120" cy="96" r="4" />
+    <circle cx="300" cy="60" r="3" />
+    <circle cx="470" cy="120" r="4" />
+    <circle cx="690" cy="72" r="3" />
+  </g>
+  <g fill="#111a2f">
+    <rect x="60" y="300" width="90" height="140" />
+    <rect x="180" y="252" width="70" height="188" />
+    <rect x="280" y="322" width="110" height="118" />
+    <rect x="430" y="268" width="80" height="172" />
+    <rect x="546" y="316" width="120" height="124" />
+  </g>
+  <g fill="#ffd66b">
+    <rect x="80" y="330" width="16" height="20" />
+    <rect x="200" y="290" width="16" height="20" />
+    <rect x="316" y="356" width="16" height="20" />
+    <rect x="452" y="306" width="16" height="20" />
+    <rect x="576" y="352" width="16" height="20" />
+  </g>
+  <rect y="440" width="800" height="160" fill="#0d1730" />
+  <g fill="#ffd66b" opacity="0.45">
+    <rect x="80" y="452" width="16" height="120" />
+    <rect x="316" y="452" width="16" height="120" />
+    <rect x="576" y="452" width="16" height="120" />
+  </g>
+</svg>

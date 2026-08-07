@@ -137,6 +137,26 @@ with `position: fixed`.
 - Escape, Apply, Clear, and immediate commits restore trigger focus.
 - Limit panel width to `calc(100vw - 24px)` and scroll internally when required.
 - Keep all three time inputs usable at `320px`; avoid horizontal overflow at `375x667`.
+- **Given the room, move the datetime time fields beside the calendar rather than under it.**
+  From about `37rem` widen the panel from `22rem` to `35rem` and move the Hour, Minute and Second
+  row into a second column on the right, top-aligned with the month heading, with the dividing
+  rule turned from a top border into an inline-start one that runs the calendar's height. The
+  panel gets `90px` shorter, which is the reason to do it.
+  - **Move the row; do not rearrange it.** The three fields stay across, colons and all, exactly
+    as in the time-only picker. Only the block's position on the panel changes.
+  - Reach it from the stylesheet alone. The panel already carries its mode as a data attribute,
+    so no markup has to change — and leaving the DOM order alone is what leaves the tab order
+    alone: day grid, then Hour, Minute, Second, which is still what the eye does left to right.
+  - Give the time column a **definite** track. The fields inside it are full-width, so an `auto`
+    track has no natural size to settle on and takes everything the flexible column gives up —
+    and the thing that disappears is the calendar, not the clock.
+  - Declare the calendar's rows explicitly in this layout. Spanning the time block across an
+    implicit grid collapses the span, hands it row one, and makes the panel *taller* than the
+    stacked layout you were trying to improve on.
+  - Assert the day grid's **width**, not just its cell size. A day cell keeps its full size while
+    overflowing a collapsed track, so a panel showing no calendar at all still measures right.
+  - Write it mobile-first so that below the threshold not one of these rules applies. The narrow
+    layout should be the original, not a second layout to keep in step with the first.
 - Render 42 day cells and derive week start from the configured attribute or `Intl.Locale`.
 - Use native disabled state, `aria-selected`, `aria-current="date"`, full date labels, and
   roving `tabindex`.

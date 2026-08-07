@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" class="sortable-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The data contract, the no-script fallback, and reordering inside a scrolling box." />
+    <title>Sortable List - Markup</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="sortable-demo">
+      <div class="sortable-demo__shell">
+        <section class="sortable-demo__card">
+          <p class="sortable-demo__label">The markup is the data and the fallback</p>
+          <p class="sortable-demo__note">
+            An ordinary <code>&lt;ol&gt;</code> goes in. No configuration object, no fetch. With
+            scripting off it is still an ordered list, correctly numbered and completely
+            readable — reordering is the enhancement, not the content.
+          </p>
+
+          <p class="sortable-demo__note">
+            <code>data-sortable-name</code> names a row for the announcement when its text would
+            read badly out loud. <code>data-sortable-handle</code> puts the handle where you want
+            it instead of where the component would. <code>data-locked</code> makes a row a wall.
+          </p>
+
+          <p class="sortable-demo__label">A long list inside a scrolling box</p>
+          <p class="sortable-demo__note">
+            Drag a row to the top or bottom edge and hold it there. The box follows, which is the
+            only way a fifty-row list can be reordered past what fits on the screen. It runs on
+            its own frame loop, because a pointer held still at the edge sends no events.
+          </p>
+
+          <div class="sortable-demo__scroll">
+            <ui-sortable-list>
+              <ol>
+                <li data-sortable-name="Australia">🇦🇺 Australia</li>
+                <li data-sortable-name="Brazil">🇧🇷 Brazil</li>
+                <li data-sortable-name="Canada">🇨🇦 Canada</li>
+                <li data-sortable-name="Denmark">🇩🇰 Denmark</li>
+                <li data-sortable-name="Egypt">🇪🇬 Egypt</li>
+                <li data-sortable-name="France">🇫🇷 France</li>
+                <li data-sortable-name="Germany">🇩🇪 Germany</li>
+                <li data-sortable-name="India">🇮🇳 India</li>
+                <li data-sortable-name="Japan">🇯🇵 Japan</li>
+                <li data-sortable-name="Kenya">🇰🇪 Kenya</li>
+                <li data-sortable-name="Mexico">🇲🇽 Mexico</li>
+                <li data-sortable-name="Norway">🇳🇴 Norway</li>
+                <li data-sortable-name="Vietnam">🇻🇳 Vietnam</li>
+              </ol>
+            </ui-sortable-list>
+          </div>
+
+          <p class="sortable-demo__label">Why the name is worth setting</p>
+          <p class="sortable-demo__note">
+            Without <code>data-sortable-name</code> the row above would be announced with its
+            flag character read out first. The visible text stays exactly as the author wrote it;
+            only what gets spoken changes.
+          </p>
+
+          <p class="sortable-demo__label">What comes back out</p>
+          <p class="sortable-demo__note">
+            <code>order</code> is the names in their current order and <code>items</code> is the
+            same list with each row's index, lock state and element. A <code>reorder</code> event
+            carries <code>{ from, to, order, name }</code>.
+          </p>
+
+          <output class="sortable-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeSortableListDemo } from '../../demo.js';
+
+      initializeSortableListDemo();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="">
+  <defs>
+    <linearGradient id="storm-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a5568" />
+      <stop offset="100%" stop-color="#9aa8b8" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#storm-sky)" />
+  <g fill="#37404f" opacity="0.85">
+    <ellipse cx="220" cy="140" rx="150" ry="52" />
+    <ellipse cx="520" cy="104" rx="180" ry="46" />
+  </g>
+  <path d="M0 380c140 40 240-40 400-8s260 60 400 4v224H0z" fill="#39566b" />
+  <path d="M0 462c160 34 260-28 420 4s220 44 380 2v132H0z" fill="#24384a" />
+  <g fill="#e8eef4" opacity="0.6">
+    <rect x="90" y="424" width="180" height="8" rx="4" />
+    <rect x="420" y="500" width="230" height="8" rx="4" />
+  </g>
+</svg>

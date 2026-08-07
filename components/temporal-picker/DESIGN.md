@@ -178,9 +178,39 @@ include a visible check mark. The no-results message stays visible inside the dr
 - Escape, Apply, Clear, and immediate commits close and restore trigger focus.
 - A live region announces view, search results, and validation.
 
-## 8. Responsive behavior and motion
+## 8. Datetime layout: the clock beside the calendar
 
-- The panel is at most `22rem` wide and never wider than `calc(100vw - 24px)`.
+From `37rem` (`592px`) up, a datetime panel puts its time fields in a second column to the right
+of the calendar rather than in a row underneath it. The panel widens from `22rem` to `35rem` and
+loses `90px` of height — measured `560x417` against the stacked panel's `352x507`.
+
+**The row stays a row.** Hour, Minute and Second sit across the column exactly as they do in the
+time-only picker, colons and all. Only the block moved; the arrangement inside it did not.
+
+The threshold is the content: that row needs about `216px`, the day grid wants about `300px` to
+keep its cells at their full `40px`, and the panel's padding and rule take the rest to `560px`.
+
+- **No markup changes for any of it.** `_renderPanel` already writes `data-mode` on the panel, so
+  the whole layout is reachable from the stylesheet. DOM order is untouched, which keeps the tab
+  order untouched: day grid, then Hour, Minute, Second. Read left to right, that is still the
+  order the eye takes.
+- The rule between the two blocks turns with them, from a top border to an inline-start border.
+- **The time column is a definite `13.5rem` track, not `auto`** — and the one that pays for
+  getting that wrong is the calendar, not the clock. The time fields are `inline-size: 100%`, so
+  an `auto` track has no natural size to settle on and takes everything the flexible column will
+  give up. Measured: `0px 518px`, a panel with no visible calendar at all.
+- The calendar declares explicit rows here. Without them the time block's `1 / -1` span resolves
+  against an explicit grid of one line, collapses, and claims row one — which pushes the calendar
+  down and makes the panel `90px` *taller* than the layout it was meant to improve on.
+- Below the threshold **not one of these rules applies**, so the narrow layout is the original
+  stacked one rather than a second layout to keep in step.
+- Both `datetime` and `bounded-datetime` run in `mode="datetime"` and share the layout. `time`
+  mode has no calendar to sit beside and is scoped out of every rule.
+
+## 9. Responsive behavior and motion
+
+- The panel is at most `22rem` wide — `35rem` for datetime above `37rem` — and never wider than
+  `calc(100vw - 24px)`.
 - At `480px` and below, padding contracts while calendar cells and time inputs remain usable.
 - The time dropdown matches the width of the input it is anchored to, has its own vertical scroll
   capped at `168px`, flips above the input when space below is short, and stays inside the
@@ -193,7 +223,7 @@ include a visible check mark. The no-results message stays visible inside the dr
 - Opacity and translate transitions take about `140ms`.
 - `prefers-reduced-motion: reduce` removes transitions and smooth behavior.
 
-## 9. Distribution preview
+## 10. Distribution preview
 
 `preview/thumbnail.svg` is a static `640x360` miniature of the primary Datetime variant in its
 open state. It preserves the approved composition and palette while showing `08:45:30` and a
@@ -204,7 +234,7 @@ Generated `poster.png` and `demo.webm` stay local. They are QA evidence and a bu
 proves the component renders in a real browser; no page requests them, so publishing leaves them
 behind. The interactive Datetime example starts closed so visitors initiate every interaction.
 
-## 10. Acceptance criteria
+## 11. Acceptance criteria
 
 - All six variants run independently and match the strict value contract.
 - The five primary variants contain no range restriction; Bounded Datetime alone demonstrates
@@ -219,4 +249,8 @@ behind. The interactive Datetime example starts closed so visitors initiate ever
   civil values without timezone conversion.
 - Focus restoration, outside click, collision handling, responsive behavior, and reduced motion
   match this document.
+- Above `37rem` a datetime panel places its time fields beside the calendar as a row, top-aligned
+  with the month heading, with the rule running the calendar's height, the day cells still at
+  `40px`, and the dropdown clearing the day grid entirely. Below that width the stacked layout is
+  unchanged, and `time` mode is unchanged at every width.
 - README, PROMPT, manifest, thumbnail, tests, and source describe the same API and behavior.

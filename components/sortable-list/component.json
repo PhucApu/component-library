@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 2,
+  "id": "sortable-list",
+  "version": "0.1.0",
+  "name": "Sortable List",
+  "description": "A framework-free Web Component that lets a reader reorder rows in a list or a table by pointer or by keyboard. Built on pointer events rather than the HTML5 drag-and-drop API, which does not exist on touch, and every drag has a spoken keyboard equivalent.",
+  "group": "inputs",
+  "categories": ["inputs"],
+  "tags": [
+    "drag-and-drop",
+    "reorder",
+    "sortable",
+    "list",
+    "table",
+    "pointer-events",
+    "keyboard",
+    "web-component",
+    "accessible",
+    "progressive-enhancement"
+  ],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Reordering by handle, the movement threshold, and the pointer path that also works on touch.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "table",
+      "name": "Table",
+      "description": "The same component on real table rows, and the two things a table costs.",
+      "entry": "source/variants/table/index.html"
+    },
+    {
+      "id": "keyboard",
+      "name": "Keyboard",
+      "description": "The second path in full, including the cancel that puts the row back where it started.",
+      "entry": "source/variants/keyboard/index.html"
+    },
+    {
+      "id": "commit",
+      "name": "Commit",
+      "description": "Saving the new order, holding while it is in flight, and going back when the server refuses.",
+      "entry": "source/variants/commit/index.html"
+    },
+    {
+      "id": "markup",
+      "name": "Markup",
+      "description": "The data contract, the no-script fallback, and auto-scrolling a long list inside a box.",
+      "entry": "source/variants/markup/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "Locked rows that act as walls, a single row, nothing at all, switched off, and a failure.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

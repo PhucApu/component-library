@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" class="sortable-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Rows the reader can put in the order they want, by pointer or by keyboard." />
+    <title>Sortable List - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="sortable-demo">
+      <div class="sortable-demo__shell">
+        <section class="sortable-demo__card">
+          <p class="sortable-demo__label">Put the rows in the order you want</p>
+          <p class="sortable-demo__note">
+            Drag a handle, or tab to one and press space. Both paths land in exactly the same
+            place, because both ask the same function where the row belongs.
+          </p>
+
+          <ui-sortable-list>
+            <ol>
+              <li>Review pull requests</li>
+              <li>Answer the support queue</li>
+              <li>Write the release notes</li>
+              <li>Deploy to staging</li>
+              <li>Update the changelog</li>
+            </ol>
+          </ui-sortable-list>
+
+          <p class="sortable-demo__label">Not the HTML5 drag-and-drop API</p>
+          <p class="sortable-demo__note">
+            That API does not fire on touch in most mobile browsers — on a phone the feature
+            simply is not there. It also needs a <code>preventDefault</code> on
+            <code>dragover</code> before a drop is allowed at all, and its drag image is a
+            browser-rendered bitmap you cannot style. <code>dataTransfer</code> exists to move
+            data <em>between applications</em>, which is not what reordering a list is. Pointer
+            events give one code path for mouse, touch and pen.
+          </p>
+
+          <p class="sortable-demo__label">A handle, and a threshold</p>
+          <p class="sortable-demo__note">
+            A row that is draggable everywhere cannot have its text selected or its buttons
+            pressed, so the handle is the default and <code>drag="row"</code> is the opt-in.
+            Nothing moves until the pointer has travelled <code>5px</code>, or pressing a button
+            inside a row would register as a one-pixel drag and eat the click.
+          </p>
+
+          <p class="sortable-demo__label">Rows are moved, not re-rendered</p>
+          <p class="sortable-demo__note">
+            The same nodes are re-inserted in the new order, so focus stays on the handle you
+            just used and anything living inside a row survives the move.
+          </p>
+
+          <output class="sortable-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeSortableListDemo } from '../../demo.js';
+
+      initializeSortableListDemo();
+    </script>
+  </body>
+</html>

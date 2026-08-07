@@ -118,6 +118,34 @@
       </section>
 
       <section class="catalog-results" aria-labelledby="results-title">
+        <div class="catalog-tabs" role="tablist" aria-label="Catalog sections">
+          <button
+            type="button"
+            id="tab-components"
+            class="catalog-tab"
+            role="tab"
+            data-catalog-tab="components"
+            aria-controls="component-grid"
+            aria-selected="true"
+          >
+            <span class="catalog-tab__label">Components</span>
+            <span class="catalog-tab__count" data-tab-count>0</span>
+          </button>
+          <button
+            type="button"
+            id="tab-animations"
+            class="catalog-tab"
+            role="tab"
+            data-catalog-tab="animations"
+            aria-controls="component-grid"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            <span class="catalog-tab__label">Animations</span>
+            <span class="catalog-tab__count" data-tab-count>0</span>
+          </button>
+        </div>
+
         <div class="catalog-toolbar">
           <h2 id="results-title" class="catalog-toolbar__title">All components</h2>
           <p id="result-summary" class="catalog-toolbar__summary" aria-live="polite">
@@ -125,7 +153,13 @@
           </p>
         </div>
 
-        <div id="component-grid" class="catalog-groups" aria-live="polite"></div>
+        <div
+          id="component-grid"
+          class="catalog-groups"
+          role="tabpanel"
+          aria-labelledby="tab-components"
+          aria-live="polite"
+        ></div>
 
         <div id="empty-state" class="empty-state catalog-empty-state" role="status">
           <div class="empty-state__visual" aria-hidden="true">

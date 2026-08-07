@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" class="ripple-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="The wake alone: how far the pointer travels between marks, and how speed opens the arc."
+    />
+    <title>Ripple Surface - Wake</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="ripple-demo">
+      <div class="ripple-demo__shell">
+        <section class="ripple-demo__card">
+          <p class="ripple-demo__label">The wake on its own</p>
+          <p class="ripple-demo__note">
+            <code>no-drop</code> leaves only the trail. A mark is made every time the pointer
+            has travelled <code>spacing</code> pixels, not on every move the browser reports:
+            tying it to distance rather than to events is what makes the same gesture look the
+            same on a slow machine and a fast one.
+          </p>
+          <p class="ripple-demo__note">
+            Each mark is an arc facing the way the pointer came from, and it opens wider the
+            faster the pointer was going — a crawl leaves a narrow line, a dash leaves a
+            spreading V.
+          </p>
+
+          <ui-ripple-surface no-drop>
+            <div class="ripple-demo__pool"></div>
+          </ui-ripple-surface>
+
+          <output></output>
+        </section>
+
+        <section class="ripple-demo__card">
+          <p class="ripple-demo__label">Marks far apart, and close together</p>
+          <p class="ripple-demo__note">
+            The same surface with <code>spacing="40"</code> and <code>spacing="6"</code>. Wide
+            spacing reads as a heavy hull leaving separate waves; tight spacing reads as a
+            continuous furrow and costs more to draw.
+          </p>
+
+          <div class="ripple-demo__grid">
+            <ui-ripple-surface no-drop spacing="40">
+              <div class="ripple-demo__pool"></div>
+            </ui-ripple-surface>
+
+            <ui-ripple-surface no-drop spacing="6">
+              <div class="ripple-demo__pool"></div>
+            </ui-ripple-surface>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeRippleDemo } from '../../demo.js';
+
+      initializeRippleDemo();
+    </script>
+  </body>
+</html>

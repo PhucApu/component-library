@@ -69,6 +69,13 @@ Allowed groups are `inputs`, `data-display`, `feedback`, `surface`, `navigation`
 `utilities`. Folder name and manifest ID must match. Variant entries always follow
 `source/variants/<variant-id>/index.html`.
 
+An entry whose deliverable is the motion itself adds `"kind": "animation"` and takes its group
+from the animation taxonomy in `docs/naming-conventions.md`: `loaders`, `transitions`,
+`pointer-effects`, `backgrounds`, `text-effects`, or `scroll-effects`. The schema validates
+`group` against the taxonomy that matches `kind`, so a mismatched pair fails validation rather
+than landing in the wrong homepage tab. Omit `kind` for a component; everything else in this
+document applies to both kinds unchanged.
+
 ## Preview frame contract
 
 The detail page renders each variant in an iframe fixed at `preview.viewport.height` in every

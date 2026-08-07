@@ -1,5 +1,9 @@
 import componentRegistry from '../../generated/components-index.json';
-import { getComponentGroup } from './component-groups.js';
+import {
+  DEFAULT_CATALOG_TAB,
+  getComponentGroup,
+  getTabForComponent,
+} from './component-groups.js';
 import { createFileSelect } from './file-select.js';
 import {
   getVariant,
@@ -180,8 +184,12 @@ export function renderComponent(component) {
   document.title = `${component.name} · Component UI Collection`;
 
   const group = getComponentGroup(component.group);
+  const tab = getTabForComponent(component);
   const groupLink = document.querySelector('#component-group-link');
-  groupLink.href = `./index.html#${group.anchor}`;
+  // The homepage renders one tab at a time, so an anchor on its own would land on a
+  // section the default tab never draws. The default tab needs no parameter to say so.
+  const tabQuery = tab.id === DEFAULT_CATALOG_TAB.id ? '' : `?tab=${tab.id}`;
+  groupLink.href = `./index.html${tabQuery}#${group.anchor}`;
   groupLink.textContent = group.label;
 
   document.querySelector('#component-name').textContent = component.name;

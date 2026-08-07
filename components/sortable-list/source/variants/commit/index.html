@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" class="sortable-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Saving the new order, and putting the list back when the server refuses." />
+    <title>Sortable List - Commit</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="sortable-demo">
+      <div class="sortable-demo__shell">
+        <section class="sortable-demo__card">
+          <p class="sortable-demo__label">The change is shown before it is saved</p>
+          <p class="sortable-demo__note">
+            A reorder has to feel instant, so the row lands where it was dropped and the request
+            goes out afterwards. That is a promise the component then has to keep — and something
+            has to undo it honestly when the server says no.
+          </p>
+
+          <div class="sortable-demo__controls">
+            <button class="sortable-demo__button" type="button" data-demo-action="commit" data-demo-commit="ok" data-current>Saving succeeds</button>
+            <button class="sortable-demo__button" type="button" data-demo-action="commit" data-demo-commit="fail">Saving fails</button>
+          </div>
+
+          <ui-sortable-list id="queue">
+            <ol>
+              <li>Nguyen Van A — order #4821</li>
+              <li>Tran Thi B — order #4822</li>
+              <li>Le Van C — order #4823</li>
+              <li>Pham Thi D — order #4824</li>
+            </ol>
+          </ui-sortable-list>
+
+          <p class="sortable-demo__label">What a refusal has to do</p>
+          <p class="sortable-demo__note">
+            Switch to <em>Saving fails</em> and move a row. The list holds at reduced opacity
+            while the request is out, then the row goes back to exactly where it started and the
+            reason is announced — not a silent revert, and not a toast pointing at a list that
+            has already changed underneath it.
+          </p>
+
+          <p class="sortable-demo__label">Two reorders in flight</p>
+          <p class="sortable-demo__note">
+            Each request carries a token. Without one, a slow failure could roll back a change
+            the reader has since replaced — the list would jump to an order nobody chose. Only
+            the newest request is allowed to touch the rows.
+          </p>
+
+          <p class="sortable-demo__label">The same contract as the switch</p>
+          <p class="sortable-demo__note">
+            <code>commit</code> takes an async function and receives
+            <code>{ from, to, order }</code>. Reject it to refuse. It is deliberately the shape
+            <code>ui-switch</code> already uses in this collection, because it is the same
+            problem: an optimistic change that something has to be able to take back.
+          </p>
+
+          <output class="sortable-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeSortableListDemo } from '../../demo.js';
+
+      initializeSortableListDemo();
+
+      // The demo starts with a commit already attached, so the first drag shows the pending
+      // state rather than needing a button press first.
+      document.getElementById('queue').commit = () =>
+        new Promise((resolve) => setTimeout(resolve, 900));
+    </script>
+  </body>
+</html>

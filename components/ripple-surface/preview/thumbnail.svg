@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="Rings spreading from a point on a still surface, with a wake of arcs trailing behind a pointer">
+  <defs>
+    <radialGradient id="ripple-glow" cx="12%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#4968e8" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#4968e8" stop-opacity="0" />
+    </radialGradient>
+    <clipPath id="ripple-pool">
+      <rect x="76" y="86" width="488" height="176" rx="12" />
+    </clipPath>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect width="640" height="360" fill="url(#ripple-glow)" />
+
+  <rect x="48" y="34" width="544" height="292" rx="18" fill="#171a20" stroke="#292d36" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="76" y="68" fill="#a8afbc" font-size="13" font-weight="650">Still water, until something touches it</text>
+
+    <rect x="76" y="86" width="488" height="176" rx="12" fill="#101a20" stroke="#2e3440" />
+
+    <g clip-path="url(#ripple-pool)" fill="none" stroke="#a9def5" stroke-linecap="round">
+      <circle cx="238" cy="174" r="26" stroke-opacity="0.85" stroke-width="2.4" />
+      <circle cx="238" cy="174" r="56" stroke-opacity="0.55" stroke-width="1.8" />
+      <circle cx="238" cy="174" r="88" stroke-opacity="0.28" stroke-width="1.2" />
+
+      <path d="M470 128a34 34 0 0 0-48 0" stroke-opacity="0.7" stroke-width="1.6" />
+      <path d="M446 152a52 52 0 0 0-74 0" stroke-opacity="0.5" stroke-width="1.4" />
+      <path d="M420 178a70 70 0 0 0-100 0" stroke-opacity="0.32" stroke-width="1.2" />
+      <path d="M396 206a88 88 0 0 0-126 0" stroke-opacity="0.18" stroke-width="1" />
+    </g>
+
+    <circle cx="486" cy="118" r="4.5" fill="#86a0ff" />
+  </g>
+</svg>

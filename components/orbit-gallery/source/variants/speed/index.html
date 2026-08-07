@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" class="orbit-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="How fast the ring drifts, and which way round it goes."
+    />
+    <title>Orbit Gallery - Speed</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="orbit-demo">
+      <div class="orbit-demo__shell">
+        <section class="orbit-demo__card">
+          <p class="orbit-demo__label">Six degrees a second</p>
+          <p class="orbit-demo__note">
+            A full turn every minute. Slow enough that the ring reads as a standing object
+            rather than a moving one, which is what a gallery beside body text wants.
+          </p>
+
+          <ui-orbit-gallery label="Slow ring" speed="6">
+            <ul>
+              <li><img src="../../assets/glass-lake.svg" alt="Mountains reflected in a still lake" /></li>
+              <li><img src="../../assets/cedar-slope.svg" alt="Cedars standing on a green slope" /></li>
+              <li><img src="../../assets/frost-peak.svg" alt="A frosted peak above a blue valley" /></li>
+              <li><img src="../../assets/moss-valley.svg" alt="A mossy valley under soft light" /></li>
+              <li><img src="../../assets/harvest-plain.svg" alt="A harvested plain under a wide sky" /></li>
+              <li><img src="../../assets/pier-dawn.svg" alt="A pier reaching out at dawn" /></li>
+            </ul>
+          </ui-orbit-gallery>
+        </section>
+
+        <section class="orbit-demo__card">
+          <p class="orbit-demo__label">Thirty-six degrees a second</p>
+          <p class="orbit-demo__note">
+            A full turn every ten seconds, which is about as fast as a picture can travel and
+            still be worth pointing at. Speed is capped at 120; past that the ring is a blur
+            with pictures in it.
+          </p>
+
+          <ui-orbit-gallery label="Fast ring" speed="36">
+            <ul>
+              <li><img src="../../assets/amber-ridge.svg" alt="A ridge line under an amber sky" /></li>
+              <li><img src="../../assets/dune-line.svg" alt="Wind-shaped dunes in late sun" /></li>
+              <li><img src="../../assets/copper-mesa.svg" alt="Copper mesas above flat ground" /></li>
+              <li><img src="../../assets/storm-shore.svg" alt="A storm front over a grey shore" /></li>
+              <li><img src="../../assets/cobalt-bay.svg" alt="A headland above a cobalt bay" /></li>
+              <li><img src="../../assets/harbour-lights.svg" alt="Harbour buildings lit after dark" /></li>
+            </ul>
+          </ui-orbit-gallery>
+        </section>
+
+        <section class="orbit-demo__card">
+          <p class="orbit-demo__label">The other way round</p>
+          <p class="orbit-demo__note">
+            <code>direction="reverse"</code> turns the ring the other way. It changes nothing
+            else: dragging, throwing and the arrow keys all still mean what they meant, and
+            the drift picks up in reverse wherever they leave it.
+          </p>
+
+          <ui-orbit-gallery label="Reversed ring" speed="12" direction="reverse">
+            <ul>
+              <li><img src="../../assets/harbour-lights.svg" alt="Harbour buildings lit after dark" /></li>
+              <li><img src="../../assets/pier-dawn.svg" alt="A pier reaching out at dawn" /></li>
+              <li><img src="../../assets/glass-lake.svg" alt="Mountains reflected in a still lake" /></li>
+              <li><img src="../../assets/moss-valley.svg" alt="A mossy valley under soft light" /></li>
+              <li><img src="../../assets/frost-peak.svg" alt="A frosted peak above a blue valley" /></li>
+              <li><img src="../../assets/amber-ridge.svg" alt="A ridge line under an amber sky" /></li>
+            </ul>
+          </ui-orbit-gallery>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeOrbitDemo } from '../../demo.js';
+
+      initializeOrbitDemo();
+    </script>
+  </body>
+</html>

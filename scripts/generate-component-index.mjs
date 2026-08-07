@@ -83,6 +83,10 @@ async function toRegistryEntry({ componentDirectory, manifest }, bundle) {
   return {
     schemaVersion: manifest.schemaVersion,
     id: manifest.id,
+    // The homepage splits its two tabs on this. An absent kind means a regular
+    // component, so every manifest written before the animations tab existed keeps
+    // landing where it already did.
+    kind: manifest.kind ?? 'component',
     version: manifest.version,
     name: manifest.name,
     description: manifest.description,

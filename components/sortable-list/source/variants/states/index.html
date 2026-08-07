@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" class="sortable-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Locked rows, one row, nothing at all, the whole list switched off, and a failure." />
+    <title>Sortable List - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="sortable-demo">
+      <div class="sortable-demo__shell">
+        <section class="sortable-demo__card">
+          <p class="sortable-demo__label">A locked row is a wall, not a row you cannot pick up</p>
+          <p class="sortable-demo__note">
+            <em>Triage</em> stays first and <em>Closed</em> stays last. Rows reorder freely on
+            either side of them and never across. Treating a locked row as merely unpickable
+            would let everything else slide underneath it and change its position anyway — which
+            is the opposite of what "this one stays first" means.
+          </p>
+
+          <ui-sortable-list id="stages">
+            <ol>
+              <li data-locked>Triage</li>
+              <li>In progress</li>
+              <li>Code review</li>
+              <li>Ready to deploy</li>
+              <li data-locked>Closed</li>
+            </ol>
+          </ui-sortable-list>
+
+          <p class="sortable-demo__note">
+            Try to move <em>In progress</em> up: the move is refused and the refusal names what
+            stopped it — <em>"In progress cannot move past Triage"</em>. Running out of list at
+            the very top says nothing at all, because nothing stopped you there.
+          </p>
+
+          <p class="sortable-demo__label">Marked with a lock, not with a colour</p>
+          <p class="sortable-demo__note">
+            A locked row carries no tint. In dark mode no tint cleared its contrast floor against
+            its neighbour without going darker than the page behind it, and a fill nobody can see
+            is worse than no fill. The lock sits where the handle would be, so the row is marked
+            positively rather than by something being absent.
+          </p>
+
+          <p class="sortable-demo__label">One row</p>
+          <p class="sortable-demo__note">
+            There is nowhere to put it. The handle is still there and still answers, and the
+            announcement says position 1 of 1 rather than pretending a move happened.
+          </p>
+
+          <ui-sortable-list>
+            <ol>
+              <li>The only step</li>
+            </ol>
+          </ui-sortable-list>
+
+          <p class="sortable-demo__label">Nothing at all</p>
+
+          <ui-sortable-list>
+            <ol></ol>
+          </ui-sortable-list>
+
+          <p class="sortable-demo__label">Switched off, and failed</p>
+          <p class="sortable-demo__note">
+            <code>disabled</code> disables every handle rather than swallowing the events —
+            a control that looks operable and does nothing is worse than one that says it is off.
+            <code>error</code> explains itself and leaves the rows exactly where they are.
+          </p>
+
+          <div class="sortable-demo__controls">
+            <button class="sortable-demo__button" type="button" data-demo-action="disabled" data-demo-target="stages">Disabled</button>
+            <button class="sortable-demo__button" type="button" data-demo-action="error" data-demo-target="stages">Error</button>
+            <button class="sortable-demo__button" type="button" data-demo-action="move" data-demo-target="stages" data-demo-from="1" data-demo-to="3">move(1, 3)</button>
+            <button class="sortable-demo__button" type="button" data-demo-action="move" data-demo-target="stages" data-demo-from="1" data-demo-to="0">move(1, 0) — refused</button>
+          </div>
+
+          <output class="sortable-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeSortableListDemo } from '../../demo.js';
+
+      initializeSortableListDemo();
+    </script>
+  </body>
+</html>

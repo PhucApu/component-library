@@ -655,6 +655,58 @@ button.temporal-picker__view-title {
   overflow-wrap: anywhere;
 }
 
+/* ---- Datetime: the clock beside the calendar, not under it -------------------------------
+
+   Written mobile-first on purpose. Below this width not one rule here applies, so the narrow
+   layout is the untouched stacked one rather than a second layout to keep in step.
+
+   The threshold is the content, not a round number. The time column holds Hour, Minute and
+   Second in a row exactly as the time-only picker does, which needs about 216px; the day grid
+   wants about 300px to keep its cells at their full 40px; the panel's padding and rule take
+   the rest to 560px. 37rem leaves a little room before the panel starts fighting the viewport.
+
+   Nothing in the markup changes for any of this — `_renderPanel` already writes `data-mode`
+   on the panel, so the whole thing is reachable from the stylesheet. That keeps the DOM order
+   as it was, which keeps the tab order as it was: day grid, then hour, minute, second. Read
+   left to right, that is still the order the eye takes. */
+@media (min-width: 37rem) {
+  .temporal-picker__panel[data-mode="datetime"] {
+    inline-size: min(35rem, calc(100vw - 24px));
+  }
+
+  /* The time column is a definite track rather than `auto`, and the one that pays for getting
+     this wrong is the calendar, not the clock. With `auto` the time fields are `inline-size:
+     100%`, so the track has no natural size to settle on and takes everything the flexible
+     column will give up — measured at `0px 518px`, a panel with no visible calendar at all.
+
+     The rows have to be declared too. With no explicit rows the `1 / -1` below resolves
+     against an explicit grid that has only one line, the span collapses, and the time block
+     claims row one for itself — which pushes the calendar down and makes the panel taller
+     than the stacked layout it was meant to improve on. */
+  .temporal-picker__panel[data-mode="datetime"] .temporal-picker__calendar {
+    grid-template-columns: minmax(0, 1fr) 13.5rem;
+    grid-template-rows: auto auto auto;
+  }
+
+  .temporal-picker__panel[data-mode="datetime"] .temporal-picker__datetime-time {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    /* The divider turns with the layout: it separated two stacked blocks, now it separates
+       two side by side. */
+    padding-block-start: 0;
+    padding-inline-start: 0.875rem;
+    border-block-start: 0;
+    border-inline-start: 1px solid var(--temporal-border);
+  }
+
+  /* The row itself is the one the picker already uses everywhere else — three fields across,
+     with the colons between them. Only `align-content` is added, so the row sits at the top of
+     a column that spans the whole calendar rather than floating in the middle of it. */
+  .temporal-picker__panel[data-mode="datetime"] .temporal-picker__time-controls {
+    align-content: start;
+  }
+}
+
 @media (max-width: 480px) {
   .temporal-picker__panel {
     padding: 0.75rem;

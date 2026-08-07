@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" class="ripple-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A still surface that answers the pointer with a wake and a press with spreading rings."
+    />
+    <title>Ripple Surface - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="ripple-demo">
+      <div class="ripple-demo__shell">
+        <section class="ripple-demo__card">
+          <p class="ripple-demo__label">Still until something touches it</p>
+          <p class="ripple-demo__note">
+            Move across the surface and it answers the way water answers a boat: a wake
+            opening behind wherever the pointer has just been, wider the faster it travels.
+            Press anywhere and rings spread from that point and disappear, as though
+            something had fallen in. Leave it alone and it goes flat again — and asks for no
+            frames at all while it is flat.
+          </p>
+          <p class="ripple-demo__note">
+            The heading and the button below sit <em>under</em> the water. The surface takes
+            no presses of its own, so the button still works and the words can still be
+            selected.
+          </p>
+
+          <ui-ripple-surface>
+            <div class="ripple-demo__hero">
+              <h2 class="ripple-demo__title">Cross the water, or drop something in it</h2>
+              <p class="ripple-demo__note">
+                Everything you can see here is ordinary content with a surface drawn over it.
+              </p>
+              <div class="ripple-demo__row">
+                <button class="ripple-demo__button" type="button" data-demo-count>
+                  A button under the water
+                </button>
+              </div>
+            </div>
+          </ui-ripple-surface>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeRippleDemo } from '../../demo.js';
+
+      initializeRippleDemo();
+
+      // Proof, on the page itself, that the surface never took the press.
+      const button = document.querySelector('[data-demo-count]');
+      let presses = 0;
+      button.addEventListener('click', () => {
+        presses += 1;
+        button.textContent = `Pressed ${presses} time${presses === 1 ? '' : 's'}, under the water`;
+      });
+    </script>
+  </body>
+</html>

@@ -58,6 +58,12 @@ Schema version 2 adds a top-level taxonomy group, English descriptions for every
 authored static SVG thumbnail. The generated registry resolves public URLs and includes both the
 full source listing and a `distribution` listing.
 
+An optional `kind` names which homepage tab an entry belongs to and which taxonomy its `group`
+is validated against. It stays optional so the manifests written before the tab existed remain
+valid, and the registry writes the resolved value on every entry rather than leaving the
+catalog to guess. Both kinds share one directory, one validation path, one detail page, and one
+distribution contract: the split is a reading order, not a second pipeline.
+
 ## Distribution bundle
 
 Each component is also emitted as three ready-to-use files named after its ID: one HTML demo
@@ -79,7 +85,8 @@ collision instead of emitting a file that would throw a `SyntaxError`.
 
 ## URL contract
 
-- `index.html`: grouped catalog and search.
+- `index.html`: grouped catalog and search, opened on the Components tab.
+- `index.html?tab=animations`: the same page opened on the Animations tab.
 - `component.html?id=<component-id>`: component detail.
 - `components/<id>/...`: published source, docs, and thumbnail.
 - `generated/bundles/<id>/<id>.{html,css,js}`: the three ready-to-use files.

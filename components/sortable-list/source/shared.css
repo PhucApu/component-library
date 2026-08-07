@@ -1,0 +1,395 @@
+:root {
+  color-scheme: light dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.sortable-demo-page,
+.sortable-demo-page body {
+  background: light-dark(#f4f6fa, #12151b);
+}
+
+ui-sortable-list {
+  /* ---- Measured against this component's own two surfaces, on exact ratios ---------------
+       row text vs row            17.7397 light  15.0855 dark  (floor 4.5)
+       muted text vs row           5.6181         7.4017       (floor 4.5)
+       handle icon vs row          3.7700         4.7480       (floor 3.0, it is a control)
+       grabbed row vs its neighbour 1.2613        1.2850       (floor 1.2, it must read as fill)
+       grabbed outline on it       3.5007         3.4905       (floor 3.0)
+       lock glyph vs row           5.6181         7.4017       (floor 3.0)
+       row edge vs surface         1.2850         1.4636       (floor 1.2)
+
+     There is deliberately no fill for a locked row. In dark mode no tint cleared 1.15 against
+     its neighbour without going darker than the page behind it, and a fill nobody can see is
+     worse than no fill — so a lock is a glyph in the handle's place, which is a mark. */
+  --sortable-surface: light-dark(#f4f6fa, #12151b);
+  --sortable-row: light-dark(#ffffff, #1c2028);
+  --sortable-ink: light-dark(#111827, #f4f6fa);
+  --sortable-ink-muted: light-dark(#5f6878, #a8afbc);
+  --sortable-border: light-dark(#d5dbe6, #2e3440);
+  --sortable-handle: light-dark(#7b8494, #828b9a);
+  --sortable-handle-hover: light-dark(#3f4757, #cbd1dc);
+  --sortable-accent: light-dark(#2a78d6, #3987e5);
+  --sortable-grabbed: light-dark(#d9e6fa, #253444);
+  --sortable-focus: light-dark(#4f46e5, #86a0ff);
+
+  --sortable-radius: 10px;
+  --sortable-gap: 8px;
+  --sortable-motion: 180ms;
+
+  display: block;
+  min-inline-size: 0;
+  color: var(--sortable-ink);
+  font: 400 0.9375rem/1.5
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* ---- The list --------------------------------------------------------------------------- */
+
+ui-sortable-list ol,
+ui-sortable-list ul {
+  display: grid;
+  gap: var(--sortable-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sortable__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  border: 1px solid var(--sortable-border);
+  border-radius: var(--sortable-radius);
+  background: var(--sortable-row);
+  padding: 0.6rem 0.85rem;
+  /* The rows that step aside animate; the row under the finger does not, because it is already
+     exactly where the pointer put it and easing would make it lag behind. */
+  transition: transform var(--sortable-motion) cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Above its neighbours while it is in the air, or it slides underneath the row it is passing. */
+.sortable__row[data-sortable-grabbed] {
+  z-index: 2;
+  border-color: var(--sortable-accent);
+  background: var(--sortable-grabbed);
+  box-shadow: 0 12px 28px light-dark(rgb(15 23 42 / 0.18), rgb(0 0 0 / 0.45));
+  transition: none;
+}
+
+.sortable__row[data-sortable-locked] {
+  color: var(--sortable-ink-muted);
+}
+
+/* ---- The handle -------------------------------------------------------------------------- */
+
+.sortable__handle {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  padding: 0;
+  color: var(--sortable-handle);
+  cursor: grab;
+  /* Without this a touch drag scrolls the page instead of moving the row, and the gesture is
+     gone before the component ever sees it. */
+  touch-action: none;
+}
+
+.sortable__handle:hover:not(:disabled) {
+  color: var(--sortable-handle-hover);
+}
+
+.sortable__handle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--sortable-focus) 65%, transparent);
+  outline-offset: 1px;
+}
+
+.sortable__handle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.sortable__handle svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+  fill: currentColor;
+}
+
+ui-sortable-list[data-sortable-dragging] .sortable__handle {
+  cursor: grabbing;
+}
+
+.sortable__lock {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  color: var(--sortable-ink-muted);
+}
+
+.sortable__lock svg {
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
+}
+
+/* Whole-row dragging is opt-in, and takes the row's own text selection with it. */
+ui-sortable-list[drag="row"] .sortable__row:not([data-sortable-locked]) {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+/* ---- The same thing, in a table ----------------------------------------------------------- */
+
+/* A row cannot carry a shadow while the table collapses its borders, and it is the shadow that
+   says "this one is off the page in your hand". Separate borders is the price of the lift. */
+ui-sortable-list table {
+  inline-size: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
+}
+
+ui-sortable-list caption {
+  margin-block-end: 0.5rem;
+  color: var(--sortable-ink-muted);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  text-align: start;
+}
+
+ui-sortable-list th,
+ui-sortable-list td {
+  border-block-end: 1px solid var(--sortable-border);
+  padding: 0.55rem 0.7rem;
+  text-align: start;
+}
+
+ui-sortable-list thead th {
+  color: var(--sortable-ink-muted);
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+ui-sortable-list tbody tr.sortable__row {
+  display: table-row;
+  border: 0;
+  border-radius: 0;
+  background: var(--sortable-row);
+  padding: 0;
+}
+
+ui-sortable-list tbody tr.sortable__row[data-sortable-grabbed] {
+  outline: 1px solid var(--sortable-accent);
+  outline-offset: -1px;
+}
+
+ui-sortable-list tbody tr.sortable__row[data-sortable-grabbed] td {
+  background: var(--sortable-grabbed);
+}
+
+ui-sortable-list td:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* A cell with a second line under its name, which is what makes a real table's rows different
+   heights from each other. */
+.sortable__stack {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.sortable__stack small {
+  color: var(--sortable-ink-muted);
+  font-size: 0.75rem;
+}
+
+ui-sortable-list td.sortable__numeric {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+/* ---- States -------------------------------------------------------------------------------- */
+
+.sortable__empty {
+  margin: 0;
+  border: 1px dashed var(--sortable-border);
+  border-radius: var(--sortable-radius);
+  padding: 2rem 1rem;
+  color: var(--sortable-ink-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.sortable__empty[hidden],
+.sortable__note[hidden] {
+  display: none;
+}
+
+.sortable__note {
+  margin: 0.6rem 0 0;
+  color: var(--sortable-ink-muted);
+  font-size: 0.8125rem;
+}
+
+ui-sortable-list[pending] .sortable__row,
+ui-sortable-list[disabled] .sortable__row {
+  opacity: 0.6;
+}
+
+.sortable__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The reorder still happens; only the travel between the two positions stops being animated.
+   Removing the motion must never remove the function. */
+@media (prefers-reduced-motion: reduce) {
+  ui-sortable-list {
+    --sortable-motion: 0ms;
+  }
+
+  .sortable__row {
+    transition: none;
+  }
+}
+
+/* ---- The demo page --------------------------------------------------------------------------- */
+
+.sortable-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background: light-dark(#f4f6fa, #12151b);
+  color: light-dark(#15181d, #f4f6fa);
+}
+
+.sortable-demo__shell {
+  min-inline-size: 0;
+  inline-size: min(100%, 44rem);
+}
+
+.sortable-demo__card {
+  display: grid;
+  gap: 1.1rem;
+  min-inline-size: 0;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid light-dark(#e3e7ef, #292d36);
+  border-radius: 18px;
+  background: light-dark(#ffffff, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
+}
+
+.sortable-demo__label {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.sortable-demo__note {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.sortable-demo__note code {
+  border-radius: 5px;
+  background: light-dark(rgb(15 23 42 / 0.07), rgb(244 246 250 / 0.12));
+  padding: 0.1em 0.35em;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.sortable-demo__scroll {
+  max-block-size: 15rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid light-dark(#e3e7ef, #292d36);
+  border-radius: 12px;
+  padding: 0.6rem;
+}
+
+.sortable-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sortable-demo__button {
+  border: 1px solid light-dark(#dfe4ec, #292d36);
+  border-radius: 9px;
+  background: light-dark(#f7f8fb, #10131a);
+  padding: 0.45rem 0.85rem;
+  color: light-dark(#15181d, #f4f6fa);
+  font:
+    600 0.8125rem/1.45 Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.sortable-demo__button:hover {
+  background: light-dark(#eef1f7, #171a20);
+}
+
+.sortable-demo__button[data-current] {
+  border-color: light-dark(#4f46e5, #86a0ff);
+  color: light-dark(#4f46e5, #86a0ff);
+}
+
+.sortable-demo__button:focus-visible {
+  outline: 3px solid light-dark(rgb(79 70 229 / 0.6), rgb(134 160 255 / 0.6));
+  outline-offset: 2px;
+}
+
+.sortable-demo__meta {
+  margin-inline-start: auto;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.sortable-demo__output {
+  display: block;
+  min-block-size: 2.5rem;
+  padding: 0.75rem;
+  border: 1px solid light-dark(#e3e7ef, #292d36);
+  border-radius: 10px;
+  background: light-dark(#f7f8fb, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

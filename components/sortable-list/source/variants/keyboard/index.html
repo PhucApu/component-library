@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" class="sortable-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="The keyboard path in full, including the cancel that actually puts the row back." />
+    <title>Sortable List - Keyboard</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="sortable-demo">
+      <div class="sortable-demo__shell">
+        <section class="sortable-demo__card">
+          <p class="sortable-demo__label">The second path, not an extra</p>
+          <p class="sortable-demo__note">
+            This is the half every drag-and-drop library skips, and the reason so many admin
+            screens cannot be operated without a mouse. Tab to a handle and try it — nothing here
+            needs a pointer.
+          </p>
+
+          <p class="sortable-demo__note">
+            <code>Space</code> or <code>Enter</code> picks a row up and puts it down ·
+            <code>↑</code> <code>↓</code> move it · <code>Home</code> <code>End</code> reach the
+            ends · <code>Escape</code> cancels.
+          </p>
+
+          <ui-sortable-list>
+            <ol>
+              <li>Draft the announcement</li>
+              <li>Get legal sign-off</li>
+              <li>Schedule the send</li>
+              <li>Brief the support team</li>
+              <li>Publish the changelog</li>
+              <li>Watch the error rate</li>
+            </ol>
+          </ui-sortable-list>
+
+          <p class="sortable-demo__label">Escape puts it back, it does not drop it</p>
+          <p class="sortable-demo__note">
+            Pick a row up, move it three places, then press <code>Escape</code>. It returns to
+            where it started, not to wherever it happened to be. A cancel that quietly commits
+            the last position is worse than no cancel, because it teaches people not to trust it.
+            <code>pointercancel</code> — a phone call, a system gesture — does the same thing.
+          </p>
+
+          <p class="sortable-demo__label">Everything is spoken</p>
+          <p class="sortable-demo__note">
+            Picking up, every move, the drop and the cancel each go through a
+            <code>role="status"</code> region: <em>"Grabbed Schedule the send, position 3 of 6"</em>,
+            then <em>"position 2 of 6"</em>, then <em>"Dropped … at position 2 of 6"</em>. Without
+            that the reordering happens somewhere a screen reader user cannot see.
+          </p>
+
+          <p class="sortable-demo__label">Focus survives the move</p>
+          <p class="sortable-demo__note">
+            The same nodes are re-inserted rather than rebuilt, so the handle you were on is
+            still the handle you are on. Rebuild the rows and focus falls to the body, which
+            strands anyone driving by keyboard.
+          </p>
+
+          <output class="sortable-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeSortableListDemo } from '../../demo.js';
+
+      initializeSortableListDemo();
+    </script>
+  </body>
+</html>

@@ -583,10 +583,20 @@ test('time-capable variants keep responsive geometry at all visual QA viewports'
       const geometry = await inputs.evaluateAll((elements) =>
         elements.map((element) => {
           const rect = element.getBoundingClientRect();
-          return { top: Math.round(rect.top), width: rect.width };
+          return {
+            left: Math.round(rect.left),
+            top: Math.round(rect.top),
+            width: rect.width,
+          };
         }),
       );
+
+      // One row of three, at every width and in every time-capable mode. Moving the datetime
+      // clock beside the calendar moved the whole row; it did not stand the fields up.
       expect(new Set(geometry.map(({ top }) => top)).size).toBe(1);
+      // Three distinct lefts, so "one row" cannot pass by the fields having collapsed onto
+      // each other.
+      expect(new Set(geometry.map(({ left }) => left)).size).toBe(3);
       expect(geometry.every(({ width }) => width >= 48)).toBe(true);
 
       await picker.locator('input[data-time-part="minute"]').click();
@@ -631,6 +641,160 @@ test('time-capable variants keep responsive geometry at all visual QA viewports'
       expect(panelBox.bottom).toBeLessThanOrEqual(viewport.height);
     }
   }
+});
+
+test('a wide datetime panel puts the clock beside the calendar, not under it', async ({
+  page,
+}) => {
+  test.slow();
+
+  for (const variant of ['datetime', 'bounded-datetime']) {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(`${COMPONENT_BASE}/${variant}/index.html`);
+    const { panel } = await openPicker(page);
+
+    const layout = await panel.evaluate((element) => {
+      const box = (selector) => {
+        const rect = element.querySelector(selector).getBoundingClientRect();
+        return {
+          bottom: Math.round(rect.bottom),
+          left: Math.round(rect.left),
+          right: Math.round(rect.right),
+          top: Math.round(rect.top),
+          width: Math.round(rect.width),
+        };
+      };
+
+      return {
+        panelHeight: Math.round(element.getBoundingClientRect().height),
+        header: box('.temporal-picker__calendar-header'),
+        grid: box('.temporal-picker__day-grid'),
+        time: box('.temporal-picker__datetime-time'),
+        dayCell: box('.temporal-picker__day').width,
+        separatorsShown: [...element.querySelectorAll('.temporal-picker__time-separator')]
+          .filter((mark) => getComputedStyle(mark).display !== 'none').length,
+        inputs: [...element.querySelectorAll('.temporal-picker__time-input')].map((input) => {
+          const rect = input.getBoundingClientRect();
+          return { left: Math.round(rect.left), top: Math.round(rect.top), width: rect.width };
+        }),
+      };
+    });
+
+    // Clear of the calendar entirely rather than merely offset from it.
+    expect(layout.time.left).toBeGreaterThanOrEqual(layout.grid.right);
+
+    // Top-aligned with the month heading, and the rule beside it runs the calendar's height.
+    expect(Math.abs(layout.time.top - layout.header.top)).toBeLessThanOrEqual(1);
+    expect(Math.abs(layout.time.bottom - layout.grid.bottom)).toBeLessThanOrEqual(1);
+
+    // The row stays a row inside the right column, colons and all — the same arrangement the
+    // time-only picker uses. Only its position on the panel changed.
+    expect(new Set(layout.inputs.map(({ top }) => top)).size).toBe(1);
+    expect(new Set(layout.inputs.map(({ left }) => left)).size).toBe(3);
+    expect(layout.separatorsShown).toBe(2);
+    expect(layout.inputs.every(({ width }) => width >= 48)).toBe(true);
+    await expect(panel.locator('.temporal-picker__field > span')).toHaveCount(3);
+
+    // Widening the panel must not come out of the calendar. Both halves of that are asserted:
+    // a cell keeps its full size, and the grid is actually wide enough to hold seven of them.
+    // The grid alone is not enough — a `.temporal-picker__day` keeps its 40px and simply
+    // overflows a collapsed track, so a panel showing no calendar at all still measures 40.
+    expect(layout.dayCell).toBe(40);
+    expect(layout.grid.width).toBeGreaterThanOrEqual(280);
+
+    // The point of the move. Measured at 417 against the stacked panel's 507, and asserted
+    // loosely so a font metric cannot turn a layout win into a failing build.
+    expect(layout.panelHeight).toBeLessThan(470);
+  }
+});
+
+test('a datetime panel too narrow to split keeps the clock underneath', async ({ page }) => {
+  // Below the threshold not one of the two-column rules applies, so the narrow layout is the
+  // original stacked one rather than a second layout to keep in step with the first. Measured
+  // just under the 37rem line, where an off-by-one in the breakpoint would show.
+  await page.setViewportSize({ width: 584, height: 900 });
+  await page.goto(`${COMPONENT_BASE}/datetime/index.html`);
+  const { panel } = await openPicker(page);
+
+  const layout = await panel.evaluate((element) => {
+    const box = (selector) => {
+      const rect = element.querySelector(selector).getBoundingClientRect();
+      return { left: Math.round(rect.left), top: Math.round(rect.top) };
+    };
+    return {
+      grid: box('.temporal-picker__day-grid'),
+      time: box('.temporal-picker__datetime-time'),
+      separatorsShown: [...element.querySelectorAll('.temporal-picker__time-separator')]
+        .filter((mark) => getComputedStyle(mark).display !== 'none').length,
+      overflow: document.documentElement.scrollWidth > window.innerWidth,
+    };
+  });
+
+  expect(layout.time.top).toBeGreaterThan(layout.grid.top);
+  expect(Math.abs(layout.time.left - layout.grid.left)).toBeLessThanOrEqual(1);
+  expect(layout.separatorsShown).toBe(2);
+  expect(layout.overflow).toBe(false);
+});
+
+test('the time-only picker is untouched by the datetime layout', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(`${COMPONENT_BASE}/time/index.html`);
+  const { panel } = await openPicker(page);
+
+  // Every two-column rule is scoped to the datetime panel, and a time panel has no calendar
+  // to sit beside in the first place.
+  await expect(panel).toHaveAttribute('data-mode', 'time');
+  await expect(panel.locator('.temporal-picker__datetime-time')).toHaveCount(0);
+
+  const layout = await panel.evaluate((element) => ({
+    width: Math.round(element.getBoundingClientRect().width),
+    columns: getComputedStyle(
+      element.querySelector('.temporal-picker__time-controls'),
+    ).gridTemplateColumns.split(' ').length,
+    separatorsShown: [...element.querySelectorAll('.temporal-picker__time-separator')]
+      .filter((mark) => getComputedStyle(mark).display !== 'none').length,
+  }));
+
+  expect(layout.width).toBe(352);
+  expect(layout.columns).toBe(5);
+  expect(layout.separatorsShown).toBe(2);
+});
+
+test('the time dropdown clears the calendar when the clock sits beside it', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(`${COMPONENT_BASE}/datetime/index.html`);
+  const { panel, picker } = await openPicker(page);
+
+  await picker.locator('input[data-time-part="hour"]').click();
+  await expect(picker.locator('.temporal-picker__time-listbox')).toBeVisible();
+
+  const anchoring = await page.evaluate(() => {
+    const list = document
+      .querySelector('.temporal-picker__time-options')
+      .getBoundingClientRect();
+    const input = document
+      .querySelector('input[data-time-part="hour"]')
+      .getBoundingClientRect();
+    const grid = document
+      .querySelector('.temporal-picker__day-grid')
+      .getBoundingClientRect();
+
+    return {
+      clearsCalendar: list.left >= grid.right,
+      insideViewport: list.left >= 0 && list.right <= window.innerWidth,
+      leftDelta: Math.abs(list.left - input.left),
+      widthDelta: Math.abs(list.width - input.width),
+    };
+  });
+
+  // Moving the input to the right column moves the dropdown with it, and there it covers
+  // nothing a reader was looking at.
+  expect(anchoring.clearsCalendar).toBe(true);
+  expect(anchoring.insideViewport).toBe(true);
+  expect(anchoring.leftDelta).toBeLessThan(1);
+  expect(anchoring.widthDelta).toBeLessThan(1);
+
+  await expect(panel).toBeVisible();
 });
 
 test('fixed-position fallback portals the panel without losing theme tokens', async ({

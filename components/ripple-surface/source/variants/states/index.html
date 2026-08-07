@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" class="ripple-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="The surface over a picture, over a block of text, and under reduced motion."
+    />
+    <title>Ripple Surface - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="ripple-demo">
+      <div class="ripple-demo__shell">
+        <section class="ripple-demo__card">
+          <p class="ripple-demo__label">Over a picture</p>
+          <p class="ripple-demo__note">
+            The rings are drawn over whatever is underneath and never sample it, so a pale
+            ink disappears against a pale sky. That is a colour the page has to choose:
+            this one sets <code>--ripple-ink</code> to a warm white and turns the strength up
+            to carry over the picture.
+          </p>
+
+          <ui-ripple-surface style="--ripple-ink: #fff3dc; --ripple-strength: 0.95">
+            <div class="ripple-demo__frame">
+              <img
+                class="ripple-demo__picture"
+                src="../../assets/harbour-dusk.svg"
+                alt="A harbour at dusk with the sun low over the water"
+              />
+            </div>
+          </ui-ripple-surface>
+        </section>
+
+        <section class="ripple-demo__card">
+          <p class="ripple-demo__label">Over words</p>
+          <p class="ripple-demo__note">
+            Nothing here is behind glass. The paragraph below can be selected, the link can
+            be followed, and the surface is drawn across both without taking a press from
+            either.
+          </p>
+
+          <ui-ripple-surface>
+            <div class="ripple-demo__reading">
+              <p class="ripple-demo__note">
+                Water at rest is the absence of an animation rather than a slow one. A
+                surface that shimmered on its own would be asking for attention it has no
+                reason to want, and it would be doing so on every page it was placed on, for
+                as long as that page was open.
+              </p>
+              <p class="ripple-demo__note">
+                Select this sentence, or follow
+                <a href="#reading-note" id="reading-note">this link</a>, with the water
+                running over it.
+              </p>
+            </div>
+          </ui-ripple-surface>
+
+          <output></output>
+        </section>
+
+        <section class="ripple-demo__card">
+          <p class="ripple-demo__label">Reduced motion</p>
+          <p class="ripple-demo__note">
+            Under <code>prefers-reduced-motion</code> this surface makes no ripples at all —
+            not slower ones, none. Spreading rings are the whole of what it does, and a
+            slower spread is still a spread. What is left is a still surface, which is what
+            it looks like at rest anyway.
+          </p>
+
+          <ui-ripple-surface>
+            <div class="ripple-demo__pool"></div>
+          </ui-ripple-surface>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeRippleDemo } from '../../demo.js';
+
+      initializeRippleDemo();
+    </script>
+  </body>
+</html>

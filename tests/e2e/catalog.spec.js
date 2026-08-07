@@ -127,8 +127,11 @@ test('homepage is English, grouped, searchable, and free of external requests', 
   await expect(page.locator('#inputs')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Inputs', level: 2 })).toBeVisible();
   await expect(page.locator('#inputs .component-card')).toHaveCount(inputs.length);
+  // The header count names the whole library; the summary counts the open tab only.
   await expect(page.locator('#component-count')).toHaveText(countLabel(registry.length, 'component'));
-  await expect(page.locator('#result-summary')).toHaveText(countLabel(registry.length, 'result'));
+  await expect(page.locator('#result-summary')).toHaveText(
+    countLabel(splitRegistryByTab(registry).components.length, 'result'),
+  );
   await expect(runtimeErrors).toEqual([]);
   expect(externalRequests).toEqual([]);
 });
@@ -155,6 +158,117 @@ test('search matches group metadata, hides empty groups, and supports the slash 
 
   await search.fill('');
   await expect(page.locator('#inputs')).toBeVisible();
+});
+
+function splitRegistryByTab(registry) {
+  return {
+    components: registry.filter((entry) => (entry.kind ?? 'component') === 'component'),
+    animations: registry.filter((entry) => entry.kind === 'animation'),
+  };
+}
+
+test('the homepage splits components and animations into two tabs', async ({ page }) => {
+  const registry = await readRegistry();
+  const { components, animations } = splitRegistryByTab(registry);
+
+  await page.goto('/index.html');
+  const componentsTab = page.getByRole('tab', { name: /^Components/ });
+  const animationsTab = page.getByRole('tab', { name: /^Animations/ });
+
+  await expect(page.getByRole('tab')).toHaveCount(2);
+  await expect(componentsTab).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('#results-title')).toHaveText('All components');
+  await expect(componentsTab.locator('[data-tab-count]')).toHaveText(String(components.length));
+  await expect(animationsTab.locator('[data-tab-count]')).toHaveText(String(animations.length));
+
+  await animationsTab.click();
+  await expect(animationsTab).toHaveAttribute('aria-selected', 'true');
+  await expect(componentsTab).toHaveAttribute('aria-selected', 'false');
+  await expect(page.locator('#results-title')).toHaveText('All animations');
+  await expect(page.locator('#component-grid')).toHaveAttribute(
+    'aria-labelledby',
+    'tab-animations',
+  );
+  await expect(page.locator('#result-summary')).toHaveText(
+    countLabel(animations.length, 'result'),
+  );
+  // Component sections belong to the other tab and are not merely hidden.
+  await expect(page.locator('#inputs')).toHaveCount(0);
+  await expect(page).toHaveURL(/\?tab=animations$/);
+  // The header count names the library rather than the open tab.
+  await expect(page.locator('#component-count')).toHaveText(
+    countLabel(registry.length, 'component'),
+  );
+
+  if (animations.length === 0) {
+    await expect(page.getByText('No animations yet')).toBeVisible();
+  } else {
+    await expect(page.locator('.component-group')).not.toHaveCount(0);
+  }
+
+  await componentsTab.click();
+  await expect(page.locator('#inputs')).toBeVisible();
+  await expect(page).not.toHaveURL(/tab=/);
+});
+
+test('a tab deep link opens the catalog on that tab and an unknown one falls back', async ({
+  page,
+}) => {
+  await page.goto('/index.html?tab=animations');
+  await expect(page.getByRole('tab', { name: /^Animations/ })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+
+  await page.goto('/index.html?tab=nonsense');
+  await expect(page.getByRole('tab', { name: /^Components/ })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  await expect(page.locator('#inputs')).toBeVisible();
+});
+
+test('the tab strip is one tab stop and answers the arrow, Home, and End keys', async ({
+  page,
+}) => {
+  await page.goto('/index.html');
+  const componentsTab = page.getByRole('tab', { name: /^Components/ });
+  const animationsTab = page.getByRole('tab', { name: /^Animations/ });
+
+  await expect(componentsTab).toHaveAttribute('tabindex', '0');
+  await expect(animationsTab).toHaveAttribute('tabindex', '-1');
+
+  await componentsTab.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(animationsTab).toBeFocused();
+  await expect(animationsTab).toHaveAttribute('aria-selected', 'true');
+  await expect(componentsTab).toHaveAttribute('tabindex', '-1');
+
+  await page.keyboard.press('End');
+  await expect(animationsTab).toBeFocused();
+
+  await page.keyboard.press('Home');
+  await expect(componentsTab).toBeFocused();
+  await expect(componentsTab).toHaveAttribute('aria-selected', 'true');
+});
+
+test('a query survives a tab change and each tab counts its own matches', async ({ page }) => {
+  await page.goto('/index.html');
+  const search = page.getByRole('searchbox');
+  const animationsTab = page.getByRole('tab', { name: /^Animations/ });
+  const componentsTab = page.getByRole('tab', { name: /^Components/ });
+
+  await search.fill('table');
+  const matches = await page.locator('.component-card').count();
+  expect(matches).toBeGreaterThan(0);
+
+  await animationsTab.click();
+  await expect(search).toHaveValue('table');
+  // The counts stay per tab, so an empty panel still says where the matches are.
+  await expect(componentsTab.locator('[data-tab-count]')).toHaveText(String(matches));
+
+  await componentsTab.click();
+  await expect(page.locator('.component-card')).toHaveCount(matches);
 });
 
 test('homepage cards use static SVG thumbnails and no media playback element', async ({
@@ -466,8 +580,10 @@ const THEMED_PREVIEWS = [
   { id: 'drawer', root: '.drawer-demo' },
   { id: 'lightbox', root: '.lightbox-demo' },
   { id: 'locator-map', root: '.locator-map-demo' },
+  { id: 'orbit-gallery', root: '.orbit-demo' },
   { id: 'pagination', root: '.pagination-demo' },
   { id: 'radio-group', root: '.radio-group-demo' },
+  { id: 'ripple-surface', root: '.ripple-demo' },
   { id: 'snackbar', root: '.snackbar-demo' },
   { id: 'switch', root: '.switch-demo' },
   { id: 'table', root: '.table-demo' },

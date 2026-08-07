@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 2,
+  "id": "orbit-gallery",
+  "kind": "animation",
+  "version": "0.2.0",
+  "name": "Orbit Gallery",
+  "description": "A framework-free Web Component that stands pictures on a 3D ring: it drifts on its own, stops under the pointer, and singles out whichever picture you drag round to the front.",
+  "group": "pointer-effects",
+  "categories": ["media", "gallery"],
+  "tags": [
+    "orbit",
+    "ring",
+    "3d",
+    "carousel",
+    "gallery",
+    "drag",
+    "inertia",
+    "hover",
+    "web-component",
+    "reduced-motion"
+  ],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Eight pictures drifting on one ring, stopping under the pointer and answering the keyboard.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "density",
+      "name": "Density",
+      "description": "Five, eight, and twelve pictures on the same element, with the radius worked out from the count.",
+      "entry": "source/variants/density/index.html"
+    },
+    {
+      "id": "drag",
+      "name": "Drag",
+      "description": "Turning the ring by hand: how a drag maps to degrees, how a throw coasts, and what no-drag takes away.",
+      "entry": "source/variants/drag/index.html"
+    },
+    {
+      "id": "speed",
+      "name": "Speed",
+      "description": "How fast the ring drifts and which way round it goes, from a slow minute to ten seconds a turn.",
+      "entry": "source/variants/speed/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "A ring held still, a picture that never arrived, a single picture, and reduced motion.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

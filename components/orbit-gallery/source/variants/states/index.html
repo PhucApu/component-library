@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" class="orbit-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A ring held still, a picture that never arrived, and a ring with only one picture on it."
+    />
+    <title>Orbit Gallery - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="orbit-demo">
+      <div class="orbit-demo__shell">
+        <section class="orbit-demo__card">
+          <p class="orbit-demo__label">Held still</p>
+          <p class="orbit-demo__note">
+            <code>paused</code> stops the drift and leaves everything else: the arrow keys
+            still turn the ring, dragging still works, and the picture facing you stays
+            singled out — which is why this ring starts with its first picture out in front.
+            It is also what <code>pause()</code> and <code>resume()</code> set, so a page that
+            stops the ring for its own reasons and the attribute never disagree, and
+            <code>resume()</code> is what starts the drift again after a reader has turned the
+            ring by hand.
+          </p>
+          <div class="orbit-demo__row">
+            <button class="orbit-demo__button" type="button" data-demo-action="pause" data-demo-target="#held">
+              Pause
+            </button>
+            <button class="orbit-demo__button" type="button" data-demo-action="resume" data-demo-target="#held">
+              Resume
+            </button>
+            <button class="orbit-demo__button" type="button" data-demo-action="first" data-demo-target="#held">
+              First picture
+            </button>
+            <button class="orbit-demo__button" type="button" data-demo-action="last" data-demo-target="#held">
+              Last picture
+            </button>
+          </div>
+
+          <ui-orbit-gallery id="held" label="Held ring" paused>
+            <ul>
+              <li><img src="../../assets/amber-ridge.svg" alt="A ridge line under an amber sky" /></li>
+              <li><img src="../../assets/cobalt-bay.svg" alt="A headland above a cobalt bay" /></li>
+              <li><img src="../../assets/cedar-slope.svg" alt="Cedars standing on a green slope" /></li>
+              <li><img src="../../assets/dune-line.svg" alt="Wind-shaped dunes in late sun" /></li>
+              <li><img src="../../assets/glass-lake.svg" alt="Mountains reflected in a still lake" /></li>
+              <li><img src="../../assets/harvest-plain.svg" alt="A harvested plain under a wide sky" /></li>
+            </ul>
+          </ui-orbit-gallery>
+
+          <output></output>
+        </section>
+
+        <section class="orbit-demo__card">
+          <p class="orbit-demo__label">A picture that never arrived</p>
+          <p class="orbit-demo__note">
+            The second place on this ring points at a file that is not there. The ring keeps
+            its shape and the place keeps its turn, because a gap that closed up would move
+            every other picture for a reason the reader cannot see. What shows instead says so
+            in words rather than leaving an empty frame.
+          </p>
+
+          <ui-orbit-gallery label="Ring with a missing picture" speed="8">
+            <ul>
+              <li><img src="../../assets/storm-shore.svg" alt="A storm front over a grey shore" /></li>
+              <li><img src="./picture-that-is-not-there.svg" alt="A picture that failed to load" /></li>
+              <li><img src="../../assets/pier-dawn.svg" alt="A pier reaching out at dawn" /></li>
+              <li><img src="../../assets/copper-mesa.svg" alt="Copper mesas above flat ground" /></li>
+              <li><img src="../../assets/moss-valley.svg" alt="A mossy valley under soft light" /></li>
+            </ul>
+          </ui-orbit-gallery>
+        </section>
+
+        <section class="orbit-demo__card">
+          <p class="orbit-demo__label">One picture</p>
+          <p class="orbit-demo__note">
+            One picture has no ring to be on: the radius is zero, so it stands in the middle
+            and stays there, and the arrows are not drawn at all because there is nowhere to
+            step to. Drifting a single picture would turn it away from the reader for half of
+            every turn and show them nothing.
+          </p>
+          <p class="orbit-demo__note">
+            Under <code>prefers-reduced-motion</code> every ring on this page behaves like this
+            one: no drift, no coasting after a throw, and the arrow keys arrive without
+            travelling.
+          </p>
+
+          <ui-orbit-gallery label="Single picture">
+            <ul>
+              <li><img src="../../assets/frost-peak.svg" alt="A frosted peak above a blue valley" /></li>
+            </ul>
+          </ui-orbit-gallery>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeOrbitDemo } from '../../demo.js';
+
+      initializeOrbitDemo();
+    </script>
+  </body>
+</html>

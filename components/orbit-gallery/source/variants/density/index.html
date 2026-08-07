@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" class="orbit-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Five, eight, and twelve pictures on the same element, with the radius worked out from the count."
+    />
+    <title>Orbit Gallery - Density</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="orbit-demo">
+      <div class="orbit-demo__shell">
+        <section class="orbit-demo__card">
+          <p class="orbit-demo__label">Five pictures</p>
+          <p class="orbit-demo__note">
+            Each picture takes a chord of the circle, so the radius follows from how many of
+            them have to fit around it. Five need a narrow ring and stand well apart on it.
+          </p>
+
+          <ui-orbit-gallery label="Five landscapes">
+            <ul>
+              <li><img src="../../assets/amber-ridge.svg" alt="A ridge line under an amber sky" /></li>
+              <li><img src="../../assets/cobalt-bay.svg" alt="A headland above a cobalt bay" /></li>
+              <li><img src="../../assets/cedar-slope.svg" alt="Cedars standing on a green slope" /></li>
+              <li><img src="../../assets/dune-line.svg" alt="Wind-shaped dunes in late sun" /></li>
+              <li><img src="../../assets/glass-lake.svg" alt="Mountains reflected in a still lake" /></li>
+            </ul>
+          </ui-orbit-gallery>
+        </section>
+
+        <section class="orbit-demo__card">
+          <p class="orbit-demo__label">Eight pictures</p>
+          <p class="orbit-demo__note">
+            The same element and the same stylesheet. Nothing here states a radius; adding
+            pictures widens the ring on its own.
+          </p>
+
+          <ui-orbit-gallery label="Eight landscapes">
+            <ul>
+              <li><img src="../../assets/amber-ridge.svg" alt="A ridge line under an amber sky" /></li>
+              <li><img src="../../assets/cobalt-bay.svg" alt="A headland above a cobalt bay" /></li>
+              <li><img src="../../assets/cedar-slope.svg" alt="Cedars standing on a green slope" /></li>
+              <li><img src="../../assets/dune-line.svg" alt="Wind-shaped dunes in late sun" /></li>
+              <li><img src="../../assets/glass-lake.svg" alt="Mountains reflected in a still lake" /></li>
+              <li><img src="../../assets/harvest-plain.svg" alt="A harvested plain under a wide sky" /></li>
+              <li><img src="../../assets/harbour-lights.svg" alt="Harbour buildings lit after dark" /></li>
+              <li><img src="../../assets/frost-peak.svg" alt="A frosted peak above a blue valley" /></li>
+            </ul>
+          </ui-orbit-gallery>
+        </section>
+
+        <section class="orbit-demo__card">
+          <p class="orbit-demo__label">Twelve pictures</p>
+          <p class="orbit-demo__note">
+            Twelve stand shoulder to shoulder on a much wider ring, and the far half of it is
+            turned away rather than showing through the front.
+          </p>
+
+          <ui-orbit-gallery label="Twelve landscapes">
+            <ul>
+              <li><img src="../../assets/amber-ridge.svg" alt="A ridge line under an amber sky" /></li>
+              <li><img src="../../assets/cobalt-bay.svg" alt="A headland above a cobalt bay" /></li>
+              <li><img src="../../assets/cedar-slope.svg" alt="Cedars standing on a green slope" /></li>
+              <li><img src="../../assets/dune-line.svg" alt="Wind-shaped dunes in late sun" /></li>
+              <li><img src="../../assets/glass-lake.svg" alt="Mountains reflected in a still lake" /></li>
+              <li><img src="../../assets/harvest-plain.svg" alt="A harvested plain under a wide sky" /></li>
+              <li><img src="../../assets/harbour-lights.svg" alt="Harbour buildings lit after dark" /></li>
+              <li><img src="../../assets/frost-peak.svg" alt="A frosted peak above a blue valley" /></li>
+              <li><img src="../../assets/copper-mesa.svg" alt="Copper mesas above flat ground" /></li>
+              <li><img src="../../assets/pier-dawn.svg" alt="A pier reaching out at dawn" /></li>
+              <li><img src="../../assets/storm-shore.svg" alt="A storm front over a grey shore" /></li>
+              <li><img src="../../assets/moss-valley.svg" alt="A mossy valley under soft light" /></li>
+            </ul>
+          </ui-orbit-gallery>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeOrbitDemo } from '../../demo.js';
+
+      initializeOrbitDemo();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" class="orbit-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A ring of pictures that turns on its own, stops under the pointer, and can be taken hold of."
+    />
+    <title>Orbit Gallery - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="orbit-demo">
+      <div class="orbit-demo__shell">
+        <section class="orbit-demo__card">
+          <p class="orbit-demo__label">Eight pictures on one ring</p>
+          <p class="orbit-demo__note">
+            The ring drifts a whole turn every thirty seconds. Point at any picture and the
+            ring stops where it stands rather than snapping to the nearest one, so you can
+            look at what is in front of you. Take the pointer away and it carries on from the
+            angle it stopped at.
+          </p>
+          <p class="orbit-demo__note">
+            Take hold of it and pull sideways to bring a picture round to the front, or press
+            the arrow at either side to go one picture at a time. Let go of a drag while still
+            moving and the ring coasts, then goes the rest of the way onto the nearest
+            picture: that one leaves the ring towards you and the others fade back. Only the
+            picture facing you is ever singled out — pointing at one is how you stop the ring,
+            not how you choose it.
+          </p>
+          <p class="orbit-demo__note">
+            Turning the ring yourself, by any of those routes, also stops the drift: motion
+            that carried on would take the picture you just chose straight back off the front.
+          </p>
+
+          <ui-orbit-gallery label="Landscapes">
+            <ul>
+              <li><img src="../../assets/amber-ridge.svg" alt="A ridge line under an amber sky" /></li>
+              <li><img src="../../assets/cobalt-bay.svg" alt="A headland above a cobalt bay" /></li>
+              <li><img src="../../assets/cedar-slope.svg" alt="Cedars standing on a green slope" /></li>
+              <li><img src="../../assets/dune-line.svg" alt="Wind-shaped dunes in late sun" /></li>
+              <li><img src="../../assets/glass-lake.svg" alt="Mountains reflected in a still lake" /></li>
+              <li><img src="../../assets/harvest-plain.svg" alt="A harvested plain under a wide sky" /></li>
+              <li><img src="../../assets/harbour-lights.svg" alt="Harbour buildings lit after dark" /></li>
+              <li><img src="../../assets/frost-peak.svg" alt="A frosted peak above a blue valley" /></li>
+            </ul>
+          </ui-orbit-gallery>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeOrbitDemo } from '../../demo.js';
+
+      initializeOrbitDemo();
+    </script>
+  </body>
+</html>

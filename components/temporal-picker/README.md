@@ -87,6 +87,25 @@ An empty query shows all values, and a query such as `8` matches `08`.
 Hour and Second always use a step of one. `minute-step` defaults to one and accepts integers from
 `1` through `60`. An off-step controlled minute remains available.
 
+## Where the clock sits in datetime mode
+
+Given `37rem` (`592px`) of viewport, a datetime panel moves its time fields to the right of the
+calendar instead of underneath it. The panel goes from `352x507` to `560x417` — wider, and `90px`
+shorter, which is the point of the arrangement.
+
+Hour, Minute and Second stay in a **row**, colons and all, exactly as in the time-only picker.
+Only the block moved; the arrangement inside it did not.
+
+Below that width nothing changes at all: the fields sit in their row under the calendar. The two
+layouts are one stylesheet block apart, so the narrow one is the original rather than a second
+layout to keep in step.
+
+Widening the panel does not come out of the calendar — the day cells keep their full `40px`.
+
+Tab order does not change with the layout — the markup is identical, and only the boxes move.
+`datetime` and `bounded-datetime` share this behavior; `time` mode has no calendar to sit beside
+and is unaffected.
+
 ## API
 
 | Attribute/property | Type | Default | Purpose |

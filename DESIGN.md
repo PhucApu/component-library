@@ -1,7 +1,7 @@
 # Component UI Collection — Design System
 
 > **Name:** Curated Precision
-> **Version:** 1.5.0
+> **Version:** 1.6.0
 > **Scope:** Catalog homepage and component detail page
 
 ## 1. Purpose and boundary
@@ -93,13 +93,44 @@ eyebrow `5.99:1`.
 
 ## 6. Homepage information architecture
 
-The homepage contains a header, centered hero, search field, result summary, and grouped
-component sections. Groups follow the shared taxonomy order:
+The homepage contains a header, centered hero, search field, section tabs, result summary, and
+grouped component sections.
 
-`Inputs`, `Data display`, `Feedback`, `Surface`, `Navigation`, `Layout`, `Utilities`.
+### Section tabs
+
+The catalog holds two kinds of entry, and one grid mixing them would ask the reader to tell a
+control apart from an effect by its name. A tab strip above the toolbar splits them, and a
+manifest states which side an entry belongs to through `kind`. A tab is a filter over one page
+rather than a page of its own: the strip is a segmented control, not navigation, and the tab
+carries no separate URL.
+
+- `Components`: entries with `kind` `component`, or with no `kind` at all. This is the tab a
+  bare `index.html` opens.
+- `Animations`: entries with `kind` `animation`.
+
+Each tab owns a taxonomy, rendered in this order:
+
+| Tab | Groups |
+|---|---|
+| Components | `Inputs`, `Data display`, `Feedback`, `Surface`, `Navigation`, `Layout`, `Utilities` |
+| Animations | `Loaders`, `Transitions`, `Pointer effects`, `Backgrounds`, `Text effects`, `Scroll effects` |
+
+No group ID appears in both taxonomies, so a section anchor stays unique across the page.
+
+The strip is a `tablist` over one shared panel with roving tabindex, Arrow, Home, and End
+support, and activation on arrival. A non-default tab records itself as `?tab=animations` on
+the current history entry rather than pushing a new one; an unknown or absent value resolves to
+`Components`.
+
+The three counts answer three different questions and do not agree by design. The header count
+is the size of the whole registry, because it names the library. Each tab count is the number of
+entries in that tab matching the current query, so a search that comes up empty on screen still
+shows where its matches are. The toolbar summary counts results in the open tab only.
 
 Render only non-empty groups. Group headings expose stable anchors and cards sort by component
-name. Search matches ID, name, description, group ID, group label, categories, and tags.
+name. Search matches ID, name, description, group ID, group label, categories, and tags, and it
+holds its query across a tab change. The empty state names the reason it is showing: a query
+that matched nothing in this tab, or a tab holding nothing yet.
 
 Cards use the authored static `preview/thumbnail.svg` on a dark neutral canvas. The complete card
 is one link. The footer contains only component name and compact technology metadata. Generated
@@ -109,7 +140,8 @@ poster/video assets never appear on the homepage and are not published at all.
 
 Top-level content follows one vertical sequence:
 
-1. Group link to the homepage anchor.
+1. Group link to the homepage anchor, carrying `?tab=` when the entry does not belong to the
+   default tab.
 2. Component name.
 3. Short description.
 4. Technology badges.

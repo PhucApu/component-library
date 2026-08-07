@@ -395,6 +395,68 @@
     margin-top: 5rem;
   }
 
+  /* One segmented control over the two catalog sections. It reads as a control rather than
+     as a second heading row, so the toolbar underneath keeps naming what is on screen. */
+  .catalog-tabs {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    gap: 0.25rem;
+    overflow-x: auto;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-full);
+    background: var(--surface-subtle);
+    margin-bottom: 1.75rem;
+    padding: 0.25rem;
+  }
+
+  .catalog-tab {
+    display: inline-flex;
+    min-height: 2.25rem;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    background: transparent;
+    padding-inline: 0.9rem;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 650;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background var(--duration-fast) var(--ease-standard),
+      border-color var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard);
+  }
+
+  .catalog-tab:hover {
+    color: var(--text-primary);
+  }
+
+  /* The selected tab carries a border and a raised surface as well as the accent, so the
+     state survives without colour. */
+  .catalog-tab[aria-selected="true"] {
+    border-color: var(--border-interactive);
+    background: var(--surface-raised);
+    color: var(--text-primary);
+  }
+
+  .catalog-tab__count {
+    border-radius: var(--radius-full);
+    background: var(--surface-translucent);
+    padding: 0.1rem 0.45rem;
+    color: var(--text-tertiary);
+    font-family: var(--font-code);
+    font-size: 0.65rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .catalog-tab[aria-selected="true"] .catalog-tab__count {
+    background: var(--brand-primary-subtle);
+    color: var(--interaction-accent);
+  }
+
   .catalog-toolbar,
   .component-group__heading {
     display: flex;

@@ -39,17 +39,12 @@
       "minLength": 10,
       "maxLength": 280
     },
-    "group": {
+    "kind": {
       "type": "string",
-      "enum": [
-        "inputs",
-        "data-display",
-        "feedback",
-        "surface",
-        "navigation",
-        "layout",
-        "utilities"
-      ]
+      "enum": ["component", "animation"]
+    },
+    "group": {
+      "type": "string"
     },
     "categories": {
       "type": "array",
@@ -139,6 +134,47 @@
       }
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "required": ["kind"],
+        "properties": {
+          "kind": {
+            "const": "animation"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "group": {
+            "enum": [
+              "loaders",
+              "transitions",
+              "pointer-effects",
+              "backgrounds",
+              "text-effects",
+              "scroll-effects"
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "group": {
+            "enum": [
+              "inputs",
+              "data-display",
+              "feedback",
+              "surface",
+              "navigation",
+              "layout",
+              "utilities"
+            ]
+          }
+        }
+      }
+    }
+  ],
   "definitions": {
     "kebabCase": {
       "type": "string",

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" class="orbit-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Turning the ring by hand: dragging, coasting, and a ring that refuses to be dragged."
+    />
+    <title>Orbit Gallery - Drag</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="orbit-demo">
+      <div class="orbit-demo__shell">
+        <section class="orbit-demo__card">
+          <p class="orbit-demo__label">Take hold of it and pull</p>
+          <p class="orbit-demo__note">
+            The drift is switched off here with <code>speed="0"</code>, so the only thing that
+            turns this ring is you. Dragging the full width of the stage turns it half a way
+            round, and letting go while still moving throws it: the throw is what the pointer
+            was doing in its last frames, not the average of the whole drag, so a slow pull
+            that ends in a flick still flies.
+          </p>
+          <p class="orbit-demo__note">
+            When the throw runs out the ring does not stop between two pictures: it goes the
+            rest of the way to the nearest one, and that picture — the one now facing you —
+            leaves the ring and grows while the others fade. Nothing is singled out under the
+            pointer, because passing beneath your hand is not the same as being chosen.
+          </p>
+          <p class="orbit-demo__note">
+            Press an arrow instead and the ring goes exactly one picture. Start a drag on the
+            arrow and it turns the ring rather than pressing it: the pointer is only captured
+            once the press has travelled far enough to be a drag, and the click that would
+            have followed is dropped.
+          </p>
+
+          <ui-orbit-gallery label="Draggable landscapes" speed="0">
+            <ul>
+              <li><img src="../../assets/glass-lake.svg" alt="Mountains reflected in a still lake" /></li>
+              <li><img src="../../assets/dune-line.svg" alt="Wind-shaped dunes in late sun" /></li>
+              <li><img src="../../assets/storm-shore.svg" alt="A storm front over a grey shore" /></li>
+              <li><img src="../../assets/pier-dawn.svg" alt="A pier reaching out at dawn" /></li>
+              <li><img src="../../assets/copper-mesa.svg" alt="Copper mesas above flat ground" /></li>
+              <li><img src="../../assets/moss-valley.svg" alt="A mossy valley under soft light" /></li>
+            </ul>
+          </ui-orbit-gallery>
+
+          <output></output>
+        </section>
+
+        <section class="orbit-demo__card">
+          <p class="orbit-demo__label">A ring that will not be dragged</p>
+          <p class="orbit-demo__note">
+            <code>no-drag</code> leaves the drift, the hover and the keyboard exactly as they
+            are and takes only the gesture away, for a page where sideways dragging already
+            means something else.
+          </p>
+
+          <ui-orbit-gallery label="Fixed landscapes" no-drag speed="8">
+            <ul>
+              <li><img src="../../assets/amber-ridge.svg" alt="A ridge line under an amber sky" /></li>
+              <li><img src="../../assets/cedar-slope.svg" alt="Cedars standing on a green slope" /></li>
+              <li><img src="../../assets/frost-peak.svg" alt="A frosted peak above a blue valley" /></li>
+              <li><img src="../../assets/harvest-plain.svg" alt="A harvested plain under a wide sky" /></li>
+              <li><img src="../../assets/cobalt-bay.svg" alt="A headland above a cobalt bay" /></li>
+              <li><img src="../../assets/harbour-lights.svg" alt="Harbour buildings lit after dark" /></li>
+            </ul>
+          </ui-orbit-gallery>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeOrbitDemo } from '../../demo.js';
+
+      initializeOrbitDemo();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="">
+  <defs>
+    <linearGradient id="cobalt-water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3f8fbf" />
+      <stop offset="100%" stop-color="#12324f" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="#bfe0ef" />
+  <path d="M0 300l190-96 170 70 150-58 290 84v56H0z" fill="#7aa9c4" />
+  <rect y="356" width="800" height="244" fill="url(#cobalt-water)" />
+  <g fill="#eaf5fb" opacity="0.5">
+    <rect x="90" y="410" width="250" height="8" rx="4" />
+    <rect x="300" y="466" width="330" height="8" rx="4" />
+    <rect x="150" y="522" width="210" height="8" rx="4" />
+  </g>
+  <path d="M596 356V236l72 44v76z" fill="#12324f" />
+</svg>

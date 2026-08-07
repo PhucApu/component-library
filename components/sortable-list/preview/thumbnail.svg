@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="title description">
+  <title id="title">Sortable List preview</title>
+  <desc id="description">Four rows with drag handles, caught mid-reorder. The row Review pull requests is lifted out of the list with an accent border and a shadow, sitting third, while the two rows it has passed have shifted up into the space it left.</desc>
+  <style>
+    text {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    .row-label {
+      fill: #e7e9ee;
+      font-size: 13px;
+    }
+
+    .dot {
+      fill: #828b9a;
+    }
+  </style>
+
+  <defs>
+    <filter id="lift" x="-20%" y="-40%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="7" />
+    </filter>
+  </defs>
+
+  <rect width="640" height="360" fill="#12151b" />
+
+  <g>
+    <rect x="60" y="40" width="520" height="280" rx="18" fill="#171a20" stroke="#292d36" stroke-width="1.5" />
+
+    <text x="84" y="76" fill="#a8afbc" font-size="12" font-weight="650">Sprint queue</text>
+
+    <!-- The two rows the dragged one has passed, shifted up into the space it left. -->
+    <g>
+      <rect x="84" y="90" width="472" height="44" rx="10" fill="#1c2028" stroke="#2e3440" />
+      <g class="dot">
+        <circle cx="106" cy="104" r="1.8" /><circle cx="114" cy="104" r="1.8" />
+        <circle cx="106" cy="112" r="1.8" /><circle cx="114" cy="112" r="1.8" />
+        <circle cx="106" cy="120" r="1.8" /><circle cx="114" cy="120" r="1.8" />
+      </g>
+      <text class="row-label" x="136" y="117">Answer the support queue</text>
+    </g>
+
+    <g>
+      <rect x="84" y="144" width="472" height="44" rx="10" fill="#1c2028" stroke="#2e3440" />
+      <g class="dot">
+        <circle cx="106" cy="158" r="1.8" /><circle cx="114" cy="158" r="1.8" />
+        <circle cx="106" cy="166" r="1.8" /><circle cx="114" cy="166" r="1.8" />
+        <circle cx="106" cy="174" r="1.8" /><circle cx="114" cy="174" r="1.8" />
+      </g>
+      <text class="row-label" x="136" y="171">Write the release notes</text>
+    </g>
+
+    <!-- The row in the air: accent border, the grabbed fill, and a shadow underneath it that
+         says it is off the page rather than sitting on it. -->
+    <rect x="88" y="208" width="464" height="44" rx="10" fill="#000000" fill-opacity="0.55" filter="url(#lift)" />
+    <g>
+      <rect x="84" y="198" width="472" height="44" rx="10" fill="#253444" stroke="#3987e5" stroke-width="1.5" />
+      <g fill="#cbd1dc">
+        <circle cx="106" cy="212" r="1.8" /><circle cx="114" cy="212" r="1.8" />
+        <circle cx="106" cy="220" r="1.8" /><circle cx="114" cy="220" r="1.8" />
+        <circle cx="106" cy="228" r="1.8" /><circle cx="114" cy="228" r="1.8" />
+      </g>
+      <text class="row-label" x="136" y="225" fill="#ffffff" font-weight="600">Review pull requests</text>
+    </g>
+
+    <!-- Below the drop point, so it has not moved at all. -->
+    <g>
+      <rect x="84" y="252" width="472" height="44" rx="10" fill="#1c2028" stroke="#2e3440" />
+      <g class="dot">
+        <circle cx="106" cy="266" r="1.8" /><circle cx="114" cy="266" r="1.8" />
+        <circle cx="106" cy="274" r="1.8" /><circle cx="114" cy="274" r="1.8" />
+        <circle cx="106" cy="282" r="1.8" /><circle cx="114" cy="282" r="1.8" />
+      </g>
+      <text class="row-label" x="136" y="279">Deploy to staging</text>
+    </g>
+  </g>
+</svg>

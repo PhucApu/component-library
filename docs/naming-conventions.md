@@ -20,7 +20,9 @@
 
 - `name`: readable display name.
 - `description`: one English sentence describing the primary behavior or value.
-- `group`: exactly one taxonomy group, chosen with the table below.
+- `kind`: optional, `component` or `animation`. Omit it for a component; the catalog reads a
+  missing `kind` as `component`.
+- `group`: exactly one taxonomy group from the table that matches `kind`.
 - `categories`: broad functional search terms.
 - `tags`: specific searchable traits.
 - `technologies`: only technologies required by the downloaded component.
@@ -31,9 +33,9 @@ present in its browser-ready source.
 
 ## Taxonomy groups
 
-The schema restricts `group` to these seven values, and the homepage renders them in this order.
-A component belongs to exactly one; everything else it is also about goes in `categories` and
-`tags`.
+The schema restricts `group` to these seven values whenever `kind` is `component` or absent, and
+the Components tab renders them in this order. A component belongs to exactly one; everything
+else it is also about goes in `categories` and `tags`.
 
 | Group | Holds | Examples |
 |---|---|---|
@@ -62,3 +64,26 @@ When two groups still look plausible:
 
 Regrouping later is cheap: the ID, the directory, and every published path stay as they are. Only
 the homepage section and the group link on the detail page move.
+
+## Animation taxonomy groups
+
+An entry with `kind` `animation` takes its `group` from this table instead, and the Animations
+tab renders them in this order. No ID is shared with the component taxonomy, so a section anchor
+identifies one tab as well as one group.
+
+| Group | Holds | Examples |
+|---|---|---|
+| `loaders` | Motion that stands in for content that has not arrived | Spinner, progress ring, skeleton shimmer |
+| `transitions` | Motion between two states of the same thing | Enter and exit, morph, shared element, page change |
+| `pointer-effects` | Motion that answers the pointer directly | Hover reveal, magnetic button, cursor trail, tilt |
+| `backgrounds` | Ambient motion behind other content | Gradient drift, particle field, animated mesh, noise |
+| `text-effects` | Motion applied to type | Typing, scramble, split-letter reveal, marquee |
+| `scroll-effects` | Motion driven by scroll position | Parallax, reveal on enter, progress-linked timeline, sticky sequence |
+
+Ask what **drives** the motion, not what it is drawn on. A gradient that drifts on its own is a
+background; the same gradient advanced by scroll position is a scroll effect.
+
+Choose `kind` by asking what the entry is for. A component is judged by the behavior it
+delivers, and its motion supports that behavior. An animation is the deliverable itself: remove
+the motion and nothing is left. A switch that slides is a component; a page transition is an
+animation.

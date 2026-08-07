@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="">
+  <rect width="800" height="600" fill="#d7e5d2" />
+  <path d="M0 348l210-160 190 128 150-92 250 152v220H0z" fill="#7c9a76" />
+  <g fill="#2f5741">
+    <path d="M120 520l52-150 52 150z" />
+    <path d="M240 540l60-190 60 190z" />
+    <path d="M392 528l50-160 50 160z" />
+    <path d="M524 548l64-206 64 206z" />
+  </g>
+  <rect y="536" width="800" height="64" fill="#24402f" />
+</svg>

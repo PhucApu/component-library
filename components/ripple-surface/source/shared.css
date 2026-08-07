@@ -1,0 +1,218 @@
+:root {
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.ripple-demo-page,
+.ripple-demo-page body {
+  background: light-dark(#f4f6fa, #0f1115);
+}
+
+ui-ripple-surface {
+  /* What the rings are drawn in. It is a colour rather than a pair of them by role: the
+     surface is drawn over whatever it is given, so the ink follows the theme and the
+     strength is what a page turns down when the background is busy. */
+  /* Water at rest is barely marked at all, so the ink carries its own transparency: a ring
+     drawn at full strength reads as a shape laid over the page rather than as something
+     happening to its surface. The two halves are not the same strength because a pale line
+     on a dark surface has less contrast to spend than a dark line on a pale one. */
+  --ripple-ink: light-dark(rgb(28 96 122 / 0.55), rgb(169 222 245 / 0.85));
+  --ripple-strength: 1;
+  --ripple-drop-width: 2;
+  --ripple-wake-width: 1.4;
+  --ripple-text: light-dark(#111827, #f4f6fa);
+  --ripple-muted: light-dark(#5f6878, #a8afbc);
+  --ripple-border: light-dark(#dfe4ec, #2e3440);
+  --ripple-still: light-dark(#e8f1f6, #101a20);
+  --ripple-radius: 16px;
+
+  position: relative;
+  display: block;
+  min-inline-size: 0;
+  color: var(--ripple-text);
+}
+
+/* Over the content, and out of the way of it. Without both of these the surface stops
+   being something the page is seen through and becomes a lid on it: a heading could not
+   be selected and a button under it could not be pressed. */
+.ripple-surface__canvas {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  /* The ink is read back off this, not out of the custom property. A custom property is
+     handed back as the tokens it was written with, so a `light-dark()` in one arrives at
+     the canvas as text it cannot paint with — and a canvas given a colour it cannot read
+     silently keeps the last one, which is black. */
+  color: var(--ripple-ink);
+  pointer-events: none;
+}
+
+.ripple-demo {
+  display: grid;
+  /* The page is otherwise as tall as its content, and the background it paints would stop
+     there, leaving a seam across the rest of the preview frame. */
+  min-block-size: 100dvh;
+  align-content: start;
+  gap: 1.5rem;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  background: light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
+}
+
+.ripple-demo__shell {
+  display: grid;
+  gap: 1.5rem;
+  inline-size: min(100%, 60rem);
+  margin-inline: auto;
+}
+
+.ripple-demo__card {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 18px;
+  background: light-dark(#ffffff, #171a20);
+  padding: clamp(1rem, 3vw, 1.75rem);
+}
+
+.ripple-demo__label {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ripple-demo__note {
+  max-width: 46rem;
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.ripple-demo code {
+  border-radius: 5px;
+  background: light-dark(#eef1f5, #10131a);
+  padding: 0.1rem 0.35rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+/* A stretch of still water to move across. Nothing here animates on its own: the surface
+   is flat until the pointer arrives, which is the whole point of it. */
+.ripple-demo__pool {
+  border: 1px solid var(--ripple-border);
+  border-radius: var(--ripple-radius);
+  background: var(--ripple-still);
+  min-block-size: 16rem;
+}
+
+.ripple-demo__hero {
+  display: grid;
+  align-content: center;
+  gap: 0.9rem;
+  min-block-size: 20rem;
+  border: 1px solid var(--ripple-border);
+  border-radius: var(--ripple-radius);
+  background: var(--ripple-still);
+  padding: clamp(1.25rem, 5vw, 3rem);
+}
+
+.ripple-demo__title {
+  margin: 0;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 660;
+  letter-spacing: -0.03em;
+}
+
+.ripple-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ripple-demo__button {
+  min-block-size: 2.5rem;
+  border: 1px solid var(--ripple-border);
+  border-radius: 10px;
+  background: light-dark(#ffffff, #10131a);
+  padding-inline: 1rem;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.ripple-demo__button:hover {
+  border-color: light-dark(#1f5f7a, #9fd8ee);
+}
+
+.ripple-demo__button:focus-visible {
+  outline: 3px solid light-dark(#1f5f7a, #9fd8ee);
+  outline-offset: 2px;
+}
+
+.ripple-demo__picture {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  border-radius: var(--ripple-radius);
+  object-fit: cover;
+}
+
+.ripple-demo__frame {
+  overflow: hidden;
+  border-radius: var(--ripple-radius);
+  block-size: 18rem;
+}
+
+.ripple-demo__reading {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid var(--ripple-border);
+  border-radius: var(--ripple-radius);
+  background: light-dark(#ffffff, #10131a);
+  padding: clamp(1rem, 3vw, 1.75rem);
+}
+
+.ripple-demo__grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+
+.ripple-demo output {
+  display: block;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 10px;
+  background: light-dark(#f4f6fa, #10131a);
+  padding: 0.65rem 0.8rem;
+  color: light-dark(#5f6878, #a8afbc);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.78rem;
+  white-space: pre-line;
+}
+
+/* Nothing to soften: with reduced motion the element draws no ripples at all, so there is
+   no transition here to shorten. The rule below covers the demo chrome only. */
+@media (prefers-reduced-motion: reduce) {
+  .ripple-demo__button {
+    transition: none;
+  }
+}
