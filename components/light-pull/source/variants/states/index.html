@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" class="light-pull-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="On to begin with, worked from the keyboard, and what reduced motion leaves."
+    />
+    <title>Light Pull - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="light-pull-demo">
+      <div class="light-pull-demo__shell">
+        <section class="light-pull-demo__card">
+          <p class="light-pull-demo__label">On to begin with</p>
+          <p class="light-pull-demo__note">
+            <code>on</code> is an ordinary attribute and it is reflected, so a page can open
+            with the light already on and can always read the state back. The handle carries
+            it as <code>aria-checked</code>, which is what a screen reader announces.
+          </p>
+
+          <div class="light-pull-demo__room" data-lit-by="#lit-pull">
+            <div class="light-pull-demo__glow"></div>
+            <ui-light-pull id="lit-pull" label="Room light" on></ui-light-pull>
+            <p class="light-pull-demo__caption">Already on.</p>
+          </div>
+
+          <output></output>
+        </section>
+
+        <section class="light-pull-demo__card">
+          <p class="light-pull-demo__label">Without a pointer</p>
+          <p class="light-pull-demo__note">
+            Tab to the handle and press Space or Enter. The cord is tugged and the switch
+            works — the same control, reached a different way. The handle is a real
+            <code>role="switch"</code>, not a shape drawn in the cord, which is the only
+            reason that sentence can be true.
+          </p>
+
+          <div class="light-pull-demo__strip">
+            <div class="light-pull-demo__slot">
+              <ui-light-pull label="Keyboard cord"></ui-light-pull>
+            </div>
+          </div>
+        </section>
+
+        <section class="light-pull-demo__card">
+          <p class="light-pull-demo__label">Reduced motion</p>
+          <p class="light-pull-demo__note">
+            Under <code>prefers-reduced-motion</code> the cord does not swing: the switch
+            works, and the cord is where it hangs. The swing is the whole of what is left out,
+            and none of what it does is lost with it.
+          </p>
+
+          <div class="light-pull-demo__strip">
+            <div class="light-pull-demo__slot">
+              <ui-light-pull label="Still cord"></ui-light-pull>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeLightPullDemo } from '../../demo.js';
+
+      initializeLightPullDemo();
+    </script>
+  </body>
+</html>

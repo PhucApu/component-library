@@ -1,0 +1,227 @@
+:root {
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.glow-demo-page,
+.glow-demo-page body {
+  background: light-dark(#f4f6fa, #0f1115);
+}
+
+ui-cursor-glow {
+  /* On a dark surface a pale wash reads as light. On a pale one it cannot: adding light to
+     something already near white does nothing, so the light half of this pair is a tint
+     rather than a glow. A page that wants real light on a dark hero sets the blend below. */
+  --cursor-glow-ink: light-dark(rgb(67 56 202 / 0.22), rgb(190 214 255 / 0.3));
+  --cursor-glow-size: 420px;
+  --cursor-glow-strength: 1;
+  --cursor-glow-fade: 260ms;
+  --cursor-glow-blend: normal;
+  --cursor-glow-ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Written by the element, at most once a frame. Declared here so a page that never runs
+     the script still resolves every custom property it reads. */
+  --cursor-glow-x: 50%;
+  --cursor-glow-y: 50%;
+
+  position: relative;
+  display: block;
+  min-inline-size: 0;
+  /* Keeps a blended light inside the component instead of letting it mix with the page. */
+  isolation: isolate;
+}
+
+.cursor-glow__light {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle calc(var(--cursor-glow-size) / 2) at var(--cursor-glow-x) var(--cursor-glow-y),
+    var(--cursor-glow-ink),
+    transparent 70%
+  );
+  opacity: 0;
+  mix-blend-mode: var(--cursor-glow-blend);
+  /* A light is not a lid: everything under it keeps its own presses and its own selection. */
+  pointer-events: none;
+  transition: opacity var(--cursor-glow-fade) var(--cursor-glow-ease);
+}
+
+ui-cursor-glow[data-active] .cursor-glow__light {
+  opacity: var(--cursor-glow-strength);
+}
+
+/* The position never eases — only the brightness does — so nothing here is left running
+   for a reader who has asked for less of it. */
+@media (prefers-reduced-motion: reduce) {
+  .cursor-glow__light {
+    transition: none;
+  }
+}
+
+.glow-demo {
+  display: grid;
+  /* The page is otherwise as tall as its content, and the background it paints would stop
+     there, leaving a seam across the rest of the preview frame. */
+  min-block-size: 100dvh;
+  align-content: start;
+  gap: 1.5rem;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  background: light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
+}
+
+.glow-demo__shell {
+  display: grid;
+  gap: 1.5rem;
+  inline-size: min(100%, 62rem);
+  margin-inline: auto;
+}
+
+.glow-demo__card {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 18px;
+  background: light-dark(#ffffff, #171a20);
+  padding: clamp(1rem, 3vw, 1.75rem);
+}
+
+.glow-demo__label {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.glow-demo__note {
+  max-width: 46rem;
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.glow-demo code {
+  border-radius: 5px;
+  background: light-dark(#eef1f5, #10131a);
+  padding: 0.1rem 0.35rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+/* The surfaces the demos light. */
+.glow-demo__panel {
+  display: grid;
+  align-content: center;
+  gap: 0.6rem;
+  min-block-size: 15rem;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 16px;
+  background: light-dark(#f7f9fc, #12161c);
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.glow-demo__panel--dark {
+  border-color: #262b36;
+  background: #10141b;
+  color: #e6ebf2;
+}
+
+.glow-demo__title {
+  margin: 0;
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+  font-weight: 660;
+  letter-spacing: -0.02em;
+}
+
+.glow-demo__reading {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.glow-demo__reading a {
+  color: light-dark(#4338ca, #86a0ff);
+}
+
+.glow-demo__grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+}
+
+.glow-demo__tile {
+  display: grid;
+  align-content: center;
+  gap: 0.35rem;
+  min-block-size: 9rem;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 14px;
+  background: light-dark(#f7f9fc, #12161c);
+  padding: 1.25rem;
+}
+
+.glow-demo__frame {
+  overflow: hidden;
+  border-radius: 16px;
+  block-size: 16rem;
+}
+
+.glow-demo__picture {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.glow-demo__scroller {
+  overflow: auto;
+  block-size: 12rem;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 14px;
+}
+
+.glow-demo__button {
+  justify-self: start;
+  min-block-size: 2.5rem;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 10px;
+  background: light-dark(#ffffff, #10131a);
+  padding-inline: 1rem;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.glow-demo__button:focus-visible {
+  outline: 3px solid light-dark(#4338ca, #86a0ff);
+  outline-offset: 2px;
+}
+
+.glow-demo output {
+  display: block;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 10px;
+  background: light-dark(#f4f6fa, #10131a);
+  padding: 0.65rem 0.8rem;
+  color: light-dark(#5f6878, #a8afbc);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.78rem;
+  white-space: pre-line;
+}

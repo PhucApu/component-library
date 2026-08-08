@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" class="glow-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Over a picture, inside a scrolling box, and what touch and reduced motion leave."
+    />
+    <title>Cursor Glow - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="glow-demo">
+      <div class="glow-demo__shell">
+        <section class="glow-demo__card">
+          <p class="glow-demo__label">Over a picture</p>
+          <p class="glow-demo__note">
+            The light is laid over whatever is underneath and never reads it, so a picture
+            with both bright and dark parts takes the same light across all of it. Choose the
+            ink for the picture, not for the page.
+          </p>
+
+          <ui-cursor-glow style="--cursor-glow-ink: rgb(255 231 178 / 0.42); --cursor-glow-blend: plus-lighter">
+            <div class="glow-demo__frame">
+              <img
+                class="glow-demo__picture"
+                src="../../assets/night-terrace.svg"
+                alt="Lit windows across a town at night"
+              />
+            </div>
+          </ui-cursor-glow>
+        </section>
+
+        <section class="glow-demo__card">
+          <p class="glow-demo__label">Inside something that scrolls</p>
+          <p class="glow-demo__note">
+            The position is measured against the region at the moment the pointer moves, so
+            scrolling the page or the box underneath cannot leave the light behind.
+          </p>
+
+          <div class="glow-demo__scroller">
+            <ui-cursor-glow>
+              <div class="glow-demo__panel" style="min-block-size: 26rem">
+                <h2 class="glow-demo__title">Scroll me, then move across</h2>
+                <p class="glow-demo__note">
+                  This panel is taller than the box it sits in. Scroll down and the light is
+                  still exactly under the pointer.
+                </p>
+                <p class="glow-demo__note">
+                  It is measured, not remembered: there is nothing cached that a scroll could
+                  make wrong.
+                </p>
+              </div>
+            </ui-cursor-glow>
+          </div>
+
+          <output></output>
+        </section>
+
+        <section class="glow-demo__card">
+          <p class="glow-demo__label">Touch, and reduced motion</p>
+          <p class="glow-demo__note">
+            A finger lights nothing. A touch screen has no hover — a finger is either pressing
+            or absent — and a glow left where one last touched is not a light following
+            anybody, it is a smudge.
+          </p>
+          <p class="glow-demo__note">
+            Under <code>prefers-reduced-motion</code> the light still follows the pointer,
+            because that is a direct answer to something the reader is doing. What goes is the
+            fading in and out: it is simply on where the pointer is, and off when it leaves.
+          </p>
+
+          <ui-cursor-glow>
+            <div class="glow-demo__panel">
+              <h2 class="glow-demo__title">Same light, no fade</h2>
+              <p class="glow-demo__note">
+                Turn reduced motion on and move across this panel.
+              </p>
+            </div>
+          </ui-cursor-glow>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeGlowDemo } from '../../demo.js';
+
+      initializeGlowDemo();
+    </script>
+  </body>
+</html>

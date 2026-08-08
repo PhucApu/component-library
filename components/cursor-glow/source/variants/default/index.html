@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" class="glow-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A region that lights up around the pointer and fades out when it leaves."
+    />
+    <title>Cursor Glow - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="glow-demo">
+      <div class="glow-demo__shell">
+        <section class="glow-demo__card">
+          <p class="glow-demo__label">Move across it</p>
+          <p class="glow-demo__note">
+            The light sits exactly under the pointer — it never lags, because its position is
+            taken from the last thing the pointer said rather than eased towards it. Only the
+            brightness moves: it comes up as the pointer arrives and goes out where it left,
+            rather than snapping off at the edge.
+          </p>
+          <p class="glow-demo__note">
+            Nothing here is drawn per frame. The whole effect is one gradient whose centre is
+            two custom properties, and those are written at most once a frame however fast
+            the mouse reports.
+          </p>
+
+          <p class="glow-demo__note">
+            The ink belongs to the surface, not to the page. This panel is dark whatever
+            theme the page is in, so it names a warm light of its own and sets the glow to
+            add light rather than lay a wash over it — a pale ink chosen for a pale page
+            would be invisible here.
+          </p>
+
+          <ui-cursor-glow
+            style="--cursor-glow-ink: rgb(255 231 178 / 0.38); --cursor-glow-blend: plus-lighter"
+          >
+            <div class="glow-demo__panel glow-demo__panel--dark">
+              <h2 class="glow-demo__title">Bring a light with you</h2>
+              <p class="glow-demo__note" style="color: #a9b4c6">
+                Move across this panel and the light comes with you.
+              </p>
+            </div>
+          </ui-cursor-glow>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeGlowDemo } from '../../demo.js';
+
+      initializeGlowDemo();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" class="light-pull-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A cord you pull to work a light, with every joint carrying its own momentum."
+    />
+    <title>Light Pull - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="light-pull-demo">
+      <div class="light-pull-demo__shell">
+        <section class="light-pull-demo__card">
+          <p class="light-pull-demo__label">Pull it</p>
+          <p class="light-pull-demo__note">
+            Take hold of the cord anywhere along it and pull. It curves as it goes, follows
+            your hand with a lag, and swings itself out after you let go — every joint is
+            carrying its own momentum rather than playing a rehearsed swing, so a hard pull
+            and a gentle one do not look the same.
+          </p>
+          <p class="light-pull-demo__note">
+            Pull it far enough and let go: it works, the way a cord switch catches when it
+            has been pulled past its stop. A short tug does nothing but set it swinging.
+            Tab to the handle and press Space to do the same thing without a pointer.
+          </p>
+
+          <div class="light-pull-demo__room" data-lit-by="#room-pull">
+            <div class="light-pull-demo__glow"></div>
+            <ui-light-pull id="room-pull" label="Room light"></ui-light-pull>
+            <p class="light-pull-demo__caption">Pull the cord.</p>
+          </div>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeLightPullDemo } from '../../demo.js';
+
+      initializeLightPullDemo();
+    </script>
+  </body>
+</html>

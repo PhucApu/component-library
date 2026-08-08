@@ -120,6 +120,11 @@ Pair lists with a `group` attribute. Then:
   the row back across the border to the index it left. Restoring the receiving list's own order
   would leave the row where it was refused.
 - Keep a locked row from emigrating as well as from moving.
+- **Delegate the listeners from the list element, never bind them to the handles.** A handle
+  carries its listeners with it when its row moves, so the list the row *left* goes on
+  answering for it, finds no index, and gives up — the handle looks alive and is dead. Test it
+  by picking the same row up a **second** time; a test that transfers a row and stops there
+  will not see this.
 
 ## Leave out
 

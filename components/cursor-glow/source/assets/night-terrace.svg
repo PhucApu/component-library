@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" role="img" aria-label="">
+  <defs>
+    <linearGradient id="glow-night" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a2136" />
+      <stop offset="100%" stop-color="#3b3050" />
+    </linearGradient>
+  </defs>
+  <rect width="960" height="540" fill="url(#glow-night)" />
+  <g fill="#f4ecd0" opacity="0.8">
+    <circle cx="150" cy="90" r="4" />
+    <circle cx="380" cy="60" r="3" />
+    <circle cx="640" cy="110" r="4" />
+    <circle cx="840" cy="70" r="3" />
+  </g>
+  <path d="M0 320l180-90 150 60 170-70 240 90 220-50v240H0z" fill="#141a2b" />
+  <g fill="#0d111c">
+    <rect x="120" y="330" width="120" height="210" />
+    <rect x="300" y="300" width="90" height="240" />
+    <rect x="470" y="350" width="150" height="190" />
+    <rect x="690" y="320" width="110" height="220" />
+  </g>
+  <g fill="#ffd98a" opacity="0.85">
+    <rect x="150" y="366" width="22" height="28" />
+    <rect x="322" y="336" width="22" height="28" />
+    <rect x="506" y="386" width="22" height="28" />
+    <rect x="716" y="356" width="22" height="28" />
+  </g>
+</svg>

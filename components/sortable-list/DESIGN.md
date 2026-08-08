@@ -187,6 +187,22 @@ exact moment somebody is aiming at it.
 A cross-list move that says only "position 2 of 4" has left out the only thing that changed.
 Each list is named by `name`, falling back to `aria-label`.
 
+### Listeners belong to the list, not to the handle
+
+Found by use, after the tests said it was fine.
+
+A handle carries its listeners with it when its row moves. Bound per handle, the list a row
+**left** goes on answering for it: it looks the row up in its own rows, finds no index, and
+gives up. The handle looks alive and is dead — a row could be moved across once and then never
+again.
+
+Both `pointerdown` and `keydown` are delegated from the list element itself, so whichever list
+holds the row is the one that hears the press. It also means a press only starts a drag when it
+lands on a handle — or anywhere on the row under `drag="row"`, minus anything you can operate.
+
+The test that missed it transferred a row and stopped there. **Picking the same row up a second
+time is the only thing that shows it**, and that is what the regression test now does.
+
 ### A cancel has two lists to tidy
 
 The destination on a cancel is *home*, which is a different list from the one the drag was over.
@@ -235,3 +251,5 @@ left. No animation, script, external asset, or embedded raster image.
 - A cancel over another list leaves no mark on it and restores every order.
 - A locked row does not leave its list.
 - A refused transfer returns the row across the border to the index it left.
+- A row that has already moved lists can be picked up and moved again, and the list that
+  received it still reorders on its own.

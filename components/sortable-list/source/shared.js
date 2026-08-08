@@ -256,6 +256,15 @@ export class UiSortableList extends HTMLElement {
     this._note.hidden = true;
 
     this.append(this._empty, this._note, this._instructions, this._status);
+
+    // Bound to the list, not to the handles inside it. A handle carries its listeners with it
+    // when its row moves to another list, so per-handle binding leaves the *old* list
+    // answering for a row it no longer holds — it finds no index and gives up, and the handle
+    // is dead while looking perfectly alive. Delegated here, whichever list holds the row is
+    // the one that hears the press.
+    this.addEventListener('pointerdown', this._handlePointerDown);
+    this.addEventListener('keydown', this._handleKeyDown);
+
     this._syncHandles();
   }
 
@@ -314,21 +323,12 @@ export class UiSortableList extends HTMLElement {
         handle.setAttribute('aria-label', fillLabel(labels.handle, { name: this._nameFor(row) }));
         handle.setAttribute('aria-describedby', this._instructions.id);
         handle.toggleAttribute('disabled', this.disabled || this.pending);
-
-        if (!handle.dataset.sortableWired) {
-          handle.dataset.sortableWired = 'true';
-          handle.addEventListener('pointerdown', this._handlePointerDown);
-          handle.addEventListener('keydown', this._handleKeyDown);
-        }
       }
 
-      // Whole-row dragging is opt-in. A row that is draggable everywhere cannot have its text
-      // selected or its buttons pressed, which is too much to take from every list by default.
-      if (this.drag === 'row' && !locked && !row.dataset.sortableWired) {
-        row.dataset.sortableWired = 'true';
-        row.addEventListener('pointerdown', this._handlePointerDown);
-      }
-
+      // Nothing is bound to the handle or the row themselves — see `_build`. A listener bound
+      // to a handle belongs to whichever list bound it, and a row that moves to another list
+      // takes that listener with it: the old list then receives the press for a row it no
+      // longer holds, finds no index for it, and gives up. The handle looks alive and is dead.
       row.toggleAttribute('data-sortable-locked', locked);
     });
   }
@@ -376,8 +376,15 @@ export class UiSortableList extends HTMLElement {
       return;
     }
 
-    // Whole-row dragging must not swallow the controls inside the row.
-    if (event.currentTarget === event.target.closest('.sortable__row')) {
+    const onHandle = Boolean(event.target.closest?.('[data-sortable-handle]'));
+
+    // By default only the handle starts a drag; `drag="row"` opens the whole row up, and even
+    // then a press that lands on something you can operate is left alone.
+    if (!onHandle) {
+      if (this.drag !== 'row') {
+        return;
+      }
+
       if (event.target.closest('a, button, input, select, textarea, [contenteditable]')) {
         return;
       }
@@ -877,7 +884,9 @@ export class UiSortableList extends HTMLElement {
 
     const index = this._indexOfEvent(event);
 
-    if (index < 0) {
+    // Only a handle drives this. Delegated from the list, a space press on a link or a button
+    // inside a row would otherwise pick the row up instead of doing what that control does.
+    if (index < 0 || !event.target.closest?.('[data-sortable-handle]')) {
       return;
     }
 

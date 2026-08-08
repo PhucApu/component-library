@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" class="glow-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A light laid over words and controls that all keep working underneath it."
+    />
+    <title>Cursor Glow - Content</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="glow-demo">
+      <div class="glow-demo__shell">
+        <section class="glow-demo__card">
+          <p class="glow-demo__label">A light, not a lid</p>
+          <p class="glow-demo__note">
+            The layer that carries the glow takes no pointer events and carries
+            <code>aria-hidden</code>. Select the paragraph below with the light running over
+            it, follow the link, press the button — all of it works, and none of it is
+            announced twice.
+          </p>
+
+          <ui-cursor-glow>
+            <div class="glow-demo__panel">
+              <div class="glow-demo__reading">
+                <h2 class="glow-demo__title">Nothing is behind glass</h2>
+                <p class="glow-demo__note">
+                  A glow drawn over content is the easiest place in a component library to
+                  take a page away from the people using it: one absolutely positioned layer
+                  without <code>pointer-events: none</code> and the text underneath stops
+                  being text.
+                </p>
+                <p class="glow-demo__note">
+                  Try it: drag across this sentence to select it, then
+                  <a href="#reading">follow this link</a>.
+                </p>
+                <button class="glow-demo__button" type="button" data-demo-count>
+                  Pressed 0 times, under the light
+                </button>
+              </div>
+            </div>
+          </ui-cursor-glow>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeGlowDemo } from '../../demo.js';
+
+      initializeGlowDemo();
+    </script>
+  </body>
+</html>

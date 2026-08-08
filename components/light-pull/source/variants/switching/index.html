@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" class="light-pull-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="One cord, two things wired to it, and the event that is all it actually does."
+    />
+    <title>Light Pull - Switching</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="light-pull-demo">
+      <div class="light-pull-demo__shell">
+        <section class="light-pull-demo__card">
+          <p class="light-pull-demo__label">The cord decides nothing</p>
+          <p class="light-pull-demo__note">
+            All the component does is hold a state, reflect it as an attribute, and say so
+            when it changes. It does not know what a theme is. The room below is lit by a
+            page listening for <code>light-pull-change</code>, and the panel beside it swaps
+            its own <code>color-scheme</code> from the same event.
+          </p>
+          <p class="light-pull-demo__note">
+            That is the reason it is worth building this way: the same cord can work a lamp,
+            a theme, a preference, or nothing at all.
+          </p>
+
+          <div class="light-pull-demo__room" data-lit-by="#shared-pull">
+            <div class="light-pull-demo__glow"></div>
+            <ui-light-pull id="shared-pull" label="Everything"></ui-light-pull>
+            <p class="light-pull-demo__caption">One cord, two listeners.</p>
+          </div>
+
+          <div class="light-pull-demo__card" data-scheme-by="#shared-pull">
+            <p class="light-pull-demo__label">A panel that follows the same cord</p>
+            <p class="light-pull-demo__note">
+              This panel sets nothing but <code>color-scheme</code>, and every colour in it
+              is a <code>light-dark()</code> pair, so it changes without a single new rule.
+            </p>
+          </div>
+
+          <div class="light-pull-demo__row">
+            <button class="light-pull-demo__button" type="button" data-demo-action="on">
+              Set it on from the page
+            </button>
+            <button class="light-pull-demo__button" type="button" data-demo-action="off">
+              Set it off from the page
+            </button>
+          </div>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeLightPullDemo } from '../../demo.js';
+
+      initializeLightPullDemo();
+    </script>
+  </body>
+</html>

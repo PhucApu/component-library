@@ -528,6 +528,53 @@ test('the keyboard crosses lists, and the announcement names where it went', asy
   ).toEqual({ isHandle: true, list: 'Done' });
 });
 
+test('a row that has moved lists can be dragged again, and its new list still reorders', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await ready(page, 'connected');
+
+  const lists = page.locator('ui-sortable-list');
+  const [todo, doing, done] = [lists.first(), lists.nth(1), lists.nth(2)];
+
+  const dragTo = async (handle, box) => {
+    const start = await handle.boundingBox();
+    await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2 + 10);
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 12 });
+    await page.mouse.up();
+  };
+
+  const moved = (await orders(page))[0].rows[0];
+
+  await dragTo(todo.locator('.sortable__handle').first(), await done.boundingBox());
+  expect((await orders(page))[2].rows).toEqual([moved]);
+
+  // The half that was missing. A listener bound to a handle travels with it, so the list the
+  // row *left* keeps answering for it, finds no index, and gives up — the handle looks alive
+  // and is dead. Picking the same row up a second time is the only thing that shows it.
+  await dragTo(done.locator('.sortable__handle').first(), await doing.boundingBox());
+
+  const after = await orders(page);
+  expect(after[2].rows).toEqual([]);
+  expect(after[1].rows).toContain(moved);
+
+  // And the list that received it still reorders on its own afterwards.
+  const rows = doing.locator('.sortable__row');
+  const first = await rows.nth(0).evaluate((node) => node.textContent.trim());
+  const secondBox = await rows.nth(1).boundingBox();
+
+  await dragTo(rows.nth(0).locator('.sortable__handle'), {
+    x: secondBox.x,
+    y: secondBox.y + secondBox.height / 2,
+    width: secondBox.width,
+    height: secondBox.height,
+  });
+
+  expect((await orders(page))[1].rows[0]).not.toBe(first);
+});
+
 test('cancelling over another list leaves no mark on it', async ({ page }) => {
   await page.setViewportSize({ width: 1200, height: 900 });
   await ready(page, 'connected');

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 2,
+  "id": "cursor-glow",
+  "kind": "animation",
+  "version": "0.1.0",
+  "name": "Cursor Glow",
+  "description": "A framework-free Web Component that lights a region around the pointer: one gradient whose centre is two custom properties, written at most once a frame and never while the pointer is still.",
+  "group": "pointer-effects",
+  "categories": ["surface", "utilities"],
+  "tags": [
+    "glow",
+    "spotlight",
+    "cursor",
+    "pointer",
+    "hover",
+    "gradient",
+    "overlay",
+    "web-component",
+    "reduced-motion"
+  ],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A dark panel that lights around the pointer and fades out where the pointer left it.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "content",
+      "name": "Content",
+      "description": "A light over words, a link and a button, all of which keep working underneath it.",
+      "entry": "source/variants/content/index.html"
+    },
+    {
+      "id": "grid",
+      "name": "Grid",
+      "description": "Four regions side by side, each lighting only while the pointer is inside it.",
+      "entry": "source/variants/grid/index.html"
+    },
+    {
+      "id": "tuning",
+      "name": "Tuning",
+      "description": "Size, strength, ink, fade, and what blending does on a dark surface.",
+      "entry": "source/variants/tuning/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "Over a picture, inside a scrolling box, and what touch and reduced motion leave.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 4000
+  }
+}

@@ -1141,11 +1141,37 @@
     tab-size: 2;
     white-space: pre;
   }
+
+  .site-footer {
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .site-footer__inner {
+    display: flex;
+    width: min(calc(100% - (2 * var(--page-padding-mobile))), var(--content-max-width));
+    align-items: center;
+    justify-content: center;
+    margin-inline: auto;
+    padding-block: 1.5rem;
+    text-align: center;
+  }
+
+  .site-footer__credit {
+    margin: 0;
+    color: var(--text-tertiary);
+    font-size: 0.78rem;
+  }
+
+  .site-footer__credit strong {
+    color: var(--interaction-accent);
+    font-weight: 620;
+  }
 }
 
 @media (min-width: 42rem) {
   .site-header__inner,
-  .catalog-container {
+  .catalog-container,
+  .site-footer__inner {
     width: min(calc(100% - (2 * var(--page-padding-desktop))), var(--content-max-width));
   }
 

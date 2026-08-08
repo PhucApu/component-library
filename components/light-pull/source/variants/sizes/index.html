@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" class="light-pull-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A very short cord, a very long one, and a heavier one, all in a narrow frame."
+    />
+    <title>Light Pull - Sizes</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+    <style>
+      .light-pull-demo__heavy {
+        --light-pull-width: 5;
+        --light-pull-grip-size: 2rem;
+        --light-pull-grip-length: 3.4rem;
+      }
+
+      .light-pull-demo__fine {
+        --light-pull-width: 1.4;
+        --light-pull-grip-size: 1rem;
+        --light-pull-grip-length: 1.8rem;
+      }
+
+      .light-pull-demo__tall {
+        block-size: 20rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="light-pull-demo">
+      <div class="light-pull-demo__shell">
+        <section class="light-pull-demo__card">
+          <p class="light-pull-demo__label">Short and long</p>
+          <p class="light-pull-demo__note">
+            <code>length</code> is the cord in pixels, clamped so it cannot be shorter than a
+            grip or longer than a room. Everything else follows: the joints are spaced along
+            whatever length it is given, and the swing follows from the spacing.
+          </p>
+
+          <div class="light-pull-demo__strip">
+            <div class="light-pull-demo__slot">
+              <ui-light-pull label="Very short cord" length="60"></ui-light-pull>
+            </div>
+            <div class="light-pull-demo__slot light-pull-demo__tall">
+              <ui-light-pull label="Very long cord" length="280"></ui-light-pull>
+            </div>
+          </div>
+        </section>
+
+        <section class="light-pull-demo__card">
+          <p class="light-pull-demo__label">Heavy and fine</p>
+          <p class="light-pull-demo__note">
+            The cord's thickness and the grip are custom properties, so a page can hang a
+            beaded chain in one place and a fine string in another without touching the
+            component.
+          </p>
+
+          <div class="light-pull-demo__strip">
+            <div class="light-pull-demo__slot">
+              <ui-light-pull class="light-pull-demo__heavy" label="Heavy chain"></ui-light-pull>
+            </div>
+            <div class="light-pull-demo__slot">
+              <ui-light-pull class="light-pull-demo__fine" label="Fine string"></ui-light-pull>
+            </div>
+          </div>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeLightPullDemo } from '../../demo.js';
+
+      initializeLightPullDemo();
+    </script>
+  </body>
+</html>

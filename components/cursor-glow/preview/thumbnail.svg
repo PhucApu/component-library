@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="A dark panel with a soft light around a pointer near its right side">
+  <defs>
+    <radialGradient id="glow-light" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe7b2" stop-opacity="0.55" />
+      <stop offset="55%" stop-color="#ffe7b2" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#ffe7b2" stop-opacity="0" />
+    </radialGradient>
+    <clipPath id="glow-panel">
+      <rect x="76" y="86" width="488" height="176" rx="14" />
+    </clipPath>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect x="48" y="34" width="544" height="292" rx="18" fill="#171a20" stroke="#292d36" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="76" y="68" fill="#a8afbc" font-size="13" font-weight="650">A light that comes with the pointer</text>
+
+    <rect x="76" y="86" width="488" height="176" rx="14" fill="#10141b" stroke="#2e3440" />
+
+    <g clip-path="url(#glow-panel)">
+      <circle cx="430" cy="182" r="150" fill="url(#glow-light)" />
+    </g>
+
+    <g fill="#3b4250">
+      <rect x="104" y="126" width="150" height="10" rx="5" />
+      <rect x="104" y="152" width="112" height="8" rx="4" />
+      <rect x="104" y="172" width="132" height="8" rx="4" />
+    </g>
+
+    <g transform="translate(430 182)">
+      <path d="M0 0l0 18 5-5 4 9 4-2-4-8 7-1z" fill="#f4f6fa" stroke="#0f1115" stroke-width="1.2" />
+    </g>
+  </g>
+</svg>

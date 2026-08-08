@@ -1,0 +1,283 @@
+:root {
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.light-pull-demo-page,
+.light-pull-demo-page body {
+  background: light-dark(#f4f6fa, #0f1115);
+}
+
+ui-light-pull {
+  --light-pull-cord: light-dark(#8a8577, #b9b2a0);
+  --light-pull-grip: light-dark(#e8e2d2, #d8d1bd);
+  --light-pull-grip-edge: light-dark(#b6ae99, #8d8672);
+  --light-pull-focus: light-dark(#4338ca, #86a0ff);
+  --light-pull-shadow: light-dark(rgb(15 23 42 / 0.18), rgb(0 0 0 / 0.5));
+  --light-pull-width: 2.5;
+  --light-pull-grip-size: 1.5rem;
+  --light-pull-grip-length: 2.6rem;
+
+  position: relative;
+  display: block;
+  min-inline-size: 0;
+}
+
+/* The cord hangs from the top of this box, so the box is what a page positions. */
+.light-pull__field {
+  position: relative;
+  block-size: 100%;
+  min-block-size: 100%;
+  /* The cord takes sideways; the page keeps downwards. */
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+}
+
+.light-pull__field.is-held {
+  cursor: grabbing;
+}
+
+.light-pull__cord {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.light-pull__line {
+  fill: none;
+  stroke: var(--light-pull-cord);
+  stroke-width: var(--light-pull-width);
+  stroke-linecap: round;
+}
+
+/* The handle is the switch: one control for the pointer and the keyboard both. */
+.light-pull__handle {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: grid;
+  place-items: center;
+  inline-size: var(--light-pull-grip-size);
+  block-size: var(--light-pull-grip-length);
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  padding: 0;
+  cursor: grab;
+}
+
+.light-pull__field.is-held .light-pull__handle {
+  cursor: grabbing;
+}
+
+.light-pull__grip {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  border: 1px solid var(--light-pull-grip-edge);
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--light-pull-grip-edge) 0%,
+    var(--light-pull-grip) 38%,
+    var(--light-pull-grip) 62%,
+    var(--light-pull-grip-edge) 100%
+  );
+  box-shadow: 0 6px 14px var(--light-pull-shadow);
+}
+
+.light-pull__handle:focus-visible {
+  outline: 3px solid var(--light-pull-focus);
+  outline-offset: 3px;
+}
+
+/* The demo's room, and the lamp the cord works. */
+.light-pull-demo {
+  display: grid;
+  /* The page is otherwise as tall as its content, and the background it paints would stop
+     there, leaving a seam across the rest of the preview frame. */
+  min-block-size: 100dvh;
+  align-content: start;
+  gap: 1.5rem;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  background: light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
+}
+
+.light-pull-demo__shell {
+  display: grid;
+  gap: 1.5rem;
+  inline-size: min(100%, 60rem);
+  margin-inline: auto;
+}
+
+.light-pull-demo__card {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 18px;
+  background: light-dark(#ffffff, #171a20);
+  padding: clamp(1rem, 3vw, 1.75rem);
+}
+
+.light-pull-demo__label {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.light-pull-demo__note {
+  max-width: 46rem;
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.light-pull-demo code {
+  border-radius: 5px;
+  background: light-dark(#eef1f5, #10131a);
+  padding: 0.1rem 0.35rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+/* A room the cord hangs in. It is dark until the switch says otherwise, which is the whole
+   point of the demo: the component reports, the page decides. */
+.light-pull-demo__room {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 14px;
+  background: #171b24;
+  min-block-size: 22rem;
+  color: #cdd3de;
+  transition:
+    background 420ms cubic-bezier(0.2, 0, 0, 1),
+    color 420ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.light-pull-demo__room[data-lit] {
+  background: #fdf6e4;
+  color: #2c2a24;
+}
+
+.light-pull-demo__glow {
+  position: absolute;
+  inset-block-start: -6rem;
+  inset-inline-start: 50%;
+  inline-size: 26rem;
+  block-size: 26rem;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 214 138 / 0.55), transparent 62%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.light-pull-demo__room[data-lit] .light-pull-demo__glow {
+  opacity: 1;
+}
+
+.light-pull-demo__room ui-light-pull {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: clamp(2rem, 12%, 6rem);
+  inline-size: 8rem;
+  block-size: 16rem;
+}
+
+.light-pull-demo__caption {
+  position: absolute;
+  inset-block-end: 1.25rem;
+  inset-inline-start: 1.5rem;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.light-pull-demo__strip {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 14px;
+  background: light-dark(#f7f9fc, #12161c);
+  padding-block: 0 2rem;
+}
+
+.light-pull-demo__slot {
+  position: relative;
+  block-size: 15rem;
+}
+
+/* Every side, not just the top. The cord's box takes its height from what it is given, and
+   an element pinned by its top alone is an element nothing tall enough to hang in. */
+.light-pull-demo__slot ui-light-pull {
+  position: absolute;
+  inset: 0;
+}
+
+.light-pull-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.light-pull-demo__button {
+  min-block-size: 2.5rem;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 10px;
+  background: light-dark(#f4f6fa, #10131a);
+  padding-inline: 0.9rem;
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.light-pull-demo__button:focus-visible {
+  outline: 3px solid light-dark(#4338ca, #86a0ff);
+  outline-offset: 2px;
+}
+
+.light-pull-demo output {
+  display: block;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 10px;
+  background: light-dark(#f4f6fa, #10131a);
+  padding: 0.65rem 0.8rem;
+  color: light-dark(#5f6878, #a8afbc);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.78rem;
+  white-space: pre-line;
+}
+
+/* The swing is the component. With motion turned down the cord hangs still and the switch
+   simply works, which is the same thing without the theatre. */
+@media (prefers-reduced-motion: reduce) {
+  .light-pull-demo__room,
+  .light-pull-demo__glow {
+    transition: none;
+  }
+}

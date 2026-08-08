@@ -93,8 +93,15 @@ eyebrow `5.99:1`.
 
 ## 6. Homepage information architecture
 
-The homepage contains a header, centered hero, search field, section tabs, result summary, and
-grouped component sections.
+The homepage contains a header, centered hero, search field, section tabs, result summary,
+grouped component sections, and a footer.
+
+### Footer
+
+The footer is a shared shell element on both the homepage and the detail page. It sits below a
+hairline top border and carries one restrained authorship credit in tertiary text, centered on
+the same content width as the page above it. It never animates and never competes with the
+components for attention.
 
 ### Section tabs
 

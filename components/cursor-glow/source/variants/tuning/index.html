@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" class="glow-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="How big the light is, how strong, what colour, and what blending does to it."
+    />
+    <title>Cursor Glow - Tuning</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="glow-demo">
+      <div class="glow-demo__shell">
+        <section class="glow-demo__card">
+          <p class="glow-demo__label">Size and strength</p>
+          <p class="glow-demo__note">
+            <code>--cursor-glow-size</code> is the width of the light and
+            <code>--cursor-glow-strength</code> is how much of it there is. A wide faint one
+            reads as a room being lit; a small hard one reads as a torch.
+          </p>
+
+          <div class="glow-demo__grid">
+            <ui-cursor-glow style="--cursor-glow-size: 720px; --cursor-glow-strength: 0.55">
+              <div class="glow-demo__tile">
+                <h3 class="glow-demo__title" style="font-size: 1.05rem">Wide and faint</h3>
+                <p class="glow-demo__note">720px, at just over half strength.</p>
+              </div>
+            </ui-cursor-glow>
+
+            <ui-cursor-glow style="--cursor-glow-size: 140px">
+              <div class="glow-demo__tile">
+                <h3 class="glow-demo__title" style="font-size: 1.05rem">Small and hard</h3>
+                <p class="glow-demo__note">140px, at full strength.</p>
+              </div>
+            </ui-cursor-glow>
+          </div>
+        </section>
+
+        <section class="glow-demo__card">
+          <p class="glow-demo__label">Colour, and what blending is for</p>
+          <p class="glow-demo__note">
+            Both panels below are dark and both carry the same warm ink. The second one adds
+            its light to what is underneath instead of laying it over the top, which is what
+            makes a glow look like light rather than like paint. It is left off by default
+            because on a pale surface there is nothing to add light to.
+          </p>
+
+          <div class="glow-demo__grid">
+            <ui-cursor-glow style="--cursor-glow-ink: rgb(255 231 178 / 0.38)">
+              <div class="glow-demo__tile glow-demo__panel--dark">
+                <h3 class="glow-demo__title" style="font-size: 1.05rem">Laid over</h3>
+                <p class="glow-demo__note" style="color: #a9b4c6">
+                  <code>normal</code>, the default.
+                </p>
+              </div>
+            </ui-cursor-glow>
+
+            <ui-cursor-glow
+              style="--cursor-glow-ink: rgb(255 231 178 / 0.38); --cursor-glow-blend: plus-lighter"
+            >
+              <div class="glow-demo__tile glow-demo__panel--dark">
+                <h3 class="glow-demo__title" style="font-size: 1.05rem">Added to</h3>
+                <p class="glow-demo__note" style="color: #a9b4c6">
+                  <code>plus-lighter</code>.
+                </p>
+              </div>
+            </ui-cursor-glow>
+          </div>
+
+          <output></output>
+        </section>
+
+        <section class="glow-demo__card">
+          <p class="glow-demo__label">How long it takes to arrive</p>
+          <p class="glow-demo__note">
+            <code>--cursor-glow-fade</code> is the coming up and the going out. At
+            <code>0ms</code> the light is simply on wherever the pointer is; at
+            <code>900ms</code> it lingers after the pointer has left the region.
+          </p>
+
+          <div class="glow-demo__grid">
+            <ui-cursor-glow style="--cursor-glow-fade: 0ms">
+              <div class="glow-demo__tile">
+                <h3 class="glow-demo__title" style="font-size: 1.05rem">No fade</h3>
+                <p class="glow-demo__note">On and off at the border.</p>
+              </div>
+            </ui-cursor-glow>
+
+            <ui-cursor-glow style="--cursor-glow-fade: 900ms">
+              <div class="glow-demo__tile">
+                <h3 class="glow-demo__title" style="font-size: 1.05rem">Slow to leave</h3>
+                <p class="glow-demo__note">Stays behind for most of a second.</p>
+              </div>
+            </ui-cursor-glow>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeGlowDemo } from '../../demo.js';
+
+      initializeGlowDemo();
+    </script>
+  </body>
+</html>

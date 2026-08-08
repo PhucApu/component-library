@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" class="glow-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Four regions side by side, each lighting only while the pointer is inside it."
+    />
+    <title>Cursor Glow - Grid</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="glow-demo">
+      <div class="glow-demo__shell">
+        <section class="glow-demo__card">
+          <p class="glow-demo__label">Each one lights itself</p>
+          <p class="glow-demo__note">
+            Every region listens only to the pointer inside it, so moving across the row
+            hands the light from one to the next and never lights two at once. Nothing
+            co-ordinates them: there is no parent keeping score, which is why a region can be
+            dropped anywhere on a page on its own.
+          </p>
+          <p class="glow-demo__note">
+            Leaving one does not switch it off at the border — it goes out where the pointer
+            left, which is what stops the row from flickering as you cross the gaps.
+          </p>
+
+          <div class="glow-demo__grid">
+            <ui-cursor-glow>
+              <div class="glow-demo__tile">
+                <h3 class="glow-demo__title" style="font-size: 1.05rem">First</h3>
+                <p class="glow-demo__note">A region of its own.</p>
+              </div>
+            </ui-cursor-glow>
+
+            <ui-cursor-glow>
+              <div class="glow-demo__tile">
+                <h3 class="glow-demo__title" style="font-size: 1.05rem">Second</h3>
+                <p class="glow-demo__note">Listening to nothing but itself.</p>
+              </div>
+            </ui-cursor-glow>
+
+            <ui-cursor-glow>
+              <div class="glow-demo__tile">
+                <h3 class="glow-demo__title" style="font-size: 1.05rem">Third</h3>
+                <p class="glow-demo__note">No parent keeping score.</p>
+              </div>
+            </ui-cursor-glow>
+
+            <ui-cursor-glow>
+              <div class="glow-demo__tile">
+                <h3 class="glow-demo__title" style="font-size: 1.05rem">Fourth</h3>
+                <p class="glow-demo__note">Droppable anywhere on its own.</p>
+              </div>
+            </ui-cursor-glow>
+          </div>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeGlowDemo } from '../../demo.js';
+
+      initializeGlowDemo();
+    </script>
+  </body>
+</html>

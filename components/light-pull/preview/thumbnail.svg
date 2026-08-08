@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="A hanging cord pulled to one side, with a lit glow behind it">
+  <defs>
+    <radialGradient id="pull-glow" cx="50%" cy="20%" r="60%">
+      <stop offset="0%" stop-color="#ffd68a" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#ffd68a" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="pull-grip" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8d8672" />
+      <stop offset="38%" stop-color="#e8e2d2" />
+      <stop offset="62%" stop-color="#e8e2d2" />
+      <stop offset="100%" stop-color="#8d8672" />
+    </linearGradient>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect x="48" y="34" width="544" height="292" rx="18" fill="#171a20" stroke="#292d36" />
+
+  <g>
+    <rect x="76" y="60" width="488" height="240" rx="12" fill="#12161c" />
+    <ellipse cx="320" cy="120" rx="210" ry="150" fill="url(#pull-glow)" />
+
+    <path
+      d="M392 62 Q 398 118 408 168 Q 418 216 436 250"
+      fill="none"
+      stroke="#b9b2a0"
+      stroke-width="2.6"
+      stroke-linecap="round"
+    />
+    <g transform="translate(436 250) rotate(24)">
+      <rect x="-11" y="-4" width="22" height="44" rx="11" fill="url(#pull-grip)" stroke="#8d8672" />
+    </g>
+
+    <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+      <text x="104" y="272" fill="#a8afbc" font-size="13" font-weight="650">Pull the cord</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 2,
+  "id": "light-pull",
+  "kind": "animation",
+  "version": "0.1.0",
+  "name": "Light Pull",
+  "description": "A framework-free Web Component that hangs a simulated cord you can take hold of anywhere, pull to work a switch, and set swinging — every joint carrying its own momentum rather than playing a rehearsed swing.",
+  "group": "pointer-effects",
+  "categories": ["utilities", "surface"],
+  "tags": [
+    "cord",
+    "pull",
+    "switch",
+    "rope",
+    "verlet",
+    "physics",
+    "drag",
+    "web-component",
+    "accessible",
+    "reduced-motion"
+  ],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A cord hanging in a dark room: pull it far enough and the light comes on.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "physics",
+      "name": "Physics",
+      "description": "Three lengths taking the same shove, each swinging at the rate its length gives it.",
+      "entry": "source/variants/physics/index.html"
+    },
+    {
+      "id": "switching",
+      "name": "Switching",
+      "description": "One cord wired to two different things, and the event that is all it actually does.",
+      "entry": "source/variants/switching/index.html"
+    },
+    {
+      "id": "sizes",
+      "name": "Sizes",
+      "description": "A very short cord, a very long one, a heavy chain, and a fine string.",
+      "entry": "source/variants/sizes/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "On to begin with, worked from the keyboard, and what reduced motion leaves.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}
