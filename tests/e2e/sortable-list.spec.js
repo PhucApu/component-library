@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 const COMPONENT_BASE = '/components/sortable-list/source/variants';
-const VARIANTS = ['default', 'table', 'keyboard', 'commit', 'markup', 'states'];
+const VARIANTS = ['default', 'table', 'connected', 'keyboard', 'commit', 'markup', 'states'];
 
 function trackRuntimeErrors(page) {
   const errors = [];
@@ -48,7 +48,7 @@ function travelBetween(page, listSelector, fromIndex, toIndex) {
   );
 }
 
-test('all six variants run independently without external requests or overflow', async ({
+test('all seven variants run independently without external requests or overflow', async ({
   page,
 }) => {
   test.slow();
@@ -436,6 +436,235 @@ test('a disabled list disables its handles rather than swallowing the events', a
     );
   });
   expect(await stages.evaluate((node) => node.order)).toEqual(before);
+});
+
+/** The three lists of the Connected variant: To do, In progress, Done. */
+const orders = (page) =>
+  page.evaluate(() =>
+    [...document.querySelectorAll('ui-sortable-list')].map((list) => ({
+      name: list.listName,
+      rows: list.order,
+    })),
+  );
+
+test('a pointer drag moves a row into another list', async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await ready(page, 'connected');
+
+  const before = await orders(page);
+  expect(before.map((list) => list.name)).toEqual(['To do', 'In progress', 'Done']);
+
+  const handle = page.locator('ui-sortable-list').first().locator('.sortable__handle').first();
+  const start = await handle.boundingBox();
+  const done = await page.locator('ui-sortable-list').nth(2).boundingBox();
+
+  await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2 + 10);
+  await page.mouse.move(done.x + done.width / 2, done.y + done.height / 2, { steps: 12 });
+
+  // While the drag is over it, the destination says so — and never only in colour: the
+  // announcement has already named it, and the rows inside have opened a slot.
+  await expect(page.locator('ui-sortable-list').nth(2)).toHaveAttribute(
+    'data-sortable-target',
+    '',
+  );
+
+  await page.mouse.up();
+
+  const after = await orders(page);
+  expect(after[0].rows).not.toContain(before[0].rows[0]);
+  expect(after[2].rows).toEqual([before[0].rows[0]]);
+
+  // Nothing left behind: no marks, no transforms.
+  expect(
+    await page.evaluate(() => ({
+      marks: document.querySelectorAll('[data-sortable-target]').length,
+      transforms: [...document.querySelectorAll('.sortable__row')].filter(
+        (row) => row.style.transform,
+      ).length,
+    })),
+  ).toEqual({ marks: 0, transforms: 0 });
+});
+
+test('the keyboard crosses lists, and the announcement names where it went', async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await ready(page, 'connected');
+
+  const first = page.locator('ui-sortable-list').first();
+  const status = first.locator('[role="status"]');
+
+  await first.locator('.sortable__handle').first().focus();
+  await page.keyboard.press(' ');
+  await expect(status).toContainText('Grabbed Review pull requests');
+
+  // A cross-list move that says only "position 2 of 4" has left out the one thing that changed.
+  await page.keyboard.press('ArrowRight');
+  await expect(status).toHaveText('Review pull requests, In progress, position 1 of 3.');
+
+  await page.keyboard.press('ArrowDown');
+  await expect(status).toHaveText('Review pull requests, In progress, position 2 of 3.');
+
+  await page.keyboard.press('ArrowRight');
+  await expect(status).toHaveText('Review pull requests, Done, position 1 of 1.');
+
+  // Running out of lists says so rather than going quiet.
+  await page.keyboard.press('ArrowRight');
+  await expect(status).toHaveText('There is no list that way for Review pull requests.');
+
+  await page.keyboard.press(' ');
+
+  const after = await orders(page);
+  expect(after[2].rows).toEqual(['Review pull requests']);
+  expect(after[0].rows).not.toContain('Review pull requests');
+
+  // The row carried its focused handle across the border.
+  expect(
+    await page.evaluate(() => {
+      const active = document.activeElement;
+      const list = active?.closest('ui-sortable-list');
+      return { isHandle: active?.classList.contains('sortable__handle'), list: list?.listName };
+    }),
+  ).toEqual({ isHandle: true, list: 'Done' });
+});
+
+test('cancelling over another list leaves no mark on it', async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await ready(page, 'connected');
+
+  const before = await orders(page);
+  const first = page.locator('ui-sortable-list').first();
+
+  await first.locator('.sortable__handle').first().focus();
+  await page.keyboard.press(' ');
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('ArrowRight');
+
+  // Held over Done, which is outlined as the destination.
+  await expect(page.locator('ui-sortable-list').nth(2)).toHaveAttribute(
+    'data-sortable-target',
+    '',
+  );
+
+  await page.keyboard.press('Escape');
+
+  // Tidying only the destination leaves the list the drag was *over* still outlined for a move
+  // that never happened — the destination on a cancel is home, which is a different list.
+  expect(
+    await page.evaluate(() => ({
+      marks: document.querySelectorAll('[data-sortable-target]').length,
+      transforms: [...document.querySelectorAll('.sortable__row')].filter(
+        (row) => row.style.transform,
+      ).length,
+    })),
+  ).toEqual({ marks: 0, transforms: 0 });
+
+  expect(await orders(page)).toEqual(before);
+});
+
+test('left and right stay unclaimed on a list with nowhere sideways to go', async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 900 });
+  await ready(page, 'default');
+
+  const list = page.locator('ui-sortable-list');
+  const before = await list.evaluate((node) => node.order);
+
+  await list.locator('.sortable__handle').first().focus();
+  await page.keyboard.press(' ');
+
+  // Binding them would imply a direction that does not exist and send a keyboard user looking
+  // for it. The key events are left for the page to do whatever it already did with them.
+  const claimed = await page.evaluate(() =>
+    ['ArrowLeft', 'ArrowRight'].map((key) => {
+      const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+      document.activeElement.dispatchEvent(event);
+      return event.defaultPrevented;
+    }),
+  );
+
+  expect(claimed).toEqual([false, false]);
+  expect(await list.evaluate((node) => node.order)).toEqual(before);
+
+  // Up and down are untouched by any of this.
+  await page.keyboard.press('ArrowDown');
+  await expect(list.locator('[role="status"]')).toContainText('position 2 of 5');
+});
+
+test('an empty list is a target, and it is one before the drag starts', async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await ready(page, 'connected');
+
+  const done = page.locator('ui-sortable-list').nth(2);
+  const slot = done.locator('[data-sortable-slot]');
+
+  // Present at rest. A zone that appears the moment somebody picks a row up shoves the rest of
+  // the board aside at the exact moment they are aiming at it.
+  await expect(slot).toBeVisible();
+  await expect(slot).toHaveText('Drop a row here');
+
+  const restingHeight = await done.evaluate((node) =>
+    Math.round(node.getBoundingClientRect().height),
+  );
+
+  const handle = page.locator('ui-sortable-list').first().locator('.sortable__handle').first();
+  const start = await handle.boundingBox();
+  await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2 + 10);
+
+  expect(
+    await done.evaluate((node) => Math.round(node.getBoundingClientRect().height)),
+  ).toBe(restingHeight);
+
+  await page.mouse.up();
+});
+
+test('a locked row does not emigrate', async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await ready(page, 'connected');
+
+  const locked = page.locator('ui-sortable-list').first().locator('[data-sortable-locked]');
+
+  await expect(locked).toHaveCount(1);
+  await expect(locked).toContainText('Sign off the invoice');
+  // It is a wall inside its own list, and it has no handle to leave by in any direction.
+  await expect(locked.locator('.sortable__handle')).toHaveCount(0);
+  await expect(locked.locator('.sortable__lock')).toHaveCount(1);
+});
+
+test('a refused save sends the row back across the border', async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await ready(page, 'connected');
+
+  const before = await orders(page);
+
+  // The receiving list is the one making a claim about new state, so it is the one asked to
+  // stand behind it.
+  await page.evaluate(() => {
+    document.querySelectorAll('ui-sortable-list')[2].commit = () =>
+      new Promise((resolve, reject) => {
+        window.__settleCommit = { resolve, reject };
+      });
+  });
+
+  const first = page.locator('ui-sortable-list').first();
+  await first.locator('.sortable__handle').first().focus();
+  await page.keyboard.press(' ');
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press(' ');
+
+  const done = page.locator('ui-sortable-list').nth(2);
+  await expect(done).toHaveAttribute('pending', '');
+  expect((await orders(page))[2].rows).toEqual(['Review pull requests']);
+
+  await page.evaluate(() => window.__settleCommit.reject(new Error('refused')));
+
+  // Undoing a transfer is not undoing a reorder: the row has to go back across the border and
+  // to the index it left, not merely restore this list's own order.
+  await expect(done).not.toHaveAttribute('pending', '');
+  await expect(done.locator('[role="status"]')).toContainText('back in To do at position 1');
+  expect(await orders(page)).toEqual(before);
 });
 
 test('reduced motion drops the travel, not the reorder', async ({ page }) => {

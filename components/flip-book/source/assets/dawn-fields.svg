@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img" aria-label="">
+  <defs>
+    <linearGradient id="flip-dawn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f6c9a0" />
+      <stop offset="100%" stop-color="#e08a6a" />
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#flip-dawn)" />
+  <circle cx="300" cy="330" r="78" fill="#fff2dc" />
+  <path d="M0 700l220-90 200 60 220-80 260 90v520H0z" fill="#b06a4c" />
+  <path d="M0 860h900v340H0z" fill="#8a4f38" />
+  <g stroke="#5f3423" stroke-width="10" stroke-linecap="round">
+    <path d="M120 1140v-140M300 1160v-160M480 1130v-130M660 1155v-155M810 1135v-135" />
+  </g>
+  <text x="450" y="1140" fill="#fff2dc" font-family="Inter, sans-serif" font-size="54" font-weight="650" text-anchor="middle" opacity="0.8">2</text>
+</svg>

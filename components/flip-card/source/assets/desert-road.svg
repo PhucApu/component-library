@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="">
+  <defs>
+    <linearGradient id="card-desert" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffd8a3" />
+      <stop offset="100%" stop-color="#f0a05f" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#card-desert)" />
+  <path d="M0 250h800v250H0z" fill="#d98a4e" />
+  <path d="M340 500l60-250 60 250z" fill="#f5e2c8" />
+  <g stroke="#d98a4e" stroke-width="10" stroke-dasharray="26 30">
+    <path d="M400 260v240" />
+  </g>
+  <path d="M0 250l120-70 100 40 140-60 200 70 240-50v70z" fill="#b06a3c" />
+</svg>

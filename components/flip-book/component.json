@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 2,
+  "id": "flip-book",
+  "kind": "animation",
+  "version": "0.1.0",
+  "name": "Flip Book",
+  "description": "A framework-free Web Component that stacks pages into a book: every leaf carries two of them, a turn follows the hand round the spine, and the arrows either side do the same thing a leaf at a time.",
+  "group": "transitions",
+  "categories": ["media", "gallery"],
+  "tags": [
+    "flip",
+    "book",
+    "page",
+    "turn",
+    "stack",
+    "3d",
+    "drag",
+    "web-component",
+    "reduced-motion"
+  ],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Eight pages on four leaves, turned by hand, by the arrows, or from the keyboard.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "content",
+      "name": "Content",
+      "description": "Pages made of words and a working link, and an odd page count that ends on a blank.",
+      "entry": "source/variants/content/index.html"
+    },
+    {
+      "id": "drag",
+      "name": "Drag",
+      "description": "How far and how fast commits a turn, what falls back, and what no-drag takes away.",
+      "entry": "source/variants/drag/index.html"
+    },
+    {
+      "id": "pace",
+      "name": "Pace",
+      "description": "A twelve-page stack with a visible thickness, and turns from a fifth of a second to over one.",
+      "entry": "source/variants/pace/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "One page, two pages, a page that never arrived, and reduced motion.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 1120,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

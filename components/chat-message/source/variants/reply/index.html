@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en" class="chat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Replying to a message, with a quotation you can actually follow back." />
+    <title>Chat Message - Reply</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chat-demo">
+      <div class="chat-demo__shell">
+        <section class="chat-demo__card">
+          <p class="chat-demo__label">Quoting what somebody said</p>
+
+          <ol class="chat-thread" role="log" aria-label="Team conversation">
+            <li>
+              <ui-chat-message id="msg-budget" from="them" author="Linh" time="2026-08-07T10:04">
+                <p>
+                  I've put the revised budget in the shared folder — the travel line is the one
+                  that moved, everything else is the same as we agreed on Tuesday afternoon in
+                  the planning meeting.
+                </p>
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message from="them" author="Linh" time="2026-08-07T10:05">
+                <p>Let me know if the numbers look wrong.</p>
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message
+                from="me"
+                time="2026-08-07T10:31"
+                status="read"
+                reply-to="msg-budget"
+                reply-author="Linh"
+              >
+                <blockquote data-quote>
+                  I've put the revised budget in the shared folder — the travel line is the one
+                  that moved, everything else is the same as we agreed on Tuesday afternoon in
+                  the planning meeting.
+                </blockquote>
+                <p>Found it. Travel looks right to me.</p>
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message
+                from="them"
+                author="Mai"
+                time="2026-08-07T10:38"
+                reply-to="msg-budget"
+                reply-author="Linh"
+              >
+                <blockquote data-quote>the travel line is the one that moved</blockquote>
+                <p>Same. Approving it now.</p>
+              </ui-chat-message>
+            </li>
+          </ol>
+
+          <p class="chat-demo__label">A quotation you can follow</p>
+          <p class="chat-demo__note">
+            Both quotations above are links. Activate one and the original scrolls into view,
+            takes focus and is ringed for a moment — a quotation that only scrolls leaves anybody
+            driving by keyboard exactly where they were, looking at a message they cannot reach.
+          </p>
+
+          <p class="chat-demo__label">Shortened, and honest about it</p>
+          <p class="chat-demo__note">
+            Linh's message is long. Quoting it whole would double the length of the thread for
+            anybody reading it aloud — the same paragraph twice, once as the message and once as
+            the quote. It is cut at a word with an ellipsis, so what remains reads as part of
+            something rather than as the whole of it.
+          </p>
+
+          <p class="chat-demo__label">The quote is a panel, not dimmer text</p>
+          <p class="chat-demo__note">
+            Inside your own bubble the background is a saturated accent, and a "muted" ink on top
+            of that misses <code>4.5:1</code> while looking perfectly fine. The quotation gets its
+            own surface instead, measured on both sides — <code>7.65</code> light and
+            <code>6.09</code> dark.
+          </p>
+
+          <output class="chat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeChatMessageDemo } from '../../demo.js';
+
+      initializeChatMessageDemo();
+    </script>
+  </body>
+</html>

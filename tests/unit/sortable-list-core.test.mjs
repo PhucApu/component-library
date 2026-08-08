@@ -8,11 +8,15 @@ import {
   clampIndex,
   dropIndex,
   fillLabel,
+  gapOf,
+  insertIndex,
   moveItem,
   nextIndex,
   offsetTo,
   segmentFor,
   shiftFor,
+  shiftForInsert,
+  slotTop,
 } from '../../components/sortable-list/source/sortable-list-core.js';
 
 /** Rows of one height, the easy case every formula gets right. */
@@ -176,6 +180,88 @@ describe('offsetTo', () => {
   it('has nowhere to go when the row did not move', () => {
     assert.equal(offsetTo({ boxes: EVEN, from: 2, to: 2 }), 0);
     assert.equal(offsetTo({ boxes: [], from: 0, to: 1 }), 0);
+  });
+});
+
+describe('insertIndex', () => {
+  it('offers one more place than there are rows', () => {
+    // The difference from dropIndex, and the reason this is a second function: nothing has
+    // been taken out of this list, so three rows have four places a row can land.
+    const places = new Set();
+
+    for (let pointer = -20; pointer < 220; pointer += 1) {
+      places.add(insertIndex({ boxes: EVEN.slice(0, 3), pointer }));
+    }
+
+    assert.deepEqual([...places].sort((a, b) => a - b), [0, 1, 2, 3]);
+  });
+
+  it('lands before the row whose middle the pointer has not reached', () => {
+    // Rows at 0, 48, 96, all 40 tall. Middles at 20, 68, 116.
+    assert.equal(insertIndex({ boxes: EVEN, pointer: 19 }), 0);
+    assert.equal(insertIndex({ boxes: EVEN, pointer: 21 }), 1);
+    assert.equal(insertIndex({ boxes: EVEN, pointer: 67 }), 1);
+    assert.equal(insertIndex({ boxes: EVEN, pointer: 69 }), 2);
+  });
+
+  it('lands at the end when the pointer is past everything', () => {
+    assert.equal(insertIndex({ boxes: EVEN, pointer: 5000 }), EVEN.length);
+  });
+
+  it('lands at the front of an empty list, which is the only place there is', () => {
+    assert.equal(insertIndex({ boxes: [], pointer: 500 }), 0);
+  });
+
+  it('measures each row separately on a ragged list', () => {
+    // Middles at 10, 58, 111, 174.
+    assert.equal(insertIndex({ boxes: RAGGED, pointer: 57 }), 1);
+    assert.equal(insertIndex({ boxes: RAGGED, pointer: 59 }), 2);
+  });
+});
+
+describe('shiftForInsert', () => {
+  it('steps down everything from the slot onward, and nothing above it', () => {
+    assert.equal(shiftForInsert({ at: 2, index: 1, size: 48 }), 0);
+    assert.equal(shiftForInsert({ at: 2, index: 2, size: 48 }), 48);
+    assert.equal(shiftForInsert({ at: 2, index: 5, size: 48 }), 48);
+  });
+
+  it('moves nothing when the slot is past the end', () => {
+    assert.equal(shiftForInsert({ at: 4, index: 3, size: 48 }), 0);
+  });
+});
+
+describe('gapOf', () => {
+  it('reads the space between two rows', () => {
+    assert.equal(gapOf(EVEN), 8);
+    assert.equal(gapOf(RAGGED), 8);
+  });
+
+  it('has no gap to report from fewer than two rows', () => {
+    assert.equal(gapOf([EVEN[0]]), 0);
+    assert.equal(gapOf([]), 0);
+  });
+
+  it('never reports a negative gap from overlapping rows', () => {
+    assert.equal(gapOf([{ top: 0, height: 40 }, { top: 30, height: 40 }]), 0);
+  });
+});
+
+describe('slotTop', () => {
+  it('finds the top of the row a slot would push down', () => {
+    assert.equal(slotTop({ boxes: EVEN, at: 0 }), 0);
+    assert.equal(slotTop({ boxes: EVEN, at: 2 }), 96);
+  });
+
+  it('finds the end of the list, gap included', () => {
+    // Last row ends at 184, plus the 8px gap the new row would sit after.
+    assert.equal(slotTop({ boxes: EVEN, at: EVEN.length }), 192);
+  });
+
+  it('falls back to a given top for a list with no rows to measure', () => {
+    // An empty list has nothing of its own to answer with, so the caller supplies where its
+    // first row would start.
+    assert.equal(slotTop({ boxes: [], at: 0, fallback: 320 }), 320);
   });
 });
 

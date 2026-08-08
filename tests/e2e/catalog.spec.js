@@ -578,6 +578,8 @@ const THEMED_PREVIEWS = [
   { id: 'card', root: '.card-demo' },
   { id: 'chip', root: '.chip-demo' },
   { id: 'drawer', root: '.drawer-demo' },
+  { id: 'flip-book', root: '.flip-demo' },
+  { id: 'flip-card', root: '.flip-card-demo' },
   { id: 'lightbox', root: '.lightbox-demo' },
   { id: 'locator-map', root: '.locator-map-demo' },
   { id: 'orbit-gallery', root: '.orbit-demo' },

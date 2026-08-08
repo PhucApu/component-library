@@ -93,10 +93,38 @@ discover:
 - **Use `border-collapse: separate`.** A row cannot carry a shadow while borders are collapsed,
   and the shadow is what says the row is off the page in your hand.
 
+## Moving rows between lists
+
+Pair lists with a `group` attribute. Then:
+
+- **Let the list a drag starts in own it to the end.** Handing ownership over at the border
+  leaves two lists each holding half a gesture, and a cancel that has to find its way home
+  through both. Track which list the pointer is over and what index it would land at; move
+  nothing until the drop.
+- Paint **two** lists at once: the one losing a row closes the space behind it, the one gaining
+  a row opens a slot.
+- Find the list under the pointer by testing each list's own rectangle, **not** by hit-testing
+  the document. The dragged row sits under the pointer the whole time, so `elementFromPoint`
+  answers "the row you are holding" and no drag ever looks like it left home.
+- Bind `←` and `→` to cross lists, and **only on a list that has a group** — otherwise you imply
+  a direction that does not exist and send a keyboard user looking for it. Say something when
+  there is no list that way. Carry the index across rather than resetting it to the top.
+- Make an empty list a drop target, and make it one **at rest**. A zone that appears when a drag
+  begins shoves the board aside at the moment somebody is aiming at it.
+- **Name the destination in the announcement.** A cross-list move that says only "position 2 of
+  4" has left out the only thing that changed.
+- On a cancel, tidy **both** the list the drag was over and the one it is going back to. They
+  are different lists, and clearing only the destination leaves the other outlined for a move
+  that never happened.
+- Run the **receiving** list's commit — it is the one claiming new state — and on rejection send
+  the row back across the border to the index it left. Restoring the receiving list's own order
+  would leave the row where it was refused.
+- Keep a locked row from emigrating as well as from moving.
+
 ## Leave out
 
-Moving rows **between two lists**. It needs two live regions, a keyboard model that crosses
-lists, and a drop affordance for an empty one. Adding it here does both jobs badly.
+**Copying rather than moving** — a row in two lists makes the order ambiguous. **A destination
+that can refuse** on capacity or type; leave that to the page.
 
 ## Verify before calling it done
 

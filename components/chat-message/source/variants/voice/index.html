@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" class="chat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Voice notes, and the transcript that makes them readable." />
+    <title>Chat Message - Voice</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chat-demo">
+      <div class="chat-demo__shell">
+        <section class="chat-demo__card">
+          <p class="chat-demo__label">Voice notes</p>
+
+          <ol class="chat-thread" role="log" aria-label="Conversation with Mai">
+            <li>
+              <ui-chat-message from="them" author="Mai" time="2026-08-07T11:20">
+                <audio src="../../assets/voice-note.wav"></audio>
+                <p data-transcript>
+                  Hi — quick one about tomorrow. The room is booked from ten, but the projector
+                  cable is missing, so bring yours if you have it. Otherwise we can share a
+                  screen. See you then.
+                </p>
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message from="me" time="2026-08-07T11:26" status="read">
+                <p>Got it, I'll bring the cable.</p>
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message from="me" time="2026-08-07T11:27" status="delivered">
+                <audio src="../../assets/voice-note.wav"></audio>
+                <p data-transcript>
+                  Also — I moved the standup to nine thirty so it does not clash. Shout if that
+                  is a problem for anyone.
+                </p>
+              </ui-chat-message>
+            </li>
+          </ol>
+
+          <p class="chat-demo__label">A voice note with no transcript is a message some people cannot read</p>
+          <p class="chat-demo__note">
+            This is the whole design of this variant. Audio is not an accessible format, and a
+            waveform is not a substitute for it — the transcript is part of the contract here
+            rather than an enhancement somebody remembers. Press <em>Show transcript</em> on
+            either note.
+          </p>
+
+          <p class="chat-demo__label">The waveform is decoration, and says so</p>
+          <p class="chat-demo__note">
+            Those bars are a fixed pattern, not an analysis of the audio. They carry
+            <code>aria-hidden</code> because nothing in them is information. A waveform drawn to
+            look like a real one, for audio it never measured, would be a picture that lies.
+          </p>
+
+          <p class="chat-demo__label">One at a time</p>
+          <p class="chat-demo__note">
+            Start the second note while the first is playing. The first stops — two voice notes
+            talking over each other is nobody's idea of a conversation. The button names the
+            length and its own state, so the control reads as
+            <em>"Voice message, 0:06"</em> and then <em>"Pause"</em>.
+          </p>
+
+          <p class="chat-demo__label">About this audio</p>
+          <p class="chat-demo__note">
+            The file is synthesized rather than recorded — a recording is somebody's voice, and
+            this one ships in a public repository. It is a real, playable
+            <code>8 kHz</code> WAV that lives beside the component; nothing here reaches the
+            network.
+          </p>
+
+          <output class="chat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeChatMessageDemo } from '../../demo.js';
+
+      initializeChatMessageDemo();
+    </script>
+  </body>
+</html>

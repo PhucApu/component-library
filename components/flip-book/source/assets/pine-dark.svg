@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img" aria-label="">
+  <rect width="900" height="1200" fill="#cfe0d6" />
+  <path d="M0 620l230-160 190 120 200-100 280 150v570H0z" fill="#7d9c86" />
+  <g fill="#2f5741">
+    <path d="M110 1080l70-260 70 260z" />
+    <path d="M280 1120l80-300 80 300z" />
+    <path d="M470 1090l72-270 72 270z" />
+    <path d="M660 1130l84-320 84 320z" />
+  </g>
+  <rect y="1080" width="900" height="120" fill="#24402f" />
+  <text x="450" y="1160" fill="#cfe0d6" font-family="Inter, sans-serif" font-size="54" font-weight="650" text-anchor="middle" opacity="0.85">3</text>
+</svg>

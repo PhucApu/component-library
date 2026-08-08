@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" class="chat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Picture messages, and the box held open at the picture's own shape before it arrives." />
+    <title>Chat Message - Image</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chat-demo">
+      <div class="chat-demo__shell">
+        <section class="chat-demo__card">
+          <p class="chat-demo__label">Pictures in a conversation</p>
+
+          <ol class="chat-thread" role="log" aria-label="Conversation with Mai">
+            <li>
+              <ui-chat-message from="them" author="Mai" time="2026-08-07T08:02">
+                <p>The market was open early today.</p>
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message id="wide" from="them" author="Mai" time="2026-08-07T08:02">
+                <img
+                  src="../../assets/market-morning.svg"
+                  width="1200"
+                  height="800"
+                  alt="A market street just after sunrise, with striped awnings over crates of oranges and greens"
+                />
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message id="tall" from="me" time="2026-08-07T08:20" status="delivered">
+                <img
+                  src="../../assets/coast-evening.svg"
+                  width="900"
+                  height="1200"
+                  alt="A lighthouse on a headland at dusk, its beam crossing a calm sea"
+                />
+                <p>Mine from last night.</p>
+              </ui-chat-message>
+            </li>
+          </ol>
+
+          <div class="chat-demo__controls">
+            <button class="chat-demo__button" type="button" data-demo-action="loading" data-demo-target="wide">Hold the wide one loading</button>
+            <button class="chat-demo__button" type="button" data-demo-action="loading" data-demo-target="tall">Hold the tall one loading</button>
+            <button class="chat-demo__button" type="button" data-demo-action="break" data-demo-target="wide">Break the wide one</button>
+          </div>
+
+          <p class="chat-demo__label">The loading state is not about the spinner</p>
+          <p class="chat-demo__note">
+            Press either button above and watch what does <em>not</em> happen: nothing below
+            moves. The bubble reserves the picture's own shape from its <code>width</code> and
+            <code>height</code>, so the thread never reflows when the image lands.
+          </p>
+          <p class="chat-demo__note">
+            This is why a square placeholder is worse than none. A square that then grows into a
+            3:2 photograph does the jump anyway — and now it does it twice, once when the box
+            appears and again when it changes shape. The two pictures here are
+            <code>1200×800</code> and <code>900×1200</code>, and each skeleton is that picture.
+          </p>
+
+          <p class="chat-demo__label">Alt text is the message</p>
+          <p class="chat-demo__note">
+            A picture message with no <code>alt</code> is a message with no content at all for
+            some readers — worse than a text message that failed to send, because nothing says
+            anything is missing. The alt is written as what somebody would have said about the
+            photo, not as "image".
+          </p>
+
+          <p class="chat-demo__label">When it does not arrive</p>
+          <p class="chat-demo__note">
+            <em>Break the wide one</em> points the picture at a file that is not there. A broken
+            image icon says nothing; the bubble says what happened, and the alt text is still
+            there to say what was in it.
+          </p>
+
+          <output class="chat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeChatMessageDemo } from '../../demo.js';
+
+      initializeChatMessageDemo();
+    </script>
+  </body>
+</html>

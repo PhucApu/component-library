@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en" class="flip-card-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Six cards in a grid, each turning on its own without moving the ones beside it."
+    />
+    <title>Flip Card - Grid</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="flip-card-demo">
+      <div class="flip-card-demo__shell">
+        <section class="flip-card-demo__card">
+          <p class="flip-card-demo__label">Six cards, turning independently</p>
+          <p class="flip-card-demo__note">
+            Each card keeps the height its front gave it, so turning one never moves the ones
+            beside it. A card that grew to fit its back would shove the whole row down and
+            take the card you were reading with it.
+          </p>
+
+          <div class="flip-card-demo__row">
+            <button class="flip-card-demo__button" type="button" data-demo-action="back">
+              Turn them all over
+            </button>
+            <button class="flip-card-demo__button" type="button" data-demo-action="front">
+              Turn them all back
+            </button>
+          </div>
+
+          <div class="flip-card-demo__grid">
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/blue-ridge.svg" alt="Ridges fading into pale distance" />
+                <p class="flip-card-demo__kicker">Plate one</p>
+                <h2 class="flip-card-demo__title">Blue Ridge</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>Blue Ridge</h3>
+                <p>Four ranges, each paler than the last.</p>
+                <dl class="flip-card-demo__facts">
+                  <div><dt>Plate</dt><dd>1 of 6</dd></div>
+                  <div><dt>Ink</dt><dd>Four blues</dd></div>
+                </dl>
+              </div>
+            </ui-flip-card>
+
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/city-rain.svg" alt="Lit windows through falling rain" />
+                <p class="flip-card-demo__kicker">Plate two</p>
+                <h2 class="flip-card-demo__title">City Rain</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>City Rain</h3>
+                <p>Five towers, five lit windows, and the rain drawn as five strokes.</p>
+                <dl class="flip-card-demo__facts">
+                  <div><dt>Plate</dt><dd>2 of 6</dd></div>
+                  <div><dt>Ink</dt><dd>Slate and amber</dd></div>
+                </dl>
+              </div>
+            </ui-flip-card>
+
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/desert-road.svg" alt="A straight road across pale sand" />
+                <p class="flip-card-demo__kicker">Plate three</p>
+                <h2 class="flip-card-demo__title">Desert Road</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>Desert Road</h3>
+                <p>One road, drawn as a dashed line, which is all a road needs to be.</p>
+                <dl class="flip-card-demo__facts">
+                  <div><dt>Plate</dt><dd>3 of 6</dd></div>
+                  <div><dt>Ink</dt><dd>Sand and rust</dd></div>
+                </dl>
+              </div>
+            </ui-flip-card>
+
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/north-fjord.svg" alt="Steep sides above still water" />
+                <p class="flip-card-demo__kicker">Plate four</p>
+                <h2 class="flip-card-demo__title">North Fjord</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>North Fjord</h3>
+                <p>Steep sides, and the water beneath them holding three straight lines.</p>
+                <dl class="flip-card-demo__facts">
+                  <div><dt>Plate</dt><dd>4 of 6</dd></div>
+                  <div><dt>Ink</dt><dd>Cold greys</dd></div>
+                </dl>
+              </div>
+            </ui-flip-card>
+
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/paper-lantern.svg" alt="Three lanterns hanging in the dark" />
+                <p class="flip-card-demo__kicker">Plate five</p>
+                <h2 class="flip-card-demo__title">Paper Lantern</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>Paper Lantern</h3>
+                <p>Three lanterns, and the light around them drawn as three soft circles.</p>
+                <dl class="flip-card-demo__facts">
+                  <div><dt>Plate</dt><dd>5 of 6</dd></div>
+                  <div><dt>Ink</dt><dd>Plum and amber</dd></div>
+                </dl>
+              </div>
+            </ui-flip-card>
+
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/terrace-noon.svg" alt="Flat roofs under a noon sun" />
+                <p class="flip-card-demo__kicker">Plate six</p>
+                <h2 class="flip-card-demo__title">Terrace Noon</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>Terrace Noon</h3>
+                <p>Three blocks, three windows, and a sun with nowhere to cast a shadow.</p>
+                <dl class="flip-card-demo__facts">
+                  <div><dt>Plate</dt><dd>6 of 6</dd></div>
+                  <div><dt>Ink</dt><dd>Clay and cream</dd></div>
+                </dl>
+              </div>
+            </ui-flip-card>
+          </div>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeFlipCardDemo } from '../../demo.js';
+
+      initializeFlipCardDemo();
+    </script>
+  </body>
+</html>

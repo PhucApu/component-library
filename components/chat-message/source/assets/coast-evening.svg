@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img" aria-label="A tall view of a headland at dusk with a lighthouse above a calm sea">
+  <defs>
+    <linearGradient id="dusk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2b2350" />
+      <stop offset="45%" stop-color="#6b4a6e" />
+      <stop offset="72%" stop-color="#c9736a" />
+      <stop offset="100%" stop-color="#f0a071" />
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a4a70" />
+      <stop offset="100%" stop-color="#1d2440" />
+    </linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffe9b0" stop-opacity="0.75" />
+      <stop offset="100%" stop-color="#ffe9b0" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="1200" fill="url(#dusk)" />
+
+  <circle cx="640" cy="700" r="58" fill="#ffd9a0" opacity="0.9" />
+
+  <g fill="#ffffff" opacity="0.5">
+    <circle cx="120" cy="140" r="3" /><circle cx="300" cy="90" r="2.4" />
+    <circle cx="470" cy="180" r="2.8" /><circle cx="700" cy="120" r="2.2" />
+    <circle cx="810" cy="250" r="3" /><circle cx="210" cy="300" r="2.2" />
+  </g>
+
+  <rect y="760" width="900" height="440" fill="url(#sea)" />
+
+  <g fill="#ffd9a0" opacity="0.32">
+    <rect x="580" y="800" width="120" height="7" rx="3.5" />
+    <rect x="600" y="836" width="86" height="6" rx="3" />
+    <rect x="570" y="874" width="140" height="6" rx="3" />
+    <rect x="612" y="912" width="70" height="5" rx="2.5" />
+  </g>
+
+  <g fill="#ffffff" opacity="0.18">
+    <rect x="90" y="852" width="180" height="6" rx="3" />
+    <rect x="140" y="906" width="120" height="5" rx="2.5" />
+    <rect x="60" y="962" width="220" height="6" rx="3" />
+    <rect x="300" y="1010" width="160" height="5" rx="2.5" />
+  </g>
+
+  <path d="M0 760 L0 700 C120 660 210 690 300 730 C360 756 400 760 430 760Z" fill="#221c33" />
+  <path d="M900 760 L900 640 C800 600 720 636 640 690 C600 716 560 748 520 760Z" fill="#1c1729" />
+
+  <g transform="translate(196 430)">
+    <path d="M-30 250 L-18 40 h36 L30 250Z" fill="#efe6dc" />
+    <path d="M-18 40 h36 l-4 40 h-28Z" fill="#c0453f" />
+    <path d="M-18 130 h36 l-3 42 h-30Z" fill="#c0453f" />
+    <rect x="-24" y="4" width="48" height="34" rx="6" fill="#3b3350" />
+    <rect x="-16" y="10" width="32" height="22" rx="4" fill="#ffe9b0" />
+    <path d="M-30 -4 h60 l-8 -14h-44Z" fill="#2b2740" />
+    <path d="M16 12 L360 -40 L360 78 L16 32Z" fill="url(#beam)" />
+  </g>
+
+  <path d="M0 1200 L0 1120 C160 1096 320 1130 470 1160 C600 1186 760 1176 900 1150 L900 1200Z" fill="#171426" />
+</svg>

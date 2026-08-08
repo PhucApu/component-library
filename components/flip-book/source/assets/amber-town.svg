@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img" aria-label="">
+  <defs>
+    <linearGradient id="flip-town" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8c477" />
+      <stop offset="100%" stop-color="#d0663f" />
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#flip-town)" />
+  <g fill="#7a3a2c">
+    <rect x="60" y="700" width="160" height="500" />
+    <rect x="250" y="600" width="130" height="600" />
+    <rect x="410" y="760" width="180" height="440" />
+    <rect x="620" y="660" width="140" height="540" />
+    <rect x="790" y="800" width="90" height="400" />
+  </g>
+  <g fill="#ffd98a">
+    <rect x="100" y="760" width="34" height="44" />
+    <rect x="290" y="670" width="34" height="44" />
+    <rect x="460" y="820" width="34" height="44" />
+    <rect x="660" y="720" width="34" height="44" />
+  </g>
+  <text x="450" y="1160" fill="#ffe9c4" font-family="Inter, sans-serif" font-size="54" font-weight="650" text-anchor="middle" opacity="0.85">7</text>
+</svg>

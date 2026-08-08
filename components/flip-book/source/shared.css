@@ -1,0 +1,404 @@
+:root {
+  /* Every light-dark() pair below reads this. `light dark` means "follow the operating
+     system", which is what a standalone page should do. An embedding page narrows it to
+     a single keyword when it wants to pin one theme. */
+  color-scheme: light dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.flip-demo-page,
+.flip-demo-page body {
+  background: light-dark(#f4f6fa, #0f1115);
+}
+
+ui-flip-book {
+  --flip-paper: light-dark(#ffffff, #171a20);
+  /* What shows where the book has not reached yet: the inside of a cover rather than a
+     hole in the page. */
+  --flip-empty: light-dark(#e7eaf0, #12151b);
+  --flip-text: light-dark(#111827, #f4f6fa);
+  --flip-muted: light-dark(#5f6878, #a8afbc);
+  --flip-border: light-dark(#dfe4ec, #2e3440);
+  --flip-focus: light-dark(#4338ca, #86a0ff);
+  --flip-shadow: light-dark(rgb(15 23 42 / 0.18), rgb(0 0 0 / 0.5));
+  --flip-spine: light-dark(rgb(15 23 42 / 0.14), rgb(0 0 0 / 0.45));
+  --flip-page-width: clamp(9rem, 30vw, 17rem);
+  --flip-page-height: calc(var(--flip-page-width) * 1.34);
+  --flip-radius: 10px;
+  --flip-perspective: 1800px;
+
+  /* Written per leaf by the element. Declared here so a page that never runs the script
+     still resolves every custom property it reads. */
+  --flip-angle: 0deg;
+  --flip-offset: 0px;
+  --flip-shade: 0;
+  --flip-leaf: 0;
+
+  position: relative;
+  display: block;
+  min-inline-size: 0;
+  color: var(--flip-text);
+  font: 400 0.9375rem/1.5
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* Before the script arrives there is no book, only pages, and a plain grid of them is the
+   honest thing to show. */
+ui-flip-book ul,
+ui-flip-book ol {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flip-book__stage {
+  position: relative;
+  display: grid;
+  min-block-size: calc(var(--flip-page-height) + 3rem);
+  place-items: center;
+  overflow: hidden;
+  border-radius: var(--flip-radius);
+  perspective: var(--flip-perspective);
+  /* Sideways belongs to the book; downwards still belongs to the page. */
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.flip-book__stage:focus-visible {
+  outline: 3px solid var(--flip-focus);
+  outline-offset: -3px;
+}
+
+.flip-book__stage.is-dragging {
+  cursor: grabbing;
+}
+
+.flip-book__spread {
+  position: relative;
+  inline-size: calc(var(--flip-page-width) * 2);
+  block-size: var(--flip-page-height);
+  transform-style: preserve-3d;
+}
+
+/* The two halves the book lies on. It opens closed — everything on the right — and ends
+   the other way round, so both sides need something under them from the start. */
+.flip-book__spread::before,
+.flip-book__spread::after {
+  position: absolute;
+  content: "";
+  inset-block: 0;
+  inline-size: var(--flip-page-width);
+  border: 1px solid var(--flip-border);
+  border-radius: var(--flip-radius);
+  background: var(--flip-empty);
+}
+
+.flip-book__spread::before {
+  inset-inline-start: 0;
+}
+
+.flip-book__spread::after {
+  inset-inline-start: 50%;
+}
+
+.flip-book__leaves {
+  position: absolute;
+  z-index: 1;
+  inset-block: 0;
+  inset-inline-start: 50%;
+  display: block;
+  inline-size: var(--flip-page-width);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform-style: preserve-3d;
+}
+
+.flip-book__leaf {
+  position: absolute;
+  inset: 0;
+  /* The spine is the left edge, so that is what a leaf turns about. The offset before it
+     is the thickness of the pile underneath. */
+  transform: translate(var(--flip-offset), calc(var(--flip-offset) * 0.45))
+    rotateY(var(--flip-angle));
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+
+/* Deep in the pile there is nothing to see and something to pay for. */
+.flip-book__leaf[data-deep] {
+  visibility: hidden;
+}
+
+.flip-book__leaf[data-turning] {
+  box-shadow: 0 22px 44px var(--flip-shadow);
+}
+
+.flip-book__face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid var(--flip-border);
+  border-radius: var(--flip-radius);
+  background: var(--flip-paper);
+  backface-visibility: hidden;
+}
+
+.flip-book__face--back {
+  transform: rotateY(180deg);
+}
+
+/* The author's page fills the face it was moved into, whatever it is made of. */
+.flip-book__face > :not(.flip-book__shade) {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.flip-book__face img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.flip-book__face[data-blank] {
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 9px,
+      light-dark(rgb(15 23 42 / 0.04), rgb(255 255 255 / 0.04)) 9px 10px
+    ),
+    var(--flip-paper);
+}
+
+/* The only cue that a leaf has a thickness and a light falling on it. */
+.flip-book__shade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: var(--flip-shade);
+  pointer-events: none;
+}
+
+/* A spine, so the two halves read as one book rather than two cards. */
+.flip-book__spread::before {
+  box-shadow: inset -12px 0 18px -14px var(--flip-spine);
+}
+
+.flip-book__spread::after {
+  box-shadow: inset 12px 0 18px -14px var(--flip-spine);
+}
+
+.flip-book__arrow {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 50%;
+  display: grid;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  place-items: center;
+  border: 1px solid var(--flip-border);
+  border-radius: 999px;
+  background: var(--flip-paper);
+  padding: 0;
+  color: var(--flip-text);
+  translate: 0 -50%;
+  cursor: pointer;
+  transition:
+    background 180ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 180ms cubic-bezier(0.2, 0, 0, 1),
+    opacity 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.flip-book__arrow--previous {
+  inset-inline-start: 0.75rem;
+}
+
+.flip-book__arrow--next {
+  inset-inline-end: 0.75rem;
+}
+
+.flip-book__arrow:hover:not(:disabled) {
+  border-color: var(--flip-focus);
+}
+
+.flip-book__arrow:focus-visible {
+  outline: 3px solid var(--flip-focus);
+  outline-offset: 2px;
+}
+
+/* An end of the book is a real end: the control that would take you past it says so
+   rather than sitting there doing nothing. */
+.flip-book__arrow:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
+.flip-book__arrow-icon {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  pointer-events: none;
+}
+
+.flip-book__status {
+  position: absolute;
+  overflow: hidden;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.flip-demo {
+  display: grid;
+  /* The page is otherwise as tall as its content, and the background it paints would stop
+     there, leaving a seam across the rest of the preview frame. */
+  min-block-size: 100dvh;
+  align-content: start;
+  gap: 1.5rem;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  background: light-dark(#f4f6fa, #0f1115);
+  color: light-dark(#15181d, #f4f6fa);
+}
+
+.flip-demo__shell {
+  display: grid;
+  gap: 1.5rem;
+  inline-size: min(100%, 62rem);
+  margin-inline: auto;
+}
+
+.flip-demo__card {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 18px;
+  background: light-dark(#ffffff, #171a20);
+  padding: clamp(1rem, 3vw, 1.75rem);
+}
+
+.flip-demo__label {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.flip-demo__note {
+  max-width: 46rem;
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.flip-demo code {
+  border-radius: 5px;
+  background: light-dark(#eef1f5, #10131a);
+  padding: 0.1rem 0.35rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+.flip-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.flip-demo__button {
+  min-block-size: 2.5rem;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 10px;
+  background: light-dark(#f4f6fa, #10131a);
+  padding-inline: 0.9rem;
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.flip-demo__button:focus-visible {
+  outline: 3px solid light-dark(#4338ca, #86a0ff);
+  outline-offset: 2px;
+}
+
+/* A page made of words rather than a picture, for the variant that shows one. */
+.flip-demo__leafy {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+  padding: 1.25rem;
+}
+
+.flip-demo__leafy h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.flip-demo__leafy p {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.flip-demo output {
+  display: block;
+  border: 1px solid light-dark(#dfe4ec, #2e3440);
+  border-radius: 10px;
+  background: light-dark(#f4f6fa, #10131a);
+  padding: 0.65rem 0.8rem;
+  color: light-dark(#5f6878, #a8afbc);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.78rem;
+  white-space: pre-line;
+}
+
+/* Below this the spread has nowhere to put a second page, so the spine moves to the edge
+   of the stage: one page fills it and a turning leaf sweeps off the side. */
+@media (max-width: 34rem) {
+  .flip-book__spread {
+    inline-size: var(--flip-page-width);
+  }
+
+  .flip-book__spread::before {
+    display: none;
+  }
+
+  .flip-book__spread::after {
+    inset-inline-start: 0;
+  }
+
+  .flip-book__leaves {
+    inset-inline-start: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-book__arrow {
+    transition: none;
+  }
+}

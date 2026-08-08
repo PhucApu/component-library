@@ -17,15 +17,26 @@
         <section class="ripple-demo__card">
           <p class="ripple-demo__label">The wake on its own</p>
           <p class="ripple-demo__note">
-            <code>no-drop</code> leaves only the trail. A mark is made every time the pointer
-            has travelled <code>spacing</code> pixels, not on every move the browser reports:
-            tying it to distance rather than to events is what makes the same gesture look the
-            same on a slow machine and a fast one.
+            <code>no-drop</code> leaves only the trail. The pointer is a prow: water is pushed
+            aside into two sides that meet in a point at the pointer itself and open out behind
+            it, wider the further back they go, thinning and fading as they widen.
           </p>
           <p class="ripple-demo__note">
-            Each mark is an arc facing the way the pointer came from, and it opens wider the
-            faster the pointer was going — a crawl leaves a narrow line, a dash leaves a
-            spreading V.
+            Each side is three strands rather than one line, at slightly different distances
+            and out of step with one another. Two waves of different lengths run along each
+            strand, and every point of the trail keeps a small wobble of its own from the
+            moment it was made. One clean stroke a side is a diagram of a wake; a band of
+            crests that never quite repeats is water.
+          </p>
+          <p class="ripple-demo__note">
+            The angle they open at is fixed, the way a real wake holds its angle however fast
+            the hull is going. Speed decides how strongly the wake draws, not what shape it
+            is — a shape that swelled and collapsed with every change of pace would read as
+            the V breathing rather than as water being pushed out of the way.
+          </p>
+          <p class="ripple-demo__note">
+            Turn a corner and the wake follows the path you actually took rather than
+            swinging round to your new heading.
           </p>
 
           <ui-ripple-surface no-drop>
@@ -36,11 +47,16 @@
         </section>
 
         <section class="ripple-demo__card">
-          <p class="ripple-demo__label">Marks far apart, and close together</p>
+          <p class="ripple-demo__label">Sampled coarsely, and finely</p>
           <p class="ripple-demo__note">
-            The same surface with <code>spacing="40"</code> and <code>spacing="6"</code>. Wide
-            spacing reads as a heavy hull leaving separate waves; tight spacing reads as a
-            continuous furrow and costs more to draw.
+            <code>spacing</code> is how often the path is sampled, in pixels travelled — never
+            once per pointer event, because event rates differ by browser and by hardware and
+            the same gesture would look different on different machines.
+          </p>
+          <p class="ripple-demo__note">
+            The same surface at <code>spacing="40"</code> and <code>spacing="6"</code>. Coarse
+            sampling shows the corners of the path it was built from; fine sampling reads as
+            one curve and costs more to draw.
           </p>
 
           <div class="ripple-demo__grid">

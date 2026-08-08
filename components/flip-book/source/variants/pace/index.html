@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" class="flip-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="How long a turn takes, and what a thick book looks like at rest."
+    />
+    <title>Flip Book - Pace</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="flip-demo">
+      <div class="flip-demo__shell">
+        <section class="flip-demo__card">
+          <p class="flip-demo__label">Twelve pages, six leaves</p>
+          <p class="flip-demo__note">
+            The thickness at the edge is the leaves underneath, offset a little each. Only the
+            top few are drawn: past that there is nothing to see and something to pay for, so
+            the rest are taken out of the page entirely.
+          </p>
+          <p class="flip-demo__note">
+            Watch the pile move from one side to the other as you read: the right one thins,
+            the left one grows, and where the book is up to is legible without a page number.
+          </p>
+
+          <ui-flip-book label="Twelve plates" duration="520">
+            <ul>
+              <li><img src="../../assets/cover-tide.svg" alt="A high tide under a low sun" /></li>
+              <li><img src="../../assets/dawn-fields.svg" alt="Ploughed fields at dawn" /></li>
+              <li><img src="../../assets/pine-dark.svg" alt="Dark pines on a pale slope" /></li>
+              <li><img src="../../assets/river-bend.svg" alt="A river bending through flat land" /></li>
+              <li><img src="../../assets/salt-marsh.svg" alt="Reeds standing in a salt marsh" /></li>
+              <li><img src="../../assets/high-pass.svg" alt="Snow on a high mountain pass" /></li>
+              <li><img src="../../assets/amber-town.svg" alt="A town under an amber sky" /></li>
+              <li><img src="../../assets/cold-shore.svg" alt="A cold shore under heavy cloud" /></li>
+              <li><img src="../../assets/lantern-street.svg" alt="Lanterns along a street after dark" /></li>
+              <li><img src="../../assets/quiet-orchard.svg" alt="An orchard in flat afternoon light" /></li>
+              <li><img src="../../assets/long-valley.svg" alt="A long valley under pale cloud" /></li>
+              <li><img src="../../assets/last-light.svg" alt="The last light over a low ridge" /></li>
+            </ul>
+          </ui-flip-book>
+
+          <output></output>
+        </section>
+
+        <section class="flip-demo__card">
+          <p class="flip-demo__label">Quick, and unhurried</p>
+          <p class="flip-demo__note">
+            <code>duration="220"</code> and <code>duration="1200"</code>. The number is how
+            long a whole turn takes; a leaf let go half way through takes half of it, because
+            the time is spent on the distance actually left.
+          </p>
+
+          <div class="flip-demo__row">
+            <button class="flip-demo__button" type="button" data-demo-action="next" data-demo-target="#quick">
+              Turn the quick one
+            </button>
+            <button class="flip-demo__button" type="button" data-demo-action="next" data-demo-target="#slow">
+              Turn the slow one
+            </button>
+          </div>
+
+          <ui-flip-book id="quick" label="Quick turns" duration="220">
+            <ul>
+              <li><img src="../../assets/pine-dark.svg" alt="Dark pines on a pale slope" /></li>
+              <li><img src="../../assets/river-bend.svg" alt="A river bending through flat land" /></li>
+              <li><img src="../../assets/high-pass.svg" alt="Snow on a high mountain pass" /></li>
+              <li><img src="../../assets/last-light.svg" alt="The last light over a low ridge" /></li>
+            </ul>
+          </ui-flip-book>
+
+          <ui-flip-book id="slow" label="Slow turns" duration="1200">
+            <ul>
+              <li><img src="../../assets/amber-town.svg" alt="A town under an amber sky" /></li>
+              <li><img src="../../assets/lantern-street.svg" alt="Lanterns along a street after dark" /></li>
+              <li><img src="../../assets/quiet-orchard.svg" alt="An orchard in flat afternoon light" /></li>
+              <li><img src="../../assets/long-valley.svg" alt="A long valley under pale cloud" /></li>
+            </ul>
+          </ui-flip-book>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeFlipDemo } from '../../demo.js';
+
+      initializeFlipDemo();
+    </script>
+  </body>
+</html>

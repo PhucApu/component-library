@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" class="chat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Files and links sent in a conversation, named so they can be identified before they are opened." />
+    <title>Chat Message - Attachment</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chat-demo">
+      <div class="chat-demo__shell">
+        <section class="chat-demo__card">
+          <p class="chat-demo__label">Files and links</p>
+
+          <ol class="chat-thread" role="log" aria-label="Conversation with Linh">
+            <li>
+              <ui-chat-message from="them" author="Linh" time="2026-08-07T14:02">
+                <p>Here is the deck from this morning.</p>
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message from="them" author="Linh" time="2026-08-07T14:02">
+                <a data-file data-name="Quarterly review.pdf" data-size="2411724" href="../../assets/coast-evening.svg" download>Quarterly review.pdf</a>
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message from="me" time="2026-08-07T14:09" status="read">
+                <p>
+                  Thanks. The notes I mentioned are at
+                  <a href="#notes">the handbook page on review cycles</a>.
+                </p>
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message from="me" time="2026-08-07T14:10" status="read">
+                <a data-file data-name="Budget-2026-revised.xlsx" data-size="48210" href="../../assets/market-morning.svg" download>Budget-2026-revised.xlsx</a>
+              </ui-chat-message>
+            </li>
+          </ol>
+
+          <p class="chat-demo__label">A file is named before it is opened</p>
+          <p class="chat-demo__note">
+            The name and the size are both visible and both in the link's accessible name —
+            <em>"Download Quarterly review.pdf"</em>. A paperclip with no filename asks somebody
+            to download a thing to find out what it is, which is a worse offer on a metered
+            connection and an impossible one for a screen reader.
+          </p>
+
+          <p class="chat-demo__note">
+            Sizes are written the way a person says them: <code>2.3 MB</code>,
+            <code>47 KB</code>. Bytes are for machines.
+          </p>
+
+          <p class="chat-demo__label">Links inside your own bubble</p>
+          <p class="chat-demo__note">
+            The blue a link normally uses is invisible on a blue bubble. Inside your own messages
+            links take a near-white ink instead, measured at <code>5.77</code> light and
+            <code>4.56</code> dark against the accent — and keep their underline, because on a
+            saturated background colour alone is not a distinction anyone should have to make.
+          </p>
+
+          <p class="chat-demo__label">The download attribute is the author's</p>
+          <p class="chat-demo__note">
+            This component does not fetch anything or manage a download. It is an ordinary
+            <code>&lt;a download&gt;</code> in the markup; the component gives it a name, a size
+            and a shape. Everything else is what the browser already does well.
+          </p>
+
+          <output class="chat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeChatMessageDemo } from '../../demo.js';
+
+      initializeChatMessageDemo();
+    </script>
+  </body>
+</html>

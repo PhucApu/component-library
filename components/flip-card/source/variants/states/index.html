@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en" class="flip-card-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A card with no back, a card that starts turned over, a picture that never arrived, and reduced motion."
+    />
+    <title>Flip Card - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="flip-card-demo">
+      <div class="flip-card-demo__shell">
+        <section class="flip-card-demo__card">
+          <p class="flip-card-demo__label">Nothing on the back</p>
+          <p class="flip-card-demo__note">
+            A card given one face has nowhere to turn to, so it is left as a card: no button
+            is added, pressing it does nothing, and the cursor does not pretend otherwise.
+            Making it turn to a blank would be worse than not turning at all.
+          </p>
+
+          <div class="flip-card-demo__grid">
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/blue-ridge.svg" alt="Ridges fading into pale distance" />
+                <p class="flip-card-demo__kicker">One face</p>
+                <h2 class="flip-card-demo__title">Blue Ridge</h2>
+              </div>
+            </ui-flip-card>
+          </div>
+        </section>
+
+        <section class="flip-card-demo__card">
+          <p class="flip-card-demo__label">Turned over to begin with</p>
+          <p class="flip-card-demo__note">
+            <code>flipped</code> is an ordinary attribute and it is reflected, so a page can
+            open a card on its back and can always read which way round it is. The picture is
+            already out of reach of the keyboard before anyone has touched it.
+          </p>
+
+          <div class="flip-card-demo__grid">
+            <ui-flip-card flipped>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/city-rain.svg" alt="Lit windows through falling rain" />
+                <p class="flip-card-demo__kicker">Plate two</p>
+                <h2 class="flip-card-demo__title">City Rain</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>Opened on the back</h3>
+                <p>Press the button to see the picture this belongs to.</p>
+              </div>
+            </ui-flip-card>
+          </div>
+
+          <output></output>
+        </section>
+
+        <section class="flip-card-demo__card">
+          <p class="flip-card-demo__label">A picture that never arrived</p>
+          <p class="flip-card-demo__note">
+            The front of this card points at a file that is not there. The card keeps its
+            shape, its words and its turn: what is missing is the picture, not the card.
+          </p>
+
+          <div class="flip-card-demo__grid">
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="./picture-that-is-not-there.svg" alt="A picture that failed to load" />
+                <p class="flip-card-demo__kicker">Missing</p>
+                <h2 class="flip-card-demo__title">Not delivered</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>Still a card</h3>
+                <p>Everything written on it is still here, and it still turns.</p>
+              </div>
+            </ui-flip-card>
+          </div>
+        </section>
+
+        <section class="flip-card-demo__card">
+          <p class="flip-card-demo__label">Reduced motion</p>
+          <p class="flip-card-demo__note">
+            Under <code>prefers-reduced-motion</code> the card arrives on its other side
+            without turning. The turn is the whole of what this component does, so there is
+            nothing to slow down — only something to leave out.
+          </p>
+
+          <div class="flip-card-demo__grid">
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/north-fjord.svg" alt="Steep sides above still water" />
+                <p class="flip-card-demo__kicker">Plate four</p>
+                <h2 class="flip-card-demo__title">North Fjord</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>North Fjord</h3>
+                <p>Same card, same two faces, no arc between them.</p>
+              </div>
+            </ui-flip-card>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeFlipCardDemo } from '../../demo.js';
+
+      initializeFlipCardDemo();
+    </script>
+  </body>
+</html>

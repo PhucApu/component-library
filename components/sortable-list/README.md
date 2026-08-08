@@ -107,6 +107,8 @@ a `59px` row swaps at `30px`, not at `23px`.
 | Attribute | Values | Default | Effect |
 |---|---|---|---|
 | `drag` | `handle` `row` | `handle` | Whether the whole row is draggable |
+| `group` | string | — | Lists sharing it accept each other's rows |
+| `name` | string | `aria-label` | What the list is called when a move is announced |
 | `disabled` | present | absent | Disables every handle |
 | `pending` | present | absent | Set while a commit is in flight |
 | `error` | string | — | Says what went wrong; the rows stay |
@@ -141,10 +143,43 @@ Against this component's own surfaces, on exact ratios:
 `prefers-reduced-motion: reduce` removes the travel between the two positions. The reorder still
 happens — removing the motion must never remove the function.
 
+## Moving rows between lists
+
+```html
+<ui-sortable-list group="board" name="To do"> … </ui-sortable-list>
+<ui-sortable-list group="board" name="Done">  … </ui-sortable-list>
+```
+
+Lists sharing a `group` accept each other's rows. Drag across, or press `←` and `→` while a row
+is held; `↑` and `↓` then move within whichever list it is over.
+
+`←` and `→` are bound **only** on a list that has a group. On a list of its own they stay
+unclaimed — binding them would imply a direction that does not exist.
+
+Each list is named by `name` (falling back to `aria-label`) because a cross-list move that
+announces only "position 2 of 4" has left out the one thing that changed:
+
+> Deploy to staging, Done, position 1 of 1.
+
+An **empty list** is a drop target, and it is one before any drag begins — a zone that appears
+under the pointer shoves the board aside at the moment somebody is aiming at it.
+
+A **locked row** is a wall inside its list and does not leave it either.
+
+| Event | Detail |
+|---|---|
+| `transfer` | `{ name, from: { list, index, name }, to: { list, index, name } }` — fired on the receiving list |
+
+The **receiving** list's `commit` runs, because it is the one making a claim about new state. On
+rejection the row goes back across the border to the index it left, which is a different
+operation from restoring one list's order.
+
 ## Not included
 
-**Moving rows between two lists.** It needs two live regions, a keyboard model that crosses
-lists, and a drop affordance for an empty one. Adding it here would do both jobs badly.
+**Copying rather than moving.** A row in two lists makes `order` ambiguous.
+
+**A destination that can refuse.** Capacity and type rules are the page's business; same group
+accepts, and a `disabled` or `pending` list does not.
 
 ## Browser support
 

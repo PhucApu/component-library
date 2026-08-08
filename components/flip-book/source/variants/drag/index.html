@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" class="flip-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Turning a page by hand: how far commits, how fast commits, and a book that only takes the arrows."
+    />
+    <title>Flip Book - Drag</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="flip-demo">
+      <div class="flip-demo__shell">
+        <section class="flip-demo__card">
+          <p class="flip-demo__label">Two things commit a turn</p>
+          <p class="flip-demo__note">
+            Take the page past half way and it falls over on its own. Let go short of that and
+            it falls back. Either way the leaf carries on from the angle your hand left it at,
+            which is why the turn is driven frame by frame rather than handed to a transition:
+            a transition only knows how to go from one value to another, not how to pick up an
+            arc already in progress.
+          </p>
+          <p class="flip-demo__note">
+            Distance is not the only way to commit one. A short flick counts too — that is how
+            most people turn a page — so still moving quickly when you let go is enough.
+          </p>
+          <p class="flip-demo__note">
+            Pull the other way to put a page back. Which leaf is taken depends on the
+            direction your hand went, not on where it landed.
+          </p>
+
+          <ui-flip-book label="Draggable plates">
+            <ul>
+              <li><img src="../../assets/river-bend.svg" alt="A river bending through flat land" /></li>
+              <li><img src="../../assets/salt-marsh.svg" alt="Reeds standing in a salt marsh" /></li>
+              <li><img src="../../assets/high-pass.svg" alt="Snow on a high mountain pass" /></li>
+              <li><img src="../../assets/amber-town.svg" alt="A town under an amber sky" /></li>
+              <li><img src="../../assets/cold-shore.svg" alt="A cold shore under heavy cloud" /></li>
+              <li><img src="../../assets/lantern-street.svg" alt="Lanterns along a street after dark" /></li>
+            </ul>
+          </ui-flip-book>
+
+          <output></output>
+        </section>
+
+        <section class="flip-demo__card">
+          <p class="flip-demo__label">A book that will not be dragged</p>
+          <p class="flip-demo__note">
+            <code>no-drag</code> leaves the arrows and the keyboard exactly as they are and
+            takes only the gesture away, for a page where sideways dragging already means
+            something else.
+          </p>
+
+          <ui-flip-book label="Fixed plates" no-drag>
+            <ul>
+              <li><img src="../../assets/quiet-orchard.svg" alt="An orchard in flat afternoon light" /></li>
+              <li><img src="../../assets/long-valley.svg" alt="A long valley under pale cloud" /></li>
+              <li><img src="../../assets/last-light.svg" alt="The last light over a low ridge" /></li>
+              <li><img src="../../assets/cover-tide.svg" alt="A high tide under a low sun" /></li>
+            </ul>
+          </ui-flip-book>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeFlipDemo } from '../../demo.js';
+
+      initializeFlipDemo();
+    </script>
+  </body>
+</html>

@@ -1,8 +1,8 @@
 # Recreate Ripple Surface
 
-Build a framework-free Web Component that lays still water over arbitrary content: moving
-across it opens a wake behind the pointer, pressing it spreads rings from the point, and at
-rest it draws nothing. Plain HTML, CSS and JavaScript on a Canvas 2D context. No framework,
+Build a framework-free Web Component that lays still water over arbitrary content: the
+pointer is a prow that pushes the water aside into two bands of crests meeting in a point at
+the pointer, pressing spreads rings from the point, and at rest it draws nothing. Plain HTML, CSS and JavaScript on a Canvas 2D context. No framework,
 no build step, no external request of any kind.
 
 ## The central instruction
@@ -34,8 +34,8 @@ The author's content goes inside; the element adds a canvas over it and nothing 
 </ui-ripple-surface>
 ```
 
-Attributes: `rings` (3, max 6), `spacing` (14px between wake marks), `drop-duration`
-(1400ms), `wake-duration` (700ms), `max-ripples` (60), `no-wake`, `no-drop`. Expose `count`,
+Attributes: `rings` (3, max 6), `spacing` (8px between samples of the path), `drop-duration`
+(1400ms), `wake-duration` (900ms), `max-ripples` (90), `no-wake`, `no-drop`. Expose `count`,
 `drop(x, y)` and `clear()`. Emit no events: the surface decides nothing, it presents what
 the pointer is already doing.
 
@@ -46,21 +46,52 @@ listeners on the host. Say both out loud or the surface becomes a lid: a heading
 be selected, a button under it could not be pressed, and a screen reader would meet an empty
 element. Pressing a button inside must both press the button and make rings.
 
-## One record, two shapes
+## Rings are records; the wake is not
 
-Give every ripple the same record — place, birth, life, reach, width — and write three pure
+Give every ring the same record — place, birth, life, reach, width — and write three pure
 curves over it: radius eased out (water spreads fast then slows), alpha fading across the
-whole life with a short attack, width thinning as the radius grows. Draw a drop as a full
-circle and a wake mark as an arc. One loop then draws both and one cap limits both.
+whole life with a short attack, width thinning as the radius grows. Draw it as a full circle.
 
-## The wake is made by distance, not by events
+The wake is a different kind of thing and is described in its own section below. One cap
+limits both.
 
-Emit a mark when the pointer has travelled `spacing` pixels, never once per pointer event:
-event rates differ by browser and hardware, so per-event emission makes the same gesture look
-different on different machines. Face each arc the way the pointer came from — a wake is
-what the water does after something has gone past — and open it wider the faster the pointer
-was moving. Forget the last point when the pointer leaves, or re-entering elsewhere draws a
-crossing that never happened.
+## The wake is one trail with two sides, not a row of marks
+
+Keep the path the pointer has taken over the last `wake-duration` and draw two lines standing
+off either side of it, growing with the distance back along the path so the shape opens out
+behind the pointer.
+
+Make every offset zero at the pointer: that is what makes the two sides meet there in a point
+and open out behind it. Do not draw the point — it is where the sides arrive at the same
+place.
+
+One stroke a side is a diagram of a wake. Three things together turn it into water, and all
+three are held back at the point and come in over the first stretch behind it:
+
+- **Three strands a side**, at different distances, out of step, with different weights.
+- **Two waves of different lengths** summed along each strand. One sine repeats visibly along
+  a long trail and the eye reads the repeat as a pattern.
+- **A fixed wobble per point of the trail**, taken from its own birth time — not chosen each
+  frame, or the whole wake crawls.
+
+Marks made independently of one another can never form that shape at all. Stamping arcs along
+the path looks right in a diagram and reads on screen as a row of separate arcs.
+
+Follow the path rather than the current heading, or the whole shape swings round every time
+the reader changes direction. Hold the angle constant whatever the speed — a real wake does,
+and one that swelled and collapsed with every change of pace reads as breathing. Let speed
+decide the strength instead.
+
+Fade with distance as well as with age: a pointer thrown across the surface lays a long trail
+in very little time, and age alone would deliver the whole of it at full strength as an
+outline round the path. Ease the offset into its limit rather than cutting it off, or both
+sides show a corner on an otherwise straight run at the moment they reach it.
+
+Sample the path every `spacing` pixels travelled, never once per pointer event: event rates
+differ by browser and hardware. Fill in the run between two reports at the same spacing, or a
+quick gesture is a polyline with a corner at every report. Forget the path when the pointer
+leaves — keeping what was already drawn — or re-entering elsewhere draws a crossing that
+never happened.
 
 Leave touch out of the wake. A finger dragged across the surface is the page being scrolled,
 and a wake for it would trail a motion nobody aimed at the surface. A tap still drops rings.
@@ -99,7 +130,8 @@ rather than one thick line.
 ## Verify before calling it done
 
 - A still surface draws nothing and requests no frames.
-- Crossing it leaves a wake behind the pointer; pressing it sends out `rings` rings.
+- Crossing it leaves a band of crests either side of the path actually taken, meeting in a
+  point at the pointer; pressing it sends out `rings` rings.
 - A button under the surface still takes its press, and text under it can still be selected.
 - Reduced motion produces nothing at all.
 - `no-wake` and `no-drop` each remove one half and leave the other.

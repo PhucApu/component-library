@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img" aria-label="">
+  <defs>
+    <linearGradient id="flip-cold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9fb3c4" />
+      <stop offset="100%" stop-color="#4b6072" />
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#flip-cold)" />
+  <ellipse cx="260" cy="240" rx="200" ry="60" fill="#37414f" opacity="0.5" />
+  <ellipse cx="660" cy="180" rx="220" ry="52" fill="#37414f" opacity="0.4" />
+  <path d="M0 780c160 50 260-40 450-4s280 70 450 8v416H0z" fill="#33475a" />
+  <path d="M0 900c180 40 260-30 450 6s260 50 450 4v290H0z" fill="#22333f" />
+  <g fill="#dce7ee" opacity="0.5">
+    <rect x="120" y="850" width="200" height="10" rx="5" />
+    <rect x="520" y="990" width="250" height="10" rx="5" />
+  </g>
+  <text x="450" y="1150" fill="#dce7ee" font-family="Inter, sans-serif" font-size="54" font-weight="650" text-anchor="middle" opacity="0.85">8</text>
+</svg>

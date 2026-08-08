@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" class="flip-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Pages made of words and controls rather than pictures, and a book with an odd page count."
+    />
+    <title>Flip Book - Content</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="flip-demo">
+      <div class="flip-demo__shell">
+        <section class="flip-demo__card">
+          <p class="flip-demo__label">Pages are content, not pictures</p>
+          <p class="flip-demo__note">
+            A page is whatever the author wrote. These carry headings, text and a link, and
+            they are the same elements that were in the list before the book was made — moved
+            into the leaves rather than copied, so anything already bound to them still works.
+            Try the link on page 3, and try dragging across it: a drag never follows a link.
+          </p>
+          <p class="flip-demo__note">
+            Five pages make three leaves, and the back of the last one has nothing on it. A
+            book with an odd page count ends on a blank; dropping the leaf instead would take
+            the page in front of it with it.
+          </p>
+
+          <ui-flip-book label="A short chapter">
+            <ul>
+              <li>
+                <div class="flip-demo__leafy">
+                  <h3>On still water</h3>
+                  <p>
+                    A surface at rest is the absence of an animation rather than a slow one.
+                    What follows is a short argument for leaving things alone until they are
+                    asked for.
+                  </p>
+                </div>
+              </li>
+              <li>
+                <div class="flip-demo__leafy">
+                  <h3>One number</h3>
+                  <p>
+                    Describe a whole state with one number and the states cannot disagree with
+                    one another. A book knows how many leaves have been turned; everything
+                    else follows from that.
+                  </p>
+                </div>
+              </li>
+              <li>
+                <div class="flip-demo__leafy">
+                  <h3>A page that links out</h3>
+                  <p>
+                    This page carries <a href="#a-link">a link</a>. Press it and it responds;
+                    drag across it and the book turns instead.
+                  </p>
+                </div>
+              </li>
+              <li>
+                <div class="flip-demo__leafy">
+                  <h3>Two sides</h3>
+                  <p>
+                    A sheet of paper has a front and a back, so a leaf carries two pages. That
+                    is the whole reason a turn leaves something behind on the left.
+                  </p>
+                </div>
+              </li>
+              <li>
+                <div class="flip-demo__leafy">
+                  <h3>The last page</h3>
+                  <p>
+                    Five pages, three leaves, and the back of this one is blank — as it would
+                    be in print.
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </ui-flip-book>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeFlipDemo } from '../../demo.js';
+
+      initializeFlipDemo();
+    </script>
+  </body>
+</html>

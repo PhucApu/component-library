@@ -97,6 +97,56 @@ test('crossing the surface leaves a wake that fades back to stillness', async ({
   await expect.poll(() => aliveCount(page), { timeout: 4000 }).toBe(0);
 });
 
+test('the wake meets in a point at the pointer and opens out behind it', async ({ page }) => {
+  await page.goto(variantUrl('wake'));
+  const box = await page.locator('ui-ripple-surface').first().boundingBox();
+  const y = box.y + box.height / 2;
+
+  // A straight run, so the shape under test is the V and not the path.
+  await page.mouse.move(box.x + 30, y);
+  for (let step = 1; step <= 24; step += 1) {
+    await page.mouse.move(box.x + 30 + step * 22, y);
+  }
+
+  // Measured off the canvas itself: how tall the painted band is at two distances behind
+  // the pointer. A wake is narrow at the prow and wider further back; a row of stamped
+  // marks would be the same height all the way along.
+  const spread = await page.evaluate((headX) => {
+    const canvas = document.querySelector('.ripple-surface__canvas');
+    const surface = canvas.closest('ui-ripple-surface').getBoundingClientRect();
+    const ratio = canvas.width / surface.width;
+    const context = canvas.getContext('2d');
+
+    const bandAt = (cssX) => {
+      const column = Math.round(cssX * ratio);
+      const pixels = context.getImageData(column, 0, 1, canvas.height).data;
+      let top = -1;
+      let bottom = -1;
+
+      for (let row = 0; row < canvas.height; row += 1) {
+        if (pixels[row * 4 + 3] > 6) {
+          top = top === -1 ? row : top;
+          bottom = row;
+        }
+      }
+
+      return top === -1 ? 0 : (bottom - top) / ratio;
+    };
+
+    return {
+      ahead: bandAt(headX + 8),
+      near: bandAt(headX - 24),
+      far: bandAt(headX - 220),
+    };
+  }, box.x + 30 + 24 * 22 - box.x);
+
+  // Nothing is drawn in front of the pointer: the sides arrive at the same place there,
+  // which is the point of the wake.
+  expect(spread.ahead).toBe(0);
+  expect(spread.near).toBeGreaterThan(0);
+  expect(spread.far).toBeGreaterThan(spread.near * 2);
+});
+
 test('a press sends out one set of rings and nothing else', async ({ page }) => {
   await page.goto(variantUrl('drop'));
   const surface = page.locator('ui-ripple-surface').first();

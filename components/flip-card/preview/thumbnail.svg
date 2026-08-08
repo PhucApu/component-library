@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="A card caught halfway through turning, its picture on one side and its details on the other">
+  <defs>
+    <radialGradient id="card-glow" cx="12%" cy="12%" r="70%">
+      <stop offset="0%" stop-color="#4968e8" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#4968e8" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="card-plate" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8fb3c9" />
+      <stop offset="100%" stop-color="#39566b" />
+    </linearGradient>
+  </defs>
+
+  <rect width="640" height="360" fill="#0f1115" />
+  <rect width="640" height="360" fill="url(#card-glow)" />
+
+  <rect x="48" y="34" width="544" height="292" rx="18" fill="#171a20" stroke="#292d36" />
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="76" y="68" fill="#a8afbc" font-size="13" font-weight="650">A press, and the other side of the card</text>
+
+    <g>
+      <path d="M132 104l150 22v148l-150 22z" fill="#12161c" stroke="#2e3440" />
+      <path d="M148 128l118 17v56l-118-17z" fill="url(#card-plate)" opacity="0.9" />
+      <g fill="#5c6675">
+        <rect x="150" y="212" width="96" height="7" rx="3.5" />
+        <rect x="150" y="230" width="72" height="7" rx="3.5" />
+      </g>
+    </g>
+
+    <g>
+      <path d="M348 126l160-22v192l-160-22z" fill="#1d222b" stroke="#2e3440" />
+      <g fill="#3b4250">
+        <rect x="368" y="150" width="118" height="8" rx="4" />
+        <rect x="368" y="172" width="96" height="8" rx="4" />
+        <rect x="368" y="194" width="110" height="8" rx="4" />
+      </g>
+      <rect x="368" y="228" width="80" height="24" rx="12" fill="none" stroke="#86a0ff" />
+      <text x="382" y="245" fill="#86a0ff" font-size="12" font-weight="650">Details</text>
+    </g>
+
+    <rect x="314" y="96" width="6" height="204" rx="3" fill="#0c0e13" opacity="0.7" />
+  </g>
+</svg>

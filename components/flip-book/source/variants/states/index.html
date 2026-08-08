@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en" class="flip-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A book of one page, a book of two, a page that never arrived, and reduced motion."
+    />
+    <title>Flip Book - States</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="flip-demo">
+      <div class="flip-demo__shell">
+        <section class="flip-demo__card">
+          <p class="flip-demo__label">One page</p>
+          <p class="flip-demo__note">
+            One page is one leaf with a blank back, and there is nothing to turn to. Both
+            arrows say so by being disabled rather than sitting there doing nothing when
+            pressed — an end of the book is a real end.
+          </p>
+
+          <ui-flip-book label="A single plate">
+            <ul>
+              <li><img src="../../assets/high-pass.svg" alt="Snow on a high mountain pass" /></li>
+            </ul>
+          </ui-flip-book>
+        </section>
+
+        <section class="flip-demo__card">
+          <p class="flip-demo__label">Two pages, one leaf</p>
+          <p class="flip-demo__note">
+            The shortest book that can be turned. Turning its only leaf moves the whole stack
+            from one side of the spine to the other, and the forward arrow then reaches its
+            end.
+          </p>
+
+          <ui-flip-book label="Two plates">
+            <ul>
+              <li><img src="../../assets/dawn-fields.svg" alt="Ploughed fields at dawn" /></li>
+              <li><img src="../../assets/cold-shore.svg" alt="A cold shore under heavy cloud" /></li>
+            </ul>
+          </ui-flip-book>
+
+          <output></output>
+        </section>
+
+        <section class="flip-demo__card">
+          <p class="flip-demo__label">A page that never arrived</p>
+          <p class="flip-demo__note">
+            The third page here points at a file that is not there. The leaf keeps its place
+            and its turn: a book that dropped a page would renumber every page after it for a
+            reason the reader cannot see.
+          </p>
+
+          <ui-flip-book label="Plates with one missing">
+            <ul>
+              <li><img src="../../assets/quiet-orchard.svg" alt="An orchard in flat afternoon light" /></li>
+              <li><img src="../../assets/long-valley.svg" alt="A long valley under pale cloud" /></li>
+              <li><img src="./page-that-is-not-there.svg" alt="A page that failed to load" /></li>
+              <li><img src="../../assets/last-light.svg" alt="The last light over a low ridge" /></li>
+            </ul>
+          </ui-flip-book>
+        </section>
+
+        <section class="flip-demo__card">
+          <p class="flip-demo__label">Reduced motion</p>
+          <p class="flip-demo__note">
+            Under <code>prefers-reduced-motion</code> a turn arrives without travelling: the
+            page changes, nothing swings. Dragging still works, because that is a movement the
+            reader is making rather than one happening at them — it simply lands the moment it
+            is let go.
+          </p>
+
+          <ui-flip-book label="Plates under reduced motion">
+            <ul>
+              <li><img src="../../assets/cover-tide.svg" alt="A high tide under a low sun" /></li>
+              <li><img src="../../assets/pine-dark.svg" alt="Dark pines on a pale slope" /></li>
+              <li><img src="../../assets/amber-town.svg" alt="A town under an amber sky" /></li>
+              <li><img src="../../assets/salt-marsh.svg" alt="Reeds standing in a salt marsh" /></li>
+            </ul>
+          </ui-flip-book>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeFlipDemo } from '../../demo.js';
+
+      initializeFlipDemo();
+    </script>
+  </body>
+</html>

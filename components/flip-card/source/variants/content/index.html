@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" class="flip-card-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A back that carries real controls, and a card whose own button the author wrote."
+    />
+    <title>Flip Card - Content</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="flip-card-demo">
+      <div class="flip-card-demo__shell">
+        <section class="flip-card-demo__card">
+          <p class="flip-card-demo__label">The back is a real page</p>
+          <p class="flip-card-demo__note">
+            The button on the back of this card counts its own presses and does not turn the
+            card while it does. That is the whole reason the card is not itself a button:
+            a control inside a button is neither valid nor operable, so the card answers a
+            press on its own surface and leaves anything that does something alone.
+          </p>
+
+          <div class="flip-card-demo__grid">
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/city-rain.svg" alt="Lit windows through falling rain" />
+                <p class="flip-card-demo__kicker">Plate two</p>
+                <h2 class="flip-card-demo__title">City Rain</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>City Rain</h3>
+                <p>Press the button below. It counts, and the card stays where it is.</p>
+                <p>
+                  <button class="flip-card-demo__button" type="button" data-demo-count>
+                    Pressed 0 times
+                  </button>
+                </p>
+                <p><a href="#plate-two">And this link stays a link</a></p>
+              </div>
+            </ui-flip-card>
+
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/north-fjord.svg" alt="Steep sides above still water" />
+                <p class="flip-card-demo__kicker">Plate four</p>
+                <h2 class="flip-card-demo__title">North Fjord</h2>
+                <button class="flip-card__toggle" type="button" data-flip-toggle>
+                  What is this?
+                </button>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>Your own control</h3>
+                <p>
+                  Mark a button with <code>data-flip-toggle</code> and the card wires that one
+                  instead of adding its own, so the words on it are yours.
+                </p>
+                <button class="flip-card__toggle" type="button" data-flip-toggle>
+                  Show me the picture again
+                </button>
+              </div>
+            </ui-flip-card>
+          </div>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeFlipCardDemo } from '../../demo.js';
+
+      initializeFlipCardDemo();
+    </script>
+  </body>
+</html>

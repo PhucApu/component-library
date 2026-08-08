@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img" aria-label="">
+  <defs>
+    <linearGradient id="flip-valley" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#cfe2f2" />
+      <stop offset="100%" stop-color="#e9f0f6" />
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#flip-valley)" />
+  <path d="M0 640l240-180 200 150 180-120 280 190v120H0z" fill="#9db6a6" />
+  <path d="M0 800l260-120 220 110 200-96 220 126v380H0z" fill="#6f9080" />
+  <path d="M0 980l280-90 240 70 380-80v320H0z" fill="#47695c" />
+  <path d="M380 1200l70-260 70 260z" fill="#2f4c43" />
+  <text x="450" y="1150" fill="#e9f0f6" font-family="Inter, sans-serif" font-size="54" font-weight="650" text-anchor="middle" opacity="0.9">11</text>
+</svg>

@@ -1,15 +1,17 @@
 {
   "schemaVersion": 2,
   "id": "sortable-list",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "name": "Sortable List",
-  "description": "A framework-free Web Component that lets a reader reorder rows in a list or a table by pointer or by keyboard. Built on pointer events rather than the HTML5 drag-and-drop API, which does not exist on touch, and every drag has a spoken keyboard equivalent.",
+  "description": "A framework-free Web Component that lets a reader reorder rows in a list or a table, and move them between connected lists, by pointer or by keyboard. Built on pointer events rather than the HTML5 drag-and-drop API, which does not exist on touch.",
   "group": "inputs",
   "categories": ["inputs"],
   "tags": [
     "drag-and-drop",
     "reorder",
     "sortable",
+    "kanban",
+    "connected-lists",
     "list",
     "table",
     "pointer-events",
@@ -31,6 +33,12 @@
       "name": "Table",
       "description": "The same component on real table rows, and the two things a table costs.",
       "entry": "source/variants/table/index.html"
+    },
+    {
+      "id": "connected",
+      "name": "Connected",
+      "description": "Moving rows between lists that share a group, by pointer and by keyboard, with the destination named out loud.",
+      "entry": "source/variants/connected/index.html"
     },
     {
       "id": "keyboard",

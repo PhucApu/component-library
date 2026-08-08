@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" class="flip-card-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A wide card, a tall card, and a back with more on it than the card is tall."
+    />
+    <title>Flip Card - Sizes</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+    <style>
+      .flip-card-demo__wide {
+        grid-template-columns: minmax(0, 34rem);
+      }
+
+      .flip-card-demo__wide img {
+        aspect-ratio: 21 / 9;
+      }
+
+      .flip-card-demo__tall img {
+        aspect-ratio: 3 / 4;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="flip-card-demo">
+      <div class="flip-card-demo__shell">
+        <section class="flip-card-demo__card">
+          <p class="flip-card-demo__label">Whatever shape the front is</p>
+          <p class="flip-card-demo__note">
+            The card takes its height from its front, so the shape of the picture decides the
+            shape of the card and the back fits itself to that. Nothing here sets a height.
+          </p>
+
+          <div class="flip-card-demo__grid flip-card-demo__wide">
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/desert-road.svg" alt="A straight road across pale sand" />
+                <p class="flip-card-demo__kicker">Wide</p>
+                <h2 class="flip-card-demo__title">Desert Road</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>Desert Road</h3>
+                <p>A wide card turns exactly as a narrow one does; only its footprint differs.</p>
+              </div>
+            </ui-flip-card>
+          </div>
+
+          <div class="flip-card-demo__grid flip-card-demo__tall">
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/paper-lantern.svg" alt="Three lanterns hanging in the dark" />
+                <p class="flip-card-demo__kicker">Tall</p>
+                <h2 class="flip-card-demo__title">Paper Lantern</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>Paper Lantern</h3>
+                <p>A portrait front makes a portrait card.</p>
+              </div>
+            </ui-flip-card>
+
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/terrace-noon.svg" alt="Flat roofs under a noon sun" />
+                <p class="flip-card-demo__kicker">A long back</p>
+                <h2 class="flip-card-demo__title">Terrace Noon</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>More than fits</h3>
+                <p>
+                  This back has more on it than the card is tall, so it scrolls inside the
+                  card rather than making the card taller.
+                </p>
+                <p>
+                  Growing the card to fit would move every card beside it in a grid, and it
+                  would do so at the moment the reader was looking at this one.
+                </p>
+                <p>
+                  Keeping one height is the reason a row of cards stays a row while any of
+                  them is being read.
+                </p>
+                <dl class="flip-card-demo__facts">
+                  <div><dt>Drawn</dt><dd>2026</dd></div>
+                  <div><dt>Plate</dt><dd>6 of 6</dd></div>
+                  <div><dt>Ink</dt><dd>Clay and cream</dd></div>
+                  <div><dt>Height</dt><dd>The front's</dd></div>
+                </dl>
+                <p><a href="#terrace">A link right at the bottom</a></p>
+              </div>
+            </ui-flip-card>
+          </div>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeFlipCardDemo } from '../../demo.js';
+
+      initializeFlipCardDemo();
+    </script>
+  </body>
+</html>

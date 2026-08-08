@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" class="flip-card-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A card with a picture on the front that turns to show what is written on the back."
+    />
+    <title>Flip Card - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="flip-card-demo">
+      <div class="flip-card-demo__shell">
+        <section class="flip-card-demo__card">
+          <p class="flip-card-demo__label">A picture, and what is behind it</p>
+          <p class="flip-card-demo__note">
+            Press anywhere on the card and it turns about its middle to show the other side.
+            Press again and it comes back. The button says the same thing in words, which is
+            how anyone not using a pointer turns it — the card itself is not a button, because
+            its back carries a link and a button inside a button is not markup.
+          </p>
+          <p class="flip-card-demo__note">
+            Try tabbing through this page. The link on the back is unreachable until the card
+            is showing it: a face turned away is taken out of the page rather than merely
+            hidden from the eye.
+          </p>
+
+          <div class="flip-card-demo__grid">
+            <ui-flip-card>
+              <div class="flip-card-demo__front">
+                <img src="../../assets/blue-ridge.svg" alt="Ridges fading into pale distance" />
+                <p class="flip-card-demo__kicker">Plate one</p>
+                <h2 class="flip-card-demo__title">Blue Ridge</h2>
+              </div>
+              <div class="flip-card-demo__back">
+                <h3>Blue Ridge</h3>
+                <p>
+                  Four ranges, each one paler than the last, which is the whole of how
+                  distance is drawn without drawing anything further away.
+                </p>
+                <dl class="flip-card-demo__facts">
+                  <div><dt>Drawn</dt><dd>2026</dd></div>
+                  <div><dt>Plate</dt><dd>1 of 6</dd></div>
+                  <div><dt>Ink</dt><dd>Four blues</dd></div>
+                </dl>
+                <p><a href="#plate-one">Read the note on this plate</a></p>
+              </div>
+            </ui-flip-card>
+          </div>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeFlipCardDemo } from '../../demo.js';
+
+      initializeFlipCardDemo();
+    </script>
+  </body>
+</html>

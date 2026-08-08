@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" class="flip-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A stack of pages that turns like a book, by hand or by the arrows either side."
+    />
+    <title>Flip Book - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="flip-demo">
+      <div class="flip-demo__shell">
+        <section class="flip-demo__card">
+          <p class="flip-demo__label">Eight pages, four leaves</p>
+          <p class="flip-demo__note">
+            The book opens closed: the whole stack is on the right, and the edges of the
+            leaves underneath show how much of it there is. Take hold of the top page and
+            pull left — it follows your hand round the spine, and it is a real turn, so
+            letting go halfway drops it back where it was.
+          </p>
+          <p class="flip-demo__note">
+            Every leaf carries two pages, front and back, exactly as a sheet of paper does.
+            Turning one therefore leaves a page on the left and shows the next on the right,
+            rather than swapping one picture for another.
+          </p>
+
+          <ui-flip-book label="Eight plates">
+            <ul>
+              <li><img src="../../assets/cover-tide.svg" alt="A high tide under a low sun" /></li>
+              <li><img src="../../assets/dawn-fields.svg" alt="Ploughed fields at dawn" /></li>
+              <li><img src="../../assets/pine-dark.svg" alt="Dark pines on a pale slope" /></li>
+              <li><img src="../../assets/river-bend.svg" alt="A river bending through flat land" /></li>
+              <li><img src="../../assets/salt-marsh.svg" alt="Reeds standing in a salt marsh" /></li>
+              <li><img src="../../assets/high-pass.svg" alt="Snow on a high mountain pass" /></li>
+              <li><img src="../../assets/amber-town.svg" alt="A town under an amber sky" /></li>
+              <li><img src="../../assets/cold-shore.svg" alt="A cold shore under heavy cloud" /></li>
+            </ul>
+          </ui-flip-book>
+
+          <div class="flip-demo__row">
+            <button class="flip-demo__button" type="button" data-demo-action="first">
+              Back to the start
+            </button>
+            <button class="flip-demo__button" type="button" data-demo-action="middle">
+              Open in the middle
+            </button>
+            <button class="flip-demo__button" type="button" data-demo-action="last">
+              Open at the end
+            </button>
+          </div>
+
+          <output></output>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeFlipDemo } from '../../demo.js';
+
+      initializeFlipDemo();
+    </script>
+  </body>
+</html>

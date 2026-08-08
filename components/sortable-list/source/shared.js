@@ -5,11 +5,15 @@ import {
   blockedBy,
   dropIndex,
   fillLabel,
+  gapOf,
+  insertIndex,
   moveItem,
   nextIndex,
   offsetTo,
   segmentFor,
   shiftFor,
+  shiftForInsert,
+  slotTop,
 } from './sortable-list-core.js';
 
 let sequence = 0;
@@ -337,9 +341,16 @@ export class UiSortableList extends HTMLElement {
     const labels = this.labels;
     const error = this.getAttribute('error');
     const nothing = this._rows.length === 0;
+    const connected = Boolean(this.group);
 
+    // A list with no rows has no gap between rows to aim at, so the empty message doubles as
+    // the target. It is present whenever the list is empty, not conjured when a drag starts —
+    // a drop zone that appears under the pointer shoves everything else aside at the exact
+    // moment somebody is aiming at it.
     this._empty.hidden = !nothing;
-    this._empty.textContent = labels.empty;
+    this._empty.textContent = connected ? labels.emptyList : labels.empty;
+    this._empty.toggleAttribute('data-sortable-slot', connected && nothing);
+    this._emptySlot = connected && nothing ? this._empty : null;
 
     this._note.hidden = !error;
     this._note.textContent = error ?? '';
@@ -377,6 +388,7 @@ export class UiSortableList extends HTMLElement {
     this._armed = {
       index,
       pointerId: event.pointerId,
+      startX: event.clientX,
       startY: event.clientY,
       target: event.currentTarget,
     };
@@ -414,7 +426,11 @@ export class UiSortableList extends HTMLElement {
 
     event.preventDefault();
     this._pointerY = event.clientY;
-    this._updateDrag(event.clientY - this._armed.startY);
+    this._pointerX = event.clientX;
+    this._updateDrag({
+      x: event.clientX - this._armed.startX,
+      y: event.clientY - this._armed.startY,
+    });
     this._autoScroll(event.clientY);
   }
 
@@ -455,6 +471,48 @@ export class UiSortableList extends HTMLElement {
     this._stopAutoScroll();
   }
 
+  /* ---- Lists that accept each other's rows ------------------------------------------------ */
+
+  /** Lists sharing this one's `group` accept its rows. No group means no neighbours. */
+  get group() {
+    return this.getAttribute('group') ?? '';
+  }
+
+  /**
+   * What this list is called, for the sentence that says where a row went.
+   *
+   * A cross-list move that announces only "position 2 of 4" has left out the only thing that
+   * changed. `name` first, then whatever labelled the list for everyone else.
+   */
+  get listName() {
+    return this.getAttribute('name') || this.getAttribute('aria-label') || '';
+  }
+
+  _group() {
+    if (!this.group) {
+      return [this];
+    }
+
+    return [...document.querySelectorAll(`ui-sortable-list[group="${CSS.escape(this.group)}"]`)];
+  }
+
+  /**
+   * The layout as it was before anything moved.
+   *
+   * Re-measuring mid-drag reads the transforms the drag itself applied and chases its own tail.
+   */
+  _measure() {
+    this._boxes = this._rows.map((row) => {
+      const rect = row.getBoundingClientRect();
+      return { top: rect.top, left: rect.left, height: rect.height };
+    });
+
+    // Where a first row would start if this list had one. An empty list still has to be able
+    // to say where an arriving row belongs.
+    const slot = (this._emptySlot ?? this._container).getBoundingClientRect();
+    this._origin = { top: slot.top, left: slot.left };
+  }
+
   /* ---- The drag itself ------------------------------------------------------------------ */
 
   _beginDrag(index, { keyboard }) {
@@ -462,12 +520,16 @@ export class UiSortableList extends HTMLElement {
     this._keyboard = keyboard;
     this._from = index;
     this._to = index;
-    // Measured once, before anything moves. Re-measuring mid-drag would read the transforms
-    // the drag itself applied and chase its own tail.
-    this._boxes = this._rows.map((row) => {
-      const rect = row.getBoundingClientRect();
-      return { top: rect.top, height: rect.height };
-    });
+    // The list the drag started in owns it from beginning to end. Handing ownership over at
+    // the border would mean two lists each holding half a gesture, and a cancel that has to
+    // find its way home through both.
+    this._target = this;
+    this._targetIndex = index;
+    this._measure();
+    // Every list in the group is measured now too, before anything has moved anywhere. A list
+    // measured after the drag entered it would be reading the shifts the drag had already
+    // applied to it.
+    this._group().forEach((list) => list !== this && list._measure());
 
     this._rows[index].toggleAttribute('data-sortable-grabbed', true);
     this.toggleAttribute('data-sortable-dragging', true);
@@ -481,27 +543,113 @@ export class UiSortableList extends HTMLElement {
     );
   }
 
-  _updateDrag(delta) {
-    const { start, end } = segmentFor(this._from, {
-      locked: this._locked,
-      count: this._rows.length,
-    });
+  _updateDrag(offset) {
+    const over = this._listUnder(this._pointerX, this._pointerY);
 
-    const wanted = dropIndex({ boxes: this._boxes, from: this._from, delta });
-    this._to = Math.min(Math.max(wanted, start), end);
+    this._setTarget(over ?? this);
 
-    this._paint(delta);
+    if (this._target === this) {
+      const { start, end } = segmentFor(this._from, {
+        locked: this._locked,
+        count: this._rows.length,
+      });
+
+      const wanted = dropIndex({ boxes: this._boxes, from: this._from, delta: offset.y });
+      this._to = Math.min(Math.max(wanted, start), end);
+    } else {
+      this._targetIndex = insertIndex({
+        boxes: this._target._boxes,
+        pointer: this._pointerY,
+      });
+    }
+
+    this._paint(offset);
   }
 
-  /** Puts every row where the current `from`/`to` says it should be. */
-  _paint(delta) {
+  /**
+   * Which list in the group the pointer is inside.
+   *
+   * Tested against each list's own rectangle rather than hit-tested through the document. The
+   * row being dragged sits under the pointer the whole time, so `elementFromPoint` answers
+   * "the row you are holding" and every drag would look like it never left home.
+   */
+  _listUnder(x, y) {
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      return null;
+    }
+
+    return (
+      this._group().find((list) => {
+        if (list !== this && (list.disabled || list.pending)) {
+          return false;
+        }
+
+        const box = list.getBoundingClientRect();
+        return x >= box.left && x <= box.right && y >= box.top && y <= box.bottom;
+      }) ?? null
+    );
+  }
+
+  _setTarget(next) {
+    if (this._target === next) {
+      return;
+    }
+
+    // Everything the old target moved aside goes back before the new one starts moving things.
+    this._target?._clearShifts?.();
+    this._target?.removeAttribute('data-sortable-target');
+    this._target = next;
+
+    if (next !== this) {
+      next.toggleAttribute('data-sortable-target', true);
+    }
+  }
+
+  _clearShifts() {
+    this._rows.forEach((row) => {
+      row.style.transform = '';
+      row.removeAttribute('data-sortable-shifted');
+    });
+  }
+
+  /**
+   * Puts every row where the current target and index say it should be.
+   *
+   * Two lists at once once a drag crosses a border: the one losing a row closes the space
+   * behind it, and the one gaining a row opens a slot for it.
+   */
+  _paint(offset) {
+    const crossing = this._target !== this;
+
     this._rows.forEach((row, index) => {
       if (index === this._from) {
-        row.style.transform = `translateY(${delta}px)`;
+        row.style.transform = `translate(${offset.x}px, ${offset.y}px)`;
         return;
       }
 
-      const shift = shiftFor({ boxes: this._boxes, from: this._from, to: this._to, index });
+      // While the row is over another list it has effectively left, so everything below it
+      // closes up rather than shuffling around a slot it is no longer going to take.
+      const shift = crossing
+        ? shiftFor({
+            boxes: this._boxes,
+            from: this._from,
+            to: this._rows.length - 1,
+            index,
+          })
+        : shiftFor({ boxes: this._boxes, from: this._from, to: this._to, index });
+
+      row.style.transform = shift ? `translateY(${shift}px)` : '';
+      row.toggleAttribute('data-sortable-shifted', shift !== 0);
+    });
+
+    if (!crossing) {
+      return;
+    }
+
+    const size = this._boxes[this._from].height + (gapOf(this._target._boxes) || gapOf(this._boxes));
+
+    this._target._rows.forEach((row, index) => {
+      const shift = shiftForInsert({ at: this._targetIndex, index, size });
       row.style.transform = shift ? `translateY(${shift}px)` : '';
       row.toggleAttribute('data-sortable-shifted', shift !== 0);
     });
@@ -509,20 +657,32 @@ export class UiSortableList extends HTMLElement {
 
   _endDrag({ cancelled }) {
     const from = this._from;
+    // Where the drag actually is, which is not where it is going to end up if this is a
+    // cancel. Both have to be tidied: clearing only the destination leaves the list the drag
+    // was over still outlined as a target for a move that never happened.
+    const hovering = this._target ?? this;
+    const target = cancelled ? this : hovering;
+    const at = this._targetIndex;
     const to = cancelled ? from : this._to;
     const row = this._rows[from];
     const name = this._nameFor(row);
 
-    this._rows.forEach((each) => {
-      each.style.transform = '';
-      each.removeAttribute('data-sortable-shifted');
-    });
+    this._clearShifts();
+    hovering._clearShifts?.();
+    hovering.removeAttribute('data-sortable-target');
+    target.removeAttribute('data-sortable-target');
     row.removeAttribute('data-sortable-grabbed');
     this.removeAttribute('data-sortable-dragging');
 
     this._dragging = false;
     this._keyboard = false;
+    this._target = this;
     this._stopAutoScroll();
+
+    if (!cancelled && target !== this) {
+      this._handOver(row, { at, target, from, name });
+      return;
+    }
 
     if (cancelled) {
       this._announce(
@@ -543,6 +703,61 @@ export class UiSortableList extends HTMLElement {
       fillLabel(this.labels.dropped, { name, position: to + 1, total: this._rows.length }),
     );
     this._settle(from, to);
+  }
+
+  /**
+   * Moves a row out of this list and into another one in the group.
+   *
+   * The same node again — a row that carried an open input or a focused handle across the
+   * border arrives with both intact.
+   */
+  _handOver(row, { at, target, from, name }) {
+    const active = document.activeElement;
+    const refocus = active && this.contains(active) ? active : null;
+
+    target._adopt(row, at);
+    this._read();
+    this._syncHandles();
+    this._render();
+
+    refocus?.focus({ preventScroll: true });
+
+    const detail = {
+      name,
+      from: { list: this, index: from, name: this.listName },
+      to: { list: target, index: at, name: target.listName },
+    };
+
+    this._announce(
+      fillLabel(this.labels.movedList, {
+        name,
+        list: target.listName,
+        position: at + 1,
+        total: target._rows.length,
+      }),
+    );
+
+    // Fired on the list that gained the row: it is the one now making a claim about state,
+    // and it is the one whose `commit` is asked to stand behind it.
+    target.dispatchEvent(new CustomEvent('transfer', { detail, bubbles: true, composed: true }));
+
+    if (target.commit) {
+      target._runCommit({
+        from: at,
+        to: at,
+        order: target.order,
+        transfer: { row, source: this, sourceIndex: from, name },
+      });
+    }
+  }
+
+  /** Takes a row in at `at` and re-reads itself around it. */
+  _adopt(row, at) {
+    const before = this._rows[at] ?? null;
+    this._container.insertBefore(row, before);
+    this._read();
+    this._syncHandles();
+    this._render();
   }
 
   /**
@@ -591,7 +806,7 @@ export class UiSortableList extends HTMLElement {
    * The token is not decoration: two quick reorders leave two commits in flight, and without
    * it the slower one's failure would roll back a change the reader has since replaced.
    */
-  async _runCommit({ from, to, order, previous }) {
+  async _runCommit({ from, to, order, previous, transfer }) {
     const token = (this._commitToken += 1);
 
     this.pending = true;
@@ -599,7 +814,7 @@ export class UiSortableList extends HTMLElement {
     this._announce(this.labels.saving);
 
     try {
-      await this._commit({ from, to, order });
+      await this._commit({ from, to, order, transfer: transfer ? { ...transfer, row: undefined } : undefined });
 
       if (token !== this._commitToken) {
         return;
@@ -614,19 +829,38 @@ export class UiSortableList extends HTMLElement {
       }
 
       this.pending = false;
-      this._applyOrder(previous);
-      this._syncHandles();
-      this._announce(
-        fillLabel(this.labels.failed, {
-          name: this._nameFor(previous[from]),
-          position: from + 1,
-          total: previous.length,
-        }),
-      );
+
+      // Undoing a transfer is not undoing a reorder. The row has to go back across the border
+      // to the list it came from, and to the index it left — putting this list back in the
+      // order it had would leave the row here, which is the thing being refused.
+      if (transfer) {
+        transfer.source._adopt(transfer.row, transfer.sourceIndex);
+        this._read();
+        this._syncHandles();
+        this._render();
+        this._announce(
+          fillLabel(this.labels.failedList, {
+            name: transfer.name,
+            list: transfer.source.listName,
+            position: transfer.sourceIndex + 1,
+            total: transfer.source._rows.length,
+          }),
+        );
+      } else {
+        this._applyOrder(previous);
+        this._syncHandles();
+        this._announce(
+          fillLabel(this.labels.failed, {
+            name: this._nameFor(previous[from]),
+            position: from + 1,
+            total: previous.length,
+          }),
+        );
+      }
 
       this.dispatchEvent(
         new CustomEvent('reorder-failed', {
-          detail: { from, to, reason },
+          detail: { from, to, reason, transferred: Boolean(transfer) },
           bubbles: true,
           composed: true,
         }),
@@ -659,7 +893,7 @@ export class UiSortableList extends HTMLElement {
         }
 
         this._beginDrag(index, { keyboard: true });
-        this._paint(0);
+        this._paint({ x: 0, y: 0 });
       }
 
       return;
@@ -675,12 +909,33 @@ export class UiSortableList extends HTMLElement {
       return;
     }
 
+    // Left and right are bound only when there is somewhere sideways to go. On a list with no
+    // group they stay unclaimed, or the component implies a direction that does not exist and
+    // a keyboard user goes looking for it.
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      const lists = this._group();
+
+      if (lists.length < 2) {
+        return;
+      }
+
+      event.preventDefault();
+      this._stepAcross(event.key === 'ArrowLeft' ? -1 : 1, lists);
+      return;
+    }
+
     if (!['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) {
       return;
     }
 
     // Cancelled, or the arrows scroll the page out from under the row being moved.
     event.preventDefault();
+
+    // Sideways first, then up and down inside wherever the row has ended up.
+    if (this._target !== this) {
+      this._stepWithinTarget(event.key);
+      return;
+    }
 
     const count = this._rows.length;
     const next = nextIndex({ from: this._to, key: event.key, count, locked: this._locked });
@@ -709,6 +964,90 @@ export class UiSortableList extends HTMLElement {
         total: count,
       }),
     );
+  }
+
+  /**
+   * Moves the held row to the next list along, without a pointer.
+   *
+   * The index is kept rather than reset, so a row taken from third place arrives at third
+   * place — landing everything at the top would make crossing two lists a way of losing your
+   * position.
+   */
+  _stepAcross(direction, lists) {
+    const at = lists.indexOf(this._target);
+    const next = lists[at + direction];
+
+    if (!next || next.disabled || next.pending) {
+      this._announce(
+        fillLabel(this.labels.noList, { name: this._nameFor(this._rows[this._from]) }),
+      );
+      return;
+    }
+
+    const wanted = this._target === this ? this._to : this._targetIndex;
+
+    this._setTarget(next);
+
+    if (next === this) {
+      this._to = Math.min(Math.max(wanted, 0), this._rows.length - 1);
+      this._paint(this._offsetHome(this._to));
+      this._announce(
+        fillLabel(this.labels.movedList, {
+          name: this._nameFor(this._rows[this._from]),
+          list: this.listName,
+          position: this._to + 1,
+          total: this._rows.length,
+        }),
+      );
+      return;
+    }
+
+    this._targetIndex = Math.min(Math.max(wanted, 0), next._rows.length);
+    this._paint(this._offsetAcross());
+    this._announceTarget();
+  }
+
+  _stepWithinTarget(key) {
+    const count = this._target._rows.length;
+    const step = { ArrowUp: -1, ArrowDown: 1, Home: -count, End: count }[key] ?? 0;
+
+    this._targetIndex = Math.min(Math.max(this._targetIndex + step, 0), count);
+    this._paint(this._offsetAcross());
+    this._announceTarget();
+  }
+
+  _announceTarget() {
+    this._announce(
+      fillLabel(this.labels.movedList, {
+        name: this._nameFor(this._rows[this._from]),
+        list: this._target.listName,
+        position: this._targetIndex + 1,
+        total: this._target._rows.length + 1,
+      }),
+    );
+  }
+
+  /** Where the held row sits when it is landing back in its own list. */
+  _offsetHome(to) {
+    return { x: 0, y: offsetTo({ boxes: this._boxes, from: this._from, to }) };
+  }
+
+  /**
+   * Where the held row sits when it is hovering over another list.
+   *
+   * Flown to the slot rather than merely nudged towards it: without a keyboard drag across a
+   * border there is no pointer saying where the row is, so the row itself has to show it.
+   */
+  _offsetAcross() {
+    // Both sides measured before anything moved, so neither reading includes a transform the
+    // drag itself applied.
+    const mine = this._boxes[this._from];
+    const target = this._target;
+
+    return {
+      x: (target._boxes[0]?.left ?? target._origin.left) - mine.left,
+      y: slotTop({ boxes: target._boxes, at: this._targetIndex, fallback: target._origin.top }) - mine.top,
+    };
   }
 
   /* ---- Following the pointer past the edge ---------------------------------------------- */

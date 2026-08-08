@@ -28,12 +28,10 @@ The pointer listeners sit on the host rather than the canvas, so events that pas
 the canvas to the content still reach the surface on their way up. Pressing a button inside
 therefore makes rings and presses the button.
 
-## 4. One record, two shapes
+## 4. A press is a set of things; a crossing is one thing
 
-Every ripple is the same record — where, when, how long, how far, how wide — and the three
-curves in the core are the whole of how one looks at any moment. A drop is that record drawn
-as a full circle; a wake mark is the same record drawn as an arc. Nothing else about them
-differs, which is why one loop draws both and one cap limits both.
+A press makes rings, and each ring is complete in itself: where, when, how long, how far, how
+wide, drawn as a circle. Three pure curves are the whole of how one looks at any moment.
 
 - **Radius** eases out. Water spreads quickly and then slows; a ring that grew evenly reads
   as a shape being scaled rather than as water.
@@ -41,34 +39,81 @@ differs, which is why one loop draws both and one cap limits both.
   strength on the frame it is born.
 - **Width** thins as the ring widens, the way a spreading wave loses height.
 
-## 5. The wake is made by distance, not by events
+A crossing is not like that, and the first build of this component got it wrong by treating
+it as if it were. Marks made independently of one another can never meet in a point, and a
+point is the whole shape of a wake — so what looked like a wake in a diagram read on screen
+as a row of separate arcs being stamped along the path.
 
-A mark is emitted when the pointer has travelled `spacing` pixels, never once per move
-event. Pointer events arrive at whatever rate the browser and the hardware feel like, so
-emitting per event would make the same gesture look different on different machines, and a
-high-rate pointer would fill the cap in a second.
+## 5. The wake is one trail with two sides
 
-Each mark is an arc facing the way the pointer came from, because a wake is what the water
-does after something has gone past. It opens wider the faster the pointer was moving, so a
-crawl leaves a narrow line and a dash leaves a spreading V.
+The element keeps the path the pointer has taken over the last `wake-duration` and draws
+strands standing off either side of it. Every offset is zero at the pointer, which is why the
+two sides meet there in a point, and grows with the distance back along the path, which is why
+the shape opens out behind it. The point of the wake is therefore not drawn: it is where the
+sides arrive at the same place.
 
-Leaving the surface forgets the last point. Without that, re-entering somewhere else would
-draw a mark for a crossing that never happened.
+Because the offset follows the path rather than the current heading, turning a corner leaves
+a wake along the route actually taken. A V drawn behind the current direction would swing the
+whole shape round on every change of heading, which reads as sliding rather than as water.
 
-## 6. Touch is left out of the wake on purpose
+The angle is a constant, and deliberately not a function of speed: a real wake holds the same
+angle however fast the hull is going, and a V that swelled and collapsed with every change of
+pace would read as the shape breathing. Speed decides how strongly the wake draws.
+
+### What stops it looking like two lines
+
+A single stroke a side is a diagram of a wake. Water disturbed by something passing through it
+is a band of crests at slightly different distances, out of step with one another, and three
+things together are what turn the one into the other:
+
+- **Three strands a side** rather than one, at different distances, with different phases and
+  weights. Three is the fewest that reads as a band rather than as a line with an outline.
+- **Two waves of different lengths** summed along each strand rather than one. A single sine
+  repeats visibly along a long trail and the eye reads the repeat as a pattern; two that do
+  not divide into one another never quite come round to the same shape.
+- **A fixed wobble per point of the trail**, taken from its own birth time. Waves alone are
+  smooth, and smooth is what makes a line look drawn. It has to be fixed rather than chosen
+  each frame: noise redrawn every frame makes the whole wake crawl.
+
+All three are held back at the point, where the two sides have to meet cleanly, and come in
+over the first stretch behind it.
+
+Two more details keep the shape itself honest:
+
+- **It fades with distance as well as with age.** A pointer thrown across the surface lays a
+  very long trail in very little time, and every point of it is still young, so age alone
+  would deliver the whole shape at full strength — an outline around the path.
+- **The offset eases into its limit** rather than being cut off at it. A hard limit puts a
+  visible corner in both sides of an otherwise straight run, at the moment they reach it.
+
+## 6. The path is sampled by distance, and gaps are filled
+
+The trail takes a sample every `spacing` pixels travelled, never once per move event. Pointer
+events arrive at whatever rate the browser and the hardware feel like, so sampling per event
+would make the same gesture look different on different machines.
+
+A quick gesture is reported in long jumps, so the run between two reports is walked at the
+same spacing and filled in. Without that, a fast pass is a polyline with a corner at every
+report, which is exactly what a wake must not look like.
+
+Leaving the surface forgets the path but keeps what was drawn: the trail already made fades
+where it is, and only the prow goes with the pointer. Without forgetting the path,
+re-entering somewhere else would draw a crossing that never happened.
+
+## 7. Touch is left out of the wake on purpose
 
 A tap drops rings. A finger dragged across the surface does not leave a wake, because on a
 touch screen that gesture is the page being scrolled: a surface that answered it would be
 drawing a wake for a motion the reader never aimed at it, and the marks would trail the
 finger while the page slid the other way.
 
-## 7. The cap is the only thing between a sweep and a stall
+## 8. The cap is the only thing between a sweep and a stall
 
 A pointer swept across the surface asks for a mark every `spacing` pixels for as long as it
 moves. `max-ripples` keeps the newest and drops the rest, so the frame cost has a ceiling
 that does not depend on how long anyone plays with it.
 
-## 8. The ink is read off the canvas, not out of the token
+## 9. The ink is read off the canvas, not out of the token
 
 `--ripple-ink` is applied to the canvas as `color`, and the drawing reads
 `getComputedStyle(canvas).color`.
@@ -83,7 +128,7 @@ the light theme to be missed.
 Reading it once per frame, and only while there is something to draw, is what lets a theme
 change reach the ripples already spreading rather than only the next one.
 
-## 9. Colour, and what the surface cannot know
+## 10. Colour, and what the surface cannot know
 
 The ripples are drawn over whatever is underneath and never sample it. Sampling would mean
 reading pixels back every frame — expensive, and still wrong wherever a ring crosses from a
@@ -94,7 +139,7 @@ surface has less contrast to spend than a dark line on a pale one, which is why 
 halves of the default pair are not the same strength. `--ripple-strength` is the single knob
 for turning the whole surface down on a busy background.
 
-## 10. Visual tokens
+## 11. Visual tokens
 
 | Token | Role |
 |---|---|
@@ -111,7 +156,7 @@ without a script. An embedding page posts `{ type: 'ui-theme', theme }` and the 
 `color-scheme` to that keyword. The message carries no token and no stylesheet, so answering
 it adds no dependency on the host.
 
-## 11. Motion
+## 12. Motion
 
 A ring from a press lives 1400ms and a wake mark 700ms by default; both are clamped so a
 ripple cannot outlive the visit that made it. Rings within one press follow each other out
@@ -120,14 +165,14 @@ ripple cannot outlive the visit that made it. Rings within one press follow each
 `prefers-reduced-motion: reduce` makes no ripples at all. Slower spreading is still
 spreading, and there is nothing else here to keep.
 
-## 12. Responsive behaviour
+## 13. Responsive behaviour
 
 The canvas is sized in device pixels and drawn in CSS pixels, so a ring is a ring rather
 than a staircase on a dense screen, and it is re-measured whenever the box changes. A drop
 reaches just under half the diagonal, so it arrives at the edge as it disappears whatever
 shape the surface is.
 
-## 13. Variants
+## 14. Variants
 
 | Variant | Shows |
 |---|---|
@@ -137,12 +182,12 @@ shape the surface is.
 | `tuning` | Life, strength, and the ripple cap |
 | `states` | Over a picture, over selectable words with a working link, and reduced motion |
 
-## 14. Distribution preview
+## 15. Distribution preview
 
 The packaged demo is the `default` variant: it is the only one that shows the wake, the
 rings, and the content underneath staying live, all in one surface.
 
-## 15. Acceptance criteria
+## 16. Acceptance criteria
 
 - A still surface draws nothing and requests no frames.
 - Moving across it leaves a wake that opens behind the pointer and fades.

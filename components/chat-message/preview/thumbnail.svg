@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-labelledby="title description">
+  <title id="title">Chat Message preview</title>
+  <desc id="description">A conversation: two messages from Mai sharing one avatar and one timestamp, a reply on the other side in the accent colour with a read receipt, and a later message from Mai that starts its own run.</desc>
+  <style>
+    text {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    .said {
+      fill: #f4f6fa;
+      font-size: 13px;
+    }
+
+    .mine {
+      fill: #ffffff;
+      font-size: 13px;
+    }
+
+    .meta {
+      fill: #a8afbc;
+      font-size: 10px;
+    }
+  </style>
+
+  <rect width="640" height="360" fill="#12151b" />
+
+  <g>
+    <!-- A run: one avatar at the top, one timestamp at the bottom, two bubbles between. -->
+    <circle cx="52" cy="66" r="16" fill="#2e3440" stroke="#2e3440" />
+    <text x="52" y="71" fill="#cbd1dc" font-size="11" font-weight="700" text-anchor="middle">M</text>
+    <text x="80" y="40" class="meta" font-weight="650">Mai</text>
+
+    <rect x="80" y="48" width="268" height="38" rx="18" fill="#22262f" stroke="#2e3440" />
+    <text x="98" y="72" class="said">Are we still on for three?</text>
+
+    <!-- Last of the run: the corner nearest the speaker squares off. -->
+    <path d="M80 110h250a18 18 0 0 1 18 18v2a18 18 0 0 1-18 18H86a6 6 0 0 1-6-6Z" fill="#22262f" stroke="#2e3440" />
+    <text x="98" y="134" class="said">I can move it if that suits.</text>
+    <text x="86" y="164" class="meta">09:12</text>
+
+    <!-- The other side, in the accent, with a receipt at the end of its own run. -->
+    <path d="M292 186h246a18 18 0 0 1 18 18v22a18 18 0 0 1-18 18H298a6 6 0 0 1-6-6Z" fill="#2f68b8" />
+    <text x="312" y="212" class="mine">Three works — I'll bring</text>
+    <text x="312" y="230" class="mine">the printouts.</text>
+
+    <g transform="translate(478 260)">
+      <text x="-12" y="4" class="meta" text-anchor="end">09:15</text>
+      <circle cx="20" cy="0" r="8.6" fill="#8ec0ff" opacity="0.18" />
+      <path d="M13.4 0.4 16.8 3.8 22 -2.4" fill="none" stroke="#8ec0ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M19.6 2.6 20.6 3.6 25.8 -2.6" fill="none" stroke="#8ec0ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="36" y="4" fill="#8ec0ff" font-size="10" font-weight="600">Read</text>
+    </g>
+
+    <!-- Six hours later, so it starts a new run rather than inheriting a timestamp. -->
+    <circle cx="52" cy="304" r="16" fill="#2e3440" />
+    <text x="52" y="309" fill="#cbd1dc" font-size="11" font-weight="700" text-anchor="middle">M</text>
+    <text x="80" y="278" class="meta" font-weight="650">Mai</text>
+
+    <path d="M80 286h236a18 18 0 0 1 18 18v14a18 18 0 0 1-18 18H86a6 6 0 0 1-6-6Z" fill="#22262f" stroke="#2e3440" />
+    <text x="98" y="312" class="said">Running ten minutes late!</text>
+    <text x="86" y="350" class="meta">15:40</text>
+  </g>
+</svg>

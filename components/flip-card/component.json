@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 2,
+  "id": "flip-card",
+  "kind": "animation",
+  "version": "0.1.0",
+  "name": "Flip Card",
+  "description": "A framework-free Web Component that turns a card about its middle to show what is written on the back, keeping the face turned away out of the page rather than merely out of sight.",
+  "group": "transitions",
+  "categories": ["surface", "media"],
+  "tags": [
+    "flip",
+    "card",
+    "turn",
+    "reveal",
+    "3d",
+    "inert",
+    "web-component",
+    "accessible",
+    "reduced-motion"
+  ],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "A picture on the front, details and a link on the back, turned by a press or by the button.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "grid",
+      "name": "Grid",
+      "description": "Six cards turning independently, none of them moving the ones beside it.",
+      "entry": "source/variants/grid/index.html"
+    },
+    {
+      "id": "content",
+      "name": "Content",
+      "description": "A back carrying a working button and link, and a card whose toggle the author wrote.",
+      "entry": "source/variants/content/index.html"
+    },
+    {
+      "id": "sizes",
+      "name": "Sizes",
+      "description": "Wide, tall, and a back with more on it than the card is tall.",
+      "entry": "source/variants/sizes/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "A card with no back, one opened on its back, a picture that never arrived, and reduced motion.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 4000
+  }
+}

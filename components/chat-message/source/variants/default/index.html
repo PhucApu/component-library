@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" class="chat-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Chat bubbles that say who is talking, in words as well as in position." />
+    <title>Chat Message - Default</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="chat-demo">
+      <div class="chat-demo__shell">
+        <section class="chat-demo__card">
+          <p class="chat-demo__label">A conversation</p>
+
+          <ol class="chat-thread" role="log" aria-label="Conversation with Mai">
+            <li>
+              <ui-chat-message from="them" author="Mai" time="2026-08-07T09:12">
+                <p>Morning! Are we still on for three?</p>
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message from="them" author="Mai" time="2026-08-07T09:12">
+                <p>I can move it if that suits you better.</p>
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message from="me" time="2026-08-07T09:15" status="read">
+                <p>Three works. I'll bring the printouts.</p>
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message from="them" author="Mai" time="2026-08-07T09:16">
+                <p>Perfect — see you in the small room.</p>
+              </ui-chat-message>
+            </li>
+            <li>
+              <ui-chat-message from="them" author="Mai" time="2026-08-07T15:40">
+                <p>Running about ten minutes late, sorry!</p>
+              </ui-chat-message>
+            </li>
+          </ol>
+
+          <p class="chat-demo__label">Which side the bubble sits on is invisible</p>
+          <p class="chat-demo__note">
+            Every chat interface says <em>who is talking</em> with position and colour, and a
+            screen reader has neither. Without help the whole conversation arrives as one block
+            of text with no idea who said what. So every message carries its speaker as a
+            <strong>word</strong>, said once in front of the content — <em>"Mai, 09:12"</em>,
+            <em>"You, 09:15"</em> — even on the second bubble of a run, where the name is
+            hidden from sight.
+          </p>
+
+          <p class="chat-demo__label">Runs, worked out rather than declared</p>
+          <p class="chat-demo__note">
+            Mai's first two messages share one avatar and one timestamp. The component reads its
+            own neighbours to decide that; the markup declares nothing. Her last message is
+            <code>15:40</code> — six hours later, so it starts a new run rather than inheriting
+            a timestamp from this morning.
+          </p>
+
+          <p class="chat-demo__label">The thread belongs to the page</p>
+          <p class="chat-demo__note">
+            <code>role="log"</code> sits once on the <code>&lt;ol&gt;</code>, not on each
+            message. A page can hold several conversations and only the page knows which of them
+            should announce itself; putting a live region on every bubble means each arrival
+            interrupts the one before it.
+          </p>
+
+          <output class="chat-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeChatMessageDemo } from '../../demo.js';
+
+      initializeChatMessageDemo();
+    </script>
+  </body>
+</html>

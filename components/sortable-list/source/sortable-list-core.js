@@ -29,6 +29,12 @@ export const DEFAULT_LABELS = Object.freeze({
   cancelled: 'Reorder cancelled. {name} is back at position {position} of {total}.',
   locked: '{name} is locked and cannot be moved.',
   blocked: '{name} cannot move past {other}.',
+  // A cross-list move that announces only a position has left out the only thing that changed.
+  movedList: '{name}, {list}, position {position} of {total}.',
+  droppedList: 'Dropped {name} into {list} at position {position} of {total}.',
+  noList: 'There is no list that way for {name}.',
+  failedList: 'That move could not be saved. {name} is back in {list} at position {position}.',
+  emptyList: 'Drop a row here',
   saving: 'Saving the new order.',
   saved: 'Order saved.',
   failed: 'That order could not be saved. {name} is back at position {position} of {total}.',
@@ -107,6 +113,53 @@ export function dropIndex({ boxes = [], from = 0, delta = 0 } = {}) {
   }
 
   return to;
+}
+
+/**
+ * Where a row coming from somewhere else belongs in this list.
+ *
+ * Not the same question as `dropIndex`, and the difference is the reason it is a second
+ * function. There, a row is being moved *within* a list — one slot is vacated as another is
+ * filled, so there are exactly as many landing places as rows. Here nothing has been taken
+ * away, so a list of three rows has **four** places a row can land, and the answer is measured
+ * against the pointer rather than against a distance travelled.
+ */
+export function insertIndex({ boxes = [], pointer = 0 } = {}) {
+  for (let index = 0; index < boxes.length; index += 1) {
+    if (pointer < boxes[index].top + boxes[index].height / 2) {
+      return index;
+    }
+  }
+
+  return boxes.length;
+}
+
+/** How far a row already in the list steps down to open a slot at `at`. */
+export function shiftForInsert({ at = 0, index = 0, size = 0 } = {}) {
+  return index >= at ? size : 0;
+}
+
+/** The space between two rows, which a slot has to account for as well as the row's height. */
+export function gapOf(boxes = []) {
+  if (boxes.length < 2) {
+    return 0;
+  }
+
+  return Math.max(0, boxes[1].top - (boxes[0].top + boxes[0].height));
+}
+
+/** Where the top of the slot at `at` sits, so a row can be flown to it rather than near it. */
+export function slotTop({ boxes = [], at = 0, fallback = 0 } = {}) {
+  if (boxes.length === 0) {
+    return fallback;
+  }
+
+  if (at >= boxes.length) {
+    const last = boxes[boxes.length - 1];
+    return last.top + last.height + gapOf(boxes);
+  }
+
+  return boxes[Math.max(0, at)].top;
 }
 
 /**

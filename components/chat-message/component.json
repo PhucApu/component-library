@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 2,
+  "id": "chat-message",
+  "version": "0.1.0",
+  "name": "Chat Message",
+  "description": "A framework-free Web Component for the bubbles in a conversation: text, pictures, quoted replies, voice notes and attachments. Every message names its speaker as a word, because which side a bubble sits on is invisible to a screen reader.",
+  "group": "data-display",
+  "categories": ["data-display"],
+  "tags": [
+    "chat",
+    "message",
+    "bubble",
+    "conversation",
+    "voice",
+    "attachment",
+    "reply",
+    "web-component",
+    "accessible",
+    "progressive-enhancement"
+  ],
+  "technologies": ["html", "css", "javascript"],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Text messages both ways, runs worked out from the neighbours, and the speaker said as a word.",
+      "entry": "source/variants/default/index.html"
+    },
+    {
+      "id": "image",
+      "name": "Image",
+      "description": "Picture messages, and the box held open at the picture's own shape before it arrives.",
+      "entry": "source/variants/image/index.html"
+    },
+    {
+      "id": "reply",
+      "name": "Reply",
+      "description": "Quoting a message, shortened honestly and linked back to the original.",
+      "entry": "source/variants/reply/index.html"
+    },
+    {
+      "id": "voice",
+      "name": "Voice",
+      "description": "Voice notes with a real player, and the transcript that makes them readable at all.",
+      "entry": "source/variants/voice/index.html"
+    },
+    {
+      "id": "attachment",
+      "name": "Attachment",
+      "description": "Files and links, named and sized so they can be identified before they are opened.",
+      "entry": "source/variants/attachment/index.html"
+    },
+    {
+      "id": "states",
+      "name": "States",
+      "description": "Sending, failed with a retry, edited, deleted, a system notice, and text that cannot break.",
+      "entry": "source/variants/states/index.html"
+    }
+  ],
+  "preview": {
+    "variant": "default",
+    "thumbnail": "preview/thumbnail.svg",
+    "viewport": {
+      "width": 960,
+      "height": 720
+    },
+    "durationMs": 5000
+  }
+}

@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "id": "ripple-surface",
   "kind": "animation",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "name": "Ripple Surface",
-  "description": "A framework-free Web Component that lays still water over any content: a wake opens behind the pointer, a press spreads rings from where it landed, and at rest it draws nothing and asks for no frames.",
+  "description": "A framework-free Web Component that lays still water over any content: the pointer is a prow pushing a wake of crests aside, a press spreads rings from where it landed, and at rest it draws nothing and asks for no frames.",
   "group": "pointer-effects",
   "categories": ["surface", "canvas"],
   "tags": [
@@ -30,7 +30,7 @@
     {
       "id": "wake",
       "name": "Wake",
-      "description": "The trail on its own: marks made by distance travelled, opening wider the faster the pointer goes.",
+      "description": "The trail on its own: a point at the pointer, bands of crests either side, and the path it actually took.",
       "entry": "source/variants/wake/index.html"
     },
     {

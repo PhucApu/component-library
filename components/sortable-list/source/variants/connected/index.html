@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" class="sortable-demo-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Moving rows between two lists, by pointer and by keyboard, with the destination named out loud." />
+    <title>Sortable List - Connected</title>
+    <link rel="stylesheet" href="../../shared.css" />
+    <script type="module" src="../../shared.js"></script>
+  </head>
+  <body>
+    <main class="sortable-demo">
+      <div class="sortable-demo__shell">
+        <section class="sortable-demo__card">
+          <p class="sortable-demo__label">Two lists that accept each other's rows</p>
+          <p class="sortable-demo__note">
+            Drag a row across, or tab to a handle, press space and use
+            <code>←</code> <code>→</code>. Lists share rows when they share a
+            <code>group</code>.
+          </p>
+
+          <div class="sortable-demo__board">
+            <div class="sortable-demo__column">
+              <h2 class="sortable-demo__column-title" id="todo-title">To do</h2>
+              <ui-sortable-list group="board" name="To do" aria-labelledby="todo-title">
+                <ol>
+                  <li>Review pull requests</li>
+                  <li>Write the release notes</li>
+                  <li data-locked>Sign off the invoice</li>
+                  <li>Update the changelog</li>
+                </ol>
+              </ui-sortable-list>
+            </div>
+
+            <div class="sortable-demo__column">
+              <h2 class="sortable-demo__column-title" id="doing-title">In progress</h2>
+              <ui-sortable-list group="board" name="In progress" aria-labelledby="doing-title">
+                <ol>
+                  <li>Answer the support queue</li>
+                  <li>Deploy to staging</li>
+                </ol>
+              </ui-sortable-list>
+            </div>
+
+            <div class="sortable-demo__column">
+              <h2 class="sortable-demo__column-title" id="done-title">Done</h2>
+              <ui-sortable-list group="board" name="Done" aria-labelledby="done-title">
+                <ol></ol>
+              </ui-sortable-list>
+            </div>
+          </div>
+
+          <p class="sortable-demo__label">Left and right, and only where there is somewhere to go</p>
+          <p class="sortable-demo__note">
+            <code>←</code> and <code>→</code> are bound only on a list that has a
+            <code>group</code>. On a list on its own they stay unclaimed — binding them would
+            imply a direction that does not exist, and send a keyboard user looking for it.
+            <code>↑</code> and <code>↓</code> then move within whichever list the row is
+            currently over.
+          </p>
+
+          <p class="sortable-demo__label">The empty list is a target before you need it</p>
+          <p class="sortable-demo__note">
+            <em>Done</em> has no rows, so it has no gap between rows to aim at. Its empty
+            message doubles as the drop zone — and it is there from the start, not conjured when
+            a drag begins. A zone that appears under the pointer shoves the rest of the board
+            aside at the exact moment somebody is aiming at it.
+          </p>
+
+          <p class="sortable-demo__label">The announcement names the list</p>
+          <p class="sortable-demo__note">
+            A cross-list move that says only <em>"position 2 of 4"</em> has left out the one
+            thing that changed. Every step says where: <em>"Deploy to staging, Done, position 1
+            of 1."</em> Each list is named by <code>name</code>, falling back to whatever
+            labelled it for everyone else.
+          </p>
+
+          <p class="sortable-demo__label">A locked row does not emigrate</p>
+          <p class="sortable-demo__note">
+            <em>Sign off the invoice</em> is a wall inside <em>To do</em>, and it does not leave
+            it either. It has no handle to pick up with, in any direction.
+          </p>
+
+          <output class="sortable-demo__output" aria-live="polite"></output>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { initializeSortableListDemo } from '../../demo.js';
+
+      initializeSortableListDemo();
+    </script>
+  </body>
+</html>

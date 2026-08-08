@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img" aria-label="">
+  <defs>
+    <linearGradient id="flip-last" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a2a52" />
+      <stop offset="55%" stop-color="#a5567a" />
+      <stop offset="100%" stop-color="#f0a06a" />
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#flip-last)" />
+  <circle cx="450" cy="820" r="110" fill="#ffe3b0" opacity="0.95" />
+  <path d="M0 880l200-70 180 60 200-70 320 80v320H0z" fill="#3d2a4a" />
+  <rect y="1080" width="900" height="120" fill="#241a30" />
+  <g fill="#ffe3b0" opacity="0.35">
+    <rect x="300" y="940" width="300" height="10" rx="5" />
+    <rect x="360" y="1000" width="180" height="10" rx="5" />
+  </g>
+  <text x="450" y="1170" fill="#ffe3b0" font-family="Inter, sans-serif" font-size="54" font-weight="650" text-anchor="middle" opacity="0.85">12</text>
+</svg>

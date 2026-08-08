@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="A morning market street with striped awnings and crates of fruit">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffd9a8" />
+      <stop offset="55%" stop-color="#f7b98a" />
+      <stop offset="100%" stop-color="#e89b7d" />
+    </linearGradient>
+    <linearGradient id="road" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8a6f66" />
+      <stop offset="100%" stop-color="#5c4a45" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#sky)" />
+  <circle cx="930" cy="190" r="70" fill="#fff3d6" opacity="0.85" />
+
+  <g fill="#7a5f5a" opacity="0.5">
+    <rect x="40" y="180" width="150" height="420" />
+    <rect x="230" y="140" width="120" height="460" />
+    <rect x="860" y="160" width="140" height="440" />
+    <rect x="1040" y="210" width="120" height="390" />
+  </g>
+
+  <rect y="600" width="1200" height="200" fill="url(#road)" />
+
+  <g>
+    <rect x="120" y="380" width="360" height="24" rx="8" fill="#8d3f3a" />
+    <path d="M120 404h360l-40 66H160Z" fill="#c85b4e" />
+    <g fill="#f2e3c8">
+      <path d="M160 404h40l-16 66h-40Z" /><path d="M240 404h40l-16 66h-40Z" />
+      <path d="M320 404h40l-16 66h-40Z" /><path d="M400 404h40l-16 66h-40Z" />
+    </g>
+    <rect x="150" y="470" width="300" height="130" fill="#6f5049" />
+    <g fill="#e8a33d">
+      <circle cx="200" cy="512" r="18" /><circle cx="238" cy="512" r="18" />
+      <circle cx="276" cy="512" r="18" /><circle cx="219" cy="544" r="18" />
+      <circle cx="257" cy="544" r="18" />
+    </g>
+    <g fill="#c0453f">
+      <circle cx="350" cy="512" r="17" /><circle cx="386" cy="512" r="17" />
+      <circle cx="368" cy="543" r="17" />
+    </g>
+  </g>
+
+  <g>
+    <rect x="640" y="410" width="300" height="22" rx="8" fill="#2f6f5e" />
+    <path d="M640 432h300l-34 60H674Z" fill="#3f9179" />
+    <rect x="666" y="492" width="248" height="108" fill="#6f5049" />
+    <g fill="#7fb069">
+      <circle cx="712" cy="528" r="16" /><circle cx="746" cy="528" r="16" />
+      <circle cx="780" cy="528" r="16" /><circle cx="729" cy="558" r="16" />
+      <circle cx="763" cy="558" r="16" />
+    </g>
+    <g fill="#f0c04a">
+      <ellipse cx="850" cy="530" rx="14" ry="22" /><ellipse cx="876" cy="534" rx="14" ry="22" />
+    </g>
+  </g>
+
+  <g fill="#3b2f2c" opacity="0.72">
+    <path d="M540 470c14 0 24 11 24 25v58h-48v-58c0-14 10-25 24-25Z" />
+    <circle cx="540" cy="446" r="19" />
+    <path d="M520 553h40l10 68h-60Z" />
+  </g>
+
+  <g fill="#3b2f2c" opacity="0.55">
+    <path d="M596 486c12 0 21 9 21 21v48h-42v-48c0-12 9-21 21-21Z" />
+    <circle cx="596" cy="466" r="16" />
+    <path d="M579 555h34l8 66h-50Z" />
+  </g>
+
+  <rect y="614" width="1200" height="6" fill="#4a3b37" opacity="0.5" />
+</svg>

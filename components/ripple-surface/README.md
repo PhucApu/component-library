@@ -1,8 +1,9 @@
 # Ripple Surface
 
-Still water laid over whatever you put inside it. Moving across it opens a wake behind the
-pointer; pressing it spreads rings from the point, the way something dropped in water does.
-At rest it draws nothing and asks for no animation frames.
+Still water laid over whatever you put inside it. The pointer is a prow: moving it pushes the
+water aside into two bands of crests that meet in a point at the pointer and open out behind
+it. Pressing spreads rings from the point, the way something dropped in water does. At rest
+it draws nothing and asks for no animation frames.
 
 ## Markup contract
 
@@ -29,16 +30,16 @@ content a height — an empty surface has nothing to be still about.
 | Attribute | Default | Meaning |
 |---|---|---|
 | `rings` | `3` | How many rings one press sends out, up to `6`. |
-| `spacing` | `14` | Pixels the pointer travels between one wake mark and the next. |
+| `spacing` | `8` | Pixels of path between one sample of the trail and the next. |
 | `drop-duration` | `1400` | How long a ring from a press lives, in milliseconds. |
-| `wake-duration` | `700` | How long one wake mark lives, in milliseconds. |
-| `max-ripples` | `60` | The most ripples that may be alive at once; the oldest go first. |
+| `wake-duration` | `900` | How long a point of the trail lives, in milliseconds. |
+| `max-ripples` | `90` | The most marks that may be alive at once — rings and trail points alike; the oldest go first. |
 | `no-wake` | absent | No trail behind the pointer. Presses still make rings. |
 | `no-drop` | absent | No rings from a press. The trail still follows the pointer. |
 
 ## Properties, methods, events
 
-- `count` — how many ripples are alive right now.
+- `count` — how much is still moving: rings alive, plus points in the trail.
 - `drop(x, y)` — sends rings out from a point, measured from the top left of the surface.
 - `clear()` — takes everything off the surface and lets it go still.
 
@@ -57,6 +58,25 @@ presentation of what the pointer is already doing.
 The ripples are drawn over whatever is underneath and never sample it, so a pale ink
 disappears against a pale picture. Choose the ink for the background you are putting the
 surface on; the `states` variant shows one over a photograph.
+
+## The wake
+
+The element keeps the path the pointer has taken over the last `wake-duration` and draws
+strands standing off either side of it. Every offset is zero at the pointer — which is why
+the two sides meet there in a point — and grows the further back along the path they go, so
+the shape opens out behind the pointer at a fixed angle. Turn a corner and the wake follows
+the path you took rather than swinging round to your new heading.
+
+Each side is three strands at slightly different distances and out of step with one another,
+two waves of different lengths run along each of them, and every point of the trail carries a
+small fixed wobble taken from its own birth time. One clean stroke a side is a diagram of a
+wake; the band that this adds up to is what reads as a surface being disturbed.
+
+The angle is deliberately constant: a real wake holds its angle however fast the hull is
+going. Speed decides how strongly the wake draws, not what shape it is.
+
+The path is sampled by distance travelled, never once per pointer event, and long jumps
+between reports are filled in, so a fast gesture is a curve rather than a run of corners.
 
 ## Pointer, touch, keyboard
 

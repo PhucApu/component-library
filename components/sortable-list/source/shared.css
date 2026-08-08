@@ -247,6 +247,22 @@ ui-sortable-list td.sortable__numeric {
   display: none;
 }
 
+/* The empty list's message doubles as its drop target, and it is there before any drag starts.
+   A zone that appears the moment somebody picks a row up shoves the rest of the page aside at
+   exactly the moment they are aiming at it. */
+.sortable__empty[data-sortable-slot] {
+  border-color: var(--sortable-accent);
+  color: var(--sortable-handle-hover);
+}
+
+/* The list a drag is currently over. Never the only signal — the announcement names the list
+   in words at every step, and the rows inside it have already opened a slot. */
+ui-sortable-list[data-sortable-target] {
+  outline: 2px dashed var(--sortable-accent);
+  outline-offset: 6px;
+  border-radius: var(--sortable-radius);
+}
+
 .sortable__note {
   margin: 0.6rem 0 0;
   color: var(--sortable-ink-muted);
@@ -338,6 +354,30 @@ ui-sortable-list[disabled] .sortable__row {
   border: 1px solid light-dark(#e3e7ef, #292d36);
   border-radius: 12px;
   padding: 0.6rem;
+}
+
+.sortable-demo__board {
+  display: grid;
+  gap: 1rem;
+  /* Three columns have to fit the shell before they are allowed to wrap, or the board reads as
+     two lists and a stray one rather than as one board. */
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+  align-items: start;
+}
+
+.sortable-demo__column {
+  display: grid;
+  gap: 0.5rem;
+  min-inline-size: 0;
+}
+
+.sortable-demo__column-title {
+  margin: 0;
+  color: light-dark(#5f6878, #a8afbc);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .sortable-demo__controls {

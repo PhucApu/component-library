@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img" aria-label="">
+  <defs>
+    <linearGradient id="flip-tide" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#12384f" />
+      <stop offset="100%" stop-color="#2f7f9c" />
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#flip-tide)" />
+  <circle cx="640" cy="280" r="96" fill="#ffe6bd" opacity="0.9" />
+  <path d="M0 760c150-60 260 40 450-10s300-70 450 10v440H0z" fill="#0d2534" />
+  <g fill="#bfe0ef" opacity="0.45">
+    <rect x="120" y="880" width="300" height="10" rx="5" />
+    <rect x="360" y="960" width="380" height="10" rx="5" />
+    <rect x="200" y="1040" width="240" height="10" rx="5" />
+  </g>
+  <text x="450" y="1140" fill="#bfe0ef" font-family="Inter, sans-serif" font-size="54" font-weight="650" text-anchor="middle" opacity="0.8">1</text>
+</svg>

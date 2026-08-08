@@ -64,8 +64,20 @@ pressed.
 **In a table**, put a created handle *inside the first cell* — a component cannot invent a
 column — and use `border-collapse: separate`, or the lifted row cannot carry a shadow.
 
-**Leave out moving rows between two lists.** It needs two live regions, a cross-list keyboard
-model, and a drop affordance for an empty list.
+**Pair lists with a `group`** so they accept each other's rows. Let the list a drag starts in own
+it to the end — handing over at the border leaves two lists each holding half a gesture. Paint
+both: one closes the space behind the row, the other opens a slot. Find the list under the
+pointer by testing each list's rectangle, never by hit-testing the document, because the dragged
+row is under the pointer the whole time.
+
+Bind `←` and `→` to cross lists **only where there is a group**, or you imply a direction that
+does not exist. Make an empty list a drop target **at rest**, not one that appears when a drag
+starts. **Name the destination** in every announcement. On a cancel, tidy both the list the drag
+was over and the one it returns to — they are different lists. Run the **receiving** list's
+commit, and on rejection send the row back across the border to the index it left.
+
+**Leave out copying** (a row in two lists makes the order ambiguous) and **a destination that can
+refuse** on capacity or type.
 
 ## Verify before delivering
 

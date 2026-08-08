@@ -1,0 +1,789 @@
+:root {
+  color-scheme: light dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.chat-demo-page,
+.chat-demo-page body {
+  background: light-dark(#e4e9f3, #12151b);
+}
+
+ui-chat-message {
+  /* ---- Measured against this component's own four surfaces, on exact ratios --------------
+     A thread is not one background. There is the page, their bubble, your bubble, and the
+     quoted panel nested inside either of those — and your bubble is a saturated accent, which
+     is where a "muted" ink quietly misses 4.5 while looking perfectly fine. That is why a
+     quotation gets its own surface rather than being dimmer text on the accent.
+
+       their words on their bubble    17.7397 light  14.0007 dark  (floor 4.5)
+       your words on your bubble       6.6282          5.1170       (floor 4.5)
+       a quotation, either side        7.6517+         6.0946+      (floor 4.5)
+       time and receipt on the page    6.0850          8.2895       (floor 4.5)
+       a failure on the page           6.0013         10.7057       (floor 4.5)
+       a link inside your bubble       5.7723          4.5608       (floor 4.5)
+       each bubble against the page    1.2175+         1.2067+      (floor 1.2)
+       the two sides against each other 6.6282         2.7361       (floor 1.5)
+       the play button on its bubble   6.6282          8.0314       (floor 3.0)
+
+     The bubble fill is held to 1.2 rather than 3.0 on purpose. A bubble is a grouping, not a
+     control — you do not operate it, and no part of the content depends on seeing its edge,
+     because the speaker is a word in front of every message rather than a side of a screen. */
+  --chat-surface: light-dark(#e4e9f3, #12151b);
+  --chat-their-bubble: light-dark(#ffffff, #22262f);
+  --chat-their-ink: light-dark(#111827, #f4f6fa);
+  --chat-their-quote: light-dark(#e7ecf6, #31373f);
+  --chat-their-quote-ink: light-dark(#3f4757, #cbd1dc);
+  --chat-my-bubble: light-dark(#1c5cab, #2f68b8);
+  --chat-my-ink: light-dark(#ffffff, #f4f6fa);
+  --chat-my-quote: light-dark(#154a8c, #27579a);
+  --chat-my-quote-ink: light-dark(#e8f0fb, #e3edfb);
+  --chat-meta: light-dark(#4d5665, #a8afbc);
+  --chat-border: light-dark(#cdd5e4, #2e3440);
+  --chat-rule: light-dark(#2a78d6, #7fb0f2);
+  --chat-rule-mine: light-dark(#9dc4f2, #bcd8fa);
+  --chat-link: light-dark(#1a56a8, #8ec0ff);
+  --chat-link-mine: light-dark(#e8f0fb, #dfeafb);
+  --chat-failed: light-dark(#a81f18, #f2b8b5);
+  --chat-control: light-dark(#1c5cab, #8ec0ff);
+  --chat-avatar: light-dark(#ffffff, #2e3440);
+  --chat-avatar-ink: light-dark(#3f4757, #cbd1dc);
+  --chat-focus: light-dark(#4f46e5, #86a0ff);
+
+  /* Written by the element at runtime: the shape a picture will need, and the height of one
+     bar of a waveform. Declared here with a default so the stylesheet stands on its own —
+     a `var()` nothing defines is a value nobody can find. */
+  --image-ratio: 4 / 3;
+  --bar: 8;
+
+  --chat-radius: 18px;
+  --chat-radius-tight: 6px;
+  /* A bubble that runs the whole width of a thread stops being a line of text. */
+  --chat-max: 32rem;
+  --chat-motion: 180ms;
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: end;
+  gap: 0.5rem;
+  min-inline-size: 0;
+  font: 400 0.9375rem/1.45
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* Your own messages run the other way, which is the only thing that says they are yours —
+   visually. In the accessibility tree the speaker is a word at the front of every message. */
+ui-chat-message[data-direction="me"] {
+  grid-template-columns: minmax(0, 1fr) auto;
+  justify-items: end;
+}
+
+ui-chat-message[data-direction="me"] .chat__avatar {
+  order: 2;
+}
+
+/* ---- The thread, which belongs to the page -------------------------------------------------- */
+
+.chat-thread {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A new run gets air above it; messages inside one stay close, which is what makes a run read
+   as one person talking rather than four separate remarks. */
+.chat-thread ui-chat-message[data-run-start] {
+  margin-block-start: 0.85rem;
+}
+
+.chat-thread > li:first-child ui-chat-message {
+  margin-block-start: 0;
+}
+
+/* ---- Who said it ----------------------------------------------------------------------------- */
+
+.chat__avatar {
+  display: grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border: 1px solid var(--chat-border);
+  border-radius: 50%;
+  background: var(--chat-avatar);
+  color: var(--chat-avatar-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Held open when the avatar is hidden, so a run's bubbles stay in one column instead of
+   stepping sideways under the first one. */
+.chat__avatar[hidden] {
+  display: grid;
+  visibility: hidden;
+}
+
+/* Your own messages get the space but not the face. A circle reading "Y" tells you who you
+   are, which you already knew — and the side of the thread said it first. */
+ui-chat-message[data-direction="me"] .chat__avatar {
+  visibility: hidden;
+}
+
+.chat__column {
+  display: grid;
+  justify-items: start;
+  min-inline-size: 0;
+  max-inline-size: var(--chat-max);
+}
+
+ui-chat-message[data-direction="me"] .chat__column {
+  justify-items: end;
+}
+
+.chat__author {
+  margin-block-end: 0.2rem;
+  padding-inline: 0.35rem;
+  color: var(--chat-meta);
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.chat__author[hidden] {
+  display: none;
+}
+
+/* ---- The bubble ------------------------------------------------------------------------------ */
+
+.chat__bubble {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  border: 1px solid var(--chat-border);
+  border-radius: var(--chat-radius);
+  background: var(--chat-their-bubble);
+  padding: 0.5rem 0.8rem;
+  color: var(--chat-their-ink);
+  /* A URL or a hash with no spaces in it will otherwise push the bubble past the thread. */
+  overflow-wrap: anywhere;
+}
+
+ui-chat-message[data-direction="me"] .chat__bubble {
+  border-color: transparent;
+  background: var(--chat-my-bubble);
+  color: var(--chat-my-ink);
+}
+
+/* The corner nearest the speaker squares off at the end of a run — the tail, without drawing
+   an actual tail that has to be redrawn for every theme and corner radius. */
+ui-chat-message[data-run-end][data-direction="them"] .chat__bubble {
+  border-end-start-radius: var(--chat-radius-tight);
+}
+
+ui-chat-message[data-run-end][data-direction="me"] .chat__bubble {
+  border-end-end-radius: var(--chat-radius-tight);
+}
+
+.chat__bubble > :first-child {
+  margin-block-start: 0;
+}
+
+.chat__bubble > :last-child {
+  margin-block-end: 0;
+}
+
+.chat__bubble p {
+  margin-block: 0.25rem;
+}
+
+.chat__bubble a {
+  color: var(--chat-link);
+}
+
+ui-chat-message[data-direction="me"] .chat__bubble a {
+  color: var(--chat-link-mine);
+}
+
+/* ---- The quotation above a reply -------------------------------------------------------------- */
+
+.chat__quote {
+  display: block;
+  margin: 0.15rem 0 0.4rem;
+  border: 0;
+  border-inline-start: 3px solid var(--chat-rule);
+  border-radius: var(--chat-radius-tight);
+  background: var(--chat-their-quote);
+  padding: 0.35rem 0.55rem;
+  color: var(--chat-their-quote-ink);
+  font-size: 0.8125rem;
+}
+
+ui-chat-message[data-direction="me"] .chat__quote {
+  border-inline-start-color: var(--chat-rule-mine);
+  background: var(--chat-my-quote);
+  color: var(--chat-my-quote-ink);
+}
+
+.chat__quote-link {
+  display: grid;
+  gap: 0.1rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.chat__quote-link:hover .chat__quote-text {
+  text-decoration: underline;
+}
+
+.chat__quote-link:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--chat-focus) 65%, transparent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.chat__quote-who {
+  font-weight: 650;
+}
+
+.chat__quote-text {
+  display: block;
+}
+
+/* ---- A picture --------------------------------------------------------------------------------- */
+
+/* The box is held open at the picture's own shape before it arrives. Without it the thread
+   reflows as each image lands and throws the reader off the line they were on — and a square
+   skeleton that then grows into the real shape does the jump anyway, twice. */
+.chat__bubble[data-image-reserved] {
+  padding: 0.3rem;
+}
+
+/* The frame is what holds the box, and it holds it whether or not the picture has arrived.
+   Sizing the bubble from a skeleton instead lets the box collapse the moment the image leaves
+   the layout — measured at 512x225 becoming 104x98, which is precisely the jump the reserved
+   box exists to prevent. */
+.chat__image-frame {
+  position: relative;
+  display: block;
+  /* A definite width, not `min(100%, 20rem)`. A percentage against a shrink-wrapping bubble
+     falls back to the content's intrinsic size, and an image that has not arrived has an
+     intrinsic size of zero — so the frame collapsed to nothing and `aspect-ratio` had nothing
+     to multiply. The reservation looked right and did nothing on exactly the load it exists
+     for: a cold one. */
+  inline-size: 20rem;
+  max-inline-size: 100%;
+  aspect-ratio: var(--image-ratio, 4 / 3);
+  border-radius: 13px;
+  background: var(--chat-their-quote);
+  overflow: hidden;
+}
+
+.chat__image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.chat__bubble[data-image-loading] .chat__image,
+.chat__bubble[data-image-failed] .chat__image {
+  /* Still in the layout, still sized by the frame — only not painted. */
+  visibility: hidden;
+}
+
+.chat__bubble[data-image-loading] .chat__image-frame::after,
+.chat__bubble[data-image-failed] .chat__image-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    var(--chat-their-quote) 30%,
+    color-mix(in srgb, var(--chat-their-quote) 55%, var(--chat-their-bubble)) 50%,
+    var(--chat-their-quote) 70%
+  );
+  background-size: 220% 100%;
+  animation: chat-shimmer 1.4s linear infinite;
+}
+
+.chat__bubble[data-image-failed] .chat__image-frame::after {
+  animation: none;
+}
+
+@keyframes chat-shimmer {
+  from {
+    background-position: 120% 0;
+  }
+
+  to {
+    background-position: -120% 0;
+  }
+}
+
+/* Over the placeholder, inside the frame, so nothing below it moves when it comes and goes.
+   `z-index` because the skeleton is an `::after` and would otherwise paint on top of it. */
+.chat__image-status {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0.75rem;
+  color: var(--chat-their-quote-ink);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.chat__image-status[hidden] {
+  display: none;
+}
+
+.chat__bubble[data-image-failed] .chat__image-status {
+  color: var(--chat-failed);
+}
+
+/* ---- A voice note ------------------------------------------------------------------------------ */
+
+.chat__player {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-block: 0.15rem;
+}
+
+.chat__play {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 2.15rem;
+  block-size: 2.15rem;
+  border: 0;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--chat-control) 16%, transparent);
+  padding: 0;
+  color: var(--chat-control);
+  cursor: pointer;
+}
+
+ui-chat-message[data-direction="me"] .chat__play {
+  background: color-mix(in srgb, var(--chat-my-ink) 22%, transparent);
+  color: var(--chat-my-ink);
+}
+
+.chat__play svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+.chat__play[data-playing] svg path {
+  d: path("M5 3.6h2.4v8.8H5ZM8.8 3.6h2.4v8.8H8.8Z");
+}
+
+.chat__play:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--chat-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+/* Decoration, and it says so. Nothing here claims to be the sound — a picture that pretended
+   to be the waveform of audio it never analysed would be a picture that lies. */
+.chat__wave {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 2px;
+  min-inline-size: 4rem;
+  block-size: 1.75rem;
+}
+
+.chat__wave span {
+  flex: 1;
+  block-size: calc(var(--bar) * 1.5px + 3px);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--chat-control) 34%, transparent);
+}
+
+ui-chat-message[data-direction="me"] .chat__wave span {
+  background: color-mix(in srgb, var(--chat-my-ink) 40%, transparent);
+}
+
+.chat__player[data-playing] .chat__wave span {
+  background: var(--chat-control);
+}
+
+ui-chat-message[data-direction="me"] .chat__player[data-playing] .chat__wave span {
+  background: var(--chat-my-ink);
+}
+
+.chat__duration {
+  flex: none;
+  color: var(--chat-meta);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+ui-chat-message[data-direction="me"] .chat__duration {
+  color: var(--chat-my-quote-ink);
+}
+
+/* The native element stays in the markup as the engine, out of sight. */
+.chat__audio {
+  display: none;
+}
+
+.chat__transcript-toggle {
+  justify-self: start;
+  margin-block-start: 0.3rem;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  padding: 0.15rem 0;
+  color: var(--chat-control);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+ui-chat-message[data-direction="me"] .chat__transcript-toggle {
+  color: var(--chat-link-mine);
+}
+
+.chat__transcript-toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--chat-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+.chat__transcript {
+  margin-block: 0.35rem 0.1rem;
+  border-inline-start: 3px solid var(--chat-rule);
+  border-radius: var(--chat-radius-tight);
+  background: var(--chat-their-quote);
+  padding: 0.4rem 0.55rem;
+  color: var(--chat-their-quote-ink);
+  font-size: 0.8125rem;
+}
+
+ui-chat-message[data-direction="me"] .chat__transcript {
+  border-inline-start-color: var(--chat-rule-mine);
+  background: var(--chat-my-quote);
+  color: var(--chat-my-quote-ink);
+}
+
+.chat__transcript[hidden] {
+  display: none;
+}
+
+/* ---- An attachment ------------------------------------------------------------------------------ */
+
+.chat__file {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: var(--chat-radius-tight);
+  padding: 0.25rem 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.chat__file:hover .chat__file-name {
+  text-decoration: underline;
+}
+
+.chat__file:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--chat-focus) 65%, transparent);
+  outline-offset: 3px;
+}
+
+.chat__file-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 2.15rem;
+  block-size: 2.15rem;
+  border-radius: 9px;
+  background: var(--chat-their-quote);
+  color: var(--chat-control);
+}
+
+ui-chat-message[data-direction="me"] .chat__file-icon {
+  background: var(--chat-my-quote);
+  color: var(--chat-my-ink);
+}
+
+.chat__file-icon svg {
+  inline-size: 1.05rem;
+  block-size: 1.05rem;
+}
+
+.chat__file-stack {
+  display: grid;
+  min-inline-size: 0;
+}
+
+.chat__file-name {
+  font-weight: 600;
+}
+
+.chat__file-size {
+  color: var(--chat-meta);
+  font-size: 0.75rem;
+}
+
+ui-chat-message[data-direction="me"] .chat__file-size {
+  color: var(--chat-my-quote-ink);
+}
+
+/* ---- The time and the receipt ---------------------------------------------------------------------- */
+
+.chat__footer {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.2rem 0.35rem 0;
+  color: var(--chat-meta);
+  font-size: 0.6875rem;
+}
+
+.chat__footer[hidden] {
+  display: none;
+}
+
+.chat__time {
+  font-variant-numeric: tabular-nums;
+}
+
+.chat__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.chat__status svg {
+  inline-size: 0.95rem;
+  block-size: 0.8rem;
+}
+
+/* Two grey ticks against two blue ticks differ by colour alone, which is exactly what a
+   delivery state must not do. Each state has its own glyph, and each carries its own word. */
+.chat__status-word {
+  font-weight: 600;
+}
+
+.chat__status[data-status="read"] {
+  color: var(--chat-control);
+}
+
+.chat__status[data-status="failed"] {
+  color: var(--chat-failed);
+}
+
+.chat__retry {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: none;
+  padding: 0.05rem 0.5rem;
+  color: var(--chat-failed);
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.chat__retry:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--chat-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+ui-chat-message[data-failed] .chat__bubble {
+  border-color: var(--chat-failed);
+}
+
+/* ---- System and deleted -------------------------------------------------------------------------- */
+
+ui-chat-message[data-type="system"] {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  margin-block: 0.9rem;
+}
+
+ui-chat-message[data-type="system"] .chat__avatar,
+ui-chat-message[data-type="system"] .chat__author {
+  display: none;
+}
+
+ui-chat-message[data-type="system"] .chat__column {
+  justify-items: center;
+  max-inline-size: none;
+}
+
+ui-chat-message[data-type="system"] .chat__bubble {
+  border-radius: 999px;
+  background: none;
+  border-color: transparent;
+  padding: 0.15rem 0.75rem;
+  color: var(--chat-meta);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+ui-chat-message[data-type="deleted"] .chat__bubble {
+  border-style: dashed;
+  background: none;
+  color: var(--chat-meta);
+  font-style: italic;
+}
+
+ui-chat-message[data-type="deleted"][data-direction="me"] .chat__bubble {
+  border-color: var(--chat-border);
+  color: var(--chat-meta);
+}
+
+.chat__edited {
+  font-style: italic;
+}
+
+/* Where a quotation lands after it has been followed. */
+ui-chat-message[data-highlight] .chat__bubble {
+  outline: 3px solid color-mix(in srgb, var(--chat-focus) 60%, transparent);
+  outline-offset: 3px;
+  transition: outline-color var(--chat-motion) ease;
+}
+
+ui-chat-message:focus {
+  outline: none;
+}
+
+.chat__sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ui-chat-message {
+    --chat-motion: 0ms;
+  }
+
+  /* The skeleton stops shimmering and simply holds the space, which was always its real job. */
+  .chat__bubble[data-image-loading] .chat__image-frame::after,
+  .chat__bubble[data-image-failed] .chat__image-frame::after {
+    animation: none;
+  }
+
+  ui-chat-message[data-highlight] .chat__bubble {
+    transition: none;
+  }
+}
+
+/* ---- The demo page ----------------------------------------------------------------------------------- */
+
+.chat-demo {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: start center;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  background: light-dark(#e4e9f3, #12151b);
+  color: light-dark(#15181d, #f4f6fa);
+}
+
+.chat-demo__shell {
+  min-inline-size: 0;
+  inline-size: min(100%, 44rem);
+}
+
+.chat-demo__card {
+  display: grid;
+  gap: 1.1rem;
+  min-inline-size: 0;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid light-dark(#cdd5e4, #292d36);
+  border-radius: 18px;
+  background: light-dark(#eef1f7, #171a20);
+  box-shadow: 0 24px 64px light-dark(rgb(15 23 42 / 0.08), rgb(0 0 0 / 0.3));
+}
+
+.chat-demo__label {
+  margin: 0;
+  color: light-dark(#4d5665, #a8afbc);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.chat-demo__note {
+  margin: 0;
+  color: light-dark(#4d5665, #a8afbc);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.chat-demo__note code {
+  border-radius: 5px;
+  background: light-dark(rgb(15 23 42 / 0.07), rgb(244 246 250 / 0.12));
+  padding: 0.1em 0.35em;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.chat-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chat-demo__button {
+  border: 1px solid light-dark(#cdd5e4, #292d36);
+  border-radius: 9px;
+  background: light-dark(#ffffff, #10131a);
+  padding: 0.45rem 0.85rem;
+  color: light-dark(#15181d, #f4f6fa);
+  font:
+    600 0.8125rem/1.45 Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.chat-demo__button:hover {
+  background: light-dark(#e7ecf6, #171a20);
+}
+
+.chat-demo__button[data-current] {
+  border-color: light-dark(#1c5cab, #8ec0ff);
+  color: light-dark(#1c5cab, #8ec0ff);
+}
+
+.chat-demo__button:focus-visible {
+  outline: 3px solid light-dark(rgb(79 70 229 / 0.6), rgb(134 160 255 / 0.6));
+  outline-offset: 2px;
+}
+
+.chat-demo__output {
+  display: block;
+  min-block-size: 2.5rem;
+  padding: 0.75rem;
+  border: 1px solid light-dark(#cdd5e4, #292d36);
+  border-radius: 10px;
+  background: light-dark(#ffffff, #0b0c0e);
+  color: light-dark(#15181d, #f4f6fa);
+  font: 500 0.8125rem/1.45 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

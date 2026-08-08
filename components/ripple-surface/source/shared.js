@@ -6,22 +6,30 @@ import {
   DEFAULT_WAKE_DURATION,
   RING_STAGGER,
   VELOCITY_WINDOW,
-  angleBetween,
+  WAKE_STRANDS,
+  alongFade,
+  alongFromHead,
   capRipples,
   clampDuration,
   clampMaxRipples,
   clampRings,
   clampSpacing,
   maxRadiusFor,
+  offsetPoint,
   pointerSpeed,
   pruneRipples,
+  resamplePath,
   rippleAlpha,
   rippleRadius,
   rippleWidth,
   ringBirths,
   shouldEmit,
-  wakeRadius,
-  wakeSpread,
+  trailAngles,
+  wakeAlpha,
+  wakeJitter,
+  wakeOffset,
+  wakeStrength,
+  wakeWave,
 } from './ripple-surface-core.js';
 
 function prefersReducedMotion() {
@@ -37,6 +45,12 @@ function prefersReducedMotion() {
  * lid on top of it. The second is that at rest there is nothing to draw and no frame is
  * asked for — a still surface costs exactly nothing, which is what lets it sit on a page
  * that has other work to do.
+ *
+ * A press and a crossing are kept as different things. A press is a set of rings, each one
+ * complete in itself. A crossing is one trail: the pointer's recent path, drawn as two
+ * lines standing off either side of it, meeting in a point at the pointer. Marks made
+ * independently of one another could never meet in that point, which is the whole shape of
+ * a wake.
  */
 export class UiRippleSurface extends HTMLElement {
   static get observedAttributes() {
@@ -47,6 +61,8 @@ export class UiRippleSurface extends HTMLElement {
     super();
     this._connected = false;
     this._ripples = [];
+    this._trail = [];
+    this._head = null;
     this._samples = [];
     this._lastEmit = null;
     this._frame = 0;
@@ -82,9 +98,9 @@ export class UiRippleSurface extends HTMLElement {
     }
   }
 
-  /** How many ripples are alive on the surface right now. */
+  /** How much is still moving on the surface: rings alive, plus points in the trail. */
   get count() {
-    return this._ripples.length;
+    return this._ripples.length + this._trail.length;
   }
 
   get rings() {
@@ -135,6 +151,8 @@ export class UiRippleSurface extends HTMLElement {
   /** Takes everything off the surface and lets it go still. */
   clear() {
     this._ripples = [];
+    this._trail = [];
+    this._head = null;
     this._lastEmit = null;
     this._samples = [];
     this._stop();
@@ -206,9 +224,15 @@ export class UiRippleSurface extends HTMLElement {
   _handleFrame(now) {
     this._frame = 0;
     this._ripples = pruneRipples(this._ripples, now);
+    this._trail = this._trail.filter((point) => now - point.time < this.wakeDuration);
+
+    if (this._trail.length === 0) {
+      this._head = null;
+    }
+
     this._paint(now);
 
-    if (this._ripples.length > 0) {
+    if (this.count > 0) {
       this._start();
     }
   }
@@ -220,7 +244,7 @@ export class UiRippleSurface extends HTMLElement {
 
     this._context.clearRect(0, 0, this._width, this._height);
 
-    if (this._ripples.length === 0) {
+    if (this.count === 0) {
       return;
     }
 
@@ -237,6 +261,7 @@ export class UiRippleSurface extends HTMLElement {
     this._context.save();
     this._context.strokeStyle = ink;
     this._context.lineCap = 'round';
+    this._context.lineJoin = 'round';
 
     for (const ripple of this._ripples) {
       const age = now - ripple.birth;
@@ -252,27 +277,87 @@ export class UiRippleSurface extends HTMLElement {
         continue;
       }
 
-      const radius = rippleRadius(age, ripple.duration, ripple.maxRadius);
       this._context.globalAlpha = alpha;
       this._context.lineWidth = width;
       this._context.beginPath();
-
-      if (ripple.kind === 'wake') {
-        this._context.arc(
-          ripple.x,
-          ripple.y,
-          radius,
-          ripple.angle - ripple.spread,
-          ripple.angle + ripple.spread,
-        );
-      } else {
-        this._context.arc(ripple.x, ripple.y, radius, 0, Math.PI * 2);
-      }
-
+      this._context.arc(
+        ripple.x,
+        ripple.y,
+        rippleRadius(age, ripple.duration, ripple.maxRadius),
+        0,
+        Math.PI * 2,
+      );
       this._context.stroke();
     }
 
+    this._paintWake(now, strength);
     this._context.restore();
+  }
+
+  /**
+   * The wake: several strands either side of the path the pointer took, all of them
+   * meeting in a point at the pointer, where every offset is zero.
+   *
+   * Each strand is drawn segment by segment rather than as one path, because the wake has
+   * to fade from the point backwards and a stroke cannot carry a gradient along itself. The
+   * segments are curves through the midpoints, which is what keeps a hand-drawn path from
+   * showing a corner at every sample.
+   */
+  _paintWake(now, strength) {
+    const path = this._head ? [...this._trail, this._head] : this._trail;
+
+    if (path.length < 3) {
+      return;
+    }
+
+    const along = alongFromHead(path);
+    const angles = trailAngles(path);
+    const width = this._readNumber('--ripple-wake-width', 1.4);
+
+    for (const side of [1, -1]) {
+      for (const strand of WAKE_STRANDS) {
+        this._paintStrand({ now, strength, path, along, angles, width, side, strand });
+      }
+    }
+  }
+
+  _paintStrand({ now, strength, path, along, angles, width, side, strand }) {
+    const edge = path.map((point, index) => {
+      const age = now - point.time;
+      const spread = wakeOffset(along[index], age) * strand.scale;
+      const swell = side * wakeWave(along[index], age, strand.phase);
+      const wander = wakeJitter(along[index], point.time + strand.phase);
+
+      return offsetPoint(point, angles[index] + (side * Math.PI) / 2, spread + swell + wander);
+    });
+
+    for (let index = 1; index < edge.length; index += 1) {
+      const point = path[index];
+      const alpha =
+        wakeAlpha(now - point.time, this.wakeDuration) *
+        alongFade(along[index]) *
+        wakeStrength(point.speed) *
+        strand.alpha *
+        strength;
+
+      if (alpha <= 0.004) {
+        continue;
+      }
+
+      const previous = edge[index - 1];
+      const current = edge[index];
+      const next = edge[index + 1] ?? current;
+      const start = { x: (previous.x + current.x) / 2, y: (previous.y + current.y) / 2 };
+      const end = { x: (current.x + next.x) / 2, y: (current.y + next.y) / 2 };
+
+      this._context.globalAlpha = alpha;
+      // Thinning towards the tail, so the point of the wake is the sharpest part of it.
+      this._context.lineWidth = Math.max(0.2, width * strand.width * (0.35 + 0.65 * alpha));
+      this._context.beginPath();
+      this._context.moveTo(start.x, start.y);
+      this._context.quadraticCurveTo(current.x, current.y, end.x, end.y);
+      this._context.stroke();
+    }
   }
 
   _pointIn(event) {
@@ -297,29 +382,18 @@ export class UiRippleSurface extends HTMLElement {
       (sample) => point.time - sample.time <= VELOCITY_WINDOW,
     );
 
-    if (!shouldEmit(this._lastEmit, point, this.spacing)) {
-      return;
+    // The head is where the pointer is now, not where the trail last took a sample. It is
+    // what the two sides meet at, so a prow that lagged the pointer by up to a whole
+    // spacing would be a blunt end following the cursor around.
+    const speed = pointerSpeed(this._samples);
+    this._head = { ...point, speed };
+
+    if (shouldEmit(this._lastEmit, point, this.spacing)) {
+      const filled = resamplePath(this._lastEmit, { ...point, speed }, this.spacing);
+      this._trail = capRipples([...this._trail, ...filled], this.maxRipples);
+      this._lastEmit = point;
     }
 
-    const speed = pointerSpeed(this._samples);
-    // The arc opens behind the pointer: a wake is what the water does after something has
-    // gone past, so it faces the way the pointer came from.
-    const angle = this._lastEmit
-      ? angleBetween(point, this._lastEmit)
-      : angleBetween({ x: 0, y: 0 }, { x: -1, y: 0 });
-
-    this._lastEmit = point;
-    this._add({
-      kind: 'wake',
-      x: point.x,
-      y: point.y,
-      birth: performance.now(),
-      duration: this.wakeDuration,
-      maxRadius: wakeRadius(speed),
-      width: this._readNumber('--ripple-wake-width', 1.5),
-      angle,
-      spread: wakeSpread(speed),
-    });
     this._start();
   }
 
@@ -330,8 +404,10 @@ export class UiRippleSurface extends HTMLElement {
 
   _handlePointerLeave() {
     // The next arrival is a new journey. Without this, re-entering the surface somewhere
-    // else would draw a wake for a crossing that never happened.
+    // else would draw a wake for a crossing that never happened. The trail already made
+    // stays and fades where it is; only the prow goes with the pointer.
     this._lastEmit = null;
+    this._head = null;
     this._samples = [];
   }
 

@@ -134,6 +134,7 @@ Against this component's own two surfaces, on exact ratios rather than rounded o
 |---|---|
 | Default | Handle dragging, the threshold, and the pointer path that also works on touch |
 | Table | Real table rows, the two costs, and ragged row heights |
+| Connected | Moving rows between grouped lists, by pointer and by keyboard |
 | Keyboard | The second path in full, and the cancel that restores |
 | Commit | Saving, holding, and going back when the server refuses |
 | Markup | The data contract, the no-script fallback, auto-scroll inside a box |
@@ -150,19 +151,70 @@ Against this component's own two surfaces, on exact ratios rather than rounded o
 | `--sortable-border`, `--sortable-focus` | |
 | `--sortable-radius`, `--sortable-gap`, `--sortable-motion` | |
 
-## 13. Out of scope, deliberately
+## 13. Moving rows between lists
 
-**Moving rows between two lists.** It is a materially bigger problem — two live regions, a
-keyboard model that crosses lists, a drop affordance for an empty one — and smuggling it in here
-would do both jobs badly. It deserves its own decision.
+Held back from the first version on purpose, and added in `0.2.0` once it could be decided on
+its own terms. Lists sharing a `group` accept each other's rows.
 
-## 14. Distribution preview
+**The list a drag starts in owns it from beginning to end.** Handing ownership over at the
+border would leave two lists each holding half a gesture, and a cancel that has to find its way
+home through both. The source tracks which list it is currently over and what index it would
+land at; nothing moves until the drop.
+
+That means `_paint` drives **two** lists at once: the one losing a row closes the space behind
+it, and the one gaining a row opens a slot.
+
+### The keyboard, which was the reason to hold it back
+
+`←` and `→` cross lists; `↑` and `↓` then move within whichever list the row is over.
+
+**They are bound only on a list that has a group.** On a list of its own they stay unclaimed —
+binding them would imply a direction that does not exist and send a keyboard user looking for
+it. Running out of lists says so rather than going quiet.
+
+The index carries across: a row taken from third place arrives at third place, clamped to what
+the destination can hold. Landing everything at the top would make crossing two lists a way of
+losing your place.
+
+### An empty list has no gap to aim at
+
+Its empty message doubles as the drop target — and it is **present at rest**, not conjured when
+a drag begins. A zone that appears under the pointer shoves the rest of the board aside at the
+exact moment somebody is aiming at it.
+
+### The announcement names the list
+
+A cross-list move that says only "position 2 of 4" has left out the only thing that changed.
+Each list is named by `name`, falling back to `aria-label`.
+
+### A cancel has two lists to tidy
+
+The destination on a cancel is *home*, which is a different list from the one the drag was over.
+Clearing only the destination leaves the hovered list still outlined as a target for a move that
+never happened — found by measurement, and now locked by a test.
+
+### Undoing a transfer is not undoing a reorder
+
+The receiving list's `commit` runs: it is the one making a claim about new state. On rejection
+the row goes back **across the border, to the index it left** — restoring this list's own order
+would leave the row here, which is the thing being refused.
+
+A locked row is a wall inside its list and does not emigrate from it either.
+
+## 14. Still out of scope
+
+**Copying rather than moving.** A row that exists in two lists makes `order` ambiguous.
+
+**A destination that can refuse.** Capacity limits and type rules are the page's business for
+now; same group accepts, and a `disabled` or `pending` list does not.
+
+## 15. Distribution preview
 
 `preview/thumbnail.svg` is a static `640x360` miniature of the Default variant mid-drag: one row
 lifted with its accent border and shadow, the two rows it has passed shifted up into the space it
 left. No animation, script, external asset, or embedded raster image.
 
-## 15. Acceptance criteria
+## 16. Acceptance criteria
 
 - All six variants run independently in an iframe with **no external request** and no overflow,
   at 960 and 360.
@@ -177,3 +229,9 @@ left. No animation, script, external asset, or embedded raster image.
 - `disabled` disables the handles rather than swallowing events.
 - `prefers-reduced-motion: reduce` removes the travel and keeps the reorder.
 - Every contrast floor in section 10 is met in both themes.
+- A pointer drag and a keyboard walk both move a row into another list in the group.
+- `←` and `→` are unclaimed on a list with no group; running out of lists says so.
+- An empty list is a drop target, and it is one before any drag begins.
+- A cancel over another list leaves no mark on it and restores every order.
+- A locked row does not leave its list.
+- A refused transfer returns the row across the border to the index it left.
